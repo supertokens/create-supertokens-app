@@ -29,32 +29,32 @@ module.exports.frontendOptions = [
         value: "react",
         displayName: "React",
         location: {
-            main: "react",
-            config: "react/config"
+            main: "frontend/react",
+            config: "frontend/react/config"
         },
     },
     {
         value: "next",
         displayName: "Next.js",
         location: {
-            main: "next-frontend",
-            config: "next-frontend/config"
+            main: "frontend/next-frontend",
+            config: "frontend/next-frontend/config"
         },
     },
     {
         value: "angular",
         displayName: "Angular",
         location: {
-            main: "angular",
-            config: "angular/config"
+            main: "frontend/angular",
+            config: "frontend/angular/config"
         },
     },
     {
         value: "vue",
         displayName: "Vue.js",
         location: {
-            main: "vue",
-            config: "vue/config"
+            main: "frontend/vue",
+            config: "frontend/vue/config"
         },
     },
 ];
@@ -64,8 +64,8 @@ module.exports.backendOptions = [
         value: "node",
         displayName: "Node.js",
         location: {
-            main: "node",
-            config: "node/config"
+            main: "backend/node",
+            config: "backend/node/config"
         },
     },
     {
@@ -77,24 +77,24 @@ module.exports.backendOptions = [
         value: "nest",
         displayName: "Nest.js",
         location: {
-            main: "nest",
-            config: "nest/config"
+            main: "backend/nest",
+            config: "backend/nest/config"
         },
     },
     {
         value: "python",
         displayName: "Python",
         location: {
-            main: "python",
-            config: "python/config"
+            main: "backend/python",
+            config: "backend/python/config"
         },
     },
     {
         value: "go",
         displayName: "Golang",
         location: {
-            main: "golang",
-            config: "golang/config"
+            main: "backend/golang",
+            config: "backend/golang/config"
         },
     },
 ];
