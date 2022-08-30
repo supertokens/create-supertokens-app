@@ -1,7 +1,8 @@
-const { nextFullStackLocation, frontendOptions, backendOptions } = require("./config");
-const tar = require("tar");
-const { promisify } = require("util");
-const { Stream } = require("stream");
+import { nextFullStackLocation, frontendOptions, backendOptions } from "./config.js";
+import got from "got";
+import tar from "tar";
+import { promisify } from "util";
+import { Stream } from "stream";
 
 const pipeline = promisify(Stream.pipeline);
 
@@ -26,7 +27,7 @@ function normaliseLocationPath(path) {
  * frontend: Path of the frontend project relative to the download location
  * backend: Path of the backend project relative to the download location
  */
-module.exports.getFolderCombinationFromAnswers = function(answers) {
+export function getFolderCombinationFromAnswers(answers) {
     const downloadURL = "https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/setup"
 
     if (answers.frontend === "next" && answers.backend === "next") {
@@ -54,10 +55,9 @@ module.exports.getFolderCombinationFromAnswers = function(answers) {
     }
 }
 
-module.exports.downloadApp = async function (locations) {
-    const { default: got } = await import("got");
+export async function downloadApp(locations) {
     return await pipeline(
         got.stream(`${locations.download}`),
-        tar.extract({}, ["create-supertokens-app/boilerplate"])
+        tar.extract({}, [])
     )
 }

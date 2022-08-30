@@ -1,5 +1,6 @@
 {
   "name": "create-supertokens-app",
+  "type": "module",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -12,7 +13,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "got": "^12.3.1",
-    "inquirer": "^8.2.4",
+    "inquirer": "^9.1.0",
     "tar": "^6.1.11"
   },
   "bin": "index.js"

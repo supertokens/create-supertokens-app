@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-const chalk = require("chalk");
-const inquirer = require("inquirer");
-const { questions } = require("./config");
-const { getFolderCombinationFromAnswers, downloadApp } = require("./utils");
+import inquirer from "inquirer";
+import { questions } from "./config.js";
+import { getFolderCombinationFromAnswers, downloadApp } from "./utils.js";
 
 async function showPropt() {
     // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses

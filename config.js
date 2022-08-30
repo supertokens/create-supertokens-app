@@ -19,12 +19,12 @@
  * For recipes the location object is not used, the value is used to determine the path
  */
 
-module.exports.nextFullStackLocation = {
+export const nextFullStackLocation = {
     main: "next-fullstack",
     config: "next-fullstack/config"
 }
 
-module.exports.frontendOptions = [
+export const frontendOptions = [
     {
         value: "react",
         displayName: "React",
@@ -59,7 +59,7 @@ module.exports.frontendOptions = [
     },
 ];
 
-module.exports.backendOptions = [
+export const backendOptions = [
     {
         value: "node",
         displayName: "Node.js",
@@ -71,7 +71,7 @@ module.exports.backendOptions = [
     {
         value: "next",
         displayName: "Next.js",
-        location: this.nextFullStackLocation, // TODO: Should this option only be shown if frontend was NextJS?
+        location: nextFullStackLocation, // TODO: Should this option only be shown if frontend was NextJS?
     },
     {
         value: "nest",
@@ -99,7 +99,7 @@ module.exports.backendOptions = [
     },
 ];
 
-module.exports.recipeOptions = [
+export const recipeOptions = [
     {
         value: "emailpassword",
         displayName: "Email Password",
@@ -122,24 +122,24 @@ module.exports.recipeOptions = [
  * Export for all the questions to ask the user, should follow the exact format mentioned here https://github.com/SBoudrias/Inquirer.js#objects because this config is passed to inquirer. The order of questions depends on the position of the object in the array
  */
 
-module.exports.questions = [
+export const questions = [
     {
         name: "frontend",
         type: "list",
         message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
-        choices: mapOptionsToChoices(this.frontendOptions),
+        choices: mapOptionsToChoices(frontendOptions),
     },
     {
         name: "backend",
         type: "list",
         message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
-        choices: mapOptionsToChoices(this.backendOptions),
+        choices: mapOptionsToChoices(backendOptions),
     },
     {
         name: "recipe",
         type: "list",
         message: "What type of authentication do you want to use?",
-        choices: mapOptionsToChoices(this.recipeOptions),
+        choices: mapOptionsToChoices(recipeOptions),
     },
     {
         name: "confirmation",
