@@ -2,7 +2,7 @@
 const chalk = require("chalk");
 const inquirer = require("inquirer");
 const { questions } = require("./config");
-const { getFolderCombinationFromAnswers } = require("./utils");
+const { getFolderCombinationFromAnswers, downloadApp } = require("./utils");
 
 async function showPropt() {
     // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
@@ -20,6 +20,8 @@ async function showPropt() {
     }
 
     console.log(folderLocations);
+
+    downloadApp(folderLocations)
 }
 
 showPropt();
