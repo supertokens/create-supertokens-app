@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cd lib && rm -rf build && npx tsc -p tsconfig.json"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +16,13 @@
     "inquirer": "^9.1.0",
     "tar": "^6.1.11"
   },
-  "bin": "index.js"
+  "bin": "lib/build/index.js",
+  "devDependencies": {
+    "@types/inquirer": "^9.0.1",
+    "@types/tar": "^6.1.2",
+    "typescript": "^4.8.2"
+  },
+  "engines": {
+    "node": ">=12.22.0"
+  }
 }
