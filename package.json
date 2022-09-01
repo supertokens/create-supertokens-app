@@ -14,12 +14,16 @@
     "chalk": "^4.1.2",
     "got": "^12.3.1",
     "inquirer": "^9.1.0",
-    "tar": "^6.1.11"
+    "tar": "^6.1.11",
+    "validate-npm-package-name": "^4.0.0",
+    "yargs": "^17.5.1"
   },
   "bin": "lib/build/index.js",
   "devDependencies": {
     "@types/inquirer": "^9.0.1",
     "@types/tar": "^6.1.2",
+    "@types/validate-npm-package-name": "^4.0.0",
+    "@types/yargs": "^17.0.12",
     "typescript": "^4.8.2"
   },
   "engines": {

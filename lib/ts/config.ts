@@ -19,11 +19,13 @@
  * For recipes the location object is not used, the value is used to determine the path
  */
 
-import { QuestionOption } from "./types.js";
+import { Answers, QuestionOption } from "./types.js";
+import { validateNpmName } from "./utils.js";
+import path from "path";
 
 export const nextFullStackLocation = {
-    main: "next-fullstack",
-    config: "next-fullstack/config"
+    main: "fullstack/next",
+    config: "fullstack/next/config"
 }
 
 export const frontendOptions: QuestionOption[] = [
@@ -69,11 +71,6 @@ export const backendOptions: QuestionOption[] = [
             main: "backend/node",
             config: "backend/node/config"
         },
-    },
-    {
-        value: "next",
-        displayName: "Next.js",
-        location: nextFullStackLocation, // TODO: Should this option only be shown if frontend was NextJS?
     },
     {
         value: "nest",
@@ -126,16 +123,52 @@ export const recipeOptions: QuestionOption[] = [
 
 export const questions = [
     {
+        name: "appname",
+        type: "input",
+        message: "What is your app called?",
+        default: "supertokens",
+        validate: function (input: any) {
+            const validations = validateNpmName(path.basename(path.resolve(input)));
+
+            if (validations.valid) {
+                return true;
+            }
+
+            return "Invalid project name: " + validations.problems![0];
+        },
+    },
+    {
         name: "frontend",
         type: "list",
         message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
         choices: mapOptionsToChoices(frontendOptions),
     },
     {
+        name: "nextfullstack",
+        type: "confirm",
+        message: "Are you using Next.js functions for your APIs?",
+        // This checks whether or not a question should be asked
+        when: (answers: Answers) => {
+            if (answers.frontend === "next") {
+                return true;
+            }
+
+            return false;
+        },
+    },
+    {
         name: "backend",
         type: "list",
         message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
         choices: mapOptionsToChoices(backendOptions),
+        when: (answers: Answers) => {
+            // We skip this question if they are using Next.js fullstack
+            if (answers.nextfullstack === true) {
+                return false;
+            }
+
+            return true;
+        },
     },
     {
         name: "recipe",

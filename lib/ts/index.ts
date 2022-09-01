@@ -3,8 +3,19 @@ import inquirer from "inquirer";
 import { questions } from "./config.js";
 import { Answers } from "./types.js";
 import { getDownloadLocationFromAnswers, downloadApp } from "./utils.js";
+// import yargs from "yargs";
+// import { hideBin } from "yargs/helpers";
 
 async function showPropt() {
+    /* 
+        userArguments will contain all the arguments the user passes
+        For example: `npx create-supertokens-app --recipe=emailpassword` will result
+        in userArguments.recipe === "emailpassword"
+    */
+    // const userArguments = yargs(hideBin(process.argv)).argv;
+
+    // console.log(userArguments);
+
     // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
     const answers: Answers = await inquirer.prompt(questions);
 
@@ -20,7 +31,7 @@ async function showPropt() {
     }
 
     try {
-        await downloadApp(folderLocations)
+        await downloadApp(folderLocations, answers.appname);
     } catch (e) {
         console.log(e);
     }

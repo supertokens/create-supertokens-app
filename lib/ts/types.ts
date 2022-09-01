@@ -23,6 +23,8 @@ export type Answers = {
     backend: string,
     recipe: string,
     confirmation: boolean,
+    nextfullstack?: boolean,
+    appname: string,
 }
 
 /**

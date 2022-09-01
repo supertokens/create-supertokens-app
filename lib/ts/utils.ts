@@ -2,10 +2,13 @@ import { nextFullStackLocation, frontendOptions, backendOptions } from "./config
 import got from "got";
 import tar from "tar";
 import { promisify } from "util";
-import { Stream } from "stream";
+import stream from "node:stream";
 import { Answers, DownloadLocations } from "./types";
+import validateProjectName from "validate-npm-package-name";
+import fs from "fs";
+import path from "path";
 
-const pipeline = promisify(Stream.pipeline);
+const pipeline = promisify(stream.pipeline);
 
 function normaliseLocationPath(path: string): string {
     if (path.startsWith("/")) {
@@ -18,7 +21,7 @@ function normaliseLocationPath(path: string): string {
 export function getDownloadLocationFromAnswers(answers: Answers): DownloadLocations | undefined {
     const downloadURL = "https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/setup"
 
-    if (answers.frontend === "next" && answers.backend === "next") {
+    if (answers.nextfullstack === true) {
         return {
             frontend: normaliseLocationPath(nextFullStackLocation.main),
             backend: normaliseLocationPath(nextFullStackLocation.main),
@@ -46,13 +49,55 @@ export function getDownloadLocationFromAnswers(answers: Answers): DownloadLocati
     return undefined;
 }
 
-export async function downloadApp(locations: DownloadLocations): Promise<void> {
-    console.log(locations);
+export async function downloadApp(locations: DownloadLocations, folderName: string): Promise<void> {
+    // create the directory if it doesnt already exist
+    const __dirname = path.resolve();
+    const projectDirectory = __dirname + `/${folderName}`;
+
+    // If the folder already exists, we show an error
+    if (fs.existsSync(projectDirectory)) {
+        console.log(`A folder with name "${folderName}" already exists`);
+        return;
+    }
+
+    // Create the directory to download the boilerplate
+    fs.mkdirSync(projectDirectory);
 
     await pipeline(
         got.stream(`${locations.download}`),
-        tar.extract({strict: true, strip: 2, onwarn: (message, _) => {
-            console.log(message);
-        }}, [])
+        tar.extract({
+            cwd: `./${folderName}`, 
+            strip: 2,
+            strict: true,
+            filter: (path, _) => {
+                if (path.includes(locations.frontend)) {
+                    return true;
+                }
+
+                if (path.includes(locations.backend)) {
+                    return true;
+                }
+
+                return false;
+            }
+        }, [])
     )
 }
+
+export function validateNpmName(name: string): {
+    valid: boolean
+    problems?: string[]
+  } {
+    const nameValidation = validateProjectName(name)
+    if (nameValidation.validForNewPackages) {
+      return { valid: true }
+    }
+  
+    return {
+      valid: false,
+      problems: [
+        ...(nameValidation.errors || []),
+        ...(nameValidation.warnings || []),
+      ],
+    }
+  }
