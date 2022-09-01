@@ -84,7 +84,7 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
         }, [])
     )
 
-    setupProject(locations, folderName);
+    // setupProject(locations, folderName);
 
     // await new Promise((res, rej) => {
     //     const response = spawn(`cd `)
@@ -109,14 +109,14 @@ export function validateNpmName(name: string): {
     }
   }
 
-function setupProject(locations: DownloadLocations, folderName: string) {
-    const frontendFolderName = locations.frontend.split("/").filter(i => i !== "frontend").join("")
-    const backendFolderName = locations.backend.split("/").filter(i => i !== "backend").join("")
+// function setupProject(locations: DownloadLocations, folderName: string) {
+//     const frontendFolderName = locations.frontend.split("/").filter(i => i !== "frontend").join("")
+//     const backendFolderName = locations.backend.split("/").filter(i => i !== "backend").join("")
 
-    const __dirname = path.resolve();
-    const frontendDirectory = __dirname + `/${folderName}/${frontendFolderName}`;
-    const backendDirectory = __dirname + `/${folderName}/${backendFolderName}`;
+//     const __dirname = path.resolve();
+//     const frontendDirectory = __dirname + `/${folderName}/${frontendFolderName}`;
+//     const backendDirectory = __dirname + `/${folderName}/${backendFolderName}`;
 
-    fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
-    fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
-}
+//     fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
+//     fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
+// }
