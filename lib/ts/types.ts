@@ -15,7 +15,10 @@ export type QuestionOption = {
     location?: {
         main: string,
         config: string
-    },  
+    },
+    script?: {
+        setup: string,
+    },
 }
 
 export type Answers = {

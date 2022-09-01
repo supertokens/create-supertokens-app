@@ -36,6 +36,9 @@ export const frontendOptions: QuestionOption[] = [
             main: "frontend/react",
             config: "frontend/react/config"
         },
+        script: {
+            setup: "npm install"
+        },
     },
     {
         value: "next",
@@ -43,6 +46,9 @@ export const frontendOptions: QuestionOption[] = [
         location: {
             main: "frontend/next-frontend",
             config: "frontend/next-frontend/config"
+        },
+        script: {
+            setup: "npm install"
         },
     },
     {
@@ -52,6 +58,9 @@ export const frontendOptions: QuestionOption[] = [
             main: "frontend/angular",
             config: "frontend/angular/config"
         },
+        script: {
+            setup: "npm install"
+        },
     },
     {
         value: "vue",
@@ -59,6 +68,9 @@ export const frontendOptions: QuestionOption[] = [
         location: {
             main: "frontend/vue",
             config: "frontend/vue/config"
+        },
+        script: {
+            setup: "npm install"
         },
     },
 ];
@@ -71,6 +83,9 @@ export const backendOptions: QuestionOption[] = [
             main: "backend/node",
             config: "backend/node/config"
         },
+        script: {
+            setup: "npm install"
+        },
     },
     {
         value: "nest",
@@ -78,6 +93,9 @@ export const backendOptions: QuestionOption[] = [
         location: {
             main: "backend/nest",
             config: "backend/nest/config"
+        },
+        script: {
+            setup: "npm install"
         },
     },
     {
