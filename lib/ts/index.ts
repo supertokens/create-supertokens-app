@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import inquirer from "inquirer";
-import { questions } from "./config.js";
+import { getQuestions } from "./config.js";
 import { allRecipes, Answers, isValidRecipeName, UserFlags } from "./types.js";
 import { getDownloadLocationFromAnswers, downloadApp, setupProject, validateFolderName } from "./utils.js";
 import yargs from "yargs";
@@ -20,7 +20,7 @@ async function run() {
         const userArguments: UserFlags = await yargs(hideBin(process.argv)).argv as any;
 
         // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
-        const answers: Answers = await inquirer.prompt(questions);
+        const answers: Answers = await inquirer.prompt(getQuestions(userArguments));
 
         if (userArguments.name !== undefined) {
             const validation = validateFolderName(userArguments.name);
@@ -53,7 +53,7 @@ async function run() {
         }
 
         await downloadApp(folderLocations, answers.appname);
-        
+
         console.log("Setting up the project...")
         await setupProject(folderLocations, answers.appname, answers);
     } catch (e) {

@@ -19,7 +19,7 @@
  * For recipes the location object is not used, the value is used to determine the path
  */
 
-import { Answers, QuestionOption } from "./types.js";
+import { Answers, QuestionOption, UserFlags } from "./types.js";
 import { validateFolderName } from "./utils.js";
 
 export const nextFullStackLocation = {
@@ -138,67 +138,71 @@ export const recipeOptions: QuestionOption[] = [
  * Export for all the questions to ask the user, should follow the exact format mentioned here https://github.com/SBoudrias/Inquirer.js#objects because this config is passed to inquirer. The order of questions depends on the position of the object in the array
  */
 
-export const questions = [
-    {
-        name: "appname",
-        type: "input",
-        message: "What is your app called?",
-        default: "supertokens",
-        validate: function (input: any) {
-            const validations = validateFolderName(input);
-
-            if (validations.valid) {
-                return true;
-            }
-
-            return "Invalid project name: " + validations.problems![0];
+export function getQuestions(flags: UserFlags) {
+    return [
+        {
+            name: "appname",
+            type: "input",
+            message: "What is your app called?",
+            default: "supertokens",
+            when: flags.name === undefined,
+            validate: function (input: any) {
+                const validations = validateFolderName(input);
+    
+                if (validations.valid) {
+                    return true;
+                }
+    
+                return "Invalid project name: " + validations.problems![0];
+            },
         },
-    },
-    {
-        name: "frontend",
-        type: "list",
-        message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
-        choices: mapOptionsToChoices(frontendOptions),
-    },
-    {
-        name: "nextfullstack",
-        type: "confirm",
-        message: "Are you using Next.js functions for your APIs?",
-        // This checks whether or not a question should be asked
-        when: (answers: Answers) => {
-            if (answers.frontend === "next") {
-                return true;
-            }
-
-            return false;
+        {
+            name: "frontend",
+            type: "list",
+            message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
+            choices: mapOptionsToChoices(frontendOptions),
         },
-    },
-    {
-        name: "backend",
-        type: "list",
-        message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
-        choices: mapOptionsToChoices(backendOptions),
-        when: (answers: Answers) => {
-            // We skip this question if they are using Next.js fullstack
-            if (answers.nextfullstack === true) {
+        {
+            name: "nextfullstack",
+            type: "confirm",
+            message: "Are you using Next.js functions for your APIs?",
+            // This checks whether or not a question should be asked
+            when: (answers: Answers) => {
+                if (answers.frontend === "next") {
+                    return true;
+                }
+    
                 return false;
-            }
-
-            return true;
+            },
         },
-    },
-    {
-        name: "recipe",
-        type: "list",
-        message: "What type of authentication do you want to use?",
-        choices: mapOptionsToChoices(recipeOptions),
-    },
-    {
-        name: "confirmation",
-        type: "confirm",
-        message: "Proceed with current selection?"
-    }
-];
+        {
+            name: "backend",
+            type: "list",
+            message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
+            choices: mapOptionsToChoices(backendOptions),
+            when: (answers: Answers) => {
+                // We skip this question if they are using Next.js fullstack
+                if (answers.nextfullstack === true) {
+                    return false;
+                }
+    
+                return true;
+            },
+        },
+        {
+            name: "recipe",
+            type: "list",
+            message: "What type of authentication do you want to use?",
+            choices: mapOptionsToChoices(recipeOptions),
+            when: flags.recipe === undefined,
+        },
+        {
+            name: "confirmation",
+            type: "confirm",
+            message: "Proceed with current selection?"
+        }
+    ];
+}
 
 /* Util Functions specific to configs */
 
