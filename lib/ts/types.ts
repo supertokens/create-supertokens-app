@@ -1,3 +1,24 @@
+export type Recipe = | 
+    "emailpassword" | 
+    "thirdpartyemailpassword" | 
+    "passwordless" | 
+    "thirdpartypasswordless";
+
+export const allRecipes: Recipe[] = [
+    "emailpassword",
+    "thirdpartyemailpassword",
+    "passwordless",
+    "thirdpartypasswordless",
+]
+
+export function isValidRecipeName(recipe: string): recipe is Recipe {
+    if (allRecipes.includes(recipe as Recipe)) {
+        return true;
+    }
+
+    return false;
+}
+
 /**
  * value: The option value, this is used to retrieve the selection from inquirer's return
  * 
@@ -39,4 +60,9 @@ export type DownloadLocations = {
     download: string,
     frontend: string,
     backend: string,
+}
+
+export type UserFlags = {
+    name?: string,
+    recipe?: string,
 }

@@ -199,3 +199,10 @@ export function getAnalyticsId(): string {
 
     return values[0][0].mac;
 }
+
+export function validateFolderName(name: string): {
+    valid: boolean;
+    problems?: string[] | undefined;
+} {
+    return validateNpmName(path.basename(path.resolve(name)));
+}

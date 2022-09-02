@@ -20,8 +20,7 @@
  */
 
 import { Answers, QuestionOption } from "./types.js";
-import { validateNpmName } from "./utils.js";
-import path from "path";
+import { validateFolderName } from "./utils.js";
 
 export const nextFullStackLocation = {
     main: "fullstack/next",
@@ -146,7 +145,7 @@ export const questions = [
         message: "What is your app called?",
         default: "supertokens",
         validate: function (input: any) {
-            const validations = validateNpmName(path.basename(path.resolve(input)));
+            const validations = validateFolderName(input);
 
             if (validations.valid) {
                 return true;
