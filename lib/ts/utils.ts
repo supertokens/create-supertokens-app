@@ -114,77 +114,117 @@ export async function setupProject(locations: DownloadLocations, folderName: str
     const frontendDirectory = __dirname + `/${folderName}/${frontendFolderName}`;
     const backendDirectory = __dirname + `/${folderName}/${backendFolderName}`;
 
-    // Rename the folders to frontend and backend
-    // TODO: Handle differently for Next.js fullstack
-    fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
-    fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
+    const isFullStack = locations.frontend === locations.backend;
 
-    const selectedFrontend = frontendOptions.find((element) => {
-        return element.value === answers.frontend;
-    });
+    if (!isFullStack) {
+        // Rename the folders to frontend and backend
+        fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
+        fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
 
-    const selectedBackend = backendOptions.find((element) => {
-        return element.value === answers.backend;
-    });
-
-    const frontendSetup = new Promise((res, rej) => {
-        let didReject = false;
-
-        if (selectedFrontend === undefined || selectedFrontend.script === undefined) {
-            res(0);
-            return;
-        }
-
-        const setup = exec(`cd ${folderName}/frontend && ${selectedFrontend.script.setup}`)
-
-        setup.on("error", error => {
-            didReject = true;
-            rej(error.message);
+        const selectedFrontend = frontendOptions.find((element) => {
+            return element.value === answers.frontend;
         });
 
-        setup.on("exit", code => {
-            if (!didReject) {
-                res(code);
-            }
-        })
-
-        setup.stdout?.on("data", data => {
-            console.log(data.toString())
-        })
-    });
-
-    const backendSetup = new Promise((res, rej) => {
-        let didReject = false;
-
-        if (selectedBackend === undefined || selectedBackend.script === undefined) {
-            res(0);
-            return;
-        }
-
-        const setup = exec(`cd ${folderName}/backend && ${selectedBackend.script.setup}`)
-
-        setup.on("error", error => {
-            didReject = true;
-            rej(error.message);
+        const selectedBackend = backendOptions.find((element) => {
+            return element.value === answers.backend;
         });
 
-        setup.on("exit", code => {
-            if (!didReject) {
-                res(code);
+        const frontendSetup = new Promise((res, rej) => {
+            let didReject = false;
+
+            if (selectedFrontend === undefined || selectedFrontend.script === undefined) {
+                res(0);
+                return;
             }
-        })
 
-        setup.stdout?.on("data", data => {
-            console.log(data.toString())
-        })
-    });
+            const setup = exec(`cd ${folderName}/frontend && ${selectedFrontend.script.setup}`)
 
-    // Call the frontend and backend setup scripts
-    const frontendCode = await frontendSetup;
-    const backendCode = await backendSetup;
+            setup.on("error", error => {
+                didReject = true;
+                rej(error.message);
+            });
 
-    if (frontendCode !== 0 || backendCode !== 0) {
-        throw new Error("Project setup failed!")
+            setup.on("exit", code => {
+                if (!didReject) {
+                    res(code);
+                }
+            })
+
+            setup.stdout?.on("data", data => {
+                console.log(data.toString())
+            })
+        });
+
+        const backendSetup = new Promise((res, rej) => {
+            let didReject = false;
+
+            if (selectedBackend === undefined || selectedBackend.script === undefined) {
+                res(0);
+                return;
+            }
+
+            const setup = exec(`cd ${folderName}/backend && ${selectedBackend.script.setup}`)
+
+            setup.on("error", error => {
+                didReject = true;
+                rej(error.message);
+            });
+
+            setup.on("exit", code => {
+                if (!didReject) {
+                    res(code);
+                }
+            })
+
+            setup.stdout?.on("data", data => {
+                console.log(data.toString())
+            })
+        });
+
+        // Call the frontend and backend setup scripts
+        const frontendCode = await frontendSetup;
+        const backendCode = await backendSetup;
+
+        if (frontendCode !== 0 || backendCode !== 0) {
+            throw new Error("Project setup failed!")
+        }
+    } else {
+        const selectedFrontend = frontendOptions.find((element) => {
+            return element.value === answers.frontend;
+        });
+
+        const frontendSetup = new Promise((res, rej) => {
+            let didReject = false;
+
+            if (selectedFrontend === undefined || selectedFrontend.script === undefined) {
+                res(0);
+                return;
+            }
+
+            // For full stack the folder doesnt have frontend and backend folders so we directly run the setup on the root
+            const setup = exec(`cd ${folderName}/ && ${selectedFrontend.script.setup}`)
+
+            setup.on("error", error => {
+                didReject = true;
+                rej(error.message);
+            });
+
+            setup.on("exit", code => {
+                if (!didReject) {
+                    res(code);
+                }
+            })
+
+            setup.stdout?.on("data", data => {
+                console.log(data.toString())
+            })
+        });
+
+        const frontendCode = await frontendSetup;
+
+        if (frontendCode !== 0) {
+            throw new Error("Project setup failed!")
+        }
     }
 }
 
