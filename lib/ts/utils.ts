@@ -7,7 +7,9 @@ import { Answers, DownloadLocations } from "./types";
 import validateProjectName from "validate-npm-package-name";
 import fs from "fs";
 import path from "path";
-// import { spawn } from "child_process";
+import { exec } from "child_process";
+import os from "os";
+import {v4 as uuidv4} from "uuid";
 
 const pipeline = promisify(stream.pipeline);
 
@@ -57,8 +59,7 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
 
     // If the folder already exists, we show an error
     if (fs.existsSync(projectDirectory)) {
-        console.log(`A folder with name "${folderName}" already exists`);
-        return;
+        throw new Error(`A folder with name "${folderName}" already exists`);
     }
 
     // Create the directory to download the boilerplate
@@ -68,7 +69,7 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
         got.stream(`${locations.download}`),
         tar.extract({
             cwd: `./${folderName}`, 
-            strip: 2,
+            strip: 3,
             strict: true,
             filter: (path, _) => {
                 if (path.includes(locations.frontend)) {
@@ -83,12 +84,6 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
             }
         }, [])
     )
-
-    // setupProject(locations, folderName);
-
-    // await new Promise((res, rej) => {
-    //     const response = spawn(`cd `)
-    // });
 }
 
 export function validateNpmName(name: string): {
@@ -109,14 +104,98 @@ export function validateNpmName(name: string): {
     }
   }
 
-// function setupProject(locations: DownloadLocations, folderName: string) {
-//     const frontendFolderName = locations.frontend.split("/").filter(i => i !== "frontend").join("")
-//     const backendFolderName = locations.backend.split("/").filter(i => i !== "backend").join("")
+export async function setupProject(locations: DownloadLocations, folderName: string, answers: Answers) {
+    const frontendFolderName = locations.frontend.split("/").filter(i => i !== "frontend").join("")
+    const backendFolderName = locations.backend.split("/").filter(i => i !== "backend").join("")
 
-//     const __dirname = path.resolve();
-//     const frontendDirectory = __dirname + `/${folderName}/${frontendFolderName}`;
-//     const backendDirectory = __dirname + `/${folderName}/${backendFolderName}`;
+    const __dirname = path.resolve();
+    const frontendDirectory = __dirname + `/${folderName}/${frontendFolderName}`;
+    const backendDirectory = __dirname + `/${folderName}/${backendFolderName}`;
 
-//     fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
-//     fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
-// }
+    // Rename the folders to frontend and backend
+    // TODO: Handle differently for Next.js fullstack
+    fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
+    fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
+
+    const selectedFrontend = frontendOptions.find((element) => {
+        return element.value === answers.frontend;
+    });
+
+    const selectedBackend = backendOptions.find((element) => {
+        return element.value === answers.backend;
+    });
+
+    const frontendSetup = new Promise((res, rej) => {
+        let didReject = false;
+
+        if (selectedFrontend === undefined || selectedFrontend.script === undefined) {
+            res(0);
+            return;
+        }
+
+        const setup = exec(`cd ${folderName}/frontend && ${selectedFrontend.script.setup}`)
+
+        setup.on("error", error => {
+            didReject = true;
+            rej(error.message);
+        });
+
+        setup.on("exit", code => {
+            if (!didReject) {
+                res(code);
+            }
+        })
+
+        setup.stdout?.on("data", data => {
+            console.log(data.toString())
+        })
+    });
+
+    const backendSetup = new Promise((res, rej) => {
+        let didReject = false;
+
+        if (selectedBackend === undefined || selectedBackend.script === undefined) {
+            res(0);
+            return;
+        }
+
+        const setup = exec(`cd ${folderName}/backend && ${selectedBackend.script.setup}`)
+
+        setup.on("error", error => {
+            didReject = true;
+            rej(error.message);
+        });
+
+        setup.on("exit", code => {
+            if (!didReject) {
+                res(code);
+            }
+        })
+
+        setup.stdout?.on("data", data => {
+            console.log(data.toString())
+        })
+    });
+
+    // Call the frontend and backend setup scripts
+    const frontendCode = await frontendSetup;
+    const backendCode = await backendSetup;
+
+    if (frontendCode !== 0 || backendCode !== 0) {
+        throw new Error("Project setup failed!")
+    }
+}
+
+export function getAnalyticsId(): string {
+    const networkInterfaces = os.networkInterfaces();
+    const values = Object.values(networkInterfaces);
+
+    // The undefined check is to stop typescript from complaining
+    if (values.length === 0 || values[0] === undefined) {
+        // If no network interfaces are returned we generate a UUID and use that
+        // Note that in this case every run of this script will be treated as a separate UUID
+        return uuidv4();
+    }
+
+    return values[0][0].mac;
+}

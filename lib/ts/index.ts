@@ -2,7 +2,7 @@
 import inquirer from "inquirer";
 import { questions } from "./config.js";
 import { Answers } from "./types.js";
-import { getDownloadLocationFromAnswers, downloadApp } from "./utils.js";
+import { getDownloadLocationFromAnswers, downloadApp, setupProject } from "./utils.js";
 // import yargs from "yargs";
 // import { hideBin } from "yargs/helpers";
 
@@ -32,6 +32,7 @@ async function showPropt() {
 
     try {
         await downloadApp(folderLocations, answers.appname);
+        await setupProject(folderLocations, answers.appname, answers);
     } catch (e) {
         console.log(e);
     }
