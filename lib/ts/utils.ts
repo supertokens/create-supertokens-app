@@ -65,11 +65,13 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
     // Create the directory to download the boilerplate
     fs.mkdirSync(projectDirectory);
 
+    const isFullStack = locations.frontend === locations.backend;
+
     await pipeline(
         got.stream(`${locations.download}`),
         tar.extract({
             cwd: `./${folderName}`, 
-            strip: 3,
+            strip: isFullStack ? 4 : 3,
             strict: true,
             filter: (path, _) => {
                 if (path.includes(locations.frontend)) {
