@@ -33,11 +33,12 @@ export const frontendOptions: QuestionOption[] = [
         displayName: "React",
         location: {
             main: "frontend/supertokens-react",
-            config: "frontend/supertokens-react/config"
+            finalConfig: "/src/config.tsx",
+            configFiles: "/config",
         },
         script: {
             setup: ["npm install"],
-            run: ["echo 'Running frontend app'"],
+            run: ["npm run start"],
         },
     },
     {
@@ -45,7 +46,8 @@ export const frontendOptions: QuestionOption[] = [
         displayName: "Next.js",
         location: {
             main: "frontend/next-frontend",
-            config: "frontend/next-frontend/config"
+            finalConfig: "/src/config.tsx",
+            configFiles: "/config",
         },
         script: {
             setup: ["npm install"],
@@ -57,7 +59,8 @@ export const frontendOptions: QuestionOption[] = [
         displayName: "Angular",
         location: {
             main: "frontend/angular",
-            config: "frontend/angular/config"
+            finalConfig: "/src/config.tsx",
+            configFiles: "/config",
         },
         script: {
             setup: ["npm install"],
@@ -69,7 +72,8 @@ export const frontendOptions: QuestionOption[] = [
         displayName: "Vue.js",
         location: {
             main: "frontend/vue",
-            config: "frontend/vue/config"
+            finalConfig: "/src/config.tsx",
+            configFiles: "/config",
         },
         script: {
             setup: ["npm install"],
@@ -84,7 +88,8 @@ export const backendOptions: QuestionOption[] = [
         displayName: "Node.js",
         location: {
             main: "backend/node",
-            config: "backend/node/config"
+            finalConfig: "/config.ts",
+            configFiles: "/config",
         },
         script: {
             setup: ["npm install"],
@@ -96,7 +101,8 @@ export const backendOptions: QuestionOption[] = [
         displayName: "Nest.js",
         location: {
             main: "backend/nest",
-            config: "backend/nest/config"
+            finalConfig: "/config.ts",
+            configFiles: "/config",
         },
         script: {
             setup: ["npm install"],
@@ -108,7 +114,8 @@ export const backendOptions: QuestionOption[] = [
         displayName: "Python",
         location: {
             main: "backend/python",
-            config: "backend/python/config"
+            finalConfig: "/config.py",
+            configFiles: "/config",
         },
     },
     {
@@ -116,7 +123,8 @@ export const backendOptions: QuestionOption[] = [
         displayName: "Golang",
         location: {
             main: "backend/golang",
-            config: "backend/golang/config"
+            finalConfig: "/config.go",
+            configFiles: "/config",
         },
     },
 ];

@@ -26,7 +26,8 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
  * 
  * location: Path strings for where to download/locate specific parts from
  *  - main: The path for the folder from where to download the boilerplate
- *  - config: The path where all the recipe configs are (This should be a folder because the recipe name will pre post fixed when loading the config)
+ *  - finalConfig: The path of the config file used by the project, this should include the file extension as well
+ *  - configFiles: The path where all the recipe configs are (This should be a folder because the recipe name will pre post fixed when loading the config)
  * 
  * NOTE: For recipes the location object is not used, the value is used to determine the path
  */
@@ -35,7 +36,8 @@ export type QuestionOption = {
     displayName: string,
     location?: {
         main: string,
-        config: string
+        finalConfig: string,
+        configFiles: string,
     },
     script?: {
         setup: string[],

@@ -22,7 +22,7 @@ function normaliseLocationPath(path: string): string {
 }
 
 export function getDownloadLocationFromAnswers(answers: Answers): DownloadLocations | undefined {
-    const downloadURL = "https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/master"
+    const downloadURL = "https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/boilerplate-emailpassword";
 
     if (answers.nextfullstack === true) {
         return {
@@ -123,8 +123,8 @@ function getPackageJsonString(input: {
         "description": "",
         "main": "index.js",
         "scripts": {
-            "start:frontend": "${frontendStartScript}",
-            "start:backend": "${backendStartScript}",
+            "start:frontend": "cd frontend && ${frontendStartScript}",
+            "start:backend": "cd backend && ${backendStartScript}",
             "start": "npm-run-all --parallel start:frontend start:backend"
         },
         "keywords": [],
@@ -157,6 +157,10 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
         return element.value === answers.backend;
     });
 
+    if (selectedFrontend === undefined || selectedBackend === undefined) {
+        throw new Error("Should never come here");
+    }
+
     const frontendSetup = new Promise((res, rej) => {
         let didReject = false;
 
@@ -184,6 +188,8 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
             console.log(data.toString())
         })
     });
+
+    const frontendCode = await frontendSetup;
 
     const backendSetup = new Promise((res, rej) => {
         let didReject = false;
@@ -214,12 +220,37 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
     });
 
     // Call the frontend and backend setup scripts
-    const frontendCode = await frontendSetup;
     const backendCode = await backendSetup;
 
     if (frontendCode !== 0 || backendCode !== 0) {
         throw new Error("Project setup failed!")
     }
+
+    if (selectedFrontend.location === undefined) {
+        throw new Error("Should never come here");
+    }
+
+    // Move the recipe config file for the frontend folder to the correct place
+    // TODO: Handle using the correct config file for frontend
+    const files = fs.readdirSync(`./${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`);
+    const recipeConfig = files.filter(i => i.includes(answers.recipe));
+
+    if (recipeConfig.length === 0) {
+        throw new Error("Should never come here");
+    }
+
+    fs.copyFileSync(
+        `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}/${recipeConfig[0]}`, 
+        `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.finalConfig)}`
+    )
+
+    // Remove the configs folder
+    fs.rmSync(`${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`, {
+        recursive: true,
+        force: true,
+    });
+
+    // TODO: Handle using the correct config file for backend
 
     // Create a root level package.json file
     fs.writeFileSync(`${folderName}/package.json`, getPackageJsonString({
@@ -293,6 +324,9 @@ async function setupFullstack(answers: Answers, folderName: string) {
     if (frontendCode !== 0) {
         throw new Error("Project setup failed!")
     }
+
+    // TODO: Handle using the correct config file for frontend
+    // TODO: Handle using the correct config file for backend
 }
 
 export async function setupProject(locations: DownloadLocations, folderName: string, answers: Answers) {
