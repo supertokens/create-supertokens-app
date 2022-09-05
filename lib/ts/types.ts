@@ -64,6 +64,6 @@ export type DownloadLocations = {
 }
 
 export type UserFlags = {
-    name?: string,
+    appname?: string,
     recipe?: string,
 }

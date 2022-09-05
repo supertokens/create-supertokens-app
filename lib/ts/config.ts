@@ -151,7 +151,7 @@ export function getQuestions(flags: UserFlags) {
             type: "input",
             message: "What is your app called?",
             default: "supertokens",
-            when: flags.name === undefined,
+            when: flags.appname === undefined,
             validate: function (input: any) {
                 const validations = validateFolderName(input);
     

@@ -14,7 +14,7 @@ async function run() {
             in userArguments.recipe === "emailpassword"
 
             Avalaible flags:
-            --name: App name
+            --appname: App name
             --recipe: Auth mechanism
         */
         const userArguments: UserFlags = await yargs(hideBin(process.argv)).argv as any;
@@ -22,14 +22,14 @@ async function run() {
         // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
         const answers: Answers = await inquirer.prompt(getQuestions(userArguments));
 
-        if (userArguments.name !== undefined) {
-            const validation = validateFolderName(userArguments.name);
+        if (userArguments.appname !== undefined) {
+            const validation = validateFolderName(userArguments.appname);
 
             if (validation.valid !== true) {
                 throw new Error("Invalid project name: " + validation.problems![0])
             }
             
-            answers.appname = userArguments.name;
+            answers.appname = userArguments.appname;
         }
 
         if (userArguments.recipe !== undefined) {
