@@ -32,8 +32,8 @@ export const frontendOptions: QuestionOption[] = [
         value: "react",
         displayName: "React",
         location: {
-            main: "frontend/react",
-            config: "frontend/react/config"
+            main: "frontend/supertokens-react",
+            config: "frontend/supertokens-react/config"
         },
         script: {
             setup: ["npm install"],
