@@ -9,7 +9,7 @@ export const allRecipes: Recipe[] = [
     "thirdpartyemailpassword",
     "passwordless",
     "thirdpartypasswordless",
-]
+];
 
 export function isValidRecipeName(recipe: string): recipe is Recipe {
     if (allRecipes.includes(recipe as Recipe)) {
