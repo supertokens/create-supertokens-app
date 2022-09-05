@@ -1,4 +1,4 @@
-import Passwordless from "supertokens-auth-react/recipe/passwordless";
+import Passwordless, {redirectToAuth as _redirectToAuth} from "supertokens-auth-react/recipe/passwordless";
 import Session from "supertokens-auth-react/recipe/session";
 
 export const recipeList = [
@@ -9,3 +9,4 @@ export const recipeList = [
 ];
 
 export const AuthWrapper = Passwordless.PasswordlessAuth;
+export const redirectToAuth = _redirectToAuth;

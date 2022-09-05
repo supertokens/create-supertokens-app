@@ -11,3 +11,5 @@ export const AuthWrapper: React.FC<any> = (props: any) => {
         </div>
     );
 };
+
+export const redirectToAuth = () => {};

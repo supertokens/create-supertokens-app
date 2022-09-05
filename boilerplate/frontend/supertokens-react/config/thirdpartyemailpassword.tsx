@@ -2,6 +2,7 @@ import ThirdPartyEmailPassword, {
     Google,
     Github,
     Apple,
+    redirectToAuth as _redirectToAuth,
 } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import Session from "supertokens-auth-react/recipe/session";
 
@@ -18,3 +19,4 @@ export const recipeList = [
 ];
 
 export const AuthWrapper = ThirdPartyEmailPassword.ThirdPartyEmailPasswordAuth;
+export const redirectToAuth = _redirectToAuth;
