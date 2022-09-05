@@ -325,3 +325,28 @@ export function validateFolderName(name: string): {
 } {
     return validateNpmName(path.basename(path.resolve(name)));
 }
+
+export async function runProject(folderName: string) {
+    const runProjectScript = new Promise((res, rej) => {
+        let didReject = false;
+
+        const rootRun = exec(`cd ${folderName}/ && npm run start`);
+
+        rootRun.on("error", error => {
+            didReject = true;
+            rej(error.message);
+        });
+
+        rootRun.on("exit", code => {
+            if (!didReject) {
+                res(code);
+            }
+        })
+
+        rootRun.stdout?.on("data", data => {
+            console.log(data.toString())
+        })
+    });
+
+    await runProjectScript;
+}

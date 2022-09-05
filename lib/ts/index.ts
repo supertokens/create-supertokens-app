@@ -2,7 +2,7 @@
 import inquirer from "inquirer";
 import { getQuestions } from "./config.js";
 import { allRecipes, Answers, isValidRecipeName, UserFlags } from "./types.js";
-import { getDownloadLocationFromAnswers, downloadApp, setupProject, validateFolderName } from "./utils.js";
+import { getDownloadLocationFromAnswers, downloadApp, setupProject, validateFolderName, runProject } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
@@ -56,6 +56,9 @@ async function run() {
 
         console.log("Setting up the project...")
         await setupProject(folderLocations, answers.appname, answers);
+
+        console.log("Running the project...")
+        await runProject(answers.appname);
     } catch (e) {
         console.log((e as any).message);
     }
