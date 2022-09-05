@@ -38,7 +38,8 @@ export type QuestionOption = {
         config: string
     },
     script?: {
-        setup: string,
+        setup: string[],
+        run: string[],
     },
 }
 

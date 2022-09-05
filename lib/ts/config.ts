@@ -36,7 +36,8 @@ export const frontendOptions: QuestionOption[] = [
             config: "frontend/react/config"
         },
         script: {
-            setup: "npm install"
+            setup: ["npm install"],
+            run: [],
         },
     },
     {
@@ -47,7 +48,8 @@ export const frontendOptions: QuestionOption[] = [
             config: "frontend/next-frontend/config"
         },
         script: {
-            setup: "npm install"
+            setup: ["npm install"],
+            run: [],
         },
     },
     {
@@ -58,7 +60,8 @@ export const frontendOptions: QuestionOption[] = [
             config: "frontend/angular/config"
         },
         script: {
-            setup: "npm install"
+            setup: ["npm install"],
+            run: [],
         },
     },
     {
@@ -69,7 +72,8 @@ export const frontendOptions: QuestionOption[] = [
             config: "frontend/vue/config"
         },
         script: {
-            setup: "npm install"
+            setup: ["npm install"],
+            run: [],
         },
     },
 ];
@@ -83,7 +87,8 @@ export const backendOptions: QuestionOption[] = [
             config: "backend/node/config"
         },
         script: {
-            setup: "npm install"
+            setup: ["npm install"],
+            run: [],
         },
     },
     {
@@ -94,7 +99,8 @@ export const backendOptions: QuestionOption[] = [
             config: "backend/nest/config"
         },
         script: {
-            setup: "npm install"
+            setup: ["npm install"],
+            run: [],
         },
     },
     {

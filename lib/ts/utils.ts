@@ -137,7 +137,9 @@ export async function setupProject(locations: DownloadLocations, folderName: str
                 return;
             }
 
-            const setup = exec(`cd ${folderName}/frontend && ${selectedFrontend.script.setup}`)
+            const setupString = selectedFrontend.script.setup.join(" && ");
+
+            const setup = exec(`cd ${folderName}/frontend && ${setupString}`)
 
             setup.on("error", error => {
                 didReject = true;
@@ -163,7 +165,9 @@ export async function setupProject(locations: DownloadLocations, folderName: str
                 return;
             }
 
-            const setup = exec(`cd ${folderName}/backend && ${selectedBackend.script.setup}`)
+            const setupString = selectedBackend.script.setup.join(" && ");
+
+            const setup = exec(`cd ${folderName}/backend && ${setupString}`)
 
             setup.on("error", error => {
                 didReject = true;
@@ -200,9 +204,11 @@ export async function setupProject(locations: DownloadLocations, folderName: str
                 res(0);
                 return;
             }
+            
+            const setupString = selectedFrontend.script.setup.join(" && ");
 
             // For full stack the folder doesnt have frontend and backend folders so we directly run the setup on the root
-            const setup = exec(`cd ${folderName}/ && ${selectedFrontend.script.setup}`)
+            const setup = exec(`cd ${folderName}/ && ${setupString}`)
 
             setup.on("error", error => {
                 didReject = true;
