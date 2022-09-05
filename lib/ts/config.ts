@@ -37,7 +37,7 @@ export const frontendOptions: QuestionOption[] = [
         },
         script: {
             setup: ["npm install"],
-            run: [],
+            run: ["echo 'Running frontend app'"],
         },
     },
     {
@@ -88,7 +88,7 @@ export const backendOptions: QuestionOption[] = [
         },
         script: {
             setup: ["npm install"],
-            run: [],
+            run: ["echo 'Running backend app'"],
         },
     },
     {
