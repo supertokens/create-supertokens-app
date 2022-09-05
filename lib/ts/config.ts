@@ -72,7 +72,7 @@ export const backendOptions: QuestionOption[] = [
         },
         script: {
             setup: ["npm install"],
-            run: ["echo 'Running backend app'"],
+            run: ["npm run start"],
         },
     },
     {

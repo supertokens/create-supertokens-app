@@ -231,16 +231,15 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
     }
 
     // Move the recipe config file for the frontend folder to the correct place
-    // TODO: Handle using the correct config file for frontend
-    const files = fs.readdirSync(`./${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`);
-    const recipeConfig = files.filter(i => i.includes(answers.recipe));
+    const frontendFiles = fs.readdirSync(`./${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`);
+    const frontendRecipeConfig = frontendFiles.filter(i => i.includes(answers.recipe));
 
-    if (recipeConfig.length === 0) {
+    if (frontendRecipeConfig.length === 0) {
         throw new Error("Should never come here");
     }
 
     fs.copyFileSync(
-        `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}/${recipeConfig[0]}`, 
+        `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}/${frontendRecipeConfig[0]}`, 
         `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.finalConfig)}`
     )
 
@@ -250,7 +249,28 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
         force: true,
     });
 
+    if (selectedBackend.location === undefined) {
+        throw new Error("Should not come here");
+    }
+
     // TODO: Handle using the correct config file for backend
+    const backendFiles = fs.readdirSync(`./${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}`);
+    const backendRecipeConfig = backendFiles.filter(i => i.includes(answers.recipe));
+
+    if (backendRecipeConfig.length === 0) {
+        throw new Error("Should never come here");
+    }
+
+    fs.copyFileSync(
+        `${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}/${backendRecipeConfig[0]}`, 
+        `${folderName}/backend/${normaliseLocationPath(selectedBackend.location.finalConfig)}`
+    )
+
+    // Remove the configs folder
+    fs.rmSync(`${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}`, {
+        recursive: true,
+        force: true,
+    });
 
     // Create a root level package.json file
     fs.writeFileSync(`${folderName}/package.json`, getPackageJsonString({

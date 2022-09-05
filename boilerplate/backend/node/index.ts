@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
@@ -58,7 +58,7 @@ app.get("/sessioninfo", verifySession(), async (req: SessionRequest, res) => {
 
 app.use(errorHandler());
 
-app.use((err, req, res, next) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(500).send("Internal error: " + err.message);
 });
 
