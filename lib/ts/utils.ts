@@ -22,7 +22,7 @@ function normaliseLocationPath(path: string): string {
 }
 
 export function getDownloadLocationFromAnswers(answers: Answers): DownloadLocations | undefined {
-    const downloadURL = "https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/setup"
+    const downloadURL = "https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/master"
 
     if (answers.nextfullstack === true) {
         return {
