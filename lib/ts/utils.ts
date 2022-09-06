@@ -166,7 +166,7 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
     const frontendSetup = new Promise((res, rej) => {
         let didReject = false;
 
-        if (selectedFrontend === undefined || selectedFrontend.script === undefined) {
+        if (selectedFrontend === undefined || selectedFrontend.script === undefined || selectedFrontend.script.setup.length === 0) {
             res(0);
             return;
         }
@@ -196,7 +196,7 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
     const backendSetup = new Promise((res, rej) => {
         let didReject = false;
 
-        if (selectedBackend === undefined || selectedBackend.script === undefined) {
+        if (selectedBackend === undefined || selectedBackend.script === undefined || selectedBackend.script.setup.length === 0) {
             res(0);
             return;
         }
@@ -318,7 +318,7 @@ async function setupFullstack(answers: Answers, folderName: string) {
     const setupResult = new Promise((res, rej) => {
         let didReject = false;
 
-        if (selectedFullStack === undefined || selectedFullStack.script === undefined) {
+        if (selectedFullStack === undefined || selectedFullStack.script === undefined || selectedFullStack.script.setup.length === 0) {
             res(0);
             return;
         }

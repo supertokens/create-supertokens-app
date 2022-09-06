@@ -110,13 +110,13 @@ export const backendOptions: QuestionOption[] = [
         value: "python-flask",
         displayName: "Python",
         location: {
-            main: "backend/python",
+            main: "backend/python-flask",
             finalConfig: "/config.py",
             configFiles: "/config",
         },
         script: {
             setup: [],
-            run: [],
+            run: ["source create_env.sh", "python app.py"],
         },
     },
     {
