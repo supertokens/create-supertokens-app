@@ -98,7 +98,7 @@ export const backendOptions: QuestionOption[] = [
         value: "node",
         displayName: "Node.js",
         location: {
-            main: "backend/node",
+            main: "backend/node-express",
             finalConfig: "/config.ts",
             configFiles: "/config",
         },
