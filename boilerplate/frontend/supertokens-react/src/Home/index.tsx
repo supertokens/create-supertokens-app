@@ -4,6 +4,7 @@ import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "supertokens-auth-react/recipe/session";
 
+// TODO: This screen needs to be more professional
 export default function Home() {
     const sessionContext = useSessionContext();
     const navigate = useNavigate();

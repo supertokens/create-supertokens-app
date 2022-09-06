@@ -38,6 +38,7 @@ init(
 )
 
 app = Flask(__name__)
+# TODO: should middlware be after or before cors?
 Middleware(app)
 CORS(
     app=app,
