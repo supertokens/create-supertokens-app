@@ -3,7 +3,7 @@ import got from "got";
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
-import { Answers, DownloadLocations } from "./types";
+import { Answers, DownloadLocations, UserFlags } from "./types";
 import validateProjectName from "validate-npm-package-name";
 import fs from "fs";
 import path from "path";
@@ -21,8 +21,10 @@ function normaliseLocationPath(path: string): string {
     return path;
 }
 
-export function getDownloadLocationFromAnswers(answers: Answers): DownloadLocations | undefined {
-    const downloadURL = "https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/boilerplate-emailpassword";
+export function getDownloadLocationFromAnswers(answers: Answers, userArguments: UserFlags): DownloadLocations | undefined {
+    const branchToUse = userArguments.branch || "master";
+
+    const downloadURL = `https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/${branchToUse}`;
 
     const selectedFrontend = frontendOptions.find((element) => {
         return element.value === answers.frontend;

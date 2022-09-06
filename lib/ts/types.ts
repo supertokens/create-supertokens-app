@@ -102,4 +102,5 @@ export type DownloadLocations = {
 export type UserFlags = {
     appname?: string,
     recipe?: string,
+    branch?: string,
 }

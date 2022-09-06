@@ -6,6 +6,41 @@ import { getDownloadLocationFromAnswers, downloadApp, setupProject, validateFold
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserFlags): Answers {
+    let _answers = answers;
+
+    if (userArguments.appname !== undefined) {
+        const validation = validateFolderName(userArguments.appname);
+
+        if (validation.valid !== true) {
+            throw new Error("Invalid project name: " + validation.problems![0])
+        }
+        
+        _answers.appname = userArguments.appname;
+    }
+
+    if (userArguments.recipe !== undefined) {
+        if (!isValidRecipeName(userArguments.recipe)) {
+            const availableRecipes = allRecipes.map(e => `    - ${e}`).join("\n");
+            throw new Error("Invalid recipe name provided, valid values:\n" + availableRecipes + "\n");
+        }
+
+        _answers.recipe = userArguments.recipe;
+    }
+
+    return _answers;
+}
+
+function modifyAnswersBasedOnSelection(answers: Answers): Answers {
+    let _answers = answers;
+
+    if (answers.nextfullstack === true) {
+        _answers.frontend = "next-fullstack";
+    }
+
+    return _answers;
+}
+
 async function run() {
     try {
         /* 
@@ -16,40 +51,21 @@ async function run() {
             Avalaible flags:
             --appname: App name
             --recipe: Auth mechanism
+            --branch: Which branch to use when downloading from github (defaults to master)
         */
         const userArguments: UserFlags = await yargs(hideBin(process.argv)).argv as any;
 
         // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
-        const answers: Answers = await inquirer.prompt(getQuestions(userArguments));
+        let answers: Answers = await inquirer.prompt(getQuestions(userArguments));
 
-        if (userArguments.appname !== undefined) {
-            const validation = validateFolderName(userArguments.appname);
-
-            if (validation.valid !== true) {
-                throw new Error("Invalid project name: " + validation.problems![0])
-            }
-            
-            answers.appname = userArguments.appname;
-        }
-
-        if (userArguments.recipe !== undefined) {
-            if (!isValidRecipeName(userArguments.recipe)) {
-                const availableRecipes = allRecipes.map(e => `    - ${e}`).join("\n");
-                throw new Error("Invalid recipe name provided, valid values:\n" + availableRecipes + "\n");
-            }
-
-            answers.recipe = userArguments.recipe;
-        }
+        answers = modifyAnswersBasedOnFlags(answers, userArguments);
+        answers = modifyAnswersBasedOnSelection(answers);
 
         if (answers.confirmation !== true) {
             return;
         }
 
-        if (answers.nextfullstack === true) {
-            answers.frontend = "next-fullstack";
-        }
-
-        const folderLocations = getDownloadLocationFromAnswers(answers);
+        const folderLocations = getDownloadLocationFromAnswers(answers, userArguments);
 
         if (folderLocations === undefined) {
             console.log("Something went wrong, exiting...")
