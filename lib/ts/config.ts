@@ -8,25 +8,24 @@ export const nextFullStackLocation = {
 
 export const nextFullStackQuestionConfig: QuestionOption = {
     isFullStack: true,
-    value: "next",
+    value: "unused",
     displayName: "unused",
     location: {
         main: "fullstack/next",
         config: {
-            // TODO: Double check folder names
             frontend: {
-                configFiles: "/config",
-                finalConfig: "config.tsx",
+                configFiles: "/config/frontend",
+                finalConfig: "/config/frontendConfig.tsx",
             },
             backend: {
-                configFiles: "/config",
-                finalConfig: "config.ts"
+                configFiles: "/config/backend",
+                finalConfig: "/config/backendConfig.ts"
             },
         },
     },
     script: {
-        run: [],
-        setup: [],
+        run: ["npm run dev"],
+        setup: ["yarn install"],
     },
 }
 
