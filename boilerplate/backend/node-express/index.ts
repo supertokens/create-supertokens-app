@@ -1,29 +1,23 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import cors from "cors";
-import morgan from "morgan";
-import helmet from "helmet";
 import supertokens from "supertokens-node";
 import { verifySession } from "supertokens-node/recipe/session/framework/express";
 import { middleware, errorHandler, SessionRequest } from "supertokens-node/framework/express";
 import { recipeList } from "./config";
 
-const apiPort = process.env.REACT_APP_API_PORT || 3001;
-const apiDomain = process.env.REACT_APP_API_URL || `http://localhost:${apiPort}`;
-const websitePort = process.env.REACT_APP_WEBSITE_PORT || 3000;
-const websiteDomain = process.env.REACT_APP_WEBSITE_URL || `http://localhost:${websitePort}`;
-
+// TODO: Move the whole config object to the config files
 supertokens.init({
-    framework: "express",
     supertokens: {
-        // TODO: This is a core hosted for demo purposes. You can use this, but make sure to change it to your core instance URI eventually.
-        connectionURI: "https://try.supertokens.com",
-        apiKey: "<REQUIRED FOR MANAGED SERVICE, ELSE YOU CAN REMOVE THIS FIELD>",
+        // this is the location of the SuperTokens core.
+        connectionURI: "https://try.supertokens.com"
     },
     appInfo: {
-        appName: "SuperTokens Demo App", // TODO: Your app name
-        apiDomain, // TODO: Change to your app's API domain
-        websiteDomain, // TODO: Change to your app's website domain
+        appName: "SuperTokens Demo App",
+        apiDomain: "http://localhost:3001",
+        websiteDomain: "http://localhost:3000",
     },
+    // recipeList contains all the modules that you want to
+    // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: recipeList,
 });
 
@@ -31,19 +25,14 @@ const app = express();
 
 app.use(
     cors({
-        origin: websiteDomain, // TODO: Change to your app's website domain
+        origin: "http://localhost:3000",
         allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders()],
         methods: ["GET", "PUT", "POST", "DELETE"],
         credentials: true,
     })
 );
 
-app.use(morgan("dev"));
-app.use(
-    helmet({
-        contentSecurityPolicy: false,
-    })
-);
+// This exposes all the APIs from SuperTokens to the client.
 app.use(middleware());
 
 // An example API that requires session verification
@@ -56,10 +45,8 @@ app.get("/sessioninfo", verifySession(), async (req: SessionRequest, res) => {
     });
 });
 
+// In case of session related errors, this error handler
+// returns 401 to the client.
 app.use(errorHandler());
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    res.status(500).send("Internal error: " + err.message);
-});
-
-app.listen(apiPort, () => console.log(`API Server listening on port ${apiPort}`));
+app.listen(3001, () => console.log(`API Server listening on port 3001`));
