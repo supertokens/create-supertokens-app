@@ -19,35 +19,45 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
     return false;
 }
 
+export type SupportedFrontends = "react" | "next" | "next-fullstack" | "angular" | "vue";
+export type SupportedBackends = "node" | "nest" | "python" | "go";
+
 /**
  * value: The option value, this is used to retrieve the selection from inquirer's return
  * 
+ * shouldDisplay: Whether or not the question should be displayed as a prompt to the user
+ * 
  * displayName: The text that is displayed to users when prompting
+ * 
+ * isFullStack: Whether or not the selected option is full stack
+ * 
+ * scripts: Commands to run during setup or when starting the app
  * 
  * location: Path strings for where to download/locate specific parts from
  *  - main: The path for the folder from where to download the boilerplate
  *  - finalConfig: The path of the config file used by the project, this should include the file extension as well
  *  - configFiles: The path where all the recipe configs are (This should be a folder because the recipe name will pre post fixed when loading the config)
  * 
- * NOTE: For recipes the location object is not used, the value is used to determine the path
+ * NOTE: For fullstack options the structure of this object is different
+ * 
  */
 export type QuestionOption = {
-    isFullStack?: false,
-    value: string,
+    shouldDisplay?: boolean,
+    value: SupportedFrontends | SupportedBackends,
     displayName: string,
+    script: {
+        setup: string[],
+        run: string[],
+    },
+} & ({
+    isFullStack?: false,
     location: {
         main: string,
         finalConfig: string,
         configFiles: string,
     },
-    script: {
-        setup: string[],
-        run: string[],
-    },
 } | {
     isFullStack: true,
-    value: string,
-    displayName: string,
     location: {
         main: string,
         config: {
@@ -61,20 +71,17 @@ export type QuestionOption = {
             },
         },
     },
-    script: {
-        setup: string[],
-        run: string[],
-    },
-}
+})
 
 export type RecipeQuestionOption = {
     value: string,
     displayName: string,
+    shouldDisplay?: boolean,
 }
 
 export type Answers = {
-    frontend: string,
-    backend: string,
+    frontend: SupportedFrontends,
+    backend: SupportedBackends,
     recipe: string,
     confirmation: boolean,
     nextfullstack?: boolean,

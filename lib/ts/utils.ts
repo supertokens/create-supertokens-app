@@ -1,4 +1,4 @@
-import { nextFullStackLocation, frontendOptions, backendOptions } from "./config.js";
+import { frontendOptions, backendOptions } from "./config.js";
 import got from "got";
 import tar from "tar";
 import { promisify } from "util";
@@ -24,14 +24,6 @@ function normaliseLocationPath(path: string): string {
 export function getDownloadLocationFromAnswers(answers: Answers): DownloadLocations | undefined {
     const downloadURL = "https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/boilerplate-emailpassword";
 
-    if (answers.nextfullstack === true) {
-        return {
-            frontend: normaliseLocationPath(nextFullStackLocation.main),
-            backend: normaliseLocationPath(nextFullStackLocation.main),
-            download: downloadURL,
-        };
-    }
-
     const selectedFrontend = frontendOptions.find((element) => {
         return element.value === answers.frontend;
     });
@@ -40,8 +32,16 @@ export function getDownloadLocationFromAnswers(answers: Answers): DownloadLocati
         return element.value === answers.backend;
     });
 
+    if (selectedFrontend !== undefined && selectedFrontend.isFullStack === true) {
+        return {
+            frontend: normaliseLocationPath(selectedFrontend.location.main),
+            backend: normaliseLocationPath(selectedFrontend.location.main),
+            download: downloadURL,
+        };
+    }
+
     // Locations are only undefined for recipe options so in this case you never expect them to be undefined
-    if (selectedFrontend !== undefined && selectedFrontend.location !== undefined && selectedBackend !== undefined && selectedBackend.location !== undefined) {
+    if (selectedFrontend !== undefined && selectedBackend !== undefined) {
         return {
             frontend: normaliseLocationPath(selectedFrontend.location.main),
             backend: normaliseLocationPath(selectedBackend.location.main),
@@ -305,23 +305,23 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
 }
 
 async function setupFullstack(answers: Answers, folderName: string) {
-    const selectedFrontend = frontendOptions.find((element) => {
+    const selectedFullStack = frontendOptions.find((element) => {
         return element.value === answers.frontend;
     });
 
-    if (selectedFrontend === undefined || selectedFrontend.isFullStack !== true) {
+    if (selectedFullStack === undefined || selectedFullStack.isFullStack !== true) {
         throw new Error("Should never come here");
     }
 
-    const frontendSetup = new Promise((res, rej) => {
+    const setupResult = new Promise((res, rej) => {
         let didReject = false;
 
-        if (selectedFrontend === undefined || selectedFrontend.script === undefined) {
+        if (selectedFullStack === undefined || selectedFullStack.script === undefined) {
             res(0);
             return;
         }
         
-        const setupString = selectedFrontend.script.setup.join(" && ");
+        const setupString = selectedFullStack.script.setup.join(" && ");
 
         // For full stack the folder doesnt have frontend and backend folders so we directly run the setup on the root
         const setup = exec(`cd ${folderName}/ && ${setupString}`)
@@ -342,14 +342,48 @@ async function setupFullstack(answers: Answers, folderName: string) {
         })
     });
 
-    const frontendCode = await frontendSetup;
+    const frontendCode = await setupResult;
 
     if (frontendCode !== 0) {
         throw new Error("Project setup failed!")
     }
 
-    // TODO: Handle using the correct config file for frontend
-    // TODO: Handle using the correct config file for backend
+    // Move the recipe config file for the frontend folder to the correct place
+    const frontendFiles = fs.readdirSync(`./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`);
+    const frontendRecipeConfig = frontendFiles.filter(i => i.includes(answers.recipe));
+
+    if (frontendRecipeConfig.length === 0) {
+        throw new Error("Should never come here");
+    }
+
+    fs.copyFileSync(
+        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}/${frontendRecipeConfig[0]}`, 
+        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.finalConfig)}`
+    )
+
+    // Remove the configs folder
+    fs.rmSync(`${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`, {
+        recursive: true,
+        force: true,
+    });
+
+    const backendFiles = fs.readdirSync(`./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}`);
+    const backendRecipeConfig = backendFiles.filter(i => i.includes(answers.recipe));
+
+    if (backendRecipeConfig.length === 0) {
+        throw new Error("Should never come here");
+    }
+
+    fs.copyFileSync(
+        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}/${backendRecipeConfig[0]}`, 
+        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.finalConfig)}`
+    )
+
+    // Remove the configs folder
+    fs.rmSync(`${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}`, {
+        recursive: true,
+        force: true,
+    });
 }
 
 export async function setupProject(locations: DownloadLocations, folderName: string, answers: Answers) {
@@ -383,11 +417,27 @@ export function validateFolderName(name: string): {
     return validateNpmName(path.basename(path.resolve(name)));
 }
 
-export async function runProject(folderName: string) {
+export async function runProject(answers: Answers) {
+    const folderName = answers.appname;
+
+    const selectedFrontend = frontendOptions.find((element) => {
+        return element.value === answers.frontend;
+    });
+
+    if (selectedFrontend === undefined) {
+        throw new Error("Should never come here");
+    }
+
+    let appRunScript = "npm run start";
+
+    if (selectedFrontend.isFullStack) {
+        appRunScript = selectedFrontend.script.run.join(" && ");
+    }
+
     const runProjectScript = new Promise((res, rej) => {
         let didReject = false;
 
-        const rootRun = exec(`cd ${folderName}/ && npm run start`);
+        const rootRun = exec(`cd ${folderName}/ && ${appRunScript}`);
 
         rootRun.on("error", error => {
             didReject = true;

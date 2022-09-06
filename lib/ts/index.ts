@@ -45,6 +45,10 @@ async function run() {
             return;
         }
 
+        if (answers.nextfullstack === true) {
+            answers.frontend = "next-fullstack";
+        }
+
         const folderLocations = getDownloadLocationFromAnswers(answers);
 
         if (folderLocations === undefined) {
@@ -58,7 +62,7 @@ async function run() {
         await setupProject(folderLocations, answers.appname, answers);
 
         console.log("Running the project...")
-        await runProject(answers.appname);
+        await runProject(answers);
     } catch (e) {
         console.log((e as any).message);
     }

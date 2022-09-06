@@ -1,34 +1,6 @@
 import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
 import { validateFolderName } from "./utils.js";
 
-export const nextFullStackLocation = {
-    main: "fullstack/next",
-    config: "fullstack/next/config"
-}
-
-export const nextFullStackQuestionConfig: QuestionOption = {
-    isFullStack: true,
-    value: "unused",
-    displayName: "unused",
-    location: {
-        main: "fullstack/next",
-        config: {
-            frontend: {
-                configFiles: "/config/frontend",
-                finalConfig: "/config/frontendConfig.tsx",
-            },
-            backend: {
-                configFiles: "/config/backend",
-                finalConfig: "/config/backendConfig.ts"
-            },
-        },
-    },
-    script: {
-        run: ["npm run dev"],
-        setup: ["yarn install"],
-    },
-}
-
 export const frontendOptions: QuestionOption[] = [
     {
         value: "react",
@@ -54,6 +26,29 @@ export const frontendOptions: QuestionOption[] = [
         script: {
             setup: ["npm install"],
             run: [],
+        },
+    },
+    {
+        isFullStack: true,
+        shouldDisplay: false,
+        value: "next-fullstack",
+        displayName: "unused",
+        location: {
+            main: "fullstack/next",
+            config: {
+                frontend: {
+                    configFiles: "/config/frontend",
+                    finalConfig: "/config/frontendConfig.tsx",
+                },
+                backend: {
+                    configFiles: "/config/backend",
+                    finalConfig: "/config/backendConfig.ts"
+                },
+            },
+        },
+        script: {
+            run: ["npm run dev"],
+            setup: ["yarn install"],
         },
     },
     {
@@ -232,7 +227,7 @@ export function getQuestions(flags: UserFlags) {
 
 // Converts the options array we declare to a format iquirer can use
 function mapOptionsToChoices(options: QuestionOption[] | RecipeQuestionOption[]) {
-    return options.map(option => {
+    return options.filter(i => i.shouldDisplay !== false).map(option => {
         return {
             name: option.displayName,
             value: option.value,
