@@ -11,8 +11,12 @@ export const frontendOptions: QuestionOption[] = [
             configFiles: "/config",
         },
         script: {
-            setup: ["npm install"],
-            run: ["npm run start"],
+            setup: [
+                "npm install",
+            ],
+            run: [
+                "npm run start",
+            ],
         },
     },
     {
@@ -24,7 +28,9 @@ export const frontendOptions: QuestionOption[] = [
             configFiles: "/config",
         },
         script: {
-            setup: ["npm install"],
+            setup: [
+                "npm install",
+            ],
             run: [],
         },
     },
@@ -47,8 +53,12 @@ export const frontendOptions: QuestionOption[] = [
             },
         },
         script: {
-            run: ["npm run dev"],
-            setup: ["yarn install"],
+            run: [
+                "npm run dev",
+            ],
+            setup: [
+                "yarn install",
+            ],
         },
     },
     {
@@ -60,7 +70,9 @@ export const frontendOptions: QuestionOption[] = [
             configFiles: "/config",
         },
         script: {
-            setup: ["npm install"],
+            setup: [
+                "npm install",
+            ],
             run: [],
         },
     },
@@ -73,7 +85,9 @@ export const frontendOptions: QuestionOption[] = [
             configFiles: "/config",
         },
         script: {
-            setup: ["npm install"],
+            setup: [
+                "npm install",
+            ],
             run: [],
         },
     },
@@ -89,8 +103,12 @@ export const backendOptions: QuestionOption[] = [
             configFiles: "/config",
         },
         script: {
-            setup: ["npm install"],
-            run: ["npm run start"],
+            setup: [
+                "npm install",
+            ],
+            run: [
+                "npm run start",
+            ],
         },
     },
     {
@@ -102,7 +120,9 @@ export const backendOptions: QuestionOption[] = [
             configFiles: "/config",
         },
         script: {
-            setup: ["npm install"],
+            setup: [
+                "npm install",
+            ],
             run: [],
         },
     },
@@ -116,7 +136,10 @@ export const backendOptions: QuestionOption[] = [
         },
         script: {
             setup: [],
-            run: ["source create_env.sh", "python app.py"],
+            run: [
+                "source create_env.sh", 
+                "python app.py",
+            ],
         },
     },
     {
