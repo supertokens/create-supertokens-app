@@ -1,5 +1,6 @@
 import CallAPIView from "./CallAPIView";
 
+// TODO: make this better..
 export default function SuccessView(props: {
     userId: string,
 }) {
@@ -43,12 +44,6 @@ export default function SuccessView(props: {
             <div style={{ height: "10px" }} />
             <div style={{ height: "10px" }} />
             <div style={{ height: "10px" }} />
-            <a
-                href="https://github.com/supertokens/supertokens-auth-react/tree/master/examples/with-emailpassword"
-                target="_blank"
-                rel="noreferrer">
-                View the code on GitHub
-            </a>
         </div>
     );
 }

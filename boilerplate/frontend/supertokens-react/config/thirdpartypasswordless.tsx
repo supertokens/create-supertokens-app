@@ -1,4 +1,4 @@
-import ThirdPartyPasswordless, {redirectToAuth as _redirectToAuth} from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import ThirdPartyPasswordless from "supertokens-auth-react/recipe/thirdpartypasswordless";
 import Session from "supertokens-auth-react/recipe/session";
 
 export const recipeList = [
@@ -19,4 +19,3 @@ export const recipeList = [
 ];
 
 export const AuthWrapper = ThirdPartyPasswordless.ThirdPartyPasswordlessAuth;
-export const redirectToAuth = _redirectToAuth;
