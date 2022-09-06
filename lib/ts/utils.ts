@@ -157,7 +157,7 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
         return element.value === answers.backend;
     });
 
-    if (selectedFrontend === undefined || selectedBackend === undefined) {
+    if (selectedFrontend === undefined || selectedBackend === undefined || selectedFrontend.isFullStack === true || selectedBackend.isFullStack === true) {
         throw new Error("Should never come here");
     }
 
@@ -253,7 +253,6 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
         throw new Error("Should not come here");
     }
 
-    // TODO: Handle using the correct config file for backend
     const backendFiles = fs.readdirSync(`./${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}`);
     const backendRecipeConfig = backendFiles.filter(i => i.includes(answers.recipe));
 
@@ -309,6 +308,10 @@ async function setupFullstack(answers: Answers, folderName: string) {
     const selectedFrontend = frontendOptions.find((element) => {
         return element.value === answers.frontend;
     });
+
+    if (selectedFrontend === undefined || selectedFrontend.isFullStack !== true) {
+        throw new Error("Should never come here");
+    }
 
     const frontendSetup = new Promise((res, rej) => {
         let didReject = false;

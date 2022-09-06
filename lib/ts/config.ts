@@ -1,9 +1,33 @@
-import { Answers, QuestionOption, UserFlags } from "./types.js";
+import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
 import { validateFolderName } from "./utils.js";
 
 export const nextFullStackLocation = {
     main: "fullstack/next",
     config: "fullstack/next/config"
+}
+
+export const nextFullStackQuestionConfig: QuestionOption = {
+    isFullStack: true,
+    value: "next",
+    displayName: "unused",
+    location: {
+        main: "fullstack/next",
+        config: {
+            // TODO: Double check folder names
+            frontend: {
+                configFiles: "/config",
+                finalConfig: "config.tsx",
+            },
+            backend: {
+                configFiles: "/config",
+                finalConfig: "config.ts"
+            },
+        },
+    },
+    script: {
+        run: [],
+        setup: [],
+    },
 }
 
 export const frontendOptions: QuestionOption[] = [
@@ -96,6 +120,10 @@ export const backendOptions: QuestionOption[] = [
             finalConfig: "/config.py",
             configFiles: "/config",
         },
+        script: {
+            setup: [],
+            run: [],
+        },
     },
     {
         value: "go",
@@ -105,10 +133,14 @@ export const backendOptions: QuestionOption[] = [
             finalConfig: "/config.go",
             configFiles: "/config",
         },
+        script: {
+            setup: [],
+            run: [],
+        },
     },
 ];
 
-export const recipeOptions: QuestionOption[] = [
+export const recipeOptions: RecipeQuestionOption[] = [
     {
         value: "emailpassword",
         displayName: "Email Password",
@@ -200,7 +232,7 @@ export function getQuestions(flags: UserFlags) {
 /* Util Functions specific to configs */
 
 // Converts the options array we declare to a format iquirer can use
-function mapOptionsToChoices(options: QuestionOption[]) {
+function mapOptionsToChoices(options: QuestionOption[] | RecipeQuestionOption[]) {
     return options.map(option => {
         return {
             name: option.displayName,

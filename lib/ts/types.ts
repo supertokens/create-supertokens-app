@@ -32,17 +32,44 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
  * NOTE: For recipes the location object is not used, the value is used to determine the path
  */
 export type QuestionOption = {
+    isFullStack?: false,
     value: string,
     displayName: string,
-    location?: {
+    location: {
         main: string,
         finalConfig: string,
         configFiles: string,
     },
-    script?: {
+    script: {
         setup: string[],
         run: string[],
     },
+} | {
+    isFullStack: true,
+    value: string,
+    displayName: string,
+    location: {
+        main: string,
+        config: {
+            frontend: {
+                configFiles: string,
+                finalConfig: string,
+            },
+            backend: {
+                configFiles: string,
+                finalConfig: string,
+            },
+        },
+    },
+    script: {
+        setup: string[],
+        run: string[],
+    },
+}
+
+export type RecipeQuestionOption = {
+    value: string,
+    displayName: string,
 }
 
 export type Answers = {
