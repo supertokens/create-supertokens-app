@@ -107,7 +107,7 @@ export const backendOptions: QuestionOption[] = [
         },
     },
     {
-        value: "python",
+        value: "python-flask",
         displayName: "Python",
         location: {
             main: "backend/python",

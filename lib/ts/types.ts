@@ -20,7 +20,7 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
 }
 
 export type SupportedFrontends = "react" | "next" | "next-fullstack" | "angular" | "vue";
-export type SupportedBackends = "node" | "nest" | "python" | "go";
+export type SupportedBackends = "node" | "nest" | "python-flask" | "go";
 
 /**
  * value: The option value, this is used to retrieve the selection from inquirer's return
