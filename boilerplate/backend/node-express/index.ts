@@ -3,23 +3,9 @@ import cors from "cors";
 import supertokens from "supertokens-node";
 import { verifySession } from "supertokens-node/recipe/session/framework/express";
 import { middleware, errorHandler, SessionRequest } from "supertokens-node/framework/express";
-import { recipeList } from "./config";
+import { SuperTokensConfig } from "./config";
 
-// TODO: Move the whole config object to the config files
-supertokens.init({
-    supertokens: {
-        // this is the location of the SuperTokens core.
-        connectionURI: "https://try.supertokens.com"
-    },
-    appInfo: {
-        appName: "SuperTokens Demo App",
-        apiDomain: "http://localhost:3001",
-        websiteDomain: "http://localhost:3000",
-    },
-    // recipeList contains all the modules that you want to
-    // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
-    recipeList: recipeList,
-});
+supertokens.init(SuperTokensConfig);
 
 const app = express();
 

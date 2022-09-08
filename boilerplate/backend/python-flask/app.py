@@ -24,7 +24,7 @@ def get_website_port():
 def get_website_domain():
     return "http://localhost:" + get_website_port()
 
-
+# TODO: Move the whole config object to the config files
 init(
     supertokens_config=SupertokensConfig(connection_uri="https://try.supertokens.io"),
     app_info=InputAppInfo(
