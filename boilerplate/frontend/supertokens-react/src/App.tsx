@@ -2,17 +2,9 @@ import './App.css';
 import SuperTokens, { SuperTokensWrapper, getSuperTokensRoutesForReactRouterDom } from "supertokens-auth-react";
 import { Routes, BrowserRouter as Router, Route } from "react-router-dom";
 import Home from "./Home";
-import { AuthWrapper, recipeList } from "./config";
+import { AuthWrapper, SuperTokensConfig } from "./config";
 
-// TODO: move entire config into config
-SuperTokens.init({
-  appInfo: {
-      appName: "SuperTokens Demo App",
-      apiDomain: "http://localhost:3001",
-      websiteDomain: "http://localhost:3000",
-  },
-  recipeList,
-});
+SuperTokens.init(SuperTokensConfig);
 
 function App() {
   return (
