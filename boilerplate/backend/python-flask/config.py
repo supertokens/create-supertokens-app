@@ -3,12 +3,12 @@ from supertokens_python import (
     SupertokensConfig,
 )
 
-supertokens_config=SupertokensConfig(connection_uri="https://try.supertokens.io")
+supertokens_config=SupertokensConfig(connection_uri="")
 
 app_info=InputAppInfo(
-    app_name="Supertokens",
-    api_domain="http://localhost:3001",
-    website_domain="http://localhost:3000",
+    app_name="",
+    api_domain="",
+    website_domain="",
 )
 
 framework="flask"
