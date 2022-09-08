@@ -1,6 +1,7 @@
 import EmailPassword from "supertokens-node/recipe/emailpassword";
 import Session from "supertokens-node/recipe/session";
 import {TypeInput} from "supertokens-node/types";
+import Dashboard from "supertokens-node/recipe/dashboard";
 
 export const SuperTokensConfig: TypeInput = {
     supertokens: {
@@ -17,5 +18,8 @@ export const SuperTokensConfig: TypeInput = {
     recipeList: [
         EmailPassword.init(),
         Session.init(),
+        Dashboard.init({
+            apiKey: "supertokens_is_awesome",
+        }),
     ],
 }

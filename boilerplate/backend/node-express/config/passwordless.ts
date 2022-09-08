@@ -1,6 +1,7 @@
 import Passwordless from "supertokens-node/recipe/passwordless";
 import Session from "supertokens-node/recipe/session";
 import {TypeInput} from "supertokens-node/types";
+import Dashboard from "supertokens-node/recipe/dashboard";
 
 export const SuperTokensConfig: TypeInput = {
     supertokens: {
@@ -20,5 +21,8 @@ export const SuperTokensConfig: TypeInput = {
             flowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
         }),
         Session.init(),
+        Dashboard.init({
+            apiKey: "supertokens_is_awesome",
+        }),
     ],
 }
