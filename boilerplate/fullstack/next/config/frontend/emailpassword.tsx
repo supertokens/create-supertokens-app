@@ -6,6 +6,8 @@ import Router from 'next/router'
 export let frontendConfig = () => {
   return {
     appInfo,
+    // recipeList contains all the modules that you want to
+    // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [
         EmailPasswordReact.init({
             emailVerificationFeature: {
