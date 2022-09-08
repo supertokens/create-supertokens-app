@@ -3,8 +3,6 @@ import os
 from flask import Flask, abort, g, jsonify
 from flask_cors import CORS
 from supertokens_python import (
-    InputAppInfo,
-    SupertokensConfig,
     get_all_cors_headers,
     init,
 )
@@ -12,29 +10,11 @@ from supertokens_python.framework.flask import Middleware
 from supertokens_python.recipe.session.framework.flask import verify_session
 import config
 
-
-def get_api_port():
-    return "3001"
-
-
-def get_website_port():
-    return "3000"
-
-
-def get_website_domain():
-    return "http://localhost:" + get_website_port()
-
-# TODO: Move the whole config object to the config files
 init(
-    supertokens_config=SupertokensConfig(connection_uri="https://try.supertokens.io"),
-    app_info=InputAppInfo(
-        app_name="Supertokens",
-        api_domain="http://localhost:" + get_api_port(),
-        website_domain=get_website_domain(),
-    ),
-    framework="flask",
+    supertokens_config=config.supertokens_config,
+    app_info=config.app_info,
+    framework=config.framework,
     recipe_list=config.recipe_list,
-    telemetry=False,
 )
 
 app = Flask(__name__)
@@ -43,7 +23,7 @@ Middleware(app)
 CORS(
     app=app,
     supports_credentials=True,
-    origins=get_website_domain(),
+    origins="http://localhost:3000",
     allow_headers=["Content-Type"] + get_all_cors_headers(),
 )
 
@@ -70,4 +50,4 @@ def catch_all(u_path: str):  # pylint: disable=unused-argument
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(get_api_port()), debug=True)
+    app.run(host="0.0.0.0", port=int("3001"), debug=True)
