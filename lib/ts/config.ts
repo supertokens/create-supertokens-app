@@ -143,16 +143,16 @@ export const backendOptions: QuestionOption[] = [
         },
     },
     {
-        value: "go",
+        value: "go-http",
         displayName: "Golang",
         location: {
-            main: "backend/golang",
+            main: "backend/go-http",
             finalConfig: "/config.go",
             configFiles: "/config",
         },
         script: {
-            setup: [],
-            run: [],
+            setup: ["go get && go mod tidy"],
+            run: ["go run ."],
         },
     },
 ];
