@@ -1,4 +1,5 @@
 import * as ThirdPartyPasswordlessReact from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import SessionReact from "supertokens-auth-react/recipe/session";
 import Session from "supertokens-web-js/recipe/session";
 
 export const SuperTokensReactConfig = {
@@ -23,7 +24,7 @@ export const SuperTokensReactConfig = {
             },
             contactMethod: "EMAIL_OR_PHONE",
         }),
-        Session.init(),
+        SessionReact.init(),
     ],
 }
 

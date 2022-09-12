@@ -1,4 +1,5 @@
 import * as EmailPasswordReact from "supertokens-auth-react/recipe/emailpassword";
+import SessionReact from "supertokens-auth-react/recipe/session";
 import Session from "supertokens-web-js/recipe/session";
 
 export const SuperTokensReactConfig = {
@@ -15,7 +16,7 @@ export const SuperTokensReactConfig = {
                 mode: "REQUIRED",
             },
         }),
-        Session.init(),
+        SessionReact.init(),
     ],
 }
 

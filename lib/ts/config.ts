@@ -62,18 +62,18 @@ export const frontendOptions: QuestionOption[] = [
         },
     },
     {
-        value: "angular",
+        value: "angular-prebuilt",
         displayName: "Angular",
         location: {
-            main: "frontend/angular",
-            finalConfig: "/src/config.tsx",
+            main: "frontend/angular-prebuilt",
+            finalConfig: "/src/config.ts",
             configFiles: "/config",
         },
         script: {
             setup: [
                 "npm install",
             ],
-            run: [],
+            run: ["npm run dev"],
         },
     },
     {
