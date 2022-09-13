@@ -10,6 +10,7 @@ export const SuperTokensReactConfig = {
     },
     recipeList: [
         ThirdPartyPasswordlessReact.init({
+            useShadowDom: false,
             emailVerificationFeature: {
                 mode: "REQUIRED",
             },

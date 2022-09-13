@@ -10,6 +10,7 @@ export const SuperTokensReactConfig = {
     },
     recipeList: [
         ThirdPartyEmailPasswordReact.init({
+            useShadowDom: false,
             signInAndUpFeature: {
                 providers: [Github.init(), Google.init()],
             },
