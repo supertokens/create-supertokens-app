@@ -19,7 +19,7 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
     return false;
 }
 
-export type SupportedFrontends = "react" | "next" | "next-fullstack" | "angular-prebuilt" | "vue";
+export type SupportedFrontends = "react" | "next" | "next-fullstack" | "angular-prebuilt" | "vue-prebuilt";
 export type SupportedBackends = "node" | "nest" | "python-flask" | "go-http";
 
 /**

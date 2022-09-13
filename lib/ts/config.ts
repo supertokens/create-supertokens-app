@@ -77,18 +77,18 @@ export const frontendOptions: QuestionOption[] = [
         },
     },
     {
-        value: "vue",
+        value: "vue-prebuilt",
         displayName: "Vue.js",
         location: {
-            main: "frontend/vue",
-            finalConfig: "/src/config.tsx",
+            main: "frontend/vue-prebuilt",
+            finalConfig: "/src/config.ts",
             configFiles: "/config",
         },
         script: {
             setup: [
                 "npm install",
             ],
-            run: [],
+            run: ["npm run start"],
         },
     },
 ];
