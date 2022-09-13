@@ -88,7 +88,7 @@ export const frontendOptions: QuestionOption[] = [
             setup: [
                 "npm install",
             ],
-            run: ["npm run start"],
+            run: ["npm run dev"],
         },
     },
 ];
