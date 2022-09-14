@@ -23,7 +23,7 @@ export const frontendOptions: QuestionOption[] = [
         value: "next",
         displayName: "Next.js",
         location: {
-            main: "frontend/next-frontend",
+            main: "frontend/next",
             finalConfig: "/config/frontendConfig.tsx",
             configFiles: "/config/frontend",
         },
