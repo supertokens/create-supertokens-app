@@ -24,14 +24,14 @@ export const frontendOptions: QuestionOption[] = [
         displayName: "Next.js",
         location: {
             main: "frontend/next-frontend",
-            finalConfig: "/src/config.tsx",
-            configFiles: "/config",
+            finalConfig: "/config/frontendConfig.tsx",
+            configFiles: "/config/frontend",
         },
         script: {
             setup: [
-                "npm install",
+                "yarn install",
             ],
-            run: [],
+            run: ["npm run dev"],
         },
     },
     {
