@@ -40,8 +40,5 @@ export const SuperTokensConfig: TypeInput = {
             ],
         }),
         Session.init(),
-        Dashboard.init({
-            apiKey: "supertokens_is_awesome",
-        }),
     ],
 }

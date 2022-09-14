@@ -18,8 +18,5 @@ export const SuperTokensConfig: TypeInput = {
     recipeList: [
         EmailPassword.init(),
         Session.init(),
-        Dashboard.init({
-            apiKey: "supertokens_is_awesome",
-        }),
     ],
 }
