@@ -13,13 +13,10 @@ function ProtectedPage({ userId }) {
     redirectToAuth()
   }
 
-  async function fetchUserData() {
-    const res = await fetch('/api/user')
-    if (res.status === 200) {
-      const json = await res.json()
-      alert(JSON.stringify(json))
-    }
-  }
+  async function callAPIClicked() {
+    let response = fetch("http://localhost:3001/sessioninfo");
+    window.alert("Session Information:\n" + JSON.stringify(await (await response).json(), null, 2));
+}
 
   if (session.loading === true) {
     return null
@@ -84,7 +81,7 @@ function ProtectedPage({ userId }) {
           }}
         >
           <div
-            onClick={fetchUserData}
+            onClick={callAPIClicked}
             style={{
               display: 'flex',
               width: '150px',
