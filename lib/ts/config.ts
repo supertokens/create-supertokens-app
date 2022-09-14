@@ -116,14 +116,14 @@ export const backendOptions: QuestionOption[] = [
         displayName: "Nest.js",
         location: {
             main: "backend/nest",
-            finalConfig: "/config.ts",
+            finalConfig: "/src/config.ts",
             configFiles: "/config",
         },
         script: {
             setup: [
                 "npm install",
             ],
-            run: [],
+            run: ["npm run start"],
         },
     },
     {
