@@ -13,7 +13,7 @@ function getPythonRunScripts(): string[] {
         ];
     }
     return [
-        "source create_env.sh", 
+        "./create_env.sh",
         "python app.py",
     ];
 }
