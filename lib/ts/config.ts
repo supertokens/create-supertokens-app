@@ -1,5 +1,22 @@
 import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
 import { validateFolderName } from "./utils.js";
+import os from "os";
+
+function getPythonRunScripts(): string[] {
+    if (os.platform() === "win32") {
+        return [
+            "pip install virtualenv",
+            "python -m virtualenv flask_example",
+            ".\\flask_example\\Scripts\\activate.bat",
+            "pip install -r requirements.txt",
+            "python app.py",
+        ];
+    }
+    return [
+        "source create_env.sh", 
+        "python app.py",
+    ];
+}
 
 export const frontendOptions: QuestionOption[] = [
     {
@@ -136,10 +153,7 @@ export const backendOptions: QuestionOption[] = [
         },
         script: {
             setup: [],
-            run: [
-                "source create_env.sh", 
-                "python app.py",
-            ],
+            run: getPythonRunScripts(),
         },
     },
     {
