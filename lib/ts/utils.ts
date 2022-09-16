@@ -173,7 +173,7 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
 
         const setupString = selectedFrontend.script.setup.join(" && ");
 
-        const setup = exec(`cd ${folderName}/frontend && ${setupString}`)
+        const setup = exec(`cd ${folderName}/frontend && ${setupString}`);
 
         setup.on("error", error => {
             didReject = true;
@@ -184,11 +184,7 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
             if (!didReject) {
                 res(code);
             }
-        })
-
-        setup.stdout?.on("data", data => {
-            console.log(data.toString())
-        })
+        });
     });
 
     const frontendCode = await frontendSetup;
@@ -214,11 +210,7 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
             if (!didReject) {
                 res(code);
             }
-        })
-
-        setup.stdout?.on("data", data => {
-            console.log(data.toString())
-        })
+        });
     });
 
     // Call the frontend and backend setup scripts
@@ -297,10 +289,6 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
                 res(code);
             }
         })
-
-        rootInstall.stdout?.on("data", data => {
-            console.log(data.toString())
-        })
     });
 
     await rootSetup;
@@ -337,10 +325,6 @@ async function setupFullstack(answers: Answers, folderName: string) {
             if (!didReject) {
                 res(code);
             }
-        })
-
-        setup.stdout?.on("data", data => {
-            console.log(data.toString())
         })
     });
 
