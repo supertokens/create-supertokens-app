@@ -9,6 +9,9 @@ import { hideBin } from "yargs/helpers";
 import { getShouldAutoStartFromArgs, modifyAnswersBasedOnFlags, validateUserArguments } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 import fs from "fs";
+import Ora from "ora";
+import chalk from "chalk";
+import Emoji from "node-emoji";
 
 function modifyAnswersBasedOnSelection(answers: Answers): Answers {
     let _answers = answers;
@@ -39,6 +42,7 @@ async function run() {
             --autostart: Whether the CLI should start the project after setting up
         */
         const userArguments: UserFlags = await yargs(hideBin(process.argv)).argv as any;
+
         validateUserArguments(userArguments);
 
         // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
@@ -51,6 +55,13 @@ async function run() {
             throw new Error("Aborting...");
         }
 
+        console.log("")
+        const downloadSpinner = Ora({
+            color: "blue",
+            spinner: "dots10",
+            text: chalk.blue("Downloading files")
+        }).start()
+
         const folderLocations = getDownloadLocationFromAnswers(answers, userArguments);
 
         if (folderLocations === undefined) {
@@ -58,12 +69,40 @@ async function run() {
             return;
         }
 
-        await downloadApp(folderLocations, answers.appname);
-
-        Logger.log("Setting up the project...")
         try {
-            await setupProject(folderLocations, answers.appname, answers, userArguments);
+            await downloadApp(folderLocations, answers.appname);
+
+            downloadSpinner.stopAndPersist({
+                text: chalk.greenBright("Download complete!"),
+                symbol: Emoji.get(":white_check_mark:")
+            });
         } catch (e) {
+            downloadSpinner.stopAndPersist({
+                text: chalk.redBright("Error downloading files"),
+                symbol: Emoji.get(":no_entry:")
+            });
+        }
+
+        console.log("")
+        
+        const setupSpinner = Ora({
+            color: "blue",
+            text: chalk.blue("Setting up the project"),
+            spinner: "dots10",
+        }).start()
+
+        try {
+            await setupProject(folderLocations, answers.appname, answers, userArguments, setupSpinner);
+
+            setupSpinner.stopAndPersist({
+                text: chalk.greenBright("Setup complete!"),
+                symbol: Emoji.get(":white_check_mark:")
+            });
+        } catch (e) {
+            setupSpinner.stopAndPersist({
+                text: chalk.redBright("Setup failed!"),
+                symbol: Emoji.get(":no_entry:")
+            });
             /**
              * If the project setup failed we want to clear the generate app,
              * otherwise the user would have to manually delete the folder before

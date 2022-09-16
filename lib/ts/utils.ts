@@ -10,6 +10,8 @@ import path from "path";
 import { exec } from "child_process";
 import os from "os";
 import {v4 as uuidv4} from "uuid";
+import { Ora } from "ora";
+import chalk from "chalk";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -140,7 +142,13 @@ function getPackageJsonString(input: {
     `;
 }
 
-async function setupFrontendBackendApp(answers: Answers, folderName: string, locations: DownloadLocations, userArguments: UserFlags) {
+async function setupFrontendBackendApp(
+    answers: Answers, 
+    folderName: string, 
+    locations: DownloadLocations, 
+    userArguments: UserFlags, 
+    spinner: Ora,
+) {
     const frontendFolderName = locations.frontend.split("/").filter(i => i !== "frontend").join("")
     const backendFolderName = locations.backend.split("/").filter(i => i !== "backend").join("")
 
@@ -164,6 +172,7 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
         throw new Error("Should never come here");
     }
 
+    spinner.text = chalk.blue("Installing frontend dependencies");
     const frontendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
 
@@ -213,6 +222,7 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
         throw new Error(error);
     }
 
+    spinner.text = chalk.blue("Installing backend dependencies");
     const backendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
 
@@ -267,6 +277,7 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
         throw new Error("Should never come here");
     }
 
+    spinner.text = chalk.blue("Configuring files");
     // Move the recipe config file for the frontend folder to the correct place
     const frontendFiles = fs.readdirSync(`./${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`);
     const frontendRecipeConfig = frontendFiles.filter(i => i.includes(answers.recipe));
@@ -356,7 +367,13 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
     }
 }
 
-async function setupFullstack(answers: Answers, folderName: string, userArguments: UserFlags) {
+async function setupFullstack(
+    answers: Answers, 
+    folderName: string, 
+    userArguments: UserFlags,
+    spinner: Ora,
+) {
+    spinner.text = chalk.blue("Installing dependencies");
     const selectedFullStack = getFrontendOptions(userArguments).find((element) => {
         return element.value === answers.frontend;
     });
@@ -420,6 +437,7 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
         throw new Error(error);
     }
 
+    spinner.text = chalk.blue("Configuring files");
     // Move the recipe config file for the frontend folder to the correct place
     const frontendFiles = fs.readdirSync(`./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`);
     const frontendRecipeConfig = frontendFiles.filter(i => i.includes(answers.recipe));
@@ -458,13 +476,19 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
     });
 }
 
-export async function setupProject(locations: DownloadLocations, folderName: string, answers: Answers, userArguments: UserFlags) {
+export async function setupProject(
+    locations: DownloadLocations, 
+    folderName: string, 
+    answers: Answers,
+    userArguments: UserFlags,
+    spinner: Ora,
+) {
     const isFullStack = locations.frontend === locations.backend;
 
     if (!isFullStack) {
-        await setupFrontendBackendApp(answers, folderName, locations, userArguments);
+        await setupFrontendBackendApp(answers, folderName, locations, userArguments, spinner);
     } else {
-        await setupFullstack(answers, folderName, userArguments);
+        await setupFullstack(answers, folderName, userArguments, spinner);
     }
 }
 
