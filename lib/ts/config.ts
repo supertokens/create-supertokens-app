@@ -172,6 +172,10 @@ export const recipeOptions: RecipeQuestionOption[] = [
         displayName: "Email Password",
     },
     {
+        value: "thirdparty",
+        displayName: "Social Login",
+    },
+    {
         value: "thirdpartyemailpassword",
         displayName: "Social Login + Email Password",
     },
