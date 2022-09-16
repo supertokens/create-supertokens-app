@@ -5,6 +5,7 @@ import { allRecipes, Answers, isValidRecipeName, UserFlags } from "./types.js";
 import { getDownloadLocationFromAnswers, downloadApp, setupProject, validateFolderName, runProject } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import fs from "fs";
 
 function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserFlags): Answers {
     let _answers = answers;
@@ -75,7 +76,24 @@ async function run() {
         await downloadApp(folderLocations, answers.appname);
 
         console.log("Setting up the project...")
-        await setupProject(folderLocations, answers.appname, answers);
+        try {
+            await setupProject(folderLocations, answers.appname, answers);
+        } catch (e) {
+            /**
+             * If the project setup failed we want to clear the generate app,
+             * otherwise the user would have to manually delete the folder before
+             * running the CLI again
+             * 
+             * NOTE: We dont do this for runProject because if running fails, the user
+             * can fix the error (install missing library for example) and then run the
+             * app again themseves without having to run and wait for the CLI to finish
+             */
+             fs.rmSync(`${answers.appname}/`, {
+                recursive: true,
+                force: true,
+            });
+            throw e;
+        }
 
         console.log("Running the project...")
         await runProject(answers);
