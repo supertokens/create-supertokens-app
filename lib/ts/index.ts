@@ -6,6 +6,7 @@ import { getDownloadLocationFromAnswers, downloadApp, setupProject, validateFold
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import fs from "fs";
+import chalk from "chalk";
 
 function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserFlags): Answers {
     let _answers = answers;
@@ -98,7 +99,7 @@ async function run() {
         console.log("Running the project...")
         await runProject(answers);
     } catch (e) {
-        console.log((e as any).message);
+        console.log(chalk.redBright((e as any).message));
     }
 }
 
