@@ -1,0 +1,11 @@
+boilerplate/
+.circleci/
+test/
+.git/
+**/*.ts
+!**/*.d.ts
+.prettierrc
+addReleaseTag
+.github/
+.gitattributes
+.prettierignore
