@@ -1,9 +1,9 @@
-export type Recipe = | 
-    "emailpassword" | 
-    "thirdpartyemailpassword" | 
-    "passwordless" | 
-    "thirdpartypasswordless" |
-    "thirdparty";
+export type Recipe =
+    | "emailpassword"
+    | "thirdpartyemailpassword"
+    | "passwordless"
+    | "thirdpartypasswordless"
+    | "thirdparty";
 
 export const allRecipes: Recipe[] = [
     "emailpassword",
@@ -24,8 +24,8 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
 export type SupportedFrontends = "react" | "next" | "next-fullstack" | "angular-prebuilt" | "vue-prebuilt";
 
 export const allFrontends: {
-    displayValue: string,
-    id: SupportedFrontends,
+    displayValue: string;
+    id: SupportedFrontends;
 }[] = [
     {
         id: "react",
@@ -46,7 +46,7 @@ export const allFrontends: {
 ];
 
 export function isValidFrontend(frontend: string): frontend is SupportedFrontends {
-    if (allFrontends.filter(i => i.displayValue === frontend).length !== 0) {
+    if (allFrontends.filter((i) => i.displayValue === frontend).length !== 0) {
         return true;
     }
 
@@ -56,8 +56,8 @@ export function isValidFrontend(frontend: string): frontend is SupportedFrontend
 export type SupportedBackends = "node" | "nest" | "python-flask" | "go-http";
 
 export const allBackends: {
-    displayValue: string,
-    id: SupportedBackends,
+    displayValue: string;
+    id: SupportedBackends;
 }[] = [
     {
         id: "node",
@@ -78,7 +78,7 @@ export const allBackends: {
 ];
 
 export function isValidBackend(backend: string): backend is SupportedBackends {
-    if (allBackends.filter(i => i.displayValue === backend).length !== 0) {
+    if (allBackends.filter((i) => i.displayValue === backend).length !== 0) {
         return true;
     }
 
@@ -87,69 +87,72 @@ export function isValidBackend(backend: string): backend is SupportedBackends {
 
 /**
  * value: The option value, this is used to retrieve the selection from inquirer's return
- * 
+ *
  * shouldDisplay: Whether or not the question should be displayed as a prompt to the user
- * 
+ *
  * displayName: The text that is displayed to users when prompting
- * 
+ *
  * isFullStack: Whether or not the selected option is full stack
- * 
+ *
  * scripts: Commands to run during setup or when starting the app
- * 
+ *
  * location: Path strings for where to download/locate specific parts from
  *  - main: The path for the folder from where to download the boilerplate
  *  - finalConfig: The path of the config file used by the project, this should include the file extension as well
  *  - configFiles: The path where all the recipe configs are (This should be a folder because the recipe name will pre post fixed when loading the config)
- * 
+ *
  * NOTE: For fullstack options the structure of this object is different
- * 
+ *
  */
 export type QuestionOption = {
-    shouldDisplay?: boolean,
-    value: SupportedFrontends | SupportedBackends,
-    displayName: string,
+    shouldDisplay?: boolean;
+    value: SupportedFrontends | SupportedBackends;
+    displayName: string;
     script: {
-        setup: string[],
-        run: string[],
-    },
-} & ({
-    isFullStack?: false,
-    location: {
-        main: string,
-        finalConfig: string,
-        configFiles: string,
-    },
-} | {
-    isFullStack: true,
-    location: {
-        main: string,
-        config: {
-            frontend: {
-                configFiles: string,
-                finalConfig: string,
-            },
-            backend: {
-                configFiles: string,
-                finalConfig: string,
-            },
-        },
-    },
-})
+        setup: string[];
+        run: string[];
+    };
+} & (
+    | {
+          isFullStack?: false;
+          location: {
+              main: string;
+              finalConfig: string;
+              configFiles: string;
+          };
+      }
+    | {
+          isFullStack: true;
+          location: {
+              main: string;
+              config: {
+                  frontend: {
+                      configFiles: string;
+                      finalConfig: string;
+                  };
+                  backend: {
+                      configFiles: string;
+                      finalConfig: string;
+                  };
+              };
+          };
+      }
+);
 
 export type RecipeQuestionOption = {
-    value: string,
-    displayName: string,
-    shouldDisplay?: boolean,
-}
+    value: string;
+    displayName: string;
+    shouldDisplay?: boolean;
+};
 
 export type Answers = {
-    frontend: SupportedFrontends,
-    backend: SupportedBackends,
-    recipe: string,
-    confirmation: boolean,
-    nextfullstack?: boolean,
-    appname: string,
-}
+    frontend: SupportedFrontends;
+    backend: SupportedBackends;
+    recipe: string;
+    confirmation: boolean;
+    nextfullstack?: boolean;
+    appname: string;
+};
 
 /**
  * download: Location of the repository that contains the frontend and backend projects for the given combination
@@ -157,17 +160,14 @@ export type Answers = {
  * backend: Path of the backend project relative to the download location
  */
 export type DownloadLocations = {
-    download: string,
-    frontend: string,
-    backend: string,
-}
+    download: string;
+    frontend: string;
+    backend: string;
+};
 
 export type SupportedPackageManagers = "npm" | "yarn";
 
-export const allPackageManagers: SupportedPackageManagers[] = [
-    "npm",
-    "yarn",
-];
+export const allPackageManagers: SupportedPackageManagers[] = ["npm", "yarn"];
 
 export function isValidPackageManager(manager: string): manager is SupportedPackageManagers {
     if (allPackageManagers.includes(manager as SupportedPackageManagers)) {
@@ -178,18 +178,18 @@ export function isValidPackageManager(manager: string): manager is SupportedPack
 }
 
 export type UserFlags = {
-    appname?: string,
-    recipe?: string,
-    branch?: string,
-    frontend?: SupportedFrontends,
-    fullstack?: string | boolean,
-    backend?: SupportedBackends,
-    autoconfirm?: string | boolean,
+    appname?: string;
+    recipe?: string;
+    branch?: string;
+    frontend?: SupportedFrontends;
+    fullstack?: string | boolean;
+    backend?: SupportedBackends;
+    autoconfirm?: string | boolean;
     manager?: SupportedPackageManagers;
     autostart?: string | boolean;
-}
+};
 
 export type ExecOutput = {
-    code: number | null,
-    error: string | undefined,
-}
+    code: number | null;
+    error: string | undefined;
+};

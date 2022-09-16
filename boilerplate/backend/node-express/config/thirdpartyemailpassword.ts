@@ -1,12 +1,12 @@
 import ThirdPartyEmailPassword from "supertokens-node/recipe/thirdpartyemailpassword";
 import Session from "supertokens-node/recipe/session";
-import {TypeInput} from "supertokens-node/types";
+import { TypeInput } from "supertokens-node/types";
 import Dashboard from "supertokens-node/recipe/dashboard";
 
 export const SuperTokensConfig: TypeInput = {
     supertokens: {
         // this is the location of the SuperTokens core.
-        connectionURI: "https://try.supertokens.com"
+        connectionURI: "https://try.supertokens.com",
     },
     appInfo: {
         appName: "SuperTokens Demo App",
@@ -41,4 +41,4 @@ export const SuperTokensConfig: TypeInput = {
         }),
         Session.init(),
     ],
-}
+};

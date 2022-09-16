@@ -1,11 +1,11 @@
 import ThirdParty from "supertokens-node/recipe/thirdparty";
 import Session from "supertokens-node/recipe/session";
-import {TypeInput} from "supertokens-node/types";
+import { TypeInput } from "supertokens-node/types";
 
 export const SuperTokensConfig: TypeInput = {
     supertokens: {
         // this is the location of the SuperTokens core.
-        connectionURI: "https://try.supertokens.com"
+        connectionURI: "https://try.supertokens.com",
     },
     appInfo: {
         appName: "SuperTokens Demo App",
@@ -22,11 +22,11 @@ export const SuperTokensConfig: TypeInput = {
                     // IMPORTANT: Please replace them with your own OAuth keys for production use.
                     ThirdParty.Google({
                         clientId: "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
-                        clientSecret: "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"
+                        clientSecret: "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",
                     }),
                     ThirdParty.Github({
                         clientId: "467101b197249757c71f",
-                        clientSecret: "e97051221f4b6426e8fe8d51486396703012f5bd"
+                        clientSecret: "e97051221f4b6426e8fe8d51486396703012f5bd",
                     }),
                     ThirdParty.Apple({
                         clientId: "4398792-io.supertokens.example.service",
@@ -37,9 +37,9 @@ export const SuperTokensConfig: TypeInput = {
                             teamId: "YWQCXGJRJL",
                         },
                     }),
-                ]
-            }
+                ],
+            },
         }),
         Session.init(),
     ],
-}
+};

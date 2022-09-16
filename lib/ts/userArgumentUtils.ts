@@ -1,9 +1,24 @@
 import { Logger } from "./logger.js";
-import { allBackends, allFrontends, allPackageManagers, allRecipes, Answers, isValidBackend, isValidFrontend, isValidPackageManager, isValidRecipeName, SupportedFrontends, UserFlags } from "./types.js";
+import {
+    allBackends,
+    allFrontends,
+    allPackageManagers,
+    allRecipes,
+    Answers,
+    isValidBackend,
+    isValidFrontend,
+    isValidPackageManager,
+    isValidRecipeName,
+    SupportedFrontends,
+    UserFlags,
+} from "./types.js";
 import { validateFolderName } from "./utils.js";
 
 export function getIsFullStackFromArgs(userArguments: UserFlags): boolean {
-    if (userArguments.fullstack !== undefined && ( userArguments.fullstack === "true" || userArguments.fullstack === true )) {
+    if (
+        userArguments.fullstack !== undefined &&
+        (userArguments.fullstack === "true" || userArguments.fullstack === true)
+    ) {
         return true;
     }
 
@@ -11,7 +26,10 @@ export function getIsFullStackFromArgs(userArguments: UserFlags): boolean {
 }
 
 export function getIsAutoConfirmFromArgs(userArguments: UserFlags): boolean {
-    if (userArguments.autoconfirm !== undefined && ( userArguments.autoconfirm === "true" || userArguments.autoconfirm === true )) {
+    if (
+        userArguments.autoconfirm !== undefined &&
+        (userArguments.autoconfirm === "true" || userArguments.autoconfirm === true)
+    ) {
         return true;
     }
 
@@ -23,41 +41,39 @@ export function validateUserArguments(userArguments: UserFlags) {
         const validation = validateFolderName(userArguments.appname);
 
         if (validation.valid !== true) {
-            throw new Error("Invalid project name: " + validation.problems![0])
+            throw new Error("Invalid project name: " + validation.problems![0]);
         }
     }
 
     if (userArguments.recipe !== undefined) {
         if (!isValidRecipeName(userArguments.recipe)) {
-            const availableRecipes = allRecipes.map(e => `    - ${e}`).join("\n");
+            const availableRecipes = allRecipes.map((e) => `    - ${e}`).join("\n");
             throw new Error("Invalid recipe name provided, valid values:\n" + availableRecipes);
         }
     }
 
     if (userArguments.frontend !== undefined) {
         if (!isValidFrontend(userArguments.frontend)) {
-            const availableFrontends = allFrontends.map(e => `    - ${e.displayValue}`).join("\n");
+            const availableFrontends = allFrontends.map((e) => `    - ${e.displayValue}`).join("\n");
             throw new Error("Invalid frontend provided, valid values:\n" + availableFrontends);
         }
     }
 
     if (userArguments.backend !== undefined) {
         if (!isValidBackend(userArguments.backend)) {
-            const avaiableBackends = allBackends.map(e => `    - ${e.displayValue}`).join("\n");
+            const avaiableBackends = allBackends.map((e) => `    - ${e.displayValue}`).join("\n");
             throw new Error("Invalid backend provided, valid values:\n" + avaiableBackends);
         }
     }
 
-    let allowedFullStackFrontends: SupportedFrontends[] = [
-        "next",
-    ]
+    let allowedFullStackFrontends: SupportedFrontends[] = ["next"];
 
     if (getIsFullStackFromArgs(userArguments)) {
         if (userArguments.frontend !== undefined && !allowedFullStackFrontends.includes(userArguments.frontend)) {
-            const allowedFrontends: string = allowedFullStackFrontends.map(e => `    - ${e}\n`).join("");
+            const allowedFrontends: string = allowedFullStackFrontends.map((e) => `    - ${e}\n`).join("");
             throw new Error("--fullstack can only be used when --frontend is one of:\n" + allowedFrontends);
         }
-    
+
         if (userArguments.backend !== undefined) {
             Logger.warn("--backend is ignored when using --fullstack");
         }
@@ -65,7 +81,7 @@ export function validateUserArguments(userArguments: UserFlags) {
 
     if (userArguments.manager !== undefined) {
         if (!isValidPackageManager(userArguments.manager)) {
-            const availableManagers: string = allPackageManagers.map(e => `    - ${e}`).join("\n");
+            const availableManagers: string = allPackageManagers.map((e) => `    - ${e}`).join("\n");
             throw new Error("Invalid package manager provided, valid values:\n" + availableManagers);
         }
     }
@@ -114,7 +130,10 @@ export function getPackageManagerCommand(userArguments: UserFlags): string {
 }
 
 export function getShouldAutoStartFromArgs(userArguments: UserFlags): boolean {
-    if (userArguments.autostart !== undefined && ( userArguments.autostart === "false" || userArguments.autostart === false )) {
+    if (
+        userArguments.autostart !== undefined &&
+        (userArguments.autostart === "false" || userArguments.autostart === false)
+    ) {
         return false;
     }
 

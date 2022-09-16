@@ -17,7 +17,7 @@ export const SuperTokensConfig = {
         }),
         Session.init(),
     ],
-}
+};
 
 // TODO: Add dashboard recipe as well for all frontends
 

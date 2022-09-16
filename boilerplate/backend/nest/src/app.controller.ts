@@ -13,13 +13,13 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get("/sessioninfo")
+  @Get('/sessioninfo')
   @UseGuards(AuthGuard)
   getSessionInformation(@Session() session: SessionContainer): any {
     return {
-        sessionHandle: session.getHandle(),
-        userId: session.getUserId(),
-        accessTokenPayload: session.getAccessTokenPayload(),
+      sessionHandle: session.getHandle(),
+      userId: session.getUserId(),
+      accessTokenPayload: session.getAccessTokenPayload(),
     };
   }
 }

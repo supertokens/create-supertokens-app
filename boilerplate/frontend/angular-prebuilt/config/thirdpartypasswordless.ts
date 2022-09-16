@@ -26,7 +26,7 @@ export const SuperTokensReactConfig = {
         }),
         SessionReact.init(),
     ],
-}
+};
 
 export const SuperTokensWebJSConfig = {
     appInfo: {
@@ -36,4 +36,4 @@ export const SuperTokensWebJSConfig = {
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [Session.init()],
-}
+};

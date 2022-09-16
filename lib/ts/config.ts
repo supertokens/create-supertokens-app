@@ -18,12 +18,8 @@ export function getFrontendOptions(userArguments: UserFlags): QuestionOption[] {
                 configFiles: "/config",
             },
             script: {
-                setup: [
-                    `${packagerCommand} install`,
-                ],
-                run: [
-                    `${packagerCommand} run start`,
-                ],
+                setup: [`${packagerCommand} install`],
+                run: [`${packagerCommand} run start`],
             },
         },
         {
@@ -35,9 +31,7 @@ export function getFrontendOptions(userArguments: UserFlags): QuestionOption[] {
                 configFiles: "/config/frontend",
             },
             script: {
-                setup: [
-                    `${packagerCommand} install`,
-                ],
+                setup: [`${packagerCommand} install`],
                 run: [`${packagerCommand} run dev`],
             },
         },
@@ -55,17 +49,13 @@ export function getFrontendOptions(userArguments: UserFlags): QuestionOption[] {
                     },
                     backend: {
                         configFiles: "/config/backend",
-                        finalConfig: "/config/backendConfig.ts"
+                        finalConfig: "/config/backendConfig.ts",
                     },
                 },
             },
             script: {
-                run: [
-                    `${packagerCommand} run dev`,
-                ],
-                setup: [
-                    `${packagerCommand} install`,
-                ],
+                run: [`${packagerCommand} run dev`],
+                setup: [`${packagerCommand} install`],
             },
         },
         {
@@ -77,9 +67,7 @@ export function getFrontendOptions(userArguments: UserFlags): QuestionOption[] {
                 configFiles: "/config",
             },
             script: {
-                setup: [
-                    `${packagerCommand} install`,
-                ],
+                setup: [`${packagerCommand} install`],
                 run: [`${packagerCommand} run dev`],
             },
         },
@@ -92,9 +80,7 @@ export function getFrontendOptions(userArguments: UserFlags): QuestionOption[] {
                 configFiles: "/config",
             },
             script: {
-                setup: [
-                    `${packagerCommand} install`,
-                ],
+                setup: [`${packagerCommand} install`],
                 run: [`${packagerCommand} run dev`],
             },
         },
@@ -114,12 +100,8 @@ export function getBackendOptions(userArguments: UserFlags): QuestionOption[] {
                 configFiles: "/config",
             },
             script: {
-                setup: [
-                    `${packagerCommand} install`,
-                ],
-                run: [
-                    `${packagerCommand} run start`,
-                ],
+                setup: [`${packagerCommand} install`],
+                run: [`${packagerCommand} run start`],
             },
         },
         {
@@ -131,9 +113,7 @@ export function getBackendOptions(userArguments: UserFlags): QuestionOption[] {
                 configFiles: "/config",
             },
             script: {
-                setup: [
-                    `${packagerCommand} install`,
-                ],
+                setup: [`${packagerCommand} install`],
                 run: [`${packagerCommand} run start`],
             },
         },
@@ -203,7 +183,7 @@ export function getQuestions(flags: UserFlags) {
             when: flags.appname === undefined,
             validate: function (input: any) {
                 const validations = validateFolderName(input);
-    
+
                 if (validations.valid) {
                     const __dirname = path.resolve();
                     const projectDirectory = __dirname + `/${input}`;
@@ -214,7 +194,7 @@ export function getQuestions(flags: UserFlags) {
 
                     return true;
                 }
-    
+
                 return "Invalid project name: " + validations.problems![0];
             },
         },
@@ -239,7 +219,7 @@ export function getQuestions(flags: UserFlags) {
                 if (answers.frontend === "next") {
                     return true;
                 }
-    
+
                 return false;
             },
         },
@@ -257,19 +237,19 @@ export function getQuestions(flags: UserFlags) {
 
                 if (flags.frontend === "next" && isFullStackFromArgs) {
                     // This means that they want to use nextjs fullstack
-                    return false
+                    return false;
                 }
 
                 if (answers.frontend === "next" && isFullStackFromArgs) {
                     // This means that they want to use nextjs fullstack
-                    return false
+                    return false;
                 }
 
                 // We skip this question if they are using Next.js fullstack
                 if (answers.nextfullstack === true) {
                     return false;
                 }
-    
+
                 return true;
             },
         },
@@ -285,6 +265,6 @@ export function getQuestions(flags: UserFlags) {
             type: "confirm",
             message: "Proceed with current selection?",
             when: flags.autoconfirm === undefined,
-        }
+        },
     ];
 }

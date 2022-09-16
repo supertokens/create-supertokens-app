@@ -5,7 +5,7 @@ export const SuperTokensReactConfig = {
         websiteDomain: "http://localhost:3000",
     },
     recipeList: [],
-}
+};
 
 export const SuperTokensWebJSConfig = {
     appInfo: {
@@ -13,4 +13,4 @@ export const SuperTokensWebJSConfig = {
         apiDomain: "http://localhost:3001",
     },
     recipeList: [],
-}
+};

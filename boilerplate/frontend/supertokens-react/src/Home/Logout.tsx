@@ -1,6 +1,4 @@
-export default function Logout(props: {
-    logoutClicked: () => void,
-}) {
+export default function Logout(props: { logoutClicked: () => void }) {
     let logoutClicked = props.logoutClicked;
 
     return (
@@ -12,7 +10,8 @@ export default function Logout(props: {
                 justifyContent: "flex-end",
                 paddingLeft: "75px",
                 paddingRight: "75px",
-            }}>
+            }}
+        >
             <div
                 onClick={logoutClicked}
                 style={{
@@ -26,7 +25,8 @@ export default function Logout(props: {
                     justifyContent: "center",
                     color: "#ffffff",
                     fontWeight: "bold",
-                }}>
+                }}
+            >
                 SIGN OUT
             </div>
         </div>

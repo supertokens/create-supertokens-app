@@ -1,8 +1,4 @@
-import ThirdParty, {
-    Google,
-    Github,
-    Apple,
-} from "supertokens-auth-react/recipe/thirdparty";
+import ThirdParty, { Google, Github, Apple } from "supertokens-auth-react/recipe/thirdparty";
 import Session from "supertokens-auth-react/recipe/session";
 
 export const SuperTokensConfig = {
@@ -24,6 +20,6 @@ export const SuperTokensConfig = {
         }),
         Session.init(),
     ],
-}
+};
 
 export const AuthWrapper = ThirdParty.ThirdPartyAuth;

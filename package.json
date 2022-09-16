@@ -1,37 +1,38 @@
 {
-  "name": "create-supertokens-app",
-  "type": "module",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "build": "cd lib && rm -rf build && npx tsc -p tsconfig.json"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "chalk": "^5.0.1",
-    "got": "^12.3.1",
-    "inquirer": "^9.1.0",
-    "node-emoji": "^1.11.0",
-    "ora": "^6.1.2",
-    "tar": "^6.1.11",
-    "uuid": "^8.3.2",
-    "validate-npm-package-name": "^4.0.0",
-    "yargs": "^17.5.1"
-  },
-  "bin": "lib/build/index.js",
-  "devDependencies": {
-    "@types/inquirer": "^9.0.1",
-    "@types/node-emoji": "^1.8.2",
-    "@types/tar": "^6.1.2",
-    "@types/uuid": "^8.3.4",
-    "@types/validate-npm-package-name": "^4.0.0",
-    "@types/yargs": "^17.0.12",
-    "typescript": "^4.8.2"
-  },
-  "engines": {
-    "node": ">=12.22.0"
-  }
+    "name": "create-supertokens-app",
+    "type": "module",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "cd lib && rm -rf build && npx tsc -p tsconfig.json"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "chalk": "^5.0.1",
+        "got": "^12.3.1",
+        "inquirer": "^9.1.0",
+        "node-emoji": "^1.11.0",
+        "ora": "^6.1.2",
+        "tar": "^6.1.11",
+        "uuid": "^8.3.2",
+        "validate-npm-package-name": "^4.0.0",
+        "yargs": "^17.5.1"
+    },
+    "bin": "lib/build/index.js",
+    "devDependencies": {
+        "@types/inquirer": "^9.0.1",
+        "@types/node-emoji": "^1.8.2",
+        "@types/tar": "^6.1.2",
+        "@types/uuid": "^8.3.4",
+        "@types/validate-npm-package-name": "^4.0.0",
+        "@types/yargs": "^17.0.12",
+        "prettier": "2.7.1",
+        "typescript": "^4.8.2"
+    },
+    "engines": {
+        "node": ">=12.22.0"
+    }
 }

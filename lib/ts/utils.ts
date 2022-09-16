@@ -9,7 +9,7 @@ import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
 import os from "os";
-import {v4 as uuidv4} from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { Ora } from "ora";
 import chalk from "chalk";
 
@@ -24,7 +24,10 @@ function normaliseLocationPath(path: string): string {
     return path;
 }
 
-export function getDownloadLocationFromAnswers(answers: Answers, userArguments: UserFlags): DownloadLocations | undefined {
+export function getDownloadLocationFromAnswers(
+    answers: Answers,
+    userArguments: UserFlags
+): DownloadLocations | undefined {
     const branchToUse = userArguments.branch || "master";
 
     const downloadURL = `https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/${branchToUse}`;
@@ -51,7 +54,7 @@ export function getDownloadLocationFromAnswers(answers: Answers, userArguments: 
             frontend: normaliseLocationPath(selectedFrontend.location.main),
             backend: normaliseLocationPath(selectedBackend.location.main),
             download: downloadURL,
-        }
+        };
     }
 
     return undefined;
@@ -74,49 +77,49 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
 
     await pipeline(
         got.stream(`${locations.download}`),
-        tar.extract({
-            cwd: `./${folderName}`, 
-            strip: isFullStack ? 4 : 3,
-            strict: true,
-            filter: (path, _) => {
-                if (path.includes(locations.frontend)) {
-                    return true;
-                }
+        tar.extract(
+            {
+                cwd: `./${folderName}`,
+                strip: isFullStack ? 4 : 3,
+                strict: true,
+                filter: (path, _) => {
+                    if (path.includes(locations.frontend)) {
+                        return true;
+                    }
 
-                if (path.includes(locations.backend)) {
-                    return true;
-                }
+                    if (path.includes(locations.backend)) {
+                        return true;
+                    }
 
-                return false;
-            }
-        }, [])
-    )
+                    return false;
+                },
+            },
+            []
+        )
+    );
 }
 
 export function validateNpmName(name: string): {
-    valid: boolean
-    problems?: string[]
-  } {
-    const nameValidation = validateProjectName(name)
+    valid: boolean;
+    problems?: string[];
+} {
+    const nameValidation = validateProjectName(name);
     if (nameValidation.validForNewPackages) {
-      return { valid: true }
+        return { valid: true };
     }
-  
+
     return {
-      valid: false,
-      problems: [
-        ...(nameValidation.errors || []),
-        ...(nameValidation.warnings || []),
-      ],
-    }
-  }
+        valid: false,
+        problems: [...(nameValidation.errors || []), ...(nameValidation.warnings || [])],
+    };
+}
 
 function getPackageJsonString(input: {
-    appname: string,
+    appname: string;
     runScripts: {
-        frontend: string[],
-        backend: string[],
-    },
+        frontend: string[];
+        backend: string[];
+    };
 }): string {
     const frontendStartScript = input.runScripts.frontend.join(" && ");
     const backendStartScript = input.runScripts.backend.join(" && ");
@@ -143,14 +146,20 @@ function getPackageJsonString(input: {
 }
 
 async function setupFrontendBackendApp(
-    answers: Answers, 
-    folderName: string, 
-    locations: DownloadLocations, 
-    userArguments: UserFlags, 
-    spinner: Ora,
+    answers: Answers,
+    folderName: string,
+    locations: DownloadLocations,
+    userArguments: UserFlags,
+    spinner: Ora
 ) {
-    const frontendFolderName = locations.frontend.split("/").filter(i => i !== "frontend").join("")
-    const backendFolderName = locations.backend.split("/").filter(i => i !== "backend").join("")
+    const frontendFolderName = locations.frontend
+        .split("/")
+        .filter((i) => i !== "frontend")
+        .join("");
+    const backendFolderName = locations.backend
+        .split("/")
+        .filter((i) => i !== "backend")
+        .join("");
 
     const __dirname = path.resolve();
     const frontendDirectory = __dirname + `/${folderName}/${frontendFolderName}`;
@@ -168,7 +177,12 @@ async function setupFrontendBackendApp(
         return element.value === answers.backend;
     });
 
-    if (selectedFrontend === undefined || selectedBackend === undefined || selectedFrontend.isFullStack === true || selectedBackend.isFullStack === true) {
+    if (
+        selectedFrontend === undefined ||
+        selectedBackend === undefined ||
+        selectedFrontend.isFullStack === true ||
+        selectedBackend.isFullStack === true
+    ) {
         throw new Error("Should never come here");
     }
 
@@ -188,7 +202,7 @@ async function setupFrontendBackendApp(
 
         const setup = exec(`cd ${folderName}/frontend && ${setupString}`);
 
-        setup.on("exit", code => {
+        setup.on("exit", (code) => {
             const errorString = stderr.join("\n");
             res({
                 code,
@@ -196,22 +210,22 @@ async function setupFrontendBackendApp(
             });
         });
 
-        setup.stderr?.on("data", data => {
+        setup.stderr?.on("data", (data) => {
             // Record any messages printed as errors
             stderr.push(data.toString());
         });
 
-        setup.stdout?.on("data", data => {
+        setup.stdout?.on("data", (data) => {
             /**
              * Record any messages printed as errors, we do this for stdout
              * as well because some scripts use the output stream for errors
              * too (npm for example) while others use stderr only
-             * 
+             *
              * This means that we will output everything if the script exits with
              * non zero
              */
             stderr.push(data.toString());
-        })
+        });
     });
 
     const frontendSetupResult = await frontendSetup;
@@ -236,9 +250,9 @@ async function setupFrontendBackendApp(
 
         const setupString = selectedBackend.script.setup.join(" && ");
 
-        const setup = exec(`cd ${folderName}/backend && ${setupString}`)
+        const setup = exec(`cd ${folderName}/backend && ${setupString}`);
 
-        setup.on("exit", code => {
+        setup.on("exit", (code) => {
             const errorString = stderr.join("\n");
             res({
                 code,
@@ -246,22 +260,22 @@ async function setupFrontendBackendApp(
             });
         });
 
-        setup.stderr?.on("data", data => {
+        setup.stderr?.on("data", (data) => {
             // Record any messages printed as errors
             stderr.push(data.toString());
         });
 
-        setup.stdout?.on("data", data => {
+        setup.stdout?.on("data", (data) => {
             /**
              * Record any messages printed as errors, we do this for stdout
              * as well because some scripts use the output stream for errors
              * too (npm for example) while others use stderr only
-             * 
+             *
              * This means that we will output everything if the script exits with
              * non zero
              */
             stderr.push(data.toString());
-        })
+        });
     });
 
     // Call the frontend and backend setup scripts
@@ -279,17 +293,21 @@ async function setupFrontendBackendApp(
 
     spinner.text = chalk.blue("Configuring files");
     // Move the recipe config file for the frontend folder to the correct place
-    const frontendFiles = fs.readdirSync(`./${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`);
-    const frontendRecipeConfig = frontendFiles.filter(i => i.includes(answers.recipe));
+    const frontendFiles = fs.readdirSync(
+        `./${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`
+    );
+    const frontendRecipeConfig = frontendFiles.filter((i) => i.includes(answers.recipe));
 
     if (frontendRecipeConfig.length === 0) {
         throw new Error("Should never come here");
     }
 
     fs.copyFileSync(
-        `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}/${frontendRecipeConfig[0]}`, 
+        `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}/${
+            frontendRecipeConfig[0]
+        }`,
         `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.finalConfig)}`
-    )
+    );
 
     // Remove the configs folder
     fs.rmSync(`${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`, {
@@ -301,17 +319,21 @@ async function setupFrontendBackendApp(
         throw new Error("Should not come here");
     }
 
-    const backendFiles = fs.readdirSync(`./${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}`);
-    const backendRecipeConfig = backendFiles.filter(i => i.includes(answers.recipe));
+    const backendFiles = fs.readdirSync(
+        `./${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}`
+    );
+    const backendRecipeConfig = backendFiles.filter((i) => i.includes(answers.recipe));
 
     if (backendRecipeConfig.length === 0) {
         throw new Error("Should never come here");
     }
 
     fs.copyFileSync(
-        `${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}/${backendRecipeConfig[0]}`, 
+        `${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}/${
+            backendRecipeConfig[0]
+        }`,
         `${folderName}/backend/${normaliseLocationPath(selectedBackend.location.finalConfig)}`
-    )
+    );
 
     // Remove the configs folder
     fs.rmSync(`${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}`, {
@@ -320,19 +342,22 @@ async function setupFrontendBackendApp(
     });
 
     // Create a root level package.json file
-    fs.writeFileSync(`${folderName}/package.json`, getPackageJsonString({
-        appname: answers.appname,
-        runScripts: {
-            frontend: selectedFrontend?.script?.run || [],
-            backend: selectedBackend?.script?.run || [],
-        },
-    }));
+    fs.writeFileSync(
+        `${folderName}/package.json`,
+        getPackageJsonString({
+            appname: answers.appname,
+            runScripts: {
+                frontend: selectedFrontend?.script?.run || [],
+                backend: selectedBackend?.script?.run || [],
+            },
+        })
+    );
 
     const rootSetup = new Promise<ExecOutput>((res) => {
         const rootInstall = exec(`cd ${folderName}/ && npm install`);
         let stderr: string[] = [];
 
-        rootInstall.on("exit", code => {
+        rootInstall.on("exit", (code) => {
             const errorString = stderr.join("\n");
             res({
                 code,
@@ -340,22 +365,22 @@ async function setupFrontendBackendApp(
             });
         });
 
-        rootInstall.stderr?.on("data", data => {
+        rootInstall.stderr?.on("data", (data) => {
             // Record any messages printed as errors
             stderr.push(data.toString());
         });
 
-        rootInstall.stdout?.on("data", data => {
+        rootInstall.stdout?.on("data", (data) => {
             /**
              * Record any messages printed as errors, we do this for stdout
              * as well because some scripts use the output stream for errors
              * too (npm for example) while others use stderr only
-             * 
+             *
              * This means that we will output everything if the script exits with
              * non zero
              */
             stderr.push(data.toString());
-        })
+        });
     });
 
     const rootSetupResult = await rootSetup;
@@ -367,12 +392,7 @@ async function setupFrontendBackendApp(
     }
 }
 
-async function setupFullstack(
-    answers: Answers, 
-    folderName: string, 
-    userArguments: UserFlags,
-    spinner: Ora,
-) {
+async function setupFullstack(answers: Answers, folderName: string, userArguments: UserFlags, spinner: Ora) {
     spinner.text = chalk.blue("Installing dependencies");
     const selectedFullStack = getFrontendOptions(userArguments).find((element) => {
         return element.value === answers.frontend;
@@ -392,8 +412,8 @@ async function setupFullstack(
             return;
         }
 
-        let stderr: string[] = []
-        
+        let stderr: string[] = [];
+
         /**
          * Some stacks (Ex: Python) require all steps to be run in the same shell,
          * so we combine all setup commands in one single command and eecute that
@@ -401,9 +421,9 @@ async function setupFullstack(
         const setupString = selectedFullStack.script.setup.join(" && ");
 
         // For full stack the folder doesnt have frontend and backend folders so we directly run the setup on the root
-        const setup = exec(`cd ${folderName}/ && ${setupString}`)
+        const setup = exec(`cd ${folderName}/ && ${setupString}`);
 
-        setup.on("exit", code => {
+        setup.on("exit", (code) => {
             const errorString = stderr.join("\n");
             res({
                 code,
@@ -411,22 +431,22 @@ async function setupFullstack(
             });
         });
 
-        setup.stderr?.on("data", data => {
+        setup.stderr?.on("data", (data) => {
             // Record any messages printed as errors
             stderr.push(data.toString());
         });
 
-        setup.stdout?.on("data", data => {
+        setup.stdout?.on("data", (data) => {
             /**
              * Record any messages printed as errors, we do this for stdout
              * as well because some scripts use the output stream for errors
              * too (npm for example) while others use stderr only
-             * 
+             *
              * This means that we will output everything if the script exits with
              * non zero
              */
             stderr.push(data.toString());
-        })
+        });
     });
 
     const setupResultObj = await setupResult;
@@ -439,17 +459,21 @@ async function setupFullstack(
 
     spinner.text = chalk.blue("Configuring files");
     // Move the recipe config file for the frontend folder to the correct place
-    const frontendFiles = fs.readdirSync(`./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`);
-    const frontendRecipeConfig = frontendFiles.filter(i => i.includes(answers.recipe));
+    const frontendFiles = fs.readdirSync(
+        `./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`
+    );
+    const frontendRecipeConfig = frontendFiles.filter((i) => i.includes(answers.recipe));
 
     if (frontendRecipeConfig.length === 0) {
         throw new Error("Should never come here");
     }
 
     fs.copyFileSync(
-        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}/${frontendRecipeConfig[0]}`, 
+        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}/${
+            frontendRecipeConfig[0]
+        }`,
         `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.finalConfig)}`
-    )
+    );
 
     // Remove the configs folder
     fs.rmSync(`${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`, {
@@ -457,17 +481,21 @@ async function setupFullstack(
         force: true,
     });
 
-    const backendFiles = fs.readdirSync(`./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}`);
-    const backendRecipeConfig = backendFiles.filter(i => i.includes(answers.recipe));
+    const backendFiles = fs.readdirSync(
+        `./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}`
+    );
+    const backendRecipeConfig = backendFiles.filter((i) => i.includes(answers.recipe));
 
     if (backendRecipeConfig.length === 0) {
         throw new Error("Should never come here");
     }
 
     fs.copyFileSync(
-        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}/${backendRecipeConfig[0]}`, 
+        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}/${
+            backendRecipeConfig[0]
+        }`,
         `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.finalConfig)}`
-    )
+    );
 
     // Remove the configs folder
     fs.rmSync(`${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}`, {
@@ -477,11 +505,11 @@ async function setupFullstack(
 }
 
 export async function setupProject(
-    locations: DownloadLocations, 
-    folderName: string, 
+    locations: DownloadLocations,
+    folderName: string,
     answers: Answers,
     userArguments: UserFlags,
-    spinner: Ora,
+    spinner: Ora
 ) {
     const isFullStack = locations.frontend === locations.backend;
 
@@ -535,20 +563,20 @@ export async function runProject(answers: Answers, userArguments: UserFlags) {
 
         const rootRun = exec(`cd ${folderName}/ && ${appRunScript}`);
 
-        rootRun.on("error", error => {
+        rootRun.on("error", (error) => {
             didReject = true;
             rej(error.message);
         });
 
-        rootRun.on("exit", code => {
+        rootRun.on("exit", (code) => {
             if (!didReject) {
                 res(code);
             }
-        })
+        });
 
-        rootRun.stdout?.on("data", data => {
-            console.log(data.toString())
-        })
+        rootRun.stdout?.on("data", (data) => {
+            console.log(data.toString());
+        });
     });
 
     await runProjectScript;

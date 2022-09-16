@@ -2,16 +2,18 @@
 
 # Flask example
 
-This is an example to show how to use supertokens-python library with Flask framework and ThirdpartyEmailpassword recipe. 
+This is an example to show how to use supertokens-python library with Flask framework and ThirdpartyEmailpassword recipe.
 
 This server code can be used to implement social auth using:
-- Google
-- Github
-- Apple
+
+-   Google
+-   Github
+-   Apple
 
 ## Installation
 
 Before installing, use the script to create a virtual environment and to install all the required packages.
+
 ```bash
 source create_env.sh
 ```

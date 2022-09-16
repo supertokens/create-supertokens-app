@@ -41,7 +41,7 @@ async function run() {
             --manager: Which package manager to use
             --autostart: Whether the CLI should start the project after setting up
         */
-        const userArguments: UserFlags = await yargs(hideBin(process.argv)).argv as any;
+        const userArguments: UserFlags = (await yargs(hideBin(process.argv)).argv) as any;
 
         validateUserArguments(userArguments);
 
@@ -55,17 +55,17 @@ async function run() {
             throw new Error("Aborting...");
         }
 
-        console.log("")
+        console.log("");
         const downloadSpinner = Ora({
             color: "blue",
             spinner: "dots10",
-            text: chalk.blue("Downloading files")
-        }).start()
+            text: chalk.blue("Downloading files"),
+        }).start();
 
         const folderLocations = getDownloadLocationFromAnswers(answers, userArguments);
 
         if (folderLocations === undefined) {
-            Logger.log("Something went wrong, exiting...")
+            Logger.log("Something went wrong, exiting...");
             return;
         }
 
@@ -74,45 +74,45 @@ async function run() {
 
             downloadSpinner.stopAndPersist({
                 text: chalk.greenBright("Download complete!"),
-                symbol: Emoji.get(":white_check_mark:")
+                symbol: Emoji.get(":white_check_mark:"),
             });
         } catch (e) {
             downloadSpinner.stopAndPersist({
                 text: chalk.redBright("Error downloading files"),
-                symbol: Emoji.get(":no_entry:")
+                symbol: Emoji.get(":no_entry:"),
             });
         }
 
-        console.log("")
-        
+        console.log("");
+
         const setupSpinner = Ora({
             color: "blue",
             text: chalk.blue("Setting up the project"),
             spinner: "dots10",
-        }).start()
+        }).start();
 
         try {
             await setupProject(folderLocations, answers.appname, answers, userArguments, setupSpinner);
 
             setupSpinner.stopAndPersist({
                 text: chalk.greenBright("Setup complete!"),
-                symbol: Emoji.get(":white_check_mark:")
+                symbol: Emoji.get(":white_check_mark:"),
             });
         } catch (e) {
             setupSpinner.stopAndPersist({
                 text: chalk.redBright("Setup failed!"),
-                symbol: Emoji.get(":no_entry:")
+                symbol: Emoji.get(":no_entry:"),
             });
             /**
              * If the project setup failed we want to clear the generate app,
              * otherwise the user would have to manually delete the folder before
              * running the CLI again
-             * 
+             *
              * NOTE: We dont do this for runProject because if running fails, the user
              * can fix the error (install missing library for example) and then run the
              * app again themseves without having to run and wait for the CLI to finish
              */
-             fs.rmSync(`${answers.appname}/`, {
+            fs.rmSync(`${answers.appname}/`, {
                 recursive: true,
                 force: true,
             });
@@ -120,11 +120,11 @@ async function run() {
         }
 
         if (!getShouldAutoStartFromArgs(userArguments)) {
-            Logger.success("Setup complete!")
+            Logger.success("Setup complete!");
             return;
         }
 
-        Logger.success("Running the project...")
+        Logger.success("Running the project...");
         await runProject(answers, userArguments);
     } catch (e) {
         Logger.error((e as any).message);

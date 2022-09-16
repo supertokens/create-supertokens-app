@@ -15,6 +15,6 @@ export const SuperTokensConfig = {
         }),
         Session.init(),
     ],
-}
+};
 
 export const AuthWrapper = Passwordless.PasswordlessAuth;

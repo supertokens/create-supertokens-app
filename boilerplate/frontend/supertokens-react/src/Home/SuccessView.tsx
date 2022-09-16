@@ -1,9 +1,7 @@
 import CallAPIView from "./CallAPIView";
 
 // TODO: make this better..
-export default function SuccessView(props: {
-    userId: string,
-}) {
+export default function SuccessView(props: { userId: string }) {
     let userId = props.userId;
 
     return (
@@ -18,11 +16,13 @@ export default function SuccessView(props: {
                 color: "#333333",
                 paddingTop: "10px",
                 paddingBottom: "40px",
-            }}>
+            }}
+        >
             <span
                 style={{
                     fontSize: "50px",
-                }}>
+                }}
+            >
                 🥳🎉
             </span>
             Login successful

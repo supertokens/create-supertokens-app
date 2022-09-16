@@ -11,18 +11,17 @@ export function getPythonRunScripts(): string[] {
             "python app.py",
         ];
     }
-    return [
-        "./create_env.sh",
-        "python app.py",
-    ];
+    return ["./create_env.sh", "python app.py"];
 }
 
 // Converts the options array we declare to a format iquirer can use
 export function mapOptionsToChoices(options: QuestionOption[] | RecipeQuestionOption[]) {
-    return options.filter(i => i.shouldDisplay !== false).map(option => {
-        return {
-            name: option.displayName,
-            value: option.value,
-        };
-    });
+    return options
+        .filter((i) => i.shouldDisplay !== false)
+        .map((option) => {
+            return {
+                name: option.displayName,
+                value: option.value,
+            };
+        });
 }

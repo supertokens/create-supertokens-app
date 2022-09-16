@@ -1,8 +1,4 @@
-import ThirdPartyEmailPassword, {
-    Google,
-    Github,
-    Apple,
-} from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import ThirdPartyEmailPassword, { Google, Github, Apple } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import Session from "supertokens-auth-react/recipe/session";
 
 export const SuperTokensConfig = {
@@ -24,6 +20,6 @@ export const SuperTokensConfig = {
         }),
         Session.init(),
     ],
-}
+};
 
 export const AuthWrapper = ThirdPartyEmailPassword.ThirdPartyEmailPasswordAuth;
