@@ -6,8 +6,9 @@ import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProject }
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 // import fs from "fs";
-import { modifyAnswersBasedOnFlags, validateUserArguments } from "./userArgumentUtils.js";
+import { getShouldAutoStartFromArgs, modifyAnswersBasedOnFlags, validateUserArguments } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
+import fs from "fs";
 
 function modifyAnswersBasedOnSelection(answers: Answers): Answers {
     let _answers = answers;
@@ -34,6 +35,8 @@ async function run() {
             --backend: Which backend to use
             --fullstack: If the selected stack is a fullstack framework
             --autoconfirm: Skips the confirmation at the end of the selection
+            --manager: Which package manager to use
+            --autostart: Whether the CLI should start the project after setting up
         */
         const userArguments: UserFlags = await yargs(hideBin(process.argv)).argv as any;
         validateUserArguments(userArguments);
@@ -70,11 +73,16 @@ async function run() {
              * can fix the error (install missing library for example) and then run the
              * app again themseves without having to run and wait for the CLI to finish
              */
-            //  fs.rmSync(`${answers.appname}/`, {
-            //     recursive: true,
-            //     force: true,
-            // });
+             fs.rmSync(`${answers.appname}/`, {
+                recursive: true,
+                force: true,
+            });
             throw e;
+        }
+
+        if (!getShouldAutoStartFromArgs(userArguments)) {
+            Logger.success("Setup complete!")
+            return;
         }
 
         Logger.log("Running the project...")

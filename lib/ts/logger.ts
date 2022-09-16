@@ -15,4 +15,9 @@ export class Logger {
         console.log("\n");
         console.log(chalk.yellow("Warning:"), chalk.yellow(item));
     }
+
+    static success(item: any) {
+        console.log("\n");
+        console.log(chalk.blueBright(item));
+    }
 }

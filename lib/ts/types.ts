@@ -186,6 +186,7 @@ export type UserFlags = {
     backend?: SupportedBackends,
     autoconfirm?: string | boolean,
     manager?: SupportedPackageManagers;
+    autostart?: string | boolean;
 }
 
 export type ExecOutput = {

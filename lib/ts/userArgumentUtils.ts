@@ -112,3 +112,11 @@ export function getPackageManagerCommand(userArguments: UserFlags): string {
 
     return "npm";
 }
+
+export function getShouldAutoStartFromArgs(userArguments: UserFlags): boolean {
+    if (userArguments.autostart !== undefined && ( userArguments.autostart === "false" || userArguments.autostart === false )) {
+        return false;
+    }
+
+    return true;
+}
