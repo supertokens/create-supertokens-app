@@ -99,11 +99,23 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
     }
 
     if (userArguments.frontend !== undefined) {
-        _answers.frontend = userArguments.frontend;
+        const selectedFrontend = allFrontends.filter((i) => userArguments.frontend === i.displayValue);
+
+        if (selectedFrontend.length === 0) {
+            throw new Error("Should never come here");
+        }
+
+        _answers.frontend = selectedFrontend[0].id;
     }
 
     if (userArguments.backend !== undefined) {
-        _answers.backend = userArguments.backend;
+        const selectedBackend = allBackends.filter((i) => userArguments.backend === i.displayValue);
+
+        if (selectedBackend.length === 0) {
+            throw new Error("Should never come here");
+        }
+
+        _answers.backend = selectedBackend[0].id;
     }
 
     if (getIsFullStackFromArgs(userArguments) && userArguments.frontend === "next") {
