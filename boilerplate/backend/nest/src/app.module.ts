@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UserinfoModule } from './userinfo/userinfo.module';
 import * as SuperTokensConfig from './config';
 
 @Module({
@@ -13,7 +12,6 @@ import * as SuperTokensConfig from './config';
       // apiKey: "IF YOU HAVE AN API KEY FOR THE CORE, ADD IT HERE",
       appInfo: SuperTokensConfig.appInfo,
     }),
-    UserinfoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
