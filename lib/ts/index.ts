@@ -85,7 +85,7 @@ async function run() {
             return;
         }
 
-        Logger.log("Running the project...")
+        Logger.success("Running the project...")
         await runProject(answers, userArguments);
     } catch (e) {
         Logger.error((e as any).message);
