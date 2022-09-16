@@ -1,0 +1,60 @@
+#!/bin/bash
+# Expects a releasePassword file to be ./
+# get version------------
+version=`cat package.json | grep -e '"version":'`
+
+while IFS='"' read -ra ADDR; do
+    counter=0
+    for i in "${ADDR[@]}"; do
+        if [ $counter == 3 ]
+        then
+            version=$i
+        fi
+        counter=$(($counter+1))
+    done
+done <<< "$version"
+
+versionLock=`head -n 3 package-lock.json | grep -e '"version":'`
+
+while IFS='"' read -ra ADDR; do
+    counter=0
+    for i in "${ADDR[@]}"; do
+        if [ $counter == 3 ]
+        then
+            versionLock=$i
+        fi
+        counter=$(($counter+1))
+    done
+done <<< "$versionLock"
+
+# check if package and package-lock versions are similar.-----------
+if ! [[ $version == $versionLock ]]
+then
+    RED='\033[0;31m'
+    NC='\033[0m' # No Color
+    printf "${RED}Difference between package-lock and package version. Please run npm install. Stopping process${NC}\n"
+    exit 1
+fi
+
+codeversion=`cat lib/build/version.js | grep -e 'package_version'`
+while IFS='"' read -ra ADDR; do
+    counter=0
+    for i in "${ADDR[@]}"; do
+        if [ $counter == 1 ]
+        then
+            codeversion=$i
+        fi
+        counter=$(($counter+1))
+    done
+done <<< "$codeversion"
+
+if [ $version != $codeversion ]
+then
+    RED='\033[0;31m'
+    NC='\033[0m' # No Color
+    printf "${RED}Version codes in version.ts and package.json are not the same${NC}\n"
+    exit 1
+fi
+
+git tag v$version
+git push --tags
