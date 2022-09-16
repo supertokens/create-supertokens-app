@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.2] - 2022-09-16
+
+### Fixes
+
+-   Fixes setup scripts for python-flask example app
+
 ## [0.0.1] - 2022-09-16
 
 -   Initial Release
