@@ -3,7 +3,7 @@ import got from "got";
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
-import { Answers, DownloadLocations, UserFlags } from "./types";
+import { Answers, DownloadLocations, ExecOutput, UserFlags } from "./types";
 import validateProjectName from "validate-npm-package-name";
 import fs from "fs";
 import path from "path";
@@ -12,6 +12,7 @@ import os from "os";
 import {v4 as uuidv4} from "uuid";
 
 const pipeline = promisify(stream.pipeline);
+const defaultSetupErrorString = "Project Setup Failed!";
 
 function normaliseLocationPath(path: string): string {
     if (path.startsWith("/")) {
@@ -163,11 +164,14 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
         throw new Error("Should never come here");
     }
 
-    const frontendSetup = new Promise((res, rej) => {
-        let didReject = false;
+    const frontendSetup = new Promise<ExecOutput>((res) => {
+        let stderr: string[] = [];
 
-        if (selectedFrontend === undefined || selectedFrontend.script === undefined || selectedFrontend.script.setup.length === 0) {
-            res(0);
+        if (selectedFrontend.script === undefined || selectedFrontend.script.setup.length === 0) {
+            res({
+                code: 0,
+                error: undefined,
+            });
             return;
         }
 
@@ -175,25 +179,48 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
 
         const setup = exec(`cd ${folderName}/frontend && ${setupString}`);
 
-        setup.on("error", error => {
-            didReject = true;
-            rej(error.message);
+        setup.on("exit", code => {
+            const errorString = stderr.join("\n");
+            res({
+                code,
+                error: errorString.length === 0 ? undefined : errorString,
+            });
         });
 
-        setup.on("exit", code => {
-            if (!didReject) {
-                res(code);
-            }
+        setup.stderr?.on("data", data => {
+            // Record any messages printed as errors
+            stderr.push(data.toString());
         });
+
+        setup.stdout?.on("data", data => {
+            /**
+             * Record any messages printed as errors, we do this for stdout
+             * as well because some scripts use the output stream for errors
+             * too (npm for example) while others use stderr only
+             * 
+             * This means that we will output everything if the script exits with
+             * non zero
+             */
+            stderr.push(data.toString());
+        })
     });
 
-    const frontendCode = await frontendSetup;
+    const frontendSetupResult = await frontendSetup;
 
-    const backendSetup = new Promise((res, rej) => {
-        let didReject = false;
+    if (frontendSetupResult.code !== 0) {
+        const error = frontendSetupResult.error !== undefined ? frontendSetupResult.error : defaultSetupErrorString;
 
-        if (selectedBackend === undefined || selectedBackend.script === undefined || selectedBackend.script.setup.length === 0) {
-            res(0);
+        throw new Error(error);
+    }
+
+    const backendSetup = new Promise<ExecOutput>((res) => {
+        let stderr: string[] = [];
+
+        if (selectedBackend.script === undefined || selectedBackend.script.setup.length === 0) {
+            res({
+                code: 0,
+                error: undefined,
+            });
             return;
         }
 
@@ -201,23 +228,39 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
 
         const setup = exec(`cd ${folderName}/backend && ${setupString}`)
 
-        setup.on("error", error => {
-            didReject = true;
-            rej(error.message);
+        setup.on("exit", code => {
+            const errorString = stderr.join("\n");
+            res({
+                code,
+                error: errorString.length === 0 ? undefined : errorString,
+            });
         });
 
-        setup.on("exit", code => {
-            if (!didReject) {
-                res(code);
-            }
+        setup.stderr?.on("data", data => {
+            // Record any messages printed as errors
+            stderr.push(data.toString());
         });
+
+        setup.stdout?.on("data", data => {
+            /**
+             * Record any messages printed as errors, we do this for stdout
+             * as well because some scripts use the output stream for errors
+             * too (npm for example) while others use stderr only
+             * 
+             * This means that we will output everything if the script exits with
+             * non zero
+             */
+            stderr.push(data.toString());
+        })
     });
 
     // Call the frontend and backend setup scripts
-    const backendCode = await backendSetup;
+    const backendSetupResult = await backendSetup;
 
-    if (frontendCode !== 0 || backendCode !== 0) {
-        throw new Error("Project setup failed!")
+    if (backendSetupResult.code !== 0) {
+        const error = backendSetupResult.error !== undefined ? backendSetupResult.error : defaultSetupErrorString;
+
+        throw new Error(error);
     }
 
     if (selectedFrontend.location === undefined) {
@@ -274,24 +317,43 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
         },
     }));
 
-    const rootSetup = new Promise((res, rej) => {
-        let didReject = false;
-
+    const rootSetup = new Promise<ExecOutput>((res) => {
         const rootInstall = exec(`cd ${folderName}/ && npm install`);
-
-        rootInstall.on("error", error => {
-            didReject = true;
-            rej(error.message);
-        });
+        let stderr: string[] = [];
 
         rootInstall.on("exit", code => {
-            if (!didReject) {
-                res(code);
-            }
+            const errorString = stderr.join("\n");
+            res({
+                code,
+                error: errorString.length === 0 ? undefined : errorString,
+            });
+        });
+
+        rootInstall.stderr?.on("data", data => {
+            // Record any messages printed as errors
+            stderr.push(data.toString());
+        });
+
+        rootInstall.stdout?.on("data", data => {
+            /**
+             * Record any messages printed as errors, we do this for stdout
+             * as well because some scripts use the output stream for errors
+             * too (npm for example) while others use stderr only
+             * 
+             * This means that we will output everything if the script exits with
+             * non zero
+             */
+            stderr.push(data.toString());
         })
     });
 
-    await rootSetup;
+    const rootSetupResult = await rootSetup;
+
+    if (rootSetupResult.code !== 0) {
+        const error = rootSetupResult.error !== undefined ? rootSetupResult.error : defaultSetupErrorString;
+
+        throw new Error(error);
+    }
 }
 
 async function setupFullstack(answers: Answers, folderName: string) {
@@ -303,35 +365,59 @@ async function setupFullstack(answers: Answers, folderName: string) {
         throw new Error("Should never come here");
     }
 
-    const setupResult = new Promise((res, rej) => {
-        let didReject = false;
-
-        if (selectedFullStack === undefined || selectedFullStack.script === undefined || selectedFullStack.script.setup.length === 0) {
-            res(0);
+    const setupResult = new Promise<ExecOutput>((res) => {
+        if (selectedFullStack.script === undefined || selectedFullStack.script.setup.length === 0) {
+            // This means that no setup is required
+            res({
+                code: 0,
+                error: undefined,
+            });
             return;
         }
+
+        let stderr: string[] = []
         
+        /**
+         * Some stacks (Ex: Python) require all steps to be run in the same shell,
+         * so we combine all setup commands in one single command and eecute that
+         */
         const setupString = selectedFullStack.script.setup.join(" && ");
 
         // For full stack the folder doesnt have frontend and backend folders so we directly run the setup on the root
         const setup = exec(`cd ${folderName}/ && ${setupString}`)
 
-        setup.on("error", error => {
-            didReject = true;
-            rej(error.message);
+        setup.on("exit", code => {
+            const errorString = stderr.join("\n");
+            res({
+                code,
+                error: errorString.length === 0 ? undefined : errorString,
+            });
         });
 
-        setup.on("exit", code => {
-            if (!didReject) {
-                res(code);
-            }
+        setup.stderr?.on("data", data => {
+            // Record any messages printed as errors
+            stderr.push(data.toString());
+        });
+
+        setup.stdout?.on("data", data => {
+            /**
+             * Record any messages printed as errors, we do this for stdout
+             * as well because some scripts use the output stream for errors
+             * too (npm for example) while others use stderr only
+             * 
+             * This means that we will output everything if the script exits with
+             * non zero
+             */
+            stderr.push(data.toString());
         })
     });
 
-    const frontendCode = await setupResult;
+    const setupResultObj = await setupResult;
 
-    if (frontendCode !== 0) {
-        throw new Error("Project setup failed!")
+    if (setupResultObj.code !== 0) {
+        const error = setupResultObj.error !== undefined ? setupResultObj.error : defaultSetupErrorString;
+
+        throw new Error(error);
     }
 
     // Move the recipe config file for the frontend folder to the correct place

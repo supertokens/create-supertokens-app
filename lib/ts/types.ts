@@ -104,3 +104,8 @@ export type UserFlags = {
     recipe?: string,
     branch?: string,
 }
+
+export type ExecOutput = {
+    code: number | null,
+    error: string | undefined,
+}
