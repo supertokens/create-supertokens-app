@@ -1,4 +1,4 @@
-import { frontendOptions, backendOptions } from "./config.js";
+import { getFrontendOptions, getBackendOptions } from "./config.js";
 import got from "got";
 import tar from "tar";
 import { promisify } from "util";
@@ -27,11 +27,11 @@ export function getDownloadLocationFromAnswers(answers: Answers, userArguments: 
 
     const downloadURL = `https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/${branchToUse}`;
 
-    const selectedFrontend = frontendOptions.find((element) => {
+    const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
         return element.value === answers.frontend;
     });
 
-    const selectedBackend = backendOptions.find((element) => {
+    const selectedBackend = getBackendOptions(userArguments).find((element) => {
         return element.value === answers.backend;
     });
 
@@ -140,7 +140,7 @@ function getPackageJsonString(input: {
     `;
 }
 
-async function setupFrontendBackendApp(answers: Answers, folderName: string, locations: DownloadLocations) {
+async function setupFrontendBackendApp(answers: Answers, folderName: string, locations: DownloadLocations, userArguments: UserFlags) {
     const frontendFolderName = locations.frontend.split("/").filter(i => i !== "frontend").join("")
     const backendFolderName = locations.backend.split("/").filter(i => i !== "backend").join("")
 
@@ -152,11 +152,11 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
     fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
     fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
 
-    const selectedFrontend = frontendOptions.find((element) => {
+    const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
         return element.value === answers.frontend;
     });
 
-    const selectedBackend = backendOptions.find((element) => {
+    const selectedBackend = getBackendOptions(userArguments).find((element) => {
         return element.value === answers.backend;
     });
 
@@ -356,8 +356,8 @@ async function setupFrontendBackendApp(answers: Answers, folderName: string, loc
     }
 }
 
-async function setupFullstack(answers: Answers, folderName: string) {
-    const selectedFullStack = frontendOptions.find((element) => {
+async function setupFullstack(answers: Answers, folderName: string, userArguments: UserFlags) {
+    const selectedFullStack = getFrontendOptions(userArguments).find((element) => {
         return element.value === answers.frontend;
     });
 
@@ -458,13 +458,13 @@ async function setupFullstack(answers: Answers, folderName: string) {
     });
 }
 
-export async function setupProject(locations: DownloadLocations, folderName: string, answers: Answers) {
+export async function setupProject(locations: DownloadLocations, folderName: string, answers: Answers, userArguments: UserFlags) {
     const isFullStack = locations.frontend === locations.backend;
 
     if (!isFullStack) {
-        await setupFrontendBackendApp(answers, folderName, locations);
+        await setupFrontendBackendApp(answers, folderName, locations, userArguments);
     } else {
-        await setupFullstack(answers, folderName);
+        await setupFullstack(answers, folderName, userArguments);
     }
 }
 
@@ -489,10 +489,10 @@ export function validateFolderName(name: string): {
     return validateNpmName(path.basename(path.resolve(name)));
 }
 
-export async function runProject(answers: Answers) {
+export async function runProject(answers: Answers, userArguments: UserFlags) {
     const folderName = answers.appname;
 
-    const selectedFrontend = frontendOptions.find((element) => {
+    const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
         return element.value === answers.frontend;
     });
 

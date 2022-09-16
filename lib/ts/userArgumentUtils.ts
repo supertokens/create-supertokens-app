@@ -1,5 +1,5 @@
 import { Logger } from "./logger.js";
-import { allBackends, allFrontends, allRecipes, Answers, isValidBackend, isValidFrontend, isValidRecipeName, SupportedFrontends, UserFlags } from "./types.js";
+import { allBackends, allFrontends, allPackageManagers, allRecipes, Answers, isValidBackend, isValidFrontend, isValidPackageManager, isValidRecipeName, SupportedFrontends, UserFlags } from "./types.js";
 import { validateFolderName } from "./utils.js";
 
 export function getIsFullStackFromArgs(userArguments: UserFlags): boolean {
@@ -62,6 +62,13 @@ export function validateUserArguments(userArguments: UserFlags) {
             Logger.warn("--backend is ignored when using --fullstack");
         }
     }
+
+    if (userArguments.manager !== undefined) {
+        if (!isValidPackageManager(userArguments.manager)) {
+            const availableManagers: string = allPackageManagers.map(e => `    - ${e}`).join("\n");
+            throw new Error("Invalid package manager provided, valid values:\n" + availableManagers);
+        }
+    }
 }
 
 export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserFlags): Answers {
@@ -92,4 +99,16 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
     }
 
     return _answers;
+}
+
+export function getPackageManagerCommand(userArguments: UserFlags): string {
+    if (userArguments.manager === "npm") {
+        return "npm";
+    }
+
+    if (userArguments.manager === "yarn") {
+        return "yarn";
+    }
+
+    return "npm";
 }

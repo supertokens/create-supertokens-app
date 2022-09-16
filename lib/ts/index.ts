@@ -59,7 +59,7 @@ async function run() {
 
         Logger.log("Setting up the project...")
         try {
-            await setupProject(folderLocations, answers.appname, answers);
+            await setupProject(folderLocations, answers.appname, answers, userArguments);
         } catch (e) {
             /**
              * If the project setup failed we want to clear the generate app,
@@ -78,7 +78,7 @@ async function run() {
         }
 
         Logger.log("Running the project...")
-        await runProject(answers);
+        await runProject(answers, userArguments);
     } catch (e) {
         Logger.error((e as any).message);
     }

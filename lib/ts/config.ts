@@ -1,162 +1,170 @@
 import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
 import { validateFolderName } from "./utils.js";
-import { getIsFullStackFromArgs } from "./userArgumentUtils.js";
+import { getIsFullStackFromArgs, getPackageManagerCommand } from "./userArgumentUtils.js";
 import { getPythonRunScripts, mapOptionsToChoices } from "./questionOptionUtils.js";
 import path from "path";
 import fs from "fs";
 
-export const frontendOptions: QuestionOption[] = [
-    {
-        value: "react",
-        displayName: "React",
-        location: {
-            main: "frontend/supertokens-react",
-            finalConfig: "/src/config.tsx",
-            configFiles: "/config",
-        },
-        script: {
-            setup: [
-                "npm install",
-            ],
-            run: [
-                "npm run start",
-            ],
-        },
-    },
-    {
-        value: "next",
-        displayName: "Next.js",
-        location: {
-            main: "frontend/next",
-            finalConfig: "/config/frontendConfig.tsx",
-            configFiles: "/config/frontend",
-        },
-        script: {
-            setup: [
-                "yarn install",
-            ],
-            run: ["npm run dev"],
-        },
-    },
-    {
-        isFullStack: true,
-        shouldDisplay: false,
-        value: "next-fullstack",
-        displayName: "unused",
-        location: {
-            main: "fullstack/next",
-            config: {
-                frontend: {
-                    configFiles: "/config/frontend",
-                    finalConfig: "/config/frontendConfig.tsx",
-                },
-                backend: {
-                    configFiles: "/config/backend",
-                    finalConfig: "/config/backendConfig.ts"
-                },
+export function getFrontendOptions(userArguments: UserFlags): QuestionOption[] {
+    const packagerCommand = getPackageManagerCommand(userArguments);
+
+    return [
+        {
+            value: "react",
+            displayName: "React",
+            location: {
+                main: "frontend/supertokens-react",
+                finalConfig: "/src/config.tsx",
+                configFiles: "/config",
+            },
+            script: {
+                setup: [
+                    `${packagerCommand} install`,
+                ],
+                run: [
+                    `${packagerCommand} run start`,
+                ],
             },
         },
-        script: {
-            run: [
-                "npm run dev",
-            ],
-            setup: [
-                "yarn install",
-            ],
+        {
+            value: "next",
+            displayName: "Next.js",
+            location: {
+                main: "frontend/next",
+                finalConfig: "/config/frontendConfig.tsx",
+                configFiles: "/config/frontend",
+            },
+            script: {
+                setup: [
+                    `${packagerCommand} install`,
+                ],
+                run: [`${packagerCommand} run dev`],
+            },
         },
-    },
-    {
-        value: "angular-prebuilt",
-        displayName: "Angular",
-        location: {
-            main: "frontend/angular-prebuilt",
-            finalConfig: "/src/config.ts",
-            configFiles: "/config",
+        {
+            isFullStack: true,
+            shouldDisplay: false,
+            value: "next-fullstack",
+            displayName: "unused",
+            location: {
+                main: "fullstack/next",
+                config: {
+                    frontend: {
+                        configFiles: "/config/frontend",
+                        finalConfig: "/config/frontendConfig.tsx",
+                    },
+                    backend: {
+                        configFiles: "/config/backend",
+                        finalConfig: "/config/backendConfig.ts"
+                    },
+                },
+            },
+            script: {
+                run: [
+                    `${packagerCommand} run dev`,
+                ],
+                setup: [
+                    `${packagerCommand} install`,
+                ],
+            },
         },
-        script: {
-            setup: [
-                "npm install",
-            ],
-            run: ["npm run dev"],
+        {
+            value: "angular-prebuilt",
+            displayName: "Angular",
+            location: {
+                main: "frontend/angular-prebuilt",
+                finalConfig: "/src/config.ts",
+                configFiles: "/config",
+            },
+            script: {
+                setup: [
+                    `${packagerCommand} install`,
+                ],
+                run: [`${packagerCommand} run dev`],
+            },
         },
-    },
-    {
-        value: "vue-prebuilt",
-        displayName: "Vue.js",
-        location: {
-            main: "frontend/vue-prebuilt",
-            finalConfig: "/src/config.ts",
-            configFiles: "/config",
+        {
+            value: "vue-prebuilt",
+            displayName: "Vue.js",
+            location: {
+                main: "frontend/vue-prebuilt",
+                finalConfig: "/src/config.ts",
+                configFiles: "/config",
+            },
+            script: {
+                setup: [
+                    `${packagerCommand} install`,
+                ],
+                run: [`${packagerCommand} run dev`],
+            },
         },
-        script: {
-            setup: [
-                "npm install",
-            ],
-            run: ["npm run dev"],
-        },
-    },
-];
+    ];
+}
 
-export const backendOptions: QuestionOption[] = [
-    {
-        value: "node",
-        displayName: "Node.js",
-        location: {
-            main: "backend/node-express",
-            finalConfig: "/config.ts",
-            configFiles: "/config",
+export function getBackendOptions(userArguments: UserFlags): QuestionOption[] {
+    const packagerCommand = getPackageManagerCommand(userArguments);
+
+    return [
+        {
+            value: "node",
+            displayName: "Node.js",
+            location: {
+                main: "backend/node-express",
+                finalConfig: "/config.ts",
+                configFiles: "/config",
+            },
+            script: {
+                setup: [
+                    `${packagerCommand} install`,
+                ],
+                run: [
+                    `${packagerCommand} run start`,
+                ],
+            },
         },
-        script: {
-            setup: [
-                "npm install",
-            ],
-            run: [
-                "npm run start",
-            ],
+        {
+            value: "nest",
+            displayName: "Nest.js",
+            location: {
+                main: "backend/nest",
+                finalConfig: "/src/config.ts",
+                configFiles: "/config",
+            },
+            script: {
+                setup: [
+                    `${packagerCommand} install`,
+                ],
+                run: [`${packagerCommand} run start`],
+            },
         },
-    },
-    {
-        value: "nest",
-        displayName: "Nest.js",
-        location: {
-            main: "backend/nest",
-            finalConfig: "/src/config.ts",
-            configFiles: "/config",
+        {
+            value: "python-flask",
+            displayName: "Python",
+            location: {
+                main: "backend/python-flask",
+                finalConfig: "/config.py",
+                configFiles: "/config",
+            },
+            script: {
+                setup: [],
+                run: getPythonRunScripts(),
+            },
         },
-        script: {
-            setup: [
-                "npm install",
-            ],
-            run: ["npm run start"],
+        {
+            value: "go-http",
+            displayName: "Golang",
+            location: {
+                main: "backend/go-http",
+                finalConfig: "/config.go",
+                configFiles: "/config",
+            },
+            script: {
+                setup: ["go get && go mod tidy"],
+                run: ["go run ."],
+            },
         },
-    },
-    {
-        value: "python-flask",
-        displayName: "Python",
-        location: {
-            main: "backend/python-flask",
-            finalConfig: "/config.py",
-            configFiles: "/config",
-        },
-        script: {
-            setup: [],
-            run: getPythonRunScripts(),
-        },
-    },
-    {
-        value: "go-http",
-        displayName: "Golang",
-        location: {
-            main: "backend/go-http",
-            finalConfig: "/config.go",
-            configFiles: "/config",
-        },
-        script: {
-            setup: ["go get && go mod tidy"],
-            run: ["go run ."],
-        },
-    },
-];
+    ];
+}
 
 export const recipeOptions: RecipeQuestionOption[] = [
     {
@@ -210,7 +218,7 @@ export function getQuestions(flags: UserFlags) {
             name: "frontend",
             type: "list",
             message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
-            choices: mapOptionsToChoices(frontendOptions),
+            choices: mapOptionsToChoices(getFrontendOptions(flags)),
             when: flags.frontend === undefined,
         },
         {
@@ -235,7 +243,7 @@ export function getQuestions(flags: UserFlags) {
             name: "backend",
             type: "list",
             message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
-            choices: mapOptionsToChoices(backendOptions),
+            choices: mapOptionsToChoices(getBackendOptions(flags)),
             when: (answers: Answers) => {
                 if (flags.backend !== undefined) {
                     return false;

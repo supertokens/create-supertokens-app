@@ -160,6 +160,21 @@ export type DownloadLocations = {
     backend: string,
 }
 
+export type SupportedPackageManagers = "npm" | "yarn";
+
+export const allPackageManagers: SupportedPackageManagers[] = [
+    "npm",
+    "yarn",
+];
+
+export function isValidPackageManager(manager: string): manager is SupportedPackageManagers {
+    if (allPackageManagers.includes(manager as SupportedPackageManagers)) {
+        return true;
+    }
+
+    return false;
+}
+
 export type UserFlags = {
     appname?: string,
     recipe?: string,
@@ -168,6 +183,7 @@ export type UserFlags = {
     fullstack?: string | boolean,
     backend?: SupportedBackends,
     autoconfirm?: string | boolean,
+    manager?: SupportedPackageManagers;
 }
 
 export type ExecOutput = {
