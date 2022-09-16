@@ -1,4 +1,4 @@
-import ThirdPartyEmailPasswordReact, {Github, Google, Apple} from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import ThirdPartyReact, {Github, Google, Apple} from "supertokens-auth-react/recipe/thirdparty";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import Session from "supertokens-web-js/recipe/session";
 
@@ -9,7 +9,7 @@ export const SuperTokensReactConfig = {
         websiteDomain: "http://localhost:3000",
     },
     recipeList: [
-        ThirdPartyEmailPasswordReact.init({
+        ThirdPartyReact.init({
             useShadowDom: false,
             signInAndUpFeature: {
                 providers: [Github.init(), Google.init(), Apple.init()],
