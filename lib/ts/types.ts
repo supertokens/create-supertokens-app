@@ -20,7 +20,68 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
 }
 
 export type SupportedFrontends = "react" | "next" | "next-fullstack" | "angular-prebuilt" | "vue-prebuilt";
+
+export const allFrontends: {
+    displayValue: string,
+    id: SupportedFrontends,
+}[] = [
+    {
+        id: "react",
+        displayValue: "react",
+    },
+    {
+        id: "next",
+        displayValue: "next",
+    },
+    {
+        id: "angular-prebuilt",
+        displayValue: "angular",
+    },
+    {
+        id: "vue-prebuilt",
+        displayValue: "vue",
+    },
+];
+
+export function isValidFrontend(frontend: string): frontend is SupportedFrontends {
+    if (allFrontends.filter(i => i.displayValue === frontend).length !== 0) {
+        return true;
+    }
+
+    return false;
+}
+
 export type SupportedBackends = "node" | "nest" | "python-flask" | "go-http";
+
+export const allBackends: {
+    displayValue: string,
+    id: SupportedBackends,
+}[] = [
+    {
+        id: "node",
+        displayValue: "node",
+    },
+    {
+        id: "nest",
+        displayValue: "nest",
+    },
+    {
+        id: "python-flask",
+        displayValue: "python",
+    },
+    {
+        id: "go-http",
+        displayValue: "golang",
+    },
+];
+
+export function isValidBackend(backend: string): backend is SupportedBackends {
+    if (allBackends.filter(i => i.displayValue === backend).length !== 0) {
+        return true;
+    }
+
+    return false;
+}
 
 /**
  * value: The option value, this is used to retrieve the selection from inquirer's return
@@ -103,6 +164,10 @@ export type UserFlags = {
     appname?: string,
     recipe?: string,
     branch?: string,
+    frontend?: SupportedFrontends,
+    fullstack?: string | boolean,
+    backend?: SupportedBackends,
+    autoconfirm?: string | boolean,
 }
 
 export type ExecOutput = {

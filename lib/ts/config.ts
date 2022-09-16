@@ -1,22 +1,9 @@
 import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
 import { validateFolderName } from "./utils.js";
-import os from "os";
-
-function getPythonRunScripts(): string[] {
-    if (os.platform() === "win32") {
-        return [
-            "pip install virtualenv",
-            "python -m virtualenv flask_example",
-            ".\\\\flask_example\\\\Scripts\\\\activate.bat",
-            "pip install -r requirements.txt",
-            "python app.py",
-        ];
-    }
-    return [
-        "./create_env.sh",
-        "python app.py",
-    ];
-}
+import { getIsFullStackFromArgs } from "./userArgumentUtils.js";
+import { getPythonRunScripts, mapOptionsToChoices } from "./questionOptionUtils.js";
+import path from "path";
+import fs from "fs";
 
 export const frontendOptions: QuestionOption[] = [
     {
@@ -206,6 +193,13 @@ export function getQuestions(flags: UserFlags) {
                 const validations = validateFolderName(input);
     
                 if (validations.valid) {
+                    const __dirname = path.resolve();
+                    const projectDirectory = __dirname + `/${input}`;
+
+                    if (fs.existsSync(projectDirectory)) {
+                        throw new Error(`A folder with name "${input}" already exists`);
+                    }
+
                     return true;
                 }
     
@@ -217,6 +211,7 @@ export function getQuestions(flags: UserFlags) {
             type: "list",
             message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
             choices: mapOptionsToChoices(frontendOptions),
+            when: flags.frontend === undefined,
         },
         {
             name: "nextfullstack",
@@ -224,6 +219,11 @@ export function getQuestions(flags: UserFlags) {
             message: "Are you using Next.js functions for your APIs?",
             // This checks whether or not a question should be asked
             when: (answers: Answers) => {
+                // We dont use getIsFullStackFromArgs here intentionally
+                if (flags.fullstack !== undefined) {
+                    return false;
+                }
+
                 if (answers.frontend === "next") {
                     return true;
                 }
@@ -237,6 +237,22 @@ export function getQuestions(flags: UserFlags) {
             message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
             choices: mapOptionsToChoices(backendOptions),
             when: (answers: Answers) => {
+                if (flags.backend !== undefined) {
+                    return false;
+                }
+
+                const isFullStackFromArgs: boolean = getIsFullStackFromArgs(flags);
+
+                if (flags.frontend === "next" && isFullStackFromArgs) {
+                    // This means that they want to use nextjs fullstack
+                    return false
+                }
+
+                if (answers.frontend === "next" && isFullStackFromArgs) {
+                    // This means that they want to use nextjs fullstack
+                    return false
+                }
+
                 // We skip this question if they are using Next.js fullstack
                 if (answers.nextfullstack === true) {
                     return false;
@@ -255,19 +271,8 @@ export function getQuestions(flags: UserFlags) {
         {
             name: "confirmation",
             type: "confirm",
-            message: "Proceed with current selection?"
+            message: "Proceed with current selection?",
+            when: flags.autoconfirm === undefined,
         }
     ];
-}
-
-/* Util Functions specific to configs */
-
-// Converts the options array we declare to a format iquirer can use
-function mapOptionsToChoices(options: QuestionOption[] | RecipeQuestionOption[]) {
-    return options.filter(i => i.shouldDisplay !== false).map(option => {
-        return {
-            name: option.displayName,
-            value: option.value,
-        };
-    });
 }
