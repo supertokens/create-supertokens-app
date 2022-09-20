@@ -5,7 +5,7 @@ import SessionReact from "supertokens-auth-react/recipe/session";
 import SuperTokensReact from "supertokens-auth-react"
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 
-function ProtectedPage({ userId }) {
+function ProtectedPage() {
     const session = useSessionContext();
 
     async function logoutClicked() {
@@ -35,7 +35,7 @@ function ProtectedPage({ userId }) {
                 <p className={styles.description}>You are authenticated with SuperTokens!</p>
 
                 <p className={styles.description}>
-                    UserId: {session.userId} <br /> (from SSR: {userId})
+                    UserId: {session.userId}
                 </p>
                 <p className={styles.description}>Access token payload: {JSON.stringify(session.accessTokenPayload)}</p>
                 <div
@@ -136,7 +136,7 @@ function ProtectedPage({ userId }) {
 export default function Home(props) {
     return (
         <SessionReact.SessionAuth>
-            <ProtectedPage userId={props.userId} />
+            <ProtectedPage />
         </SessionReact.SessionAuth>
     );
 }
