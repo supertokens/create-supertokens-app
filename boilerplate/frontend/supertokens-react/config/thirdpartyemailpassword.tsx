@@ -13,10 +13,7 @@ export const SuperTokensConfig = {
         ThirdPartyEmailPassword.init({
             signInAndUpFeature: {
                 providers: [Github.init(), Google.init(), Apple.init()],
-            },
-            emailVerificationFeature: {
-                mode: "REQUIRED",
-            },
+            }
         }),
         Session.init(),
     ],

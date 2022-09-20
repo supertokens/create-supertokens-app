@@ -11,9 +11,6 @@ export const SuperTokensConfig = {
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [
         ThirdPartyPasswordless.init({
-            emailVerificationFeature: {
-                mode: "REQUIRED",
-            },
             signInUpFeature: {
                 providers: [
                     ThirdPartyPasswordless.Github.init(),
