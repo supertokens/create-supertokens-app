@@ -71,7 +71,7 @@ async function run() {
             await downloadApp(folderLocations, answers.appname);
 
             downloadSpinner.stopAndPersist({
-                text: chalk.greenBright("Download complete!"),
+                text: "Download complete!",
                 symbol: Emoji.get(":white_check_mark:"),
             });
         } catch (e) {
@@ -92,7 +92,7 @@ async function run() {
             await setupProject(folderLocations, answers.appname, answers, userArguments, setupSpinner);
 
             setupSpinner.stopAndPersist({
-                text: chalk.greenBright("Setup complete!"),
+                text: "Setup complete!",
                 symbol: Emoji.get(":white_check_mark:"),
             });
         } catch (e) {

@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Ora } from "ora";
 import { getPackageManagerCommand, getShouldAutoStartFromArgs } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
+import chalk from "chalk";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -537,7 +538,10 @@ export async function runProjectOrPrintStartCommand(answers: Answers, userArgume
     }
 
     if (!getShouldAutoStartFromArgs(userArguments)) {
-        Logger.success("To start the application run the following command:\n\n" + appRunScript);
+        Logger.log(
+            `To start the application run the following command:` +
+                chalk.greenBright(`\n\ncd ${folderName}\n` + appRunScript)
+        );
         return;
     }
 
