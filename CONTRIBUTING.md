@@ -77,6 +77,12 @@ After building your code you can use `npx .` to run the tool locally, make sure 
 -   Existing Frontend + Backend selection logic
 -   Existing full stack selection logic
 
+If you are testing an example app you have created on your own branch, you can pass an additional flag to have the tool use your branch instead of master
+
+```
+npx . --branch=your_branch
+```
+
 ### Create a pull request
 
 1. Reference the relevant issue or pull request and give a clear description of changes/features added when submitting a pull request
