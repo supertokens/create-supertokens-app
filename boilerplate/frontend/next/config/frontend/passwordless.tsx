@@ -1,4 +1,4 @@
-import PasswordlessReact, { redirectToAuth as _redirectToAuth } from "supertokens-auth-react/recipe/passwordless";
+import PasswordlessReact from "supertokens-auth-react/recipe/passwordless";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
@@ -28,7 +28,3 @@ export let frontendConfig = () => {
         },
     };
 };
-
-export const redirectToAuth = _redirectToAuth;
-
-export const AuthWrapper = PasswordlessReact.PasswordlessAuth;

@@ -24,6 +24,8 @@ func main() {
 				session.VerifySession(nil, sessioninfo).ServeHTTP(rw, r)
 				return
 			}
+
+			rw.WriteHeader(404)
 		}))))
 }
 

@@ -8,9 +8,3 @@ export let frontendConfig = () => {
         recipeList: [],
     };
 };
-
-export const redirectToAuth = () => {};
-
-export const AuthWrapper: React.FC<any> = (props: any) => {
-    return <div>{props.children}</div>;
-};

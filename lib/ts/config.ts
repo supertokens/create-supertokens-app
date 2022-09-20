@@ -138,7 +138,7 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
                 configFiles: "/config",
             },
             script: {
-                setup: ["go get && go mod tidy"],
+                setup: ["go get ./... && go mod tidy"],
                 run: ["go run ."],
             },
         },

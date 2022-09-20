@@ -2,8 +2,6 @@ module go-http
 
 go 1.17
 
-require github.com/supertokens/supertokens-golang v0.8.3
-
 require (
 	github.com/MicahParks/keyfunc v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

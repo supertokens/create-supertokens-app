@@ -1,6 +1,4 @@
-import ThirdPartyPasswordlessReact, {
-    redirectToAuth as _redirectToAuth,
-} from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import ThirdPartyPasswordlessReact from "supertokens-auth-react/recipe/thirdpartypasswordless";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
@@ -40,7 +38,3 @@ export let frontendConfig = () => {
         },
     };
 };
-
-export const redirectToAuth = _redirectToAuth;
-
-export const AuthWrapper = ThirdPartyPasswordlessReact.ThirdPartyPasswordlessAuth;

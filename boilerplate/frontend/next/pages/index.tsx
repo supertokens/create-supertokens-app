@@ -2,15 +2,15 @@ import React from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import SessionReact from "supertokens-auth-react/recipe/session";
+import SuperTokensReact from "supertokens-auth-react"
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
-import { redirectToAuth, AuthWrapper } from "../config/frontendConfig";
 
-function ProtectedPage({ userId }) {
+function ProtectedPage() {
     const session = useSessionContext();
 
     async function logoutClicked() {
         await SessionReact.signOut();
-        redirectToAuth();
+        SuperTokensReact.redirectToAuth();
     }
 
     async function callAPIClicked() {
@@ -35,7 +35,7 @@ function ProtectedPage({ userId }) {
                 <p className={styles.description}>You are authenticated with SuperTokens!</p>
 
                 <p className={styles.description}>
-                    UserId: {session.userId} <br /> (from SSR: {userId})
+                    UserId: {session.userId}
                 </p>
                 <p className={styles.description}>Access token payload: {JSON.stringify(session.accessTokenPayload)}</p>
                 <div
@@ -135,8 +135,8 @@ function ProtectedPage({ userId }) {
 
 export default function Home(props) {
     return (
-        <AuthWrapper>
-            <ProtectedPage userId={props.userId} />
-        </AuthWrapper>
+        <SessionReact.SessionAuth>
+            <ProtectedPage />
+        </SessionReact.SessionAuth>
     );
 }

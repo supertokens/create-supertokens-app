@@ -14,12 +14,7 @@ export const SuperTokensConfig = {
             signInAndUpFeature: {
                 providers: [Github.init(), Google.init(), Apple.init()],
             },
-            emailVerificationFeature: {
-                mode: "REQUIRED",
-            },
         }),
         Session.init(),
     ],
 };
-
-export const AuthWrapper = ThirdParty.ThirdPartyAuth;

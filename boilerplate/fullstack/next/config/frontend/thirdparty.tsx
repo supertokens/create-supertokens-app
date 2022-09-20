@@ -1,4 +1,4 @@
-import ThirdPartyReact, { redirectToAuth as _redirectToAuth } from "supertokens-auth-react/recipe/thirdparty";
+import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
@@ -10,9 +10,6 @@ export let frontendConfig = () => {
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
         recipeList: [
             ThirdPartyReact.init({
-                emailVerificationFeature: {
-                    mode: "REQUIRED",
-                },
                 signInAndUpFeature: {
                     providers: [
                         ThirdPartyReact.Google.init(),
@@ -37,7 +34,3 @@ export let frontendConfig = () => {
         },
     };
 };
-
-export const redirectToAuth = _redirectToAuth;
-
-export const AuthWrapper = ThirdPartyReact.ThirdPartyAuth;
