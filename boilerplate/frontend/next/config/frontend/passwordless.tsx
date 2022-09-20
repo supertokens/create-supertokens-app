@@ -28,7 +28,3 @@ export let frontendConfig = () => {
         },
     };
 };
-
-export const redirectToAuth = _redirectToAuth;
-
-export const AuthWrapper = PasswordlessReact.PasswordlessAuth;
