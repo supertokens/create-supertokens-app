@@ -57,9 +57,8 @@ async function run() {
 
         console.log("");
         const downloadSpinner = Ora({
-            color: "blue",
             spinner: "dots10",
-            text: chalk.blue("Downloading files"),
+            text: "Downloading files",
         }).start();
 
         const folderLocations = getDownloadLocationFromAnswers(answers, userArguments);
@@ -86,8 +85,7 @@ async function run() {
         console.log("");
 
         const setupSpinner = Ora({
-            color: "blue",
-            text: chalk.blue("Setting up the project"),
+            text: "Setting up the project",
             spinner: "dots10",
         }).start();
 

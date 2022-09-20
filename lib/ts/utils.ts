@@ -11,7 +11,6 @@ import { exec } from "child_process";
 import os from "os";
 import { v4 as uuidv4 } from "uuid";
 import { Ora } from "ora";
-import chalk from "chalk";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -186,7 +185,7 @@ async function setupFrontendBackendApp(
         throw new Error("Should never come here");
     }
 
-    spinner.text = chalk.blue("Installing frontend dependencies");
+    spinner.text = "Installing frontend dependencies";
     const frontendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
 
@@ -236,7 +235,7 @@ async function setupFrontendBackendApp(
         throw new Error(error);
     }
 
-    spinner.text = chalk.blue("Installing backend dependencies");
+    spinner.text = "Installing backend dependencies";
     const backendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
 
@@ -291,7 +290,7 @@ async function setupFrontendBackendApp(
         throw new Error("Should never come here");
     }
 
-    spinner.text = chalk.blue("Configuring files");
+    spinner.text = "Configuring files";
     // Move the recipe config file for the frontend folder to the correct place
     const frontendFiles = fs.readdirSync(
         `./${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`
@@ -393,7 +392,7 @@ async function setupFrontendBackendApp(
 }
 
 async function setupFullstack(answers: Answers, folderName: string, userArguments: UserFlags, spinner: Ora) {
-    spinner.text = chalk.blue("Installing dependencies");
+    spinner.text = "Installing dependencies";
     const selectedFullStack = getFrontendOptions(userArguments).find((element) => {
         return element.value === answers.frontend;
     });
@@ -457,7 +456,7 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
         throw new Error(error);
     }
 
-    spinner.text = chalk.blue("Configuring files");
+    spinner.text = "Configuring files";
     // Move the recipe config file for the frontend folder to the correct place
     const frontendFiles = fs.readdirSync(
         `./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`
