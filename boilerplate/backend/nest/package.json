@@ -27,7 +27,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "supertokens-node": "^11.3.0"
+    "supertokens-node": "latest"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
