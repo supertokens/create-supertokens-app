@@ -13,10 +13,8 @@ export const SuperTokensConfig = {
         ThirdParty.init({
             signInAndUpFeature: {
                 providers: [Github.init(), Google.init(), Apple.init()],
-            }
+            },
         }),
         Session.init(),
     ],
 };
-
-export const AuthWrapper = ThirdParty.ThirdPartyAuth;
