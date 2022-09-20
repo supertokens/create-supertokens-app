@@ -1,7 +1,6 @@
 import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
-import { validateFolderName } from "./utils.js";
-import { getIsFullStackFromArgs, getPackageManagerCommand } from "./userArgumentUtils.js";
-import { getPythonRunScripts, mapOptionsToChoices } from "./questionOptionUtils.js";
+import { getIsFullStackFromArgs, getPackageManagerCommand, validateFolderName } from "./userArgumentUtils.js";
+import { getPythonRunScripts, mapOptionsToChoices } from "./questionUtils.js";
 import path from "path";
 import fs from "fs";
 

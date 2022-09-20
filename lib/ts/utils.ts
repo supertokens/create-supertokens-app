@@ -4,7 +4,6 @@ import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
 import { Answers, DownloadLocations, ExecOutput, UserFlags } from "./types";
-import validateProjectName from "validate-npm-package-name";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
@@ -98,21 +97,6 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
             []
         )
     );
-}
-
-export function validateNpmName(name: string): {
-    valid: boolean;
-    problems?: string[];
-} {
-    const nameValidation = validateProjectName(name);
-    if (nameValidation.validForNewPackages) {
-        return { valid: true };
-    }
-
-    return {
-        valid: false,
-        problems: [...(nameValidation.errors || []), ...(nameValidation.warnings || [])],
-    };
 }
 
 function getPackageJsonString(input: {
@@ -533,13 +517,6 @@ export function getAnalyticsId(): string {
     }
 
     return values[0][0].mac;
-}
-
-export function validateFolderName(name: string): {
-    valid: boolean;
-    problems?: string[] | undefined;
-} {
-    return validateNpmName(path.basename(path.resolve(name)));
 }
 
 export async function runProjectOrPrintStartCommand(answers: Answers, userArguments: UserFlags) {

@@ -12,8 +12,31 @@ import {
     SupportedFrontends,
     UserFlags,
 } from "./types.js";
-import { validateFolderName } from "./utils.js";
 import { exec } from "child_process";
+import validateProjectName from "validate-npm-package-name";
+import path from "path";
+
+export function validateNpmName(name: string): {
+    valid: boolean;
+    problems?: string[];
+} {
+    const nameValidation = validateProjectName(name);
+    if (nameValidation.validForNewPackages) {
+        return { valid: true };
+    }
+
+    return {
+        valid: false,
+        problems: [...(nameValidation.errors || []), ...(nameValidation.warnings || [])],
+    };
+}
+
+export function validateFolderName(name: string): {
+    valid: boolean;
+    problems?: string[] | undefined;
+} {
+    return validateNpmName(path.basename(path.resolve(name)));
+}
 
 export async function isYarnInstalled(): Promise<boolean> {
     const promise = new Promise<number | null>((res) => {
