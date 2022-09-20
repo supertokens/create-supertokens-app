@@ -139,7 +139,7 @@ export function getBackendOptions(userArguments: UserFlags): QuestionOption[] {
                 configFiles: "/config",
             },
             script: {
-                setup: ["go get && go mod tidy"],
+                setup: ["go get ./... && go mod tidy"],
                 run: ["go run ."],
             },
         },
