@@ -13,6 +13,25 @@ import {
     UserFlags,
 } from "./types.js";
 import { validateFolderName } from "./utils.js";
+import { exec } from "child_process";
+
+export async function isYarnInstalled(): Promise<boolean> {
+    const promise = new Promise<number | null>((res) => {
+        const command = exec("yarn help");
+
+        command.on("exit", (code) => {
+            res(code);
+        });
+    });
+
+    const exitCode = await promise;
+
+    if (exitCode === 0) {
+        return true;
+    }
+
+    return false;
+}
 
 export function getIsFullStackFromArgs(userArguments: UserFlags): boolean {
     if (
@@ -129,12 +148,16 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
     return _answers;
 }
 
-export function getPackageManagerCommand(userArguments: UserFlags): string {
+export async function getPackageManagerCommand(userArguments: UserFlags): Promise<string> {
     if (userArguments.manager === "npm") {
         return "npm";
     }
 
     if (userArguments.manager === "yarn") {
+        return "yarn";
+    }
+
+    if (await isYarnInstalled()) {
         return "yarn";
     }
 

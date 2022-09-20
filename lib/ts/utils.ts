@@ -11,7 +11,7 @@ import { exec } from "child_process";
 import os from "os";
 import { v4 as uuidv4 } from "uuid";
 import { Ora } from "ora";
-import { getShouldAutoStartFromArgs } from "./userArgumentUtils.js";
+import { getPackageManagerCommand, getShouldAutoStartFromArgs } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 
 const pipeline = promisify(stream.pipeline);
@@ -25,19 +25,19 @@ function normaliseLocationPath(path: string): string {
     return path;
 }
 
-export function getDownloadLocationFromAnswers(
+export async function getDownloadLocationFromAnswers(
     answers: Answers,
     userArguments: UserFlags
-): DownloadLocations | undefined {
+): Promise<DownloadLocations | undefined> {
     const branchToUse = userArguments.branch || "master";
 
     const downloadURL = `https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/${branchToUse}`;
 
-    const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
+    const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
-    const selectedBackend = getBackendOptions(userArguments).find((element) => {
+    const selectedBackend = (await getBackendOptions(userArguments)).find((element) => {
         return element.value === answers.backend;
     });
 
@@ -170,11 +170,11 @@ async function setupFrontendBackendApp(
     fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
     fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
 
-    const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
+    const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
-    const selectedBackend = getBackendOptions(userArguments).find((element) => {
+    const selectedBackend = (await getBackendOptions(userArguments)).find((element) => {
         return element.value === answers.backend;
     });
 
@@ -395,7 +395,7 @@ async function setupFrontendBackendApp(
 
 async function setupFullstack(answers: Answers, folderName: string, userArguments: UserFlags, spinner: Ora) {
     spinner.text = "Installing dependencies";
-    const selectedFullStack = getFrontendOptions(userArguments).find((element) => {
+    const selectedFullStack = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
@@ -545,7 +545,7 @@ export function validateFolderName(name: string): {
 export async function runProjectOrPrintStartCommand(answers: Answers, userArguments: UserFlags) {
     const folderName = answers.appname;
 
-    const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
+    const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
@@ -553,8 +553,7 @@ export async function runProjectOrPrintStartCommand(answers: Answers, userArgume
         throw new Error("Should never come here");
     }
 
-    // TODO NEMI: Check for yarn
-    let appRunScript = "npm run start";
+    let appRunScript = `${await getPackageManagerCommand(userArguments)} run start`;
 
     if (selectedFrontend.isFullStack) {
         appRunScript = selectedFrontend.script.run.join(" && ");

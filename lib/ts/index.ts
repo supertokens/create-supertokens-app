@@ -5,7 +5,6 @@ import { Answers, UserFlags } from "./types.js";
 import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOrPrintStartCommand } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-// import fs from "fs";
 import { modifyAnswersBasedOnFlags, validateUserArguments } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 import fs from "fs";
@@ -46,7 +45,7 @@ async function run() {
         validateUserArguments(userArguments);
 
         // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
-        let answers: Answers = await inquirer.prompt(getQuestions(userArguments));
+        let answers: Answers = await inquirer.prompt(await getQuestions(userArguments));
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersBasedOnSelection(answers);
@@ -61,7 +60,7 @@ async function run() {
             text: "Downloading files",
         }).start();
 
-        const folderLocations = getDownloadLocationFromAnswers(answers, userArguments);
+        const folderLocations = await getDownloadLocationFromAnswers(answers, userArguments);
 
         if (folderLocations === undefined) {
             Logger.log("Something went wrong, exiting...");
