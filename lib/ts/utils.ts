@@ -11,6 +11,8 @@ import { exec } from "child_process";
 import os from "os";
 import { v4 as uuidv4 } from "uuid";
 import { Ora } from "ora";
+import { getShouldAutoStartFromArgs } from "./userArgumentUtils.js";
+import { Logger } from "./logger.js";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -540,7 +542,7 @@ export function validateFolderName(name: string): {
     return validateNpmName(path.basename(path.resolve(name)));
 }
 
-export async function runProject(answers: Answers, userArguments: UserFlags) {
+export async function runProjectOrPrintStartCommand(answers: Answers, userArguments: UserFlags) {
     const folderName = answers.appname;
 
     const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
@@ -551,11 +553,19 @@ export async function runProject(answers: Answers, userArguments: UserFlags) {
         throw new Error("Should never come here");
     }
 
+    // TODO NEMI: Check for yarn
     let appRunScript = "npm run start";
 
     if (selectedFrontend.isFullStack) {
         appRunScript = selectedFrontend.script.run.join(" && ");
     }
+
+    if (!getShouldAutoStartFromArgs(userArguments)) {
+        Logger.success("To start the application run the following command:\n\n" + appRunScript);
+        return;
+    }
+
+    Logger.success("Running the application...");
 
     const runProjectScript = new Promise((res, rej) => {
         let didReject = false;

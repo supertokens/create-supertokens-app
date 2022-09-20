@@ -144,10 +144,10 @@ export function getPackageManagerCommand(userArguments: UserFlags): string {
 export function getShouldAutoStartFromArgs(userArguments: UserFlags): boolean {
     if (
         userArguments.autostart !== undefined &&
-        (userArguments.autostart === "false" || userArguments.autostart === false)
+        (userArguments.autostart === "true" || userArguments.autostart === true)
     ) {
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }

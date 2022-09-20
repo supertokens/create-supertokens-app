@@ -2,11 +2,11 @@
 import inquirer from "inquirer";
 import { getQuestions } from "./config.js";
 import { Answers, UserFlags } from "./types.js";
-import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProject } from "./utils.js";
+import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOrPrintStartCommand } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 // import fs from "fs";
-import { getShouldAutoStartFromArgs, modifyAnswersBasedOnFlags, validateUserArguments } from "./userArgumentUtils.js";
+import { modifyAnswersBasedOnFlags, validateUserArguments } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 import fs from "fs";
 import Ora from "ora";
@@ -117,13 +117,7 @@ async function run() {
             throw e;
         }
 
-        if (!getShouldAutoStartFromArgs(userArguments)) {
-            Logger.success("Setup complete!");
-            return;
-        }
-
-        Logger.success("Running the project...");
-        await runProject(answers, userArguments);
+        await runProjectOrPrintStartCommand(answers, userArguments);
     } catch (e) {
         Logger.error((e as any).message);
     }
