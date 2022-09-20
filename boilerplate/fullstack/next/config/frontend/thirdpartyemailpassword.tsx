@@ -1,6 +1,4 @@
-import ThirdPartyEmailPasswordReact, {
-    redirectToAuth as _redirectToAuth,
-} from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
@@ -12,9 +10,6 @@ export let frontendConfig = () => {
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
         recipeList: [
             ThirdPartyEmailPasswordReact.init({
-                emailVerificationFeature: {
-                    mode: "REQUIRED",
-                },
                 signInAndUpFeature: {
                     providers: [
                         ThirdPartyEmailPasswordReact.Google.init(),
@@ -39,7 +34,3 @@ export let frontendConfig = () => {
         },
     };
 };
-
-export const redirectToAuth = _redirectToAuth;
-
-export const AuthWrapper = ThirdPartyEmailPasswordReact.ThirdPartyEmailPasswordAuth;

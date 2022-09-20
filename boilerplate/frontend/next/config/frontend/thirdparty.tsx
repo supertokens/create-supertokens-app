@@ -1,4 +1,4 @@
-import ThirdPartyReact, { redirectToAuth as _redirectToAuth } from "supertokens-auth-react/recipe/thirdparty";
+import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import Router from "next/router";

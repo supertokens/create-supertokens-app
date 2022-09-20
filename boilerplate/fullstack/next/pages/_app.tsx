@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import SuperTokensReact, { SuperTokensWrapper } from "supertokens-auth-react";
 import * as SuperTokensConfig from "../config/frontendConfig";
 import Session from "supertokens-auth-react/recipe/session";
-import { redirectToAuth } from "../config/frontendConfig";
 
 if (typeof window !== "undefined") {
     SuperTokensReact.init(SuperTokensConfig.frontendConfig());
@@ -18,7 +17,7 @@ function MyApp({ Component, pageProps }): JSX.Element {
                     location.reload();
                 } else {
                     // user has been logged out
-                    redirectToAuth();
+                    SuperTokensReact.redirectToAuth();
                 }
             }
         }

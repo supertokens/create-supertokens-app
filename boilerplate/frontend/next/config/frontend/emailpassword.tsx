@@ -1,4 +1,4 @@
-import EmailPasswordReact, { redirectToAuth as _redirectToAuth } from "supertokens-auth-react/recipe/emailpassword";
+import EmailPasswordReact from "supertokens-auth-react/recipe/emailpassword";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
