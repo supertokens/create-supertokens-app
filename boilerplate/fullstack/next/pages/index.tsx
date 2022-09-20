@@ -37,9 +37,7 @@ function ProtectedPage() {
                 </h1>
                 <p className={styles.description}>You are authenticated with SuperTokens!</p>
 
-                <p className={styles.description}>
-                    UserId: {session.userId}
-                </p>
+                <p className={styles.description}>UserId: {session.userId}</p>
                 <p className={styles.description}>Access token payload: {JSON.stringify(session.accessTokenPayload)}</p>
                 <div
                     style={{

@@ -1,7 +1,7 @@
 {
     "name": "create-supertokens-app",
     "type": "module",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -10,7 +10,7 @@
         "check-circular-dependencies": "npx madge --circular --extensions js ./lib/build/",
         "build-pretty": "npm run build && npx prettier --write . && npx clear-npx-cache",
         "set-up-hooks": "cp hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
-        "pretty-check": "npx pretty-quick --staged --check ."
+        "pretty-check": "npx prettier --check ."
     },
     "keywords": [],
     "author": "",

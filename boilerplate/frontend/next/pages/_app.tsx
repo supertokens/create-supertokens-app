@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }): JSX.Element {
                     location.reload();
                 } else {
                     // user has been logged out
-                    SuperTokensReact.redirectToAuth()
+                    SuperTokensReact.redirectToAuth();
                 }
             }
         }

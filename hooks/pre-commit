@@ -34,7 +34,7 @@ then
     echo "$(tput setaf 2)* Yes$(tput sgr 0)"
 else
     echo "$(tput setaf 1)* No$(tput sgr 0)"
-    echo "$(tput setaf 1)Please run 'npm run pretty' to format the code.$(tput sgr 0)"
+    echo "$(tput setaf 1)Please run 'npm run build-pretty' to format the code.$(tput sgr 0)"
     echo ""
 fi
 

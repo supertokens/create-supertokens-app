@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import SessionReact from "supertokens-auth-react/recipe/session";
-import SuperTokensReact from "supertokens-auth-react"
+import SuperTokensReact from "supertokens-auth-react";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 
 function ProtectedPage() {
@@ -34,9 +34,7 @@ function ProtectedPage() {
                 </h1>
                 <p className={styles.description}>You are authenticated with SuperTokens!</p>
 
-                <p className={styles.description}>
-                    UserId: {session.userId}
-                </p>
+                <p className={styles.description}>UserId: {session.userId}</p>
                 <p className={styles.description}>Access token payload: {JSON.stringify(session.accessTokenPayload)}</p>
                 <div
                     style={{

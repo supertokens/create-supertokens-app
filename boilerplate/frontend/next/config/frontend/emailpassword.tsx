@@ -8,10 +8,7 @@ export let frontendConfig = () => {
         appInfo,
         // recipeList contains all the modules that you want to
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
-        recipeList: [
-            EmailPasswordReact.init(),
-            SessionReact.init(),
-        ],
+        recipeList: [EmailPasswordReact.init(), SessionReact.init()],
         // this is so that the SDK uses the next router for navigation
         windowHandler: (oI) => {
             return {
