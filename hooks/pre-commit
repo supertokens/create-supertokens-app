@@ -1,0 +1,95 @@
+#!/bin/bash
+
+npm run build-check >/dev/null 2>/dev/null
+compiles=$?
+
+echo "$(tput setaf 3)* Compiles?$(tput sgr 0)"
+
+if [ $compiles -eq 0 ]
+then
+   echo "$(tput setaf 2)* Yes$(tput sgr 0)"
+else
+   echo "$(tput setaf 1)* No$(tput sgr 0)"
+fi
+
+npm run check-circular-dependencies
+circDep=$?
+
+echo "$(tput setaf 3)* No circular dependencies?$(tput sgr 0)"
+
+if [ $circDep -eq 0 ]
+then
+   echo "$(tput setaf 2)* Yes$(tput sgr 0)"
+else
+   echo "$(tput setaf 1)* No$(tput sgr 0)"
+fi
+
+npm run pretty-check >/dev/null 2>/dev/null
+formatted=$?
+
+echo "$(tput setaf 3)* Properly formatted?$(tput sgr 0)"
+
+if [ $formatted -eq 0 ]
+then
+    echo "$(tput setaf 2)* Yes$(tput sgr 0)"
+else
+    echo "$(tput setaf 1)* No$(tput sgr 0)"
+    echo "$(tput setaf 1)Please run 'npm run pretty' to format the code.$(tput sgr 0)"
+    echo ""
+fi
+
+if [ $compiles -eq 0 ] && [ $formatted -eq 0 ] && [ $circDep -eq 0 ]
+then
+    echo "$(tput setaf 2)... done. Proceeding with commit.$(tput sgr 0)"
+    echo ""
+elif [ $formatted -ne 0 ]
+then
+    echo "$(tput setaf 1)... done.$(tput sgr 0)"
+    echo "$(tput setaf 1)CANCELLING commit due to NON-FORMATTED CODE.$(tput sgr 0)"
+    echo ""
+    exit 1
+elif [ $compiles -ne 0 ]
+then
+    echo "$(tput setaf 1)... done.$(tput sgr 0)"
+    echo "$(tput setaf 1)CANCELLING commit due to COMPILE ERROR.$(tput sgr 0)"
+    echo ""
+    exit 2
+elif [ $circDep -ne 0 ]
+then
+    echo "$(tput setaf 1)... done.$(tput sgr 0)"
+    echo "$(tput setaf 1)CANCELLING commit due to CIRCULAR-DEPENDENCIES IN CODE.$(tput sgr 0)"
+    echo ""
+    exit 1
+fi
+
+version=`cat package.json | grep -e '"version":'`
+while IFS='"' read -ra ADDR; do
+    counter=0
+    for i in "${ADDR[@]}"; do
+        if [ $counter == 3 ]
+        then
+            version=$i
+        fi
+        counter=$(($counter+1))
+    done
+done <<< "$version"
+
+codeversion=`cat lib/build/version.js | grep -e 'package_version'`
+while IFS='"' read -ra ADDR; do
+    counter=0
+    for i in "${ADDR[@]}"; do
+        if [ $counter == 1 ]
+        then
+            codeversion=$i
+        fi
+        counter=$(($counter+1))
+    done
+done <<< "$codeversion"
+
+if [ $version != $codeversion ]
+then
+    RED='\033[0;31m'
+    NC='\033[0m' # No Color
+    printf "${RED}Version codes in version.ts and package.json are not the same${NC}\n"
+    exit 1
+fi

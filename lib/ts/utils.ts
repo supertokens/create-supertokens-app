@@ -4,14 +4,14 @@ import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
 import { Answers, DownloadLocations, ExecOutput, UserFlags } from "./types";
-import validateProjectName from "validate-npm-package-name";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
 import os from "os";
 import { v4 as uuidv4 } from "uuid";
 import { Ora } from "ora";
-import chalk from "chalk";
+import { getPackageManagerCommand, getShouldAutoStartFromArgs } from "./userArgumentUtils.js";
+import { Logger } from "./logger.js";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -24,19 +24,19 @@ function normaliseLocationPath(path: string): string {
     return path;
 }
 
-export function getDownloadLocationFromAnswers(
+export async function getDownloadLocationFromAnswers(
     answers: Answers,
     userArguments: UserFlags
-): DownloadLocations | undefined {
+): Promise<DownloadLocations | undefined> {
     const branchToUse = userArguments.branch || "master";
 
     const downloadURL = `https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/${branchToUse}`;
 
-    const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
+    const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
-    const selectedBackend = getBackendOptions(userArguments).find((element) => {
+    const selectedBackend = (await getBackendOptions(userArguments)).find((element) => {
         return element.value === answers.backend;
     });
 
@@ -99,21 +99,6 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
     );
 }
 
-export function validateNpmName(name: string): {
-    valid: boolean;
-    problems?: string[];
-} {
-    const nameValidation = validateProjectName(name);
-    if (nameValidation.validForNewPackages) {
-        return { valid: true };
-    }
-
-    return {
-        valid: false,
-        problems: [...(nameValidation.errors || []), ...(nameValidation.warnings || [])],
-    };
-}
-
 function getPackageJsonString(input: {
     appname: string;
     runScripts: {
@@ -169,11 +154,11 @@ async function setupFrontendBackendApp(
     fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
     fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
 
-    const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
+    const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
-    const selectedBackend = getBackendOptions(userArguments).find((element) => {
+    const selectedBackend = (await getBackendOptions(userArguments)).find((element) => {
         return element.value === answers.backend;
     });
 
@@ -186,7 +171,7 @@ async function setupFrontendBackendApp(
         throw new Error("Should never come here");
     }
 
-    spinner.text = chalk.blue("Installing frontend dependencies");
+    spinner.text = "Installing frontend dependencies";
     const frontendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
 
@@ -236,7 +221,7 @@ async function setupFrontendBackendApp(
         throw new Error(error);
     }
 
-    spinner.text = chalk.blue("Installing backend dependencies");
+    spinner.text = "Installing backend dependencies";
     const backendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
 
@@ -291,7 +276,7 @@ async function setupFrontendBackendApp(
         throw new Error("Should never come here");
     }
 
-    spinner.text = chalk.blue("Configuring files");
+    spinner.text = "Configuring files";
     // Move the recipe config file for the frontend folder to the correct place
     const frontendFiles = fs.readdirSync(
         `./${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`
@@ -393,8 +378,8 @@ async function setupFrontendBackendApp(
 }
 
 async function setupFullstack(answers: Answers, folderName: string, userArguments: UserFlags, spinner: Ora) {
-    spinner.text = chalk.blue("Installing dependencies");
-    const selectedFullStack = getFrontendOptions(userArguments).find((element) => {
+    spinner.text = "Installing dependencies";
+    const selectedFullStack = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
@@ -457,7 +442,7 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
         throw new Error(error);
     }
 
-    spinner.text = chalk.blue("Configuring files");
+    spinner.text = "Configuring files";
     // Move the recipe config file for the frontend folder to the correct place
     const frontendFiles = fs.readdirSync(
         `./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`
@@ -534,17 +519,10 @@ export function getAnalyticsId(): string {
     return values[0][0].mac;
 }
 
-export function validateFolderName(name: string): {
-    valid: boolean;
-    problems?: string[] | undefined;
-} {
-    return validateNpmName(path.basename(path.resolve(name)));
-}
-
-export async function runProject(answers: Answers, userArguments: UserFlags) {
+export async function runProjectOrPrintStartCommand(answers: Answers, userArguments: UserFlags) {
     const folderName = answers.appname;
 
-    const selectedFrontend = getFrontendOptions(userArguments).find((element) => {
+    const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
@@ -552,11 +530,18 @@ export async function runProject(answers: Answers, userArguments: UserFlags) {
         throw new Error("Should never come here");
     }
 
-    let appRunScript = "npm run start";
+    let appRunScript = `${await getPackageManagerCommand(userArguments)} run start`;
 
     if (selectedFrontend.isFullStack) {
         appRunScript = selectedFrontend.script.run.join(" && ");
     }
+
+    if (!getShouldAutoStartFromArgs(userArguments)) {
+        Logger.success("To start the application run the following command:\n\n" + appRunScript);
+        return;
+    }
+
+    Logger.success("Running the application...");
 
     const runProjectScript = new Promise((res, rej) => {
         let didReject = false;

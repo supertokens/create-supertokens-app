@@ -18,6 +18,6 @@ export class Logger {
 
     static success(item: any) {
         console.log("\n");
-        console.log(chalk.blueBright(item));
+        console.log(chalk.greenBright(item));
     }
 }

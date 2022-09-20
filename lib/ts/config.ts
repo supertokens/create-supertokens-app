@@ -1,12 +1,11 @@
 import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
-import { validateFolderName } from "./utils.js";
-import { getIsFullStackFromArgs, getPackageManagerCommand } from "./userArgumentUtils.js";
-import { getPythonRunScripts, mapOptionsToChoices } from "./questionOptionUtils.js";
+import { getIsFullStackFromArgs, getPackageManagerCommand, validateFolderName } from "./userArgumentUtils.js";
+import { getPythonRunScripts, mapOptionsToChoices } from "./questionUtils.js";
 import path from "path";
 import fs from "fs";
 
-export function getFrontendOptions(userArguments: UserFlags): QuestionOption[] {
-    const packagerCommand = getPackageManagerCommand(userArguments);
+export async function getFrontendOptions(userArguments: UserFlags): Promise<QuestionOption[]> {
+    const packagerCommand = await getPackageManagerCommand(userArguments);
 
     return [
         {
@@ -87,8 +86,8 @@ export function getFrontendOptions(userArguments: UserFlags): QuestionOption[] {
     ];
 }
 
-export function getBackendOptions(userArguments: UserFlags): QuestionOption[] {
-    const packagerCommand = getPackageManagerCommand(userArguments);
+export async function getBackendOptions(userArguments: UserFlags): Promise<QuestionOption[]> {
+    const packagerCommand = await getPackageManagerCommand(userArguments);
 
     return [
         {
@@ -173,7 +172,7 @@ export const recipeOptions: RecipeQuestionOption[] = [
  * Export for all the questions to ask the user, should follow the exact format mentioned here https://github.com/SBoudrias/Inquirer.js#objects because this config is passed to inquirer. The order of questions depends on the position of the object in the array
  */
 
-export function getQuestions(flags: UserFlags) {
+export async function getQuestions(flags: UserFlags) {
     return [
         {
             name: "appname",
@@ -202,7 +201,7 @@ export function getQuestions(flags: UserFlags) {
             name: "frontend",
             type: "list",
             message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
-            choices: mapOptionsToChoices(getFrontendOptions(flags)),
+            choices: mapOptionsToChoices(await getFrontendOptions(flags)),
             when: flags.frontend === undefined,
         },
         {
@@ -227,7 +226,7 @@ export function getQuestions(flags: UserFlags) {
             name: "backend",
             type: "list",
             message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
-            choices: mapOptionsToChoices(getBackendOptions(flags)),
+            choices: mapOptionsToChoices(await getBackendOptions(flags)),
             when: (answers: Answers) => {
                 if (flags.backend !== undefined) {
                     return false;

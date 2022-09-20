@@ -12,7 +12,49 @@ import {
     SupportedFrontends,
     UserFlags,
 } from "./types.js";
-import { validateFolderName } from "./utils.js";
+import { exec } from "child_process";
+import validateProjectName from "validate-npm-package-name";
+import path from "path";
+
+export function validateNpmName(name: string): {
+    valid: boolean;
+    problems?: string[];
+} {
+    const nameValidation = validateProjectName(name);
+    if (nameValidation.validForNewPackages) {
+        return { valid: true };
+    }
+
+    return {
+        valid: false,
+        problems: [...(nameValidation.errors || []), ...(nameValidation.warnings || [])],
+    };
+}
+
+export function validateFolderName(name: string): {
+    valid: boolean;
+    problems?: string[] | undefined;
+} {
+    return validateNpmName(path.basename(path.resolve(name)));
+}
+
+export async function isYarnInstalled(): Promise<boolean> {
+    const promise = new Promise<number | null>((res) => {
+        const command = exec("yarn help");
+
+        command.on("exit", (code) => {
+            res(code);
+        });
+    });
+
+    const exitCode = await promise;
+
+    if (exitCode === 0) {
+        return true;
+    }
+
+    return false;
+}
 
 export function getIsFullStackFromArgs(userArguments: UserFlags): boolean {
     if (
@@ -129,12 +171,16 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
     return _answers;
 }
 
-export function getPackageManagerCommand(userArguments: UserFlags): string {
+export async function getPackageManagerCommand(userArguments: UserFlags): Promise<string> {
     if (userArguments.manager === "npm") {
         return "npm";
     }
 
     if (userArguments.manager === "yarn") {
+        return "yarn";
+    }
+
+    if (await isYarnInstalled()) {
         return "yarn";
     }
 
@@ -144,10 +190,10 @@ export function getPackageManagerCommand(userArguments: UserFlags): string {
 export function getShouldAutoStartFromArgs(userArguments: UserFlags): boolean {
     if (
         userArguments.autostart !== undefined &&
-        (userArguments.autostart === "false" || userArguments.autostart === false)
+        (userArguments.autostart === "true" || userArguments.autostart === true)
     ) {
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }

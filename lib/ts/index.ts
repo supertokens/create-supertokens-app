@@ -2,11 +2,10 @@
 import inquirer from "inquirer";
 import { getQuestions } from "./config.js";
 import { Answers, UserFlags } from "./types.js";
-import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProject } from "./utils.js";
+import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOrPrintStartCommand } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-// import fs from "fs";
-import { getShouldAutoStartFromArgs, modifyAnswersBasedOnFlags, validateUserArguments } from "./userArgumentUtils.js";
+import { modifyAnswersBasedOnFlags, validateUserArguments } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 import fs from "fs";
 import Ora from "ora";
@@ -46,7 +45,7 @@ async function run() {
         validateUserArguments(userArguments);
 
         // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
-        let answers: Answers = await inquirer.prompt(getQuestions(userArguments));
+        let answers: Answers = await inquirer.prompt(await getQuestions(userArguments));
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersBasedOnSelection(answers);
@@ -57,12 +56,11 @@ async function run() {
 
         console.log("");
         const downloadSpinner = Ora({
-            color: "blue",
             spinner: "dots10",
-            text: chalk.blue("Downloading files"),
+            text: "Downloading files",
         }).start();
 
-        const folderLocations = getDownloadLocationFromAnswers(answers, userArguments);
+        const folderLocations = await getDownloadLocationFromAnswers(answers, userArguments);
 
         if (folderLocations === undefined) {
             Logger.log("Something went wrong, exiting...");
@@ -86,8 +84,7 @@ async function run() {
         console.log("");
 
         const setupSpinner = Ora({
-            color: "blue",
-            text: chalk.blue("Setting up the project"),
+            text: "Setting up the project",
             spinner: "dots10",
         }).start();
 
@@ -119,13 +116,7 @@ async function run() {
             throw e;
         }
 
-        if (!getShouldAutoStartFromArgs(userArguments)) {
-            Logger.success("Setup complete!");
-            return;
-        }
-
-        Logger.success("Running the project...");
-        await runProject(answers, userArguments);
+        await runProjectOrPrintStartCommand(answers, userArguments);
     } catch (e) {
         Logger.error((e as any).message);
     }
