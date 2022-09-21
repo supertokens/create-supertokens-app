@@ -36,7 +36,6 @@ async function run() {
             --frontend: Which frontend to use
             --backend: Which backend to use
             --fullstack: If the selected stack is a fullstack framework
-            --autoconfirm: Skips the confirmation at the end of the selection
             --manager: Which package manager to use
             --autostart: Whether the CLI should start the project after setting up
         */
@@ -49,10 +48,6 @@ async function run() {
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersBasedOnSelection(answers);
-
-        if (answers.confirmation !== true) {
-            throw new Error("Aborting...");
-        }
 
         console.log("");
         const downloadSpinner = Ora({

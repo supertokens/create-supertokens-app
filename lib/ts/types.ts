@@ -149,7 +149,6 @@ export type Answers = {
     frontend: SupportedFrontends;
     backend: SupportedBackends;
     recipe: string;
-    confirmation: boolean;
     nextfullstack?: boolean;
     appname: string;
 };
@@ -184,7 +183,6 @@ export type UserFlags = {
     frontend?: SupportedFrontends;
     fullstack?: string | boolean;
     backend?: SupportedBackends;
-    autoconfirm?: string | boolean;
     manager?: SupportedPackageManagers;
     autostart?: string | boolean;
 };

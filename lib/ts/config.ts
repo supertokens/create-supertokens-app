@@ -259,11 +259,5 @@ export async function getQuestions(flags: UserFlags) {
             choices: mapOptionsToChoices(recipeOptions),
             when: flags.recipe === undefined,
         },
-        {
-            name: "confirmation",
-            type: "confirm",
-            message: "Proceed with current selection?",
-            when: flags.autoconfirm === undefined,
-        },
     ];
 }

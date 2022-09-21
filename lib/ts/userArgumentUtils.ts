@@ -67,17 +67,6 @@ export function getIsFullStackFromArgs(userArguments: UserFlags): boolean {
     return false;
 }
 
-export function getIsAutoConfirmFromArgs(userArguments: UserFlags): boolean {
-    if (
-        userArguments.autoconfirm !== undefined &&
-        (userArguments.autoconfirm === "true" || userArguments.autoconfirm === true)
-    ) {
-        return true;
-    }
-
-    return false;
-}
-
 export function validateUserArguments(userArguments: UserFlags) {
     if (userArguments.appname !== undefined) {
         const validation = validateFolderName(userArguments.appname);
@@ -162,10 +151,6 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
 
     if (getIsFullStackFromArgs(userArguments) && userArguments.frontend === "next") {
         _answers.nextfullstack = true;
-    }
-
-    if (getIsAutoConfirmFromArgs(userArguments)) {
-        _answers.confirmation = true;
     }
 
     return _answers;
