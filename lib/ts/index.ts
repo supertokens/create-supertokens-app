@@ -12,16 +12,6 @@ import Ora from "ora";
 import chalk from "chalk";
 import Emoji from "node-emoji";
 
-function modifyAnswersBasedOnSelection(answers: Answers): Answers {
-    let _answers = answers;
-
-    if (answers.frontend === "next" && answers.nextfullstack === true) {
-        _answers.frontend = "next-fullstack";
-    }
-
-    return _answers;
-}
-
 async function run() {
     try {
         /* 
@@ -47,7 +37,6 @@ async function run() {
         let answers: Answers = await inquirer.prompt(await getQuestions(userArguments));
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
-        answers = modifyAnswersBasedOnSelection(answers);
 
         console.log("");
         const downloadSpinner = Ora({

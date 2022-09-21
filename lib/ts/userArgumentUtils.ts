@@ -1,4 +1,3 @@
-import { Logger } from "./logger.js";
 import {
     allBackends,
     allFrontends,
@@ -9,7 +8,6 @@ import {
     isValidFrontend,
     isValidPackageManager,
     isValidRecipeName,
-    SupportedFrontends,
     UserFlags,
 } from "./types.js";
 import { exec } from "child_process";
@@ -56,17 +54,6 @@ export async function isYarnInstalled(): Promise<boolean> {
     return false;
 }
 
-export function getIsFullStackFromArgs(userArguments: UserFlags): boolean {
-    if (
-        userArguments.fullstack !== undefined &&
-        (userArguments.fullstack === "true" || userArguments.fullstack === true)
-    ) {
-        return true;
-    }
-
-    return false;
-}
-
 export function validateUserArguments(userArguments: UserFlags) {
     if (userArguments.appname !== undefined) {
         const validation = validateFolderName(userArguments.appname);
@@ -94,19 +81,6 @@ export function validateUserArguments(userArguments: UserFlags) {
         if (!isValidBackend(userArguments.backend)) {
             const avaiableBackends = allBackends.map((e) => `    - ${e.displayValue}`).join("\n");
             throw new Error("Invalid backend provided, valid values:\n" + avaiableBackends);
-        }
-    }
-
-    let allowedFullStackFrontends: SupportedFrontends[] = ["next"];
-
-    if (getIsFullStackFromArgs(userArguments)) {
-        if (userArguments.frontend !== undefined && !allowedFullStackFrontends.includes(userArguments.frontend)) {
-            const allowedFrontends: string = allowedFullStackFrontends.map((e) => `    - ${e}\n`).join("");
-            throw new Error("--fullstack can only be used when --frontend is one of:\n" + allowedFrontends);
-        }
-
-        if (userArguments.backend !== undefined) {
-            Logger.warn("--backend is ignored when using --fullstack");
         }
     }
 
@@ -147,10 +121,6 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
         }
 
         _answers.backend = selectedBackend[0].id;
-    }
-
-    if (getIsFullStackFromArgs(userArguments) && userArguments.frontend === "next") {
-        _answers.nextfullstack = true;
     }
 
     return _answers;

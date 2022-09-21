@@ -1,5 +1,5 @@
 import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
-import { getIsFullStackFromArgs, getPackageManagerCommand, validateFolderName } from "./userArgumentUtils.js";
+import { getPackageManagerCommand, validateFolderName } from "./userArgumentUtils.js";
 import { getPythonRunScripts, mapOptionsToChoices } from "./questionUtils.js";
 import path from "path";
 import fs from "fs";
@@ -22,22 +22,8 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
             },
         },
         {
-            value: "next",
-            displayName: "Next.js",
-            location: {
-                main: "frontend/next",
-                finalConfig: "/config/frontendConfig.tsx",
-                configFiles: "/config/frontend",
-            },
-            script: {
-                setup: [`${packagerCommand} install`],
-                run: [`${packagerCommand} run dev`],
-            },
-        },
-        {
             isFullStack: true,
-            shouldDisplay: false,
-            value: "next-fullstack",
+            value: "next",
             displayName: "unused",
             location: {
                 main: "fullstack/next",
@@ -205,24 +191,6 @@ export async function getQuestions(flags: UserFlags) {
             when: flags.frontend === undefined,
         },
         {
-            name: "nextfullstack",
-            type: "confirm",
-            message: "Are you using Next.js functions for your APIs?",
-            // This checks whether or not a question should be asked
-            when: (answers: Answers) => {
-                // We dont use getIsFullStackFromArgs here intentionally
-                if (flags.fullstack !== undefined) {
-                    return false;
-                }
-
-                if (answers.frontend === "next") {
-                    return true;
-                }
-
-                return false;
-            },
-        },
-        {
             name: "backend",
             type: "list",
             message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
@@ -232,20 +200,8 @@ export async function getQuestions(flags: UserFlags) {
                     return false;
                 }
 
-                const isFullStackFromArgs: boolean = getIsFullStackFromArgs(flags);
-
-                if (flags.frontend === "next" && isFullStackFromArgs) {
+                if (flags.frontend === "next" || answers.frontend === "next") {
                     // This means that they want to use nextjs fullstack
-                    return false;
-                }
-
-                if (answers.frontend === "next" && isFullStackFromArgs) {
-                    // This means that they want to use nextjs fullstack
-                    return false;
-                }
-
-                // We skip this question if they are using Next.js fullstack
-                if (answers.nextfullstack === true) {
                     return false;
                 }
 
