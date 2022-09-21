@@ -24,7 +24,7 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
         {
             isFullStack: true,
             value: "next",
-            displayName: "Next.JS",
+            displayName: "Next.js",
             location: {
                 main: "fullstack/next",
                 config: {
