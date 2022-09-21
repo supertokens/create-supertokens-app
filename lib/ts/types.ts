@@ -21,7 +21,7 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
     return false;
 }
 
-export type SupportedFrontends = "react" | "next" | "next-fullstack" | "angular-prebuilt" | "vue-prebuilt";
+export type SupportedFrontends = "react" | "next" | "angular-prebuilt" | "vue-prebuilt";
 
 export const allFrontends: {
     displayValue: string;
@@ -149,8 +149,6 @@ export type Answers = {
     frontend: SupportedFrontends;
     backend: SupportedBackends;
     recipe: string;
-    confirmation: boolean;
-    nextfullstack?: boolean;
     appname: string;
 };
 
@@ -182,9 +180,7 @@ export type UserFlags = {
     recipe?: string;
     branch?: string;
     frontend?: SupportedFrontends;
-    fullstack?: string | boolean;
     backend?: SupportedBackends;
-    autoconfirm?: string | boolean;
     manager?: SupportedPackageManagers;
     autostart?: string | boolean;
 };

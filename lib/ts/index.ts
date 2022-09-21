@@ -12,16 +12,6 @@ import Ora from "ora";
 import chalk from "chalk";
 import Emoji from "node-emoji";
 
-function modifyAnswersBasedOnSelection(answers: Answers): Answers {
-    let _answers = answers;
-
-    if (answers.frontend === "next" && answers.nextfullstack === true) {
-        _answers.frontend = "next-fullstack";
-    }
-
-    return _answers;
-}
-
 async function run() {
     try {
         /* 
@@ -36,7 +26,6 @@ async function run() {
             --frontend: Which frontend to use
             --backend: Which backend to use
             --fullstack: If the selected stack is a fullstack framework
-            --autoconfirm: Skips the confirmation at the end of the selection
             --manager: Which package manager to use
             --autostart: Whether the CLI should start the project after setting up
         */
@@ -48,11 +37,6 @@ async function run() {
         let answers: Answers = await inquirer.prompt(await getQuestions(userArguments));
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
-        answers = modifyAnswersBasedOnSelection(answers);
-
-        if (answers.confirmation !== true) {
-            throw new Error("Aborting...");
-        }
 
         console.log("");
         const downloadSpinner = Ora({
