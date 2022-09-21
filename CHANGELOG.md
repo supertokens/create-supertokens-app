@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.5] - 2022-09-21
+
+-   Removes nextjs frontend only boilerplate
+
 ## [0.0.4] - 2022-09-20
 
 -   Changes to the start script
