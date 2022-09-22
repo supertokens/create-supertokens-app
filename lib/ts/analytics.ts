@@ -5,7 +5,7 @@ import os from "os";
 
 export default class AnalyticsManager {
     static async sendAnalyticsEvent(analyticsEvent: AnalyticsEvent) {
-        const url = "https://dev.api.supertokens.com/0/analytics/cli";
+        const url = "https://api.supertokens.com/0/analytics/cli";
 
         const analyticsId = await getAnalyticsId();
 
