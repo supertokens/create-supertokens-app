@@ -1,47 +1,28 @@
-import { AnalyticsEvent, AnalyticsEventWithCommonProperties, UserFlags } from "./types";
+import { AnalyticsEvent, AnalyticsEventWithCommonProperties } from "./types.js";
 import fetch from "node-fetch";
-import { getAnalyticsId } from "./utils";
+import { getAnalyticsId } from "./utils.js";
 import os from "os";
 
 export default class AnalyticsManager {
-    static async sendAnalyticsEvent(analyticsEvent: AnalyticsEvent, userArguments: UserFlags | undefined) {
-        const url = "";
+    static async sendAnalyticsEvent(analyticsEvent: AnalyticsEvent) {
+        const url = "https://dev.api.supertokens.com/0/analytics/cli";
 
-        const argumentsArray: string[] = [];
-
-        if (userArguments !== undefined) {
-            if (userArguments.appname !== undefined) {
-                argumentsArray.push(`--appname=${userArguments.appname}`);
-            }
-
-            if (userArguments.frontend !== undefined) {
-                argumentsArray.push(`--frontend=${userArguments.frontend}`);
-            }
-
-            if (userArguments.backend !== undefined) {
-                argumentsArray.push(`--backend=${userArguments.backend}`);
-            }
-
-            if (userArguments.recipe !== undefined) {
-                argumentsArray.push(`--recipe=${userArguments.recipe}`);
-            }
-
-            if (userArguments.manager !== undefined) {
-                argumentsArray.push(`--manager=${userArguments.manager}`);
-            }
-        }
+        const analyticsId = await getAnalyticsId();
 
         const payload: AnalyticsEventWithCommonProperties = {
             ...analyticsEvent,
-            userId: getAnalyticsId(),
-            operatingSystem: os.platform(),
-            arguments: argumentsArray,
+            userId: analyticsId,
+            os: os.platform(),
         };
 
         try {
             await fetch(url, {
                 method: "POST",
                 body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": "application/json",
+                    "api-version": "0",
+                },
             });
         } catch (e) {
             // no op

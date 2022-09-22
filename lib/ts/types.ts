@@ -198,17 +198,16 @@ export type AnalyticsEvent =
           eventName: "cli_completed";
           frontend: string;
           backend: string;
-          appName: string;
       }
     | {
           eventName: "cli_failed";
           frontend: string;
           backend: string;
-          appName: string;
       };
 
 export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {
     userId: string;
-    operatingSystem: string;
-    arguments: string[];
+    os: string;
+    // timestamp: number; // added from the backend
+    // ip: string // stored in the backend
 };
