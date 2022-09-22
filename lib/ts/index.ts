@@ -11,8 +11,10 @@ import fs from "fs";
 import Ora from "ora";
 import chalk from "chalk";
 import Emoji from "node-emoji";
+import AnalyticsManager from "./analytics.js";
 
 async function run() {
+    let answers: Answers | undefined = undefined;
     try {
         /* 
             userArguments will contain all the arguments the user passes
@@ -29,12 +31,16 @@ async function run() {
             --manager: Which package manager to use
             --autostart: Whether the CLI should start the project after setting up
         */
-        const userArguments: UserFlags = (await yargs(hideBin(process.argv)).argv) as any;
+        const userArguments: UserFlags = (await yargs(hideBin(process.argv)).argv) as UserFlags;
 
         validateUserArguments(userArguments);
 
+        AnalyticsManager.sendAnalyticsEvent({
+            eventName: "cli_started",
+        });
+
         // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
-        let answers: Answers = await inquirer.prompt(await getQuestions(userArguments));
+        answers = await inquirer.prompt(await getQuestions(userArguments));
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
 
@@ -101,7 +107,18 @@ async function run() {
         }
 
         await runProjectOrPrintStartCommand(answers, userArguments);
+
+        AnalyticsManager.sendAnalyticsEvent({
+            eventName: "cli_completed",
+            frontend: answers.frontend,
+            backend: answers.backend,
+        });
     } catch (e) {
+        AnalyticsManager.sendAnalyticsEvent({
+            eventName: "cli_failed",
+            frontend: answers?.frontend ?? "",
+            backend: answers?.backend ?? "",
+        });
         Logger.error((e as any).message);
     }
 }

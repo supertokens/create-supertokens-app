@@ -7,12 +7,12 @@ import { Answers, DownloadLocations, ExecOutput, UserFlags } from "./types";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
-import os from "os";
 import { v4 as uuidv4 } from "uuid";
 import { Ora } from "ora";
 import { getPackageManagerCommand, getShouldAutoStartFromArgs } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 import chalk from "chalk";
+import { fileURLToPath } from "url";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -506,18 +506,41 @@ export async function setupProject(
     }
 }
 
-export function getAnalyticsId(): string {
-    const networkInterfaces = os.networkInterfaces();
-    const values = Object.values(networkInterfaces);
+export async function getAnalyticsId(): Promise<string> {
+    try {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        const filePath = __dirname + "/analytics.json";
 
-    // The undefined check is to stop typescript from complaining
-    if (values.length === 0 || values[0] === undefined) {
-        // If no network interfaces are returned we generate a UUID and use that
-        // Note that in this case every run of this script will be treated as a separate UUID
-        return uuidv4();
+        if (fs.existsSync(filePath)) {
+            let analyticsData: {
+                userId: string | undefined;
+            } = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+
+            if (analyticsData.userId !== undefined) {
+                return analyticsData.userId;
+            } else {
+                analyticsData.userId = uuidv4();
+
+                fs.writeFileSync(filePath, JSON.stringify(analyticsData), "utf-8");
+                return analyticsData.userId;
+            }
+        } else {
+            const userId: string = uuidv4();
+
+            fs.writeFileSync(
+                filePath,
+                JSON.stringify({
+                    userId,
+                }),
+                "utf-8"
+            );
+
+            return userId;
+        }
+    } catch (e) {
+        return "error" + uuidv4();
     }
-
-    return values[0][0].mac;
 }
 
 export async function runProjectOrPrintStartCommand(answers: Answers, userArguments: UserFlags) {

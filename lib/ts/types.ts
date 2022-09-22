@@ -189,3 +189,25 @@ export type ExecOutput = {
     code: number | null;
     error: string | undefined;
 };
+
+export type AnalyticsEvent =
+    | {
+          eventName: "cli_started";
+      }
+    | {
+          eventName: "cli_completed";
+          frontend: string;
+          backend: string;
+      }
+    | {
+          eventName: "cli_failed";
+          frontend: string;
+          backend: string;
+      };
+
+export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {
+    userId: string;
+    os: string;
+    // timestamp: number; // added from the backend
+    // ip: string // stored in the backend
+};
