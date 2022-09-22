@@ -189,3 +189,26 @@ export type ExecOutput = {
     code: number | null;
     error: string | undefined;
 };
+
+export type AnalyticsEvent =
+    | {
+          eventName: "cli_started";
+      }
+    | {
+          eventName: "cli_completed";
+          frontend: string;
+          backend: string;
+          appName: string;
+      }
+    | {
+          eventName: "cli_failed";
+          frontend: string;
+          backend: string;
+          appName: string;
+      };
+
+export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {
+    userId: string;
+    operatingSystem: string;
+    arguments: string[];
+};
