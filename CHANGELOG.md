@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.7] - 2022-09-23
+
+-   Fixes an issue where download errors were not handled correctly
+
 ## [0.0.6] - 2022-09-22
 
 -   Adds analytics
