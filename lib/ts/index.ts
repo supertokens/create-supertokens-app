@@ -69,6 +69,8 @@ async function run() {
                 text: chalk.redBright("Error downloading files"),
                 symbol: Emoji.get(":no_entry:"),
             });
+
+            throw e;
         }
 
         console.log("");
