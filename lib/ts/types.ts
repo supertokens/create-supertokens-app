@@ -203,6 +203,7 @@ export type AnalyticsEvent =
           eventName: "cli_failed";
           frontend: string;
           backend: string;
+          error: string;
       };
 
 export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {

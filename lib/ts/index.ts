@@ -120,6 +120,7 @@ async function run() {
             eventName: "cli_failed",
             frontend: answers?.frontend ?? "",
             backend: answers?.backend ?? "",
+            error: String(e),
         });
         Logger.error((e as any).message);
     }
