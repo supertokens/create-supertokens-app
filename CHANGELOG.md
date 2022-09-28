@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.9] - 2022-09-27
+
+-   Use `npm` as the default package manager
+
 ## [0.0.8] - 2022-09-27
 
 -   Changes to analytics
