@@ -10,7 +10,6 @@ import {
     isValidRecipeName,
     UserFlags,
 } from "./types.js";
-import { exec } from "child_process";
 import validateProjectName from "validate-npm-package-name";
 import path from "path";
 
@@ -34,24 +33,6 @@ export function validateFolderName(name: string): {
     problems?: string[] | undefined;
 } {
     return validateNpmName(path.basename(path.resolve(name)));
-}
-
-export async function isYarnInstalled(): Promise<boolean> {
-    const promise = new Promise<number | null>((res) => {
-        const command = exec("yarn help");
-
-        command.on("exit", (code) => {
-            res(code);
-        });
-    });
-
-    const exitCode = await promise;
-
-    if (exitCode === 0) {
-        return true;
-    }
-
-    return false;
 }
 
 export function validateUserArguments(userArguments: UserFlags) {
@@ -132,10 +113,6 @@ export async function getPackageManagerCommand(userArguments: UserFlags): Promis
     }
 
     if (userArguments.manager === "yarn") {
-        return "yarn";
-    }
-
-    if (await isYarnInstalled()) {
         return "yarn";
     }
 
