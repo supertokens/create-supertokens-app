@@ -19,8 +19,6 @@ app_info = InputAppInfo(
     website_domain="http://localhost:3000",
 )
 
-framework = "flask"
-
 # recipeList contains all the modules that you want to
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
 recipe_list = [

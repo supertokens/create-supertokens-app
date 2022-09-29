@@ -1,4 +1,5 @@
-from supertokens_python.recipe import emailpassword, session
+from supertokens_python.recipe import passwordless, session
+from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig
 from supertokens_python import (
     InputAppInfo,
     SupertokensConfig,
@@ -14,11 +15,12 @@ app_info = InputAppInfo(
     website_domain="http://localhost:3000",
 )
 
-framework = "flask"
-
 # recipeList contains all the modules that you want to
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
 recipe_list = [
     session.init(),
-    emailpassword.init()
+    passwordless.init(
+        flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
+        contact_config=ContactEmailOrPhoneConfig()
+    )
 ]

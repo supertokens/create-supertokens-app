@@ -6,7 +6,7 @@ import (
 
 var SuperTokensConfig = supertokens.TypeInput{
 	Supertokens: &supertokens.ConnectionInfo{
-		ConnectionURI: "https://try.supertokens.io",
+		ConnectionURI: "https://try.supertokens.com",
 	},
 	AppInfo: supertokens.AppInfo{
 		AppName:       "SuperTokens Demo App",

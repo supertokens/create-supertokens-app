@@ -8,28 +8,29 @@ from supertokens_python import (
 )
 
 # this is the location of the SuperTokens core.
-supertokens_config=SupertokensConfig(connection_uri="https://try.supertokens.io")
+supertokens_config = SupertokensConfig(
+    connection_uri="https://try.supertokens.com")
 
-app_info=InputAppInfo(
+app_info = InputAppInfo(
     app_name="Supertokens",
     api_domain="http://localhost:3001",
     website_domain="http://localhost:3000",
 )
 
-framework="flask"
+framework = "flask"
 
 # recipeList contains all the modules that you want to
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
-recipe_list=[
+recipe_list = [
     session.init(),
     thirdpartypasswordless.init(
         flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
-        contact_config=ContactEmailOrPhoneConfig() ,
+        contact_config=ContactEmailOrPhoneConfig(),
         providers=[
             Google(
                 client_id='1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com',
                 client_secret='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'
-            ), 
+            ),
             Github(
                 client_id='467101b197249757c71f',
                 client_secret='e97051221f4b6426e8fe8d51486396703012f5bd'

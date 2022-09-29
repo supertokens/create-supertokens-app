@@ -1,5 +1,5 @@
-from supertokens_python.recipe import session, thirdpartyemailpassword
-from supertokens_python.recipe.thirdpartyemailpassword import (
+from supertokens_python.recipe import session, thirdparty
+from supertokens_python.recipe.thirdparty import (
     Apple,
     Github,
     Google,
@@ -19,31 +19,28 @@ app_info = InputAppInfo(
     website_domain="http://localhost:3000",
 )
 
-framework = "flask"
-
 # recipeList contains all the modules that you want to
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
 recipe_list = [
     session.init(),
-    thirdpartyemailpassword.init(
-        providers=[
+    thirdparty.init(
+        sign_in_and_up_feature=thirdparty.SignInAndUpFeature(providers=[
+            # We have provided you with development keys which you can use for testing.
+            # IMPORTANT: Please replace them with your own OAuth keys for production use.
             Google(
-                is_default=True,
-                client_id="1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
-                client_secret="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"
+                client_id='1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com',
+                client_secret='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'
             ),
             Github(
-                is_default=True,
-                client_id="467101b197249757c71f",
-                client_secret="e97051221f4b6426e8fe8d51486396703012f5bd",
+                client_id='467101b197249757c71f',
+                client_secret='e97051221f4b6426e8fe8d51486396703012f5bd'
             ),
             Apple(
-                is_default=True,
                 client_id="4398792-io.supertokens.example.service",
                 client_key_id="7M48Y4RYDL",
-                client_team_id="YWQCXGJRJL",
                 client_private_key="-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgu8gXs+XYkqXD6Ala9Sf/iJXzhbwcoG5dMh1OonpdJUmgCgYIKoZIzj0DAQehRANCAASfrvlFbFCYqn3I2zeknYXLwtH30JuOKestDbSfZYxZNMqhF/OzdZFTV0zc5u5s3eN+oCWbnvl0hM+9IW0UlkdA\n-----END PRIVATE KEY-----",
-            ),
-        ]
+                client_team_id="YWQCXGJRJL"
+            )
+        ])
     )
 ]

@@ -8,7 +8,7 @@ export let backendConfig = (): AuthConfig => {
         framework: "express",
         supertokens: {
             // this is the location of the SuperTokens core.
-            connectionURI: "https://try.supertokens.io",
+            connectionURI: "https://try.supertokens.com",
         },
         appInfo,
         // recipeList contains all the modules that you want to
