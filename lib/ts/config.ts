@@ -117,7 +117,7 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
         },
         {
             value: "python-django",
-            displayName: "Python (Django)",
+            displayName: "Python (Django Rest Framework)",
             location: {
                 main: "backend/python-drf",
                 finalConfig: "./app/config.py",

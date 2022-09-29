@@ -14,7 +14,7 @@ from corsheaders.defaults import default_headers
 from typing import List
 from supertokens_python import get_all_cors_headers
 from supertokens_python import init
-from app.config import supertokens_config, app_info, framework, recipe_list
+from app.config import supertokens_config, app_info, recipe_list
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
