@@ -138,7 +138,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 init(
     supertokens_config=supertokens_config,
     app_info=app_info,
-    framework=framework,
+    framework="django",
     recipe_list=recipe_list,
     mode='wsgi'
 )

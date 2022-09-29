@@ -4,16 +4,14 @@ from supertokens_python import (
 )
 
 # this is the location of the SuperTokens core.
-supertokens_config=SupertokensConfig(connection_uri="")
+supertokens_config = SupertokensConfig(connection_uri="")
 
-app_info=InputAppInfo(
+app_info = InputAppInfo(
     app_name="",
     api_domain="",
     website_domain="",
 )
 
-framework="django"
-
 # recipeList contains all the modules that you want to
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
-recipe_list=[]
+recipe_list = []
