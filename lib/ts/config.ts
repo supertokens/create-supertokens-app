@@ -1,6 +1,6 @@
 import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
 import { getPackageManagerCommand, validateFolderName } from "./userArgumentUtils.js";
-import { getPythonRunScripts, mapOptionsToChoices } from "./questionUtils.js";
+import { getDjangoPythonRunScripts, getPythonRunScripts, mapOptionsToChoices } from "./questionUtils.js";
 import path from "path";
 import fs from "fs";
 
@@ -104,7 +104,7 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
         },
         {
             value: "python-flask",
-            displayName: "Python",
+            displayName: "Python (Flask)",
             location: {
                 main: "backend/python-flask",
                 finalConfig: "/config.py",
@@ -113,6 +113,19 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
             script: {
                 setup: [],
                 run: getPythonRunScripts(),
+            },
+        },
+        {
+            value: "python-django",
+            displayName: "Python (Django)",
+            location: {
+                main: "backend/python-drf",
+                finalConfig: "./app/config.py",
+                configFiles: "./app/config",
+            },
+            script: {
+                setup: [],
+                run: getDjangoPythonRunScripts(),
             },
         },
         {
