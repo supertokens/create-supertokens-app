@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+-   Updates NestJS template to have a configurable AuthGuard
+
 ## [0.0.10] - 2022-09-29
 
 -   Adds boilerplate for Python using Django Rest Framework
