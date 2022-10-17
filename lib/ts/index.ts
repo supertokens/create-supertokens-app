@@ -12,10 +12,42 @@ import Ora from "ora";
 import chalk from "chalk";
 import Emoji from "node-emoji";
 import AnalyticsManager from "./analytics.js";
+import figlet from "figlet";
+
+async function printInformation(): Promise<void> {
+    const font: figlet.Fonts = "Doom";
+
+    console.log("\n");
+    await new Promise<void>((resolve) => {
+        figlet(
+            "SuperTokens",
+            {
+                font,
+            },
+            (err, data) => {
+                if (err === null && data !== undefined) {
+                    console.log(data);
+                }
+
+                resolve();
+            }
+        );
+    });
+
+    console.log("\n\n");
+    console.log(chalk.bold("create-supertokens-app"), "lets you quickly get started with using SuperTokens!\n");
+    console.log(
+        "Choose your tech stack and the authentication method, we will create a working project that uses SuperTokens for you."
+    );
+    console.log("\n");
+}
 
 async function run() {
     let answers: Answers | undefined = undefined;
+
     try {
+        await printInformation();
+
         /* 
             userArguments will contain all the arguments the user passes
             For example: `npx create-supertokens-app --recipe=emailpassword` will result
