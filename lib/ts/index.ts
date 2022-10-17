@@ -155,6 +155,9 @@ async function run() {
             error: String(e),
         });
         Logger.error((e as any).message);
+        Logger.error(
+            "If you think this is an issue with the tool, please report this as an issue at https://github.com/supertokens/create-supertokens-app/issues"
+        );
     }
 }
 
