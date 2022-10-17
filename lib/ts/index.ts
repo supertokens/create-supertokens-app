@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import inquirer from "inquirer";
 import { getQuestions } from "./config.js";
-import { Answers, UserFlags } from "./types.js";
+import { Answers, DownloadLocations, UserFlags } from "./types.js";
 import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOrPrintStartCommand } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -40,6 +40,31 @@ async function printInformation(): Promise<void> {
         "Choose your tech stack and the authentication method, we will create a working project that uses SuperTokens for you."
     );
     console.log("\n");
+}
+
+let downLoadRetriesLeft = 2;
+
+async function downloadAppFromGithub(folderLocations: DownloadLocations, appname: string) {
+    try {
+        await downloadApp(folderLocations, appname);
+    } catch (e) {
+        /**
+         * If the project download failed we want to clear the generate app,
+         * otherwise the retrying logic would fail because there would already be
+         * a folder with the app name
+         */
+        fs.rmSync(`${appname}/`, {
+            recursive: true,
+            force: true,
+        });
+
+        if (downLoadRetriesLeft === 0) {
+            throw e;
+        } else {
+            downLoadRetriesLeft--;
+            await downloadAppFromGithub(folderLocations, appname);
+        }
+    }
 }
 
 async function run() {
@@ -90,7 +115,7 @@ async function run() {
         }
 
         try {
-            await downloadApp(folderLocations, answers.appname);
+            await downloadAppFromGithub(folderLocations, answers.appname);
 
             downloadSpinner.stopAndPersist({
                 text: "Download complete!",
