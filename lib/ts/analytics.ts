@@ -2,6 +2,7 @@ import { AnalyticsEvent, AnalyticsEventWithCommonProperties } from "./types.js";
 import fetch from "node-fetch";
 import { getAnalyticsId } from "./utils.js";
 import os from "os";
+import { package_version } from "./version.js";
 
 export default class AnalyticsManager {
     static async sendAnalyticsEvent(analyticsEvent: AnalyticsEvent) {
@@ -13,6 +14,7 @@ export default class AnalyticsManager {
             ...analyticsEvent,
             userId: analyticsId,
             os: os.platform(),
+            cliversion: package_version,
         };
 
         try {

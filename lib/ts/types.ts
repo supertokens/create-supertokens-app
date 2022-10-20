@@ -213,6 +213,7 @@ export type AnalyticsEvent =
 export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {
     userId: string;
     os: string;
+    cliversion: string;
     // timestamp: number; // added from the backend
     // ip: string // stored in the backend
 };
