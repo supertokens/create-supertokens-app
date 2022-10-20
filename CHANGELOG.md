@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.13] - 2022-10-20
+
+-   Changes logic to use Github archive links to download files
+
 ## [0.0.12] - 2022-10-17
 
 -   Displays some information about the tool on startup
