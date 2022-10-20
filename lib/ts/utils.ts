@@ -31,7 +31,8 @@ export async function getDownloadLocationFromAnswers(
 ): Promise<DownloadLocations | undefined> {
     const branchToUse = userArguments.branch || "master";
 
-    const downloadURL = `https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/${branchToUse}`;
+    // const downloadURL = `https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/${branchToUse}`;
+    const downloadURL = `https://github.com/supertokens/create-supertokens-app/archive/${branchToUse}.tar.gz`;
 
     const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
