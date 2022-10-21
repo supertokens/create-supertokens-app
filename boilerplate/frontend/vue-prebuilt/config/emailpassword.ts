@@ -11,9 +11,6 @@ export const SuperTokensReactConfig = {
   recipeList: [
     EmailPasswordReact.init({
       useShadowDom: false,
-      emailVerificationFeature: {
-        mode: "REQUIRED",
-      },
     }),
     SessionReact.init(),
   ],
