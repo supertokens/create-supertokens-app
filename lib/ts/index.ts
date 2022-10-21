@@ -124,7 +124,7 @@ async function run() {
             await downloadAppFromGithub(folderLocations, answers.appname);
 
             downloadSpinner.stopAndPersist({
-                text: "Download complete!",
+                text: "Finished setting up folder structure!",
                 symbol: Emoji.get(":white_check_mark:"),
             });
         } catch (e) {
