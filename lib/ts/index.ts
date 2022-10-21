@@ -101,6 +101,12 @@ async function run() {
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
 
+        AnalyticsManager.sendAnalyticsEvent({
+            eventName: "cli_selection_complete",
+            frontend: answers.frontend,
+            backend: answers.backend,
+        });
+
         console.log("");
         const downloadSpinner = Ora({
             spinner: "dots10",

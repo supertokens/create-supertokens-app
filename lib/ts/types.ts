@@ -204,6 +204,11 @@ export type AnalyticsEvent =
           backend: string;
       }
     | {
+          eventName: "cli_selection_complete";
+          frontend: string;
+          backend: string;
+      }
+    | {
           eventName: "cli_failed";
           frontend: string;
           backend: string;
@@ -214,6 +219,4 @@ export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {
     userId: string;
     os: string;
     cliversion: string;
-    // timestamp: number; // added from the backend
-    // ip: string // stored in the backend
 };
