@@ -13,6 +13,7 @@ import chalk from "chalk";
 import Emoji from "node-emoji";
 import AnalyticsManager from "./analytics.js";
 import figlet from "figlet";
+import { package_version } from "./version.js";
 
 async function printInformation(): Promise<void> {
     const font: figlet.Fonts = "Doom";
@@ -33,7 +34,8 @@ async function printInformation(): Promise<void> {
             }
         );
     });
-
+    console.log("\n");
+    console.log(`v${package_version}`);
     console.log("\n\n");
     console.log(chalk.bold("create-supertokens-app"), "lets you quickly get started with using SuperTokens!\n");
     console.log(
