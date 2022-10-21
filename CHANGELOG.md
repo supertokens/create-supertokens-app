@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.15] - 2022-10-21
+
+-   Use fetch to directly download files instead of using `got`
+-   Updates for analytics
+
 ## [0.0.14] - 2022-10-20
 
 -   Changes logic to use Github archive links to download files
