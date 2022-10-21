@@ -177,7 +177,7 @@ async function run() {
             eventName: "cli_failed",
             frontend: answers?.frontend ?? "",
             backend: answers?.backend ?? "",
-            error: String(e),
+            error: String(e) + (e as any).stack === undefined ? "" : (e as any).stack,
         });
         Logger.error((e as any).message);
         Logger.error(

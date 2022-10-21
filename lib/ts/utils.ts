@@ -1,5 +1,4 @@
 import { getFrontendOptions, getBackendOptions } from "./config.js";
-import got from "got";
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
@@ -13,6 +12,7 @@ import { getPackageManagerCommand, getShouldAutoStartFromArgs } from "./userArgu
 import { Logger } from "./logger.js";
 import chalk from "chalk";
 import { fileURLToPath } from "url";
+import fetch from "node-fetch";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -77,8 +77,14 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
 
     const isFullStack = locations.frontend === locations.backend;
 
+    const downloadResponse = await fetch(locations.download);
+
+    if (!downloadResponse.ok || downloadResponse.body === null) {
+        throw new Error("Failed to download project");
+    }
+
     await pipeline(
-        got.stream(`${locations.download}`),
+        downloadResponse.body,
         tar.extract(
             {
                 cwd: `./${folderName}`,
