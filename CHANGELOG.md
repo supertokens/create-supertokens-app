@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.16] - 2022-10-21
+
+-   Refactor the order in which the project is setup to fix errors with golang
+
 ## [0.0.15] - 2022-10-21
 
 -   Use fetch to directly download files instead of using `got`
