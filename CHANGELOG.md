@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.18] - 2022-10-21
+
+-   Adds an example app for Python with FastAPI
+
 ## [0.0.17] - 2022-10-21
 
 -   Prints the version on startup
