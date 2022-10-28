@@ -116,6 +116,19 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
             },
         },
         {
+            value: "python-fastapi",
+            displayName: "Python (FastAPI)",
+            location: {
+                main: "backend/python-fastapi",
+                finalConfig: "/config.py",
+                configFiles: "/config",
+            },
+            script: {
+                setup: [],
+                run: getPythonRunScripts(),
+            },
+        },
+        {
             value: "python-drf",
             displayName: "Python (Django Rest Framework)",
             location: {
