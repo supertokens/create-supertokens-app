@@ -53,7 +53,7 @@ export function isValidFrontend(frontend: string): frontend is SupportedFrontend
     return false;
 }
 
-export type SupportedBackends = "node" | "nest" | "python-flask" | "python-drf" | "go-http";
+export type SupportedBackends = "node" | "nest" | "python-flask" | "python-drf" | "python-fastapi" | "go-http";
 
 export const allBackends: {
     displayValue: string;
@@ -74,6 +74,10 @@ export const allBackends: {
     {
         id: "python-drf",
         displayValue: "python-drf",
+    },
+    {
+        id: "python-fastapi",
+        displayValue: "python-fastapi",
     },
     {
         id: "go-http",
