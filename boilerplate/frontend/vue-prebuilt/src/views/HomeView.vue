@@ -1,7 +1,8 @@
 <script lang="ts">
 import * as Session from "supertokens-web-js/recipe/session";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   data() {
     return {
       session: false,
@@ -26,12 +27,12 @@ export default {
       window.location.reload();
     },
   },
-};
+});
 </script>
 
 <template>
   <main>
-    <div class="body">
+    <div className="body">
       <h1>Hello</h1>
 
       <div v-if="session">
