@@ -1,5 +1,6 @@
 import Passwordless from 'supertokens-node/recipe/passwordless';
 import Session from 'supertokens-node/recipe/session';
+import Dashboard from 'supertokens-node/recipe/dashboard';
 
 export const appInfo = {
   // Learn more about this on https://supertokens.com/docs/thirdpartypasswordless/appinfo
@@ -18,4 +19,7 @@ export const recipeList = [
     flowType: 'USER_INPUT_CODE_AND_MAGIC_LINK',
   }),
   Session.init(),
+  Dashboard.init({
+    apiKey: 'supertokens_is_awesome',
+  }),
 ];

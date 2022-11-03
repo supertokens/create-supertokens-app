@@ -1,5 +1,6 @@
 import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpassword';
 import Session from 'supertokens-node/recipe/session';
+import Dashboard from 'supertokens-node/recipe/dashboard';
 
 export const appInfo = {
   // Learn more about this on https://supertokens.com/docs/thirdpartypasswordless/appinfo
@@ -38,4 +39,7 @@ export const recipeList = [
     ],
   }),
   Session.init(),
+  Dashboard.init({
+    apiKey: 'supertokens_is_awesome',
+  }),
 ];
