@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.19] - 2022-11-03
+
+-   The dashboard recipe is initialised for all backends by default
+
 ## [0.0.18] - 2022-10-21
 
 -   Adds an example app for Python with FastAPI
