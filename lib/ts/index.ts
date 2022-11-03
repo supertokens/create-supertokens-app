@@ -35,9 +35,10 @@ async function printInformation(): Promise<void> {
         );
     });
     console.log("\n");
-    console.log(`v${package_version}`);
-    console.log("\n\n");
-    console.log(chalk.bold("create-supertokens-app"), "lets you quickly get started with using SuperTokens!\n");
+    console.log(
+        chalk.bold(`create-supertokens-app (v${package_version})`),
+        "lets you quickly get started with using SuperTokens!\n"
+    );
     console.log(
         "Choose your tech stack and the authentication method, we will create a working project that uses SuperTokens for you."
     );
