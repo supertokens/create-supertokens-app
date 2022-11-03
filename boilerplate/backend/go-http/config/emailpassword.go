@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/supertokens/supertokens-golang/recipe/dashboard"
+	"github.com/supertokens/supertokens-golang/recipe/dashboard/dashboardmodels"
 	"github.com/supertokens/supertokens-golang/recipe/emailpassword"
 	"github.com/supertokens/supertokens-golang/recipe/session"
 	"github.com/supertokens/supertokens-golang/supertokens"
@@ -18,5 +20,8 @@ var SuperTokensConfig = supertokens.TypeInput{
 	RecipeList: []supertokens.Recipe{
 		emailpassword.Init(nil),
 		session.Init(nil),
+		dashboard.Init(dashboardmodels.TypeInput{
+			ApiKey: "supertokens_is_awesome",
+		}),
 	},
 }
