@@ -1,6 +1,7 @@
 import ThirdParty from "supertokens-node/recipe/thirdparty";
 import Session from "supertokens-node/recipe/session";
 import { TypeInput } from "supertokens-node/types";
+import Dashboard from "supertokens-node/recipe/dashboard";
 
 export const SuperTokensConfig: TypeInput = {
     supertokens: {
@@ -41,5 +42,8 @@ export const SuperTokensConfig: TypeInput = {
             },
         }),
         Session.init(),
+        Dashboard.init({
+            apiKey: "supertokens_is_awesome",
+        }),
     ],
 };
