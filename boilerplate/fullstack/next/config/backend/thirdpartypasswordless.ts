@@ -1,5 +1,6 @@
 import ThirdPartyPasswordlessNode from "supertokens-node/recipe/thirdpartypasswordless";
 import SessionNode from "supertokens-node/recipe/session";
+import Dashboard from "supertokens-node/recipe/dashboard";
 import { appInfo } from "./appInfo";
 import { AuthConfig } from "../interfaces";
 
@@ -40,6 +41,9 @@ export let backendConfig = (): AuthConfig => {
                 flowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
             }),
             SessionNode.init(),
+            Dashboard.init({
+                apiKey: "supertokens_is_awesome",
+            }),
         ],
         isInServerlessEnv: true,
     };

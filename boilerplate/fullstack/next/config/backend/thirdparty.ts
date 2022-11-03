@@ -1,5 +1,6 @@
 import ThirdPartyNode from "supertokens-node/recipe/thirdparty";
 import SessionNode from "supertokens-node/recipe/session";
+import Dashboard from "supertokens-node/recipe/dashboard";
 import { appInfo } from "./appInfo";
 import { AuthConfig } from "../interfaces";
 
@@ -39,6 +40,9 @@ export let backendConfig = (): AuthConfig => {
                 },
             }),
             SessionNode.init(),
+            Dashboard.init({
+                apiKey: "supertokens_is_awesome",
+            }),
         ],
         isInServerlessEnv: true,
     };
