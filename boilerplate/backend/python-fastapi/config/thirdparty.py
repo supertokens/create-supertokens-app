@@ -1,4 +1,4 @@
-from supertokens_python.recipe import session, thirdparty
+from supertokens_python.recipe import session, thirdparty, dashboard
 from supertokens_python.recipe.thirdparty import (
     Apple,
     Github,
@@ -44,5 +44,6 @@ recipe_list = [
                 client_team_id="YWQCXGJRJL"
             )
         ])
-    )
+    ),
+    dashboard.init(api_key="supertokens_is_awesome")
 ]

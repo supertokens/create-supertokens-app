@@ -1,4 +1,4 @@
-from supertokens_python.recipe import emailpassword, session
+from supertokens_python.recipe import emailpassword, session, dashboard
 from supertokens_python import (
     InputAppInfo,
     SupertokensConfig,
@@ -18,5 +18,6 @@ app_info = InputAppInfo(
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
 recipe_list = [
     session.init(),
-    emailpassword.init()
+    emailpassword.init(),
+    dashboard.init(api_key="supertokens_is_awesome")
 ]

@@ -1,4 +1,4 @@
-from supertokens_python.recipe import passwordless, session
+from supertokens_python.recipe import passwordless, session, dashboard
 from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig
 from supertokens_python import (
     InputAppInfo,
@@ -24,5 +24,6 @@ recipe_list = [
     passwordless.init(
         flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
         contact_config=ContactEmailOrPhoneConfig()
-    )
+    ),
+    dashboard.init(api_key="supertokens_is_awesome")
 ]

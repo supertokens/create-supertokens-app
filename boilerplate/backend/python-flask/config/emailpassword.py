@@ -20,5 +20,6 @@ framework = "flask"
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
 recipe_list = [
     session.init(),
-    emailpassword.init()
+    emailpassword.init(),
+    dashboard.init(api_key="supertokens_is_awesome"),
 ]

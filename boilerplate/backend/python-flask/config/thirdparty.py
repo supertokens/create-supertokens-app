@@ -44,5 +44,6 @@ recipe_list = [
                 client_team_id="YWQCXGJRJL"
             )
         ])
-    )
+    ),
+    dashboard.init(api_key="supertokens_is_awesome")
 ]
