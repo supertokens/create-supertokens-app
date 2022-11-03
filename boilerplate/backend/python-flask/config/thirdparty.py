@@ -1,4 +1,4 @@
-from supertokens_python.recipe import session, thirdparty
+from supertokens_python.recipe import session, thirdparty, dashboard
 from supertokens_python.recipe.thirdparty import (
     Apple,
     Github,

@@ -1,4 +1,4 @@
-from supertokens_python.recipe import passwordless, session
+from supertokens_python.recipe import passwordless, session, dashboard
 from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig
 from supertokens_python import (
     InputAppInfo,

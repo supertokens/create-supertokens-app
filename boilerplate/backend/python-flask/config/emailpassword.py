@@ -1,4 +1,4 @@
-from supertokens_python.recipe import emailpassword, session
+from supertokens_python.recipe import emailpassword, session, dashboard
 from supertokens_python import (
     InputAppInfo,
     SupertokensConfig,

@@ -1,5 +1,5 @@
 from supertokens_python import init, InputAppInfo, SupertokensConfig
-from supertokens_python.recipe import thirdpartypasswordless, session
+from supertokens_python.recipe import thirdpartypasswordless, session, dashboard
 from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig
 from supertokens_python.recipe.thirdpartypasswordless import Google, Github, Apple
 from supertokens_python import (

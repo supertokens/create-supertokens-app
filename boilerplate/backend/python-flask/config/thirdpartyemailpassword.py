@@ -1,4 +1,4 @@
-from supertokens_python.recipe import session, thirdpartyemailpassword
+from supertokens_python.recipe import session, thirdpartyemailpassword, dashboard
 from supertokens_python.recipe.thirdpartyemailpassword import (
     Apple,
     Github,
