@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.20] - 2022-11-04
+
+-   Fixes an issue where python apps would not start because of `source`
+-   Python frameworks are now selectable separately from the other backends to reduce clutter
+
 ## [0.0.19] - 2022-11-03
 
 -   The dashboard recipe is initialised for all backends by default
