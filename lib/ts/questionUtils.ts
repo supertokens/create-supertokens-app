@@ -14,7 +14,8 @@ export function getPythonRunScripts(): string[] {
     return [
         "pip install virtualenv",
         "virtualenv venv",
-        "source venv/bin/activate",
+        "chmod +x venv/bin/activate",
+        "./venv/bin/activate",
         "pip install -r requirements.txt",
         "python app.py",
     ];
@@ -33,7 +34,8 @@ export function getDjangoPythonRunScripts(): string[] {
     return [
         "pip install virtualenv",
         "virtualenv venv",
-        "source venv/bin/activate",
+        "chmod +x venv/bin/activate",
+        "./venv/bin/activate",
         "pip install -r requirements.txt",
         "python manage.py runserver",
     ];
