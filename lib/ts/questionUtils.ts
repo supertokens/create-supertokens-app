@@ -1,5 +1,5 @@
 import os from "os";
-import { QuestionOption, RecipeQuestionOption } from "./types.js";
+import { Answers, QuestionOption, RecipeQuestionOption } from "./types.js";
 
 export function getPythonRunScripts(): string[] {
     if (os.platform() === "win32") {
@@ -51,4 +51,18 @@ export function mapOptionsToChoices(options: QuestionOption[] | RecipeQuestionOp
                 value: option.value,
             };
         });
+}
+
+/**
+ * This modifies the answers hash to use the correct python framework id if the user selects python
+ * for their backend
+ */
+export function modifyAnswersForPythonFrameworks(answers: Answers) {
+    let _answers = answers;
+
+    if (answers.backend === "python") {
+        _answers.backend = answers.backendPython;
+    }
+
+    return _answers;
 }

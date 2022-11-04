@@ -1,4 +1,4 @@
-import { getFrontendOptions, getBackendOptions } from "./config.js";
+import { getFrontendOptions, getBackendOptionForProcessing } from "./config.js";
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
@@ -38,7 +38,7 @@ export async function getDownloadLocationFromAnswers(
         return element.value === answers.frontend;
     });
 
-    const selectedBackend = (await getBackendOptions(userArguments)).find((element) => {
+    const selectedBackend = (await getBackendOptionForProcessing(userArguments)).find((element) => {
         return element.value === answers.backend;
     });
 
@@ -166,7 +166,7 @@ async function setupFrontendBackendApp(
         return element.value === answers.frontend;
     });
 
-    const selectedBackend = (await getBackendOptions(userArguments)).find((element) => {
+    const selectedBackend = (await getBackendOptionForProcessing(userArguments)).find((element) => {
         return element.value === answers.backend;
     });
 

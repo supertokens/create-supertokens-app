@@ -72,6 +72,48 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
     ];
 }
 
+const pythonOptions: QuestionOption[] = [
+    {
+        value: "python-flask",
+        displayName: "Flask",
+        location: {
+            main: "backend/python-flask",
+            finalConfig: "/config.py",
+            configFiles: "/config",
+        },
+        script: {
+            setup: [],
+            run: getPythonRunScripts(),
+        },
+    },
+    {
+        value: "python-fastapi",
+        displayName: "FastAPI",
+        location: {
+            main: "backend/python-fastapi",
+            finalConfig: "/config.py",
+            configFiles: "/config",
+        },
+        script: {
+            setup: [],
+            run: getPythonRunScripts(),
+        },
+    },
+    {
+        value: "python-drf",
+        displayName: "Django Rest Framework",
+        location: {
+            main: "backend/python-drf",
+            finalConfig: "./app/config.py",
+            configFiles: "./app/config",
+        },
+        script: {
+            setup: [],
+            run: getDjangoPythonRunScripts(),
+        },
+    },
+];
+
 export async function getBackendOptions(userArguments: UserFlags): Promise<QuestionOption[]> {
     const packagerCommand = await getPackageManagerCommand(userArguments);
 
@@ -103,42 +145,16 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
             },
         },
         {
-            value: "python-flask",
-            displayName: "Python (Flask)",
+            value: "python",
+            displayName: "Python",
             location: {
-                main: "backend/python-flask",
-                finalConfig: "/config.py",
-                configFiles: "/config",
+                main: "",
+                finalConfig: "",
+                configFiles: "",
             },
             script: {
                 setup: [],
-                run: getPythonRunScripts(),
-            },
-        },
-        {
-            value: "python-fastapi",
-            displayName: "Python (FastAPI)",
-            location: {
-                main: "backend/python-fastapi",
-                finalConfig: "/config.py",
-                configFiles: "/config",
-            },
-            script: {
-                setup: [],
-                run: getPythonRunScripts(),
-            },
-        },
-        {
-            value: "python-drf",
-            displayName: "Python (Django Rest Framework)",
-            location: {
-                main: "backend/python-drf",
-                finalConfig: "./app/config.py",
-                configFiles: "./app/config",
-            },
-            script: {
-                setup: [],
-                run: getDjangoPythonRunScripts(),
+                run: [],
             },
         },
         {
@@ -235,6 +251,28 @@ export async function getQuestions(flags: UserFlags) {
             },
         },
         {
+            name: "backendPython",
+            type: "list",
+            message: "Choose a Python framework:",
+            choices: mapOptionsToChoices(pythonOptions),
+            when: (answers: Answers) => {
+                if (flags.backend !== undefined && flags.backend !== "python") {
+                    return false;
+                }
+
+                if (flags.frontend === "next" || answers.frontend === "next") {
+                    // This means that they want to use nextjs fullstack
+                    return false;
+                }
+
+                if (answers.backend !== "python" && flags.backend !== "python") {
+                    return false;
+                }
+
+                return true;
+            },
+        },
+        {
             name: "recipe",
             type: "list",
             message: "What type of authentication do you want to use?",
@@ -242,4 +280,10 @@ export async function getQuestions(flags: UserFlags) {
             when: flags.recipe === undefined,
         },
     ];
+}
+
+export async function getBackendOptionForProcessing(userArguments: UserFlags): Promise<QuestionOption[]> {
+    const optionsWithoutPython = await getBackendOptions(userArguments);
+
+    return [...optionsWithoutPython, ...pythonOptions];
 }

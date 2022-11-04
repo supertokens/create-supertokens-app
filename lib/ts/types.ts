@@ -53,7 +53,9 @@ export function isValidFrontend(frontend: string): frontend is SupportedFrontend
     return false;
 }
 
-export type SupportedBackends = "node" | "nest" | "python-flask" | "python-drf" | "python-fastapi" | "go-http";
+type PythonFrameworks = "python-flask" | "python-drf" | "python-fastapi";
+
+export type SupportedBackends = "node" | "nest" | "python" | PythonFrameworks | "go-http";
 
 export const allBackends: {
     displayValue: string;
@@ -66,6 +68,10 @@ export const allBackends: {
     {
         id: "nest",
         displayValue: "nest",
+    },
+    {
+        id: "python",
+        displayValue: "python",
     },
     {
         id: "python-flask",
@@ -158,6 +164,7 @@ export type Answers = {
     backend: SupportedBackends;
     recipe: string;
     appname: string;
+    backendPython: PythonFrameworks;
 };
 
 /**

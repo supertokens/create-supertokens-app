@@ -14,6 +14,7 @@ import Emoji from "node-emoji";
 import AnalyticsManager from "./analytics.js";
 import figlet from "figlet";
 import { package_version } from "./version.js";
+import { modifyAnswersForPythonFrameworks } from "./questionUtils.js";
 
 async function printInformation(): Promise<void> {
     const font: figlet.Fonts = "Doom";
@@ -103,6 +104,7 @@ async function run() {
         answers = await inquirer.prompt(await getQuestions(userArguments));
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
+        answers = modifyAnswersForPythonFrameworks(answers);
 
         AnalyticsManager.sendAnalyticsEvent({
             eventName: "cli_selection_complete",
@@ -119,8 +121,12 @@ async function run() {
         const folderLocations = await getDownloadLocationFromAnswers(answers, userArguments);
 
         if (folderLocations === undefined) {
-            Logger.log("Something went wrong, exiting...");
-            return;
+            downloadSpinner.stopAndPersist({
+                text: chalk.redBright("Error downloading files"),
+                symbol: Emoji.get(":no_entry:"),
+            });
+
+            throw new Error("Something went wrong, exiting....");
         }
 
         try {
