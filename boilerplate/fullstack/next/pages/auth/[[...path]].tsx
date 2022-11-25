@@ -9,7 +9,9 @@ const SuperTokensComponentNoSSR = dynamic(new Promise((res) => res(SuperTokens.g
 export default function Auth(): JSX.Element {
     useEffect(() => {
         if (SuperTokens.canHandleRoute() === false) {
-            SuperTokens.redirectToAuth();
+            SuperTokens.redirectToAuth({
+                redirectBack: false,
+            });
         }
     }, []);
 
