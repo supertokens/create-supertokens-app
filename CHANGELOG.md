@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.21] - 2022-12-12
+
+-   Fixes an issue where golang apps would not use the latest version of supertokens-golang
+
 ## [0.0.20] - 2022-11-04
 
 -   Fixes an issue where python apps would not start because of `source`
