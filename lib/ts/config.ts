@@ -166,7 +166,7 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
                 configFiles: "/config",
             },
             script: {
-                setup: ["go mod init 'go-http' && go get ./... && go mod tidy"],
+                setup: ["go mod init go-http", "go get ./...", "go mod tidy"],
                 run: ["go run ."],
             },
         },
