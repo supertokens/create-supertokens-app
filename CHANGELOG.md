@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.23] - 2023-01-06
+
+-   Fixes an issue with golang apps failing to install dependencies
 -   Remove extra `dashboard.init()` from flask passwordless boilerplate
 
 ## [0.0.22] - 2022-12-21
