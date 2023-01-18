@@ -1,5 +1,5 @@
 <script lang="ts">
-import * as Session from "supertokens-web-js/recipe/session";
+import * as Session from "supertokens-auth-react/recipe/session";
 import { defineComponent } from "vue";
 
 export default defineComponent({

@@ -1,8 +1,5 @@
 import * as React from "react";
 import * as SuperTokens from "supertokens-auth-react";
-import { SuperTokensReactConfig } from "src/config";
-
-SuperTokens.init(SuperTokensReactConfig);
 
 class SuperTokensReactComponent extends React.Component {
     override render() {

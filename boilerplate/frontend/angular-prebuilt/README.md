@@ -9,7 +9,7 @@ This demo app demonstrates the following use cases:
 -   Forgot password flow
 -   Session management
 
-In this demo, when our root component loads we will initialize the `supertokens-web-js` SDK which will be used by our other components for session management. When we visit an auth related route (`/auth/*` in this case), we will load a React component which will initialize the `supertokens-auth-react` SDK and handle the authentication flow.
+In this demo, when our root component loads we will initialize the `supertokens-auth-react` SDK which will handle the whole authentication flow.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.6.
 
@@ -51,9 +51,9 @@ The app will start on `http://localhost:4200`
 
 -   The frontend code is located in the `/src` folder.
 -   Our frontend will have 3 Angular components, a `home`, `auth` and `root` component.
--   The `home` component will use `supertokens-web-js` SDK for session management and the `auth` component will use `supertokens-auth-react` for Authentication flows and UI.
--   Since both the `home` and `auth` components (since `supertokens-auth-react` SDK uses `supertokens-web-js`) depend on `supertokens-web-js`, we can initialize this library in our root component. This will also reduce the bundle sizes for the `home` and `auth` component.
--   The `root` component contains our routing logic with refrences to the the `home` and `auth` component modules to enable code splitting.
+-   `supertokens-auth-react` will be used in `home` for session management and in the `auth` for Authentication flows and UI.
+-   Since `supertokens-auth-react` SDK uses `supertokens-web-js` underneath we only need to initialize `supertokens-auth-react` on the main route.
+-   The `root` component contains our routing logic with references to the the `home` and `auth` component modules to enable code splitting.
 
 ## Author
 

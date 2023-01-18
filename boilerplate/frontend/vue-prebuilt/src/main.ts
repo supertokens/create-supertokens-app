@@ -1,11 +1,11 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import SuperTokens from "supertokens-web-js";
+import SuperTokens from "supertokens-auth-react";
 import "./assets/main.css";
-import { SuperTokensWebJSConfig } from "./config";
+import { SuperTokensConfig } from "./config";
 
-SuperTokens.init(SuperTokensWebJSConfig);
+SuperTokens.init(SuperTokensConfig);
 
 const app = createApp(App);
 
