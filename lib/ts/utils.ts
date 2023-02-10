@@ -552,6 +552,8 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
 
         throw new Error(error);
     }
+
+    await performAdditionalSetupForFrontendIfNeeded(selectedFullStack, folderName, userArguments);
 }
 
 export async function setupProject(
