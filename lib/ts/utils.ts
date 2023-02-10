@@ -148,7 +148,7 @@ async function performAdditionalSetupForFrontendIfNeeded(
      * install it if it is missing. This is because old versions of npm sometimes does not install
      * peer dependencies when running `npm install`
      */
-    const sourceFolder = selectedFrontend.value !== "next" ? `${folderName}/frontend` : `${folderName}`;
+    const sourceFolder = selectedFrontend.isFullStack !== true ? `${folderName}/frontend` : `${folderName}`;
 
     // If this is false then the project does not use the react SDK
     const doesUseAuthReact = fs.existsSync(`${sourceFolder}/node_modules/supertokens-auth-react`);
