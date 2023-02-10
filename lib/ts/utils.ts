@@ -144,50 +144,61 @@ async function performAdditionalSetupForFrontendIfNeeded(
     userArguments: UserFlags
 ) {
     /**
-     * For React and Next frontend we check if supertokens-web-js has been installed correctly and manually
+     * For all frontends we check if supertokens-web-js has been installed correctly and manually
      * install it if it is missing. This is because old versions of npm sometimes does not install
      * peer dependencies when running `npm install`
-     *
-     * Note we only do this if the package manager is npm and not for yarn
      */
-    if ((selectedFrontend.value === "react" || selectedFrontend.value === "next") && userArguments.manager !== "yarn") {
-        const sourceFolder = selectedFrontend.value === "react" ? `${folderName}/frontend` : `${folderName}`;
+    const sourceFolder = selectedFrontend.value !== "next" ? `${folderName}/frontend` : `${folderName}`;
 
-        if (!fs.existsSync(`${sourceFolder}/node_modules/supertokens-web-js`)) {
-            let result = await new Promise<ExecOutput>((res) => {
-                let stderr: string[] = [];
-                const additionalSetup = exec(`cd ${sourceFolder} && npm i supertokens-web-js`);
+    // If this is false then the project does not use the react SDK
+    const doesUseAuthReact = fs.existsSync(`${sourceFolder}/node_modules/supertokens-auth-react`);
 
-                additionalSetup.on("exit", (code) => {
-                    const errorString = stderr.join("\n");
-                    res({
-                        code,
-                        error: errorString.length === 0 ? undefined : errorString,
-                    });
-                });
+    const doesWebJsExist = (): boolean => {
+        const doesExistInNodeModules = fs.existsSync(`${sourceFolder}/node_modules/supertokens-web-js`);
+        const doesExistInAuthReact = fs.existsSync(
+            `${sourceFolder}/node_modules/supertokens-auth-react/node_modules/supertokens-web-js`
+        );
 
-                additionalSetup.stderr?.on("data", (data) => {
-                    // Record any messages printed as errors
-                    stderr.push(data.toString());
-                });
+        return doesExistInAuthReact || doesExistInNodeModules;
+    };
 
-                additionalSetup.stdout?.on("data", (data) => {
-                    /**
-                     * Record any messages printed as errors, we do this for stdout
-                     * as well because some scripts use the output stream for errors
-                     * too (npm for example) while others use stderr only
-                     *
-                     * This means that we will output everything if the script exits with
-                     * non zero
-                     */
-                    stderr.push(data.toString());
+    // We only check for web-js being present if the project uses the auth react SDK
+    if (doesUseAuthReact && !doesWebJsExist()) {
+        const installPrefix = userArguments.manager === "yarn" ? "yarn add" : "npm i";
+
+        let result = await new Promise<ExecOutput>((res) => {
+            let stderr: string[] = [];
+            const additionalSetup = exec(`cd ${sourceFolder} && ${installPrefix} supertokens-web-js`);
+
+            additionalSetup.on("exit", (code) => {
+                const errorString = stderr.join("\n");
+                res({
+                    code,
+                    error: errorString.length === 0 ? undefined : errorString,
                 });
             });
 
-            if (result.code !== 0) {
-                const error = result.error !== undefined ? result.error : defaultSetupErrorString;
-                throw new Error(error);
-            }
+            additionalSetup.stderr?.on("data", (data) => {
+                // Record any messages printed as errors
+                stderr.push(data.toString());
+            });
+
+            additionalSetup.stdout?.on("data", (data) => {
+                /**
+                 * Record any messages printed as errors, we do this for stdout
+                 * as well because some scripts use the output stream for errors
+                 * too (npm for example) while others use stderr only
+                 *
+                 * This means that we will output everything if the script exits with
+                 * non zero
+                 */
+                stderr.push(data.toString());
+            });
+        });
+
+        if (result.code !== 0) {
+            const error = result.error !== undefined ? result.error : defaultSetupErrorString;
+            throw new Error(error);
         }
     }
 }
