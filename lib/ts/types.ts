@@ -21,7 +21,7 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
     return false;
 }
 
-export type SupportedFrontends = "react" | "next" | "angular-prebuilt" | "vue-prebuilt";
+export type SupportedFrontends = "react" | "next" | "angular-prebuilt" | "vue-prebuilt" | "capacitor";
 
 export const allFrontends: {
     displayValue: string;
@@ -99,6 +99,19 @@ export function isValidBackend(backend: string): backend is SupportedBackends {
     return false;
 }
 
+type ExternalAppInfo =
+    | {
+          isExternal: false;
+      }
+    | {
+          isExternal: true;
+          /**
+           * This message will be printed after downloading the external repo. This can be used as a way to highlight some
+           * information to the user or simple linking to the external repo so people can follow the guide from its README
+           */
+          message: string;
+      };
+
 /**
  * value: The option value, this is used to retrieve the selection from inquirer's return
  *
@@ -129,6 +142,7 @@ export type QuestionOption = {
 } & (
     | {
           isFullStack?: false;
+          externalAppInfo?: ExternalAppInfo;
           location: {
               main: string;
               finalConfig: string;
@@ -137,6 +151,7 @@ export type QuestionOption = {
       }
     | {
           isFullStack: true;
+          externalAppInfo?: ExternalAppInfo;
           location: {
               main: string;
               config: {
@@ -176,6 +191,7 @@ export type DownloadLocations = {
     download: string;
     frontend: string;
     backend: string;
+    isExternalApp?: boolean;
 };
 
 export type SupportedPackageManagers = "npm" | "yarn";
