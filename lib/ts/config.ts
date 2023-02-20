@@ -85,7 +85,7 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
         {
             value: "capacitor",
             isFullStack: true,
-            displayName: "Capacitor.js",
+            displayName: "Capacitor",
             externalAppInfo: {
                 isExternal: true,
                 message: getCapacitorMessage(),
