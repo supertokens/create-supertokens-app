@@ -310,6 +310,7 @@ export async function getQuestions(flags: UserFlags) {
             message: "What type of authentication do you want to use?",
             choices: mapOptionsToChoices(recipeOptions),
             when: (answers: Answers) => {
+                // For capactor we dont ask this question because it has its own way of swapping between recipes
                 if (answers.frontend === "capacitor") {
                     return false;
                 }
