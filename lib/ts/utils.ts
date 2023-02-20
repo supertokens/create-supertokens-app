@@ -31,12 +31,15 @@ export async function getDownloadLocationFromAnswers(
 ): Promise<DownloadLocations | undefined> {
     const branchToUse = userArguments.branch || "master";
 
-    // const downloadURL = `https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/${branchToUse}`;
-    const downloadURL = `https://github.com/supertokens/create-supertokens-app/archive/${branchToUse}.tar.gz`;
+    let downloadURL = `https://github.com/supertokens/create-supertokens-app/archive/${branchToUse}.tar.gz`;
 
     const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
+
+    if (selectedFrontend?.externalAppInfo?.isExternal === true) {
+        downloadURL = selectedFrontend!.location.main;
+    }
 
     const selectedBackend = (await getBackendOptionForProcessing(userArguments)).find((element) => {
         return element.value === answers.backend;
@@ -47,6 +50,7 @@ export async function getDownloadLocationFromAnswers(
             frontend: normaliseLocationPath(selectedFrontend.location.main),
             backend: normaliseLocationPath(selectedFrontend.location.main),
             download: downloadURL,
+            isExternalApp: selectedFrontend?.externalAppInfo?.isExternal === true,
         };
     }
 
@@ -60,6 +64,26 @@ export async function getDownloadLocationFromAnswers(
     }
 
     return undefined;
+}
+
+export async function downloadExternalApp(locations: DownloadLocations, folderName: string): Promise<void> {
+    const downloadResponse = await fetch(locations.download);
+
+    if (!downloadResponse.ok || downloadResponse.body === null) {
+        throw new Error("Failed to download project");
+    }
+
+    await pipeline(
+        downloadResponse.body,
+        tar.extract(
+            {
+                cwd: `./${folderName}`,
+                strip: 1,
+                strict: true,
+            },
+            []
+        )
+    );
 }
 
 export async function downloadApp(locations: DownloadLocations, folderName: string): Promise<void> {
@@ -76,6 +100,10 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
     fs.mkdirSync(projectDirectory);
 
     const isFullStack = locations.frontend === locations.backend;
+
+    if (locations.isExternalApp === true) {
+        return await downloadExternalApp(locations, folderName);
+    }
 
     const downloadResponse = await fetch(locations.download);
 
@@ -574,6 +602,10 @@ export async function setupProject(
     userArguments: UserFlags,
     spinner: Ora
 ) {
+    if (locations.isExternalApp === true) {
+        return;
+    }
+
     const isFullStack = locations.frontend === locations.backend;
 
     if (!isFullStack) {
@@ -629,6 +661,11 @@ export async function runProjectOrPrintStartCommand(answers: Answers, userArgume
 
     if (selectedFrontend === undefined) {
         throw new Error("Should never come here");
+    }
+
+    if (selectedFrontend.externalAppInfo?.isExternal === true) {
+        Logger.log(selectedFrontend.externalAppInfo.message);
+        return;
     }
 
     let appRunScript = `${await getPackageManagerCommand(userArguments)} run start`;
