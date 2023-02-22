@@ -41,8 +41,7 @@
 
 .app-container .main-container {
     box-shadow: 0px 0px 60px 0px rgba(0, 0, 0, 0.16);
-    max-width: 635px;
-    width: 100%;
+    width: min(635px, calc(100% - 24px));
     border-radius: 16px;
     margin-block-end: 159px;
     background-color: #ffffff;
@@ -57,6 +56,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    font-size: 20px;
 }
 
 .success-title img.success-icon {
@@ -75,7 +75,7 @@
     position: relative;
     padding: 14px 17px;
     border-image-slice: 1;
-    width: 430px;
+    width: min(430px, calc(100% - 30px));
     margin-inline: auto;
     margin-block: 11px 23px;
     border-radius: 9px;
@@ -151,7 +151,42 @@
     margin-right: 0;
 }
 
+.truncate {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.separator-line {
+    max-width: 100%;
+}
+
 .link .link-icon {
     width: 15px;
     margin-right: 5px;
+}
+
+@media screen and (max-width: 768px) {
+    .bottom-links-container {
+        grid-template-columns: repeat(2, auto);
+    }
+
+    .bottom-links-container .link {
+        margin-block-end: 34px;
+    }
+
+    .separator-line {
+        max-width: 200px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #home-container {
+        justify-content: start;
+        padding-block-start: 25px;
+    }
+
+    .app-container .main-container {
+        margin-block-end: 90px;
+    }
 }

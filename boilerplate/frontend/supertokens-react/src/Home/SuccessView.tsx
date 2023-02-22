@@ -44,7 +44,7 @@ export default function SuccessView(props: { userId: string }) {
                 </div>
                 <div className="inner-content">
                     <div>Your userID is:</div>
-                    <div id="user-id">
+                    <div className="truncate" id="user-id">
                         aihdf2390-hfqefuabfjab-fjabdfljadsdssd...
                         {userId}
                     </div>
@@ -66,7 +66,7 @@ export default function SuccessView(props: { userId: string }) {
                     </div>
                 ))}
             </div>
-            <img src={SeparatorLine} alt="separator" />
+            <img className="separator-line" src={SeparatorLine} alt="separator" />
         </>
     );
 }
