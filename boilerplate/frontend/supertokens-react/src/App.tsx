@@ -10,7 +10,7 @@ SuperTokens.init(SuperTokensConfig);
 function App() {
     return (
         <SuperTokensWrapper>
-            <div className="App">
+            <div className="app-container">
                 <Router>
                     <div className="fill">
                         <Routes>
