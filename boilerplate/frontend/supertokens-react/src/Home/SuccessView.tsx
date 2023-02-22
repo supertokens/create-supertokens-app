@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { signOut } from "supertokens-auth-react/recipe/session";
 import CallAPIView from "./CallAPIView";
-import { ArrowRight, BlogsIcon, GitHubIcon, GuideIcon, SeparatorLine, SignOutIcon } from "./icons";
+import { ArrowRight, BlogsIcon, CelebrateIcon, GitHubIcon, GuideIcon, SeparatorLine, SignOutIcon } from "./img";
 
 export default function SuccessView(props: { userId: string }) {
     let userId = props.userId;
@@ -39,7 +39,9 @@ export default function SuccessView(props: { userId: string }) {
     return (
         <>
             <div className="main-container">
-                <div className="top-band success-title bold-500">Login successful</div>
+                <div className="top-band success-title bold-500">
+                    <img src={CelebrateIcon} alt="Login successful" className="success-icon" /> Login successful
+                </div>
                 <div className="inner-content">
                     <div>Your userID is:</div>
                     <div id="user-id">

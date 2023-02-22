@@ -3,6 +3,11 @@
     src: url("./RubikVariable.ttf");
 }
 
+@font-face {
+    font-family: Menlo;
+    src: url("./MenloRegular.ttf");
+}
+
 .app-container {
     font-family: Rubik, sans-serif;
 }
@@ -26,6 +31,8 @@
 #home-container {
     align-items: center;
     min-height: 100vh;
+    background: url("./img/background.png");
+    background-size: cover;
 }
 
 .bold-700 {
@@ -38,13 +45,22 @@
     width: 100%;
     border-radius: 16px;
     margin-block-end: 159px;
+    background-color: #ffffff;
 }
 
 .main-container .success-title {
+    line-height: 1;
     padding-block: 26px;
     background-color: #e7ffed;
     text-align: center;
     color: #3eb655;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.success-title img.success-icon {
+    margin-right: 8px;
 }
 
 .main-container .inner-content {
@@ -65,6 +81,7 @@
     margin-block: 11px 23px;
     border-radius: 9px;
     line-height: 1;
+    font-family: Menlo, serif;
 }
 
 .main-container > .top-band,
@@ -114,9 +131,7 @@
     left: 0;
     z-index: -1;
     margin: -5px;
-    /* !importanté */
     border-radius: inherit;
-    /* !importanté */
     background: linear-gradient(to right, red, orange);
 }
 

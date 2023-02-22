@@ -4,5 +4,6 @@ import SignOutIcon from "./sign-out-icon.svg";
 import GuideIcon from "./guide-icon.svg";
 import BlogsIcon from "./blogs-icon.svg";
 import GitHubIcon from "./github-icon.svg";
+import CelebrateIcon from "./celebrate-icon.svg";
 
-export { SeparatorLine, ArrowRight, SignOutIcon, GuideIcon, GitHubIcon, BlogsIcon };
+export { SeparatorLine, ArrowRight, SignOutIcon, GuideIcon, GitHubIcon, BlogsIcon, CelebrateIcon };
