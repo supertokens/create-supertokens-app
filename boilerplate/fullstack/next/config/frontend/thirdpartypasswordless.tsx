@@ -35,3 +35,7 @@ export let frontendConfig = () => {
         },
     };
 };
+
+export const recipeDetails = {
+    docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
+};
