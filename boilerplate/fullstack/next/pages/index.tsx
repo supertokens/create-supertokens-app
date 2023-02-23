@@ -8,6 +8,12 @@ import { BlogsIcon, CelebrateIcon, GitHubIcon, GuideIcon, SeparatorLine, SignOut
 import Image from "next/image";
 import { recipeDetails } from "../config/frontendConfig";
 
+interface ILink {
+    name: string;
+    onClick: () => void;
+    icon: string;
+}
+
 function ProtectedPage() {
     const session = useSessionContext();
 
@@ -32,7 +38,7 @@ function ProtectedPage() {
         window.open(url, "_blank");
     }
 
-    const links: { name: string; onClick: () => void; icon: string }[] = [
+    const links: ILink[] = [
         {
             name: "GitHub",
             onClick: () => openLink("https://github.com/supertokens/supertokens-auth-react"),

@@ -4,6 +4,12 @@ import { recipeDetails } from "../config";
 import CallAPIView from "./CallAPIView";
 import { BlogsIcon, CelebrateIcon, GitHubIcon, GuideIcon, SeparatorLine, SignOutIcon } from "../assets/images";
 
+interface ILink {
+    name: string;
+    onClick: () => void;
+    icon: string;
+}
+
 export default function SuccessView(props: { userId: string }) {
     let userId = props.userId;
 
@@ -18,7 +24,7 @@ export default function SuccessView(props: { userId: string }) {
         window.open(url, "_blank");
     }
 
-    const links: { name: string; onClick: () => void; icon: string }[] = [
+    const links: ILink[] = [
         {
             name: "GitHub",
             onClick: () => openLink("https://github.com/supertokens/supertokens-auth-react"),
