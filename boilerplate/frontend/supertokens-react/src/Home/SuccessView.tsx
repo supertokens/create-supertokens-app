@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { signOut } from "supertokens-auth-react/recipe/session";
 import { recipeDetails } from "../config";
 import CallAPIView from "./CallAPIView";
-import { BlogsIcon, CelebrateIcon, GitHubIcon, GuideIcon, SeparatorLine, SignOutIcon } from "../assets/images";
+import { BlogsIcon, CelebrateIcon, GuideIcon, SeparatorLine, SignOutIcon } from "../assets/images";
 
 interface ILink {
     name: string;
@@ -26,17 +26,12 @@ export default function SuccessView(props: { userId: string }) {
 
     const links: ILink[] = [
         {
-            name: "GitHub",
-            onClick: () => openLink("https://github.com/supertokens/supertokens-auth-react"),
-            icon: GitHubIcon,
-        },
-        {
             name: "Blogs",
             onClick: () => openLink("https://supertokens.com/blog"),
             icon: BlogsIcon,
         },
         {
-            name: "Guides",
+            name: "Documentation",
             onClick: () => openLink(recipeDetails.docsLink),
             icon: GuideIcon,
         },

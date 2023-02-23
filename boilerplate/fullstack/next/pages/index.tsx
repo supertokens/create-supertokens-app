@@ -4,7 +4,7 @@ import styles from "../styles/ProtectedHome.module.css";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import SuperTokensReact from "supertokens-auth-react";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
-import { BlogsIcon, CelebrateIcon, GitHubIcon, GuideIcon, SeparatorLine, SignOutIcon } from "../assets/images";
+import { BlogsIcon, CelebrateIcon, GuideIcon, SeparatorLine, SignOutIcon } from "../assets/images";
 import Image from "next/image";
 import { recipeDetails } from "../config/frontendConfig";
 
@@ -39,11 +39,6 @@ function ProtectedPage() {
     }
 
     const links: ILink[] = [
-        {
-            name: "GitHub",
-            onClick: () => openLink("https://github.com/supertokens/supertokens-auth-react"),
-            icon: GitHubIcon,
-        },
         {
             name: "Blogs",
             onClick: () => openLink("https://supertokens.com/blog"),
