@@ -13,20 +13,28 @@ export default function SuccessView(props: { userId: string }) {
         navigate("/auth");
     }
 
+    function openLink(url: string) {
+        window.open(url, "_blank");
+    }
+
+    function openGuidesLink() {
+        window.alert("Opening guides link...");
+    }
+
     const links: { name: string; onClick: () => void; icon: string }[] = [
         {
             name: "GitHub",
-            onClick: logoutClicked,
+            onClick: () => openLink("https://github.com/supertokens/create-supertokens-app"),
             icon: GitHubIcon,
         },
         {
             name: "Blogs",
-            onClick: logoutClicked,
+            onClick: () => openLink("https://supertokens.com/blog"),
             icon: BlogsIcon,
         },
         {
             name: "Guides",
-            onClick: logoutClicked,
+            onClick: openGuidesLink,
             icon: GuideIcon,
         },
         {
@@ -45,7 +53,6 @@ export default function SuccessView(props: { userId: string }) {
                 <div className="inner-content">
                     <div>Your userID is:</div>
                     <div className="truncate" id="user-id">
-                        aihdf2390-hfqefuabfjab-fjabdfljadsdssd...
                         {userId}
                     </div>
                     <CallAPIView />
@@ -58,7 +65,7 @@ export default function SuccessView(props: { userId: string }) {
             </div>
             <div className="bottom-links-container">
                 {links.map((link) => (
-                    <div className="link">
+                    <div className="link" key={link.name}>
                         <img className="link-icon" src={link.icon} alt={link.name} />
                         <div role={"button"} onClick={link.onClick}>
                             {link.name}

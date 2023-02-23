@@ -11,3 +11,7 @@ export const SuperTokensConfig = {
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [EmailPassword.init(), Session.init()],
 };
+
+export const recipeDetails = {
+    docsLink: "https://supertokens.com/docs/emailpassword/introduction",
+};
