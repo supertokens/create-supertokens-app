@@ -6,6 +6,7 @@ import SuperTokensReact from "supertokens-auth-react";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { BlogsIcon, CelebrateIcon, GitHubIcon, GuideIcon, SeparatorLine, SignOutIcon } from "../assets/images";
 import Image from "next/image";
+import { recipeDetails } from "../config/frontendConfig";
 
 function ProtectedPage() {
     const session = useSessionContext();
@@ -44,7 +45,7 @@ function ProtectedPage() {
         },
         {
             name: "Guides",
-            onClick: () => openLink("https://supertokens.com/blog"),
+            onClick: () => openLink(recipeDetails.docsLink),
             icon: GuideIcon,
         },
         {
