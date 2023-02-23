@@ -1,11 +1,11 @@
 @font-face {
     font-family: Rubik;
-    src: url("./RubikVariable.ttf");
+    src: url("../assets/fonts/RubikVariable.ttf");
 }
 
 @font-face {
     font-family: Menlo;
-    src: url("./MenloRegular.ttf");
+    src: url("../assets/fonts/MenloRegular.ttf");
 }
 
 .app-container {
@@ -31,7 +31,7 @@
 #home-container {
     align-items: center;
     min-height: 100vh;
-    background: url("./img/background.png");
+    background: url("../assets/images/background.png");
     background-size: cover;
 }
 

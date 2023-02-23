@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { signOut } from "supertokens-auth-react/recipe/session";
+import { recipeDetails } from "../config";
 import CallAPIView from "./CallAPIView";
-import { ArrowRight, BlogsIcon, CelebrateIcon, GitHubIcon, GuideIcon, SeparatorLine, SignOutIcon } from "./img";
+import { BlogsIcon, CelebrateIcon, GitHubIcon, GuideIcon, SeparatorLine, SignOutIcon } from "../assets/images";
 
 export default function SuccessView(props: { userId: string }) {
     let userId = props.userId;
@@ -18,13 +19,13 @@ export default function SuccessView(props: { userId: string }) {
     }
 
     function openGuidesLink() {
-        window.alert("Opening guides link...");
+        openLink(recipeDetails.docsLink);
     }
 
     const links: { name: string; onClick: () => void; icon: string }[] = [
         {
             name: "GitHub",
-            onClick: () => openLink("https://github.com/supertokens/create-supertokens-app"),
+            onClick: () => openLink("https://github.com/supertokens/supertokens-auth-react"),
             icon: GitHubIcon,
         },
         {
@@ -56,11 +57,6 @@ export default function SuccessView(props: { userId: string }) {
                         {userId}
                     </div>
                     <CallAPIView />
-                </div>
-                <div className="bottom-band bottom-cta-container">
-                    <div className="view-code" role={"button"}>
-                        View Code <img src={ArrowRight} alt="arrow right" id="arrow right" />
-                    </div>
                 </div>
             </div>
             <div className="bottom-links-container">
