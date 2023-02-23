@@ -18,10 +18,6 @@ export default function SuccessView(props: { userId: string }) {
         window.open(url, "_blank");
     }
 
-    function openGuidesLink() {
-        openLink(recipeDetails.docsLink);
-    }
-
     const links: { name: string; onClick: () => void; icon: string }[] = [
         {
             name: "GitHub",
@@ -35,7 +31,7 @@ export default function SuccessView(props: { userId: string }) {
         },
         {
             name: "Guides",
-            onClick: openGuidesLink,
+            onClick: recipeDetails.docsLink,
             icon: GuideIcon,
         },
         {
