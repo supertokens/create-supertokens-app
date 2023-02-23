@@ -31,7 +31,7 @@ export default function SuccessView(props: { userId: string }) {
         },
         {
             name: "Guides",
-            onClick: recipeDetails.docsLink,
+            onClick: () => openLink(recipeDetails.docsLink),
             icon: GuideIcon,
         },
         {
