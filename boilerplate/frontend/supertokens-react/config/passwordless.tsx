@@ -16,3 +16,7 @@ export const SuperTokensConfig = {
         Session.init(),
     ],
 };
+
+export const recipeDetails = {
+    docsLink: "https://supertokens.com/docs/passwordless/introduction",
+};
