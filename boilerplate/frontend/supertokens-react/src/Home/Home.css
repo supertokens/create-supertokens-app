@@ -143,7 +143,7 @@
 .bottom-links-container .link {
     display: flex;
     align-items: center;
-    margin-right: 68px;
+    margin-inline-end: 68px;
     cursor: pointer;
 }
 
@@ -168,11 +168,13 @@
 
 @media screen and (max-width: 768px) {
     .bottom-links-container {
-        grid-template-columns: repeat(2, auto);
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 64px;
+        row-gap: 34px;
     }
 
     .bottom-links-container .link {
-        margin-block-end: 34px;
+        margin-inline-end: 0;
     }
 
     .separator-line {
