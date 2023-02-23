@@ -48,3 +48,7 @@ export let backendConfig = (): AuthConfig => {
         isInServerlessEnv: true,
     };
 };
+
+export const recipeDetails = {
+    docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
+};
