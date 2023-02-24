@@ -19,6 +19,11 @@ export default function Auth(): JSX.Element {
         <div className={styles.container}>
             <Head>
                 <title>SuperTokens 💫</title>
+                <link
+                    href="//fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap"
+                    rel="stylesheet"
+                    type="text/css"
+                />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
