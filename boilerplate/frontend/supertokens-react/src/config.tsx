@@ -1,4 +1,11 @@
 // This is temporary file, if you see this comment in this file report this as an issue for create-supertokens-app
+export function getApiDomain() {
+    return "";
+}
+
+export function getWebsiteDomain() {
+    return "";
+}
 
 export const SuperTokensConfig = {
     appInfo: {
