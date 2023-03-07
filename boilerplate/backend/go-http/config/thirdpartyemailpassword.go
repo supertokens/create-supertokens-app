@@ -83,7 +83,7 @@ var SuperTokensConfig = supertokens.TypeInput{
 			},
 		}),
 		session.Init(nil),
-		dashboard.Init(dashboardmodels.TypeInput{
+		dashboard.Init(&dashboardmodels.TypeInput{
 			ApiKey: "supertokens_is_awesome",
 		}),
 	},

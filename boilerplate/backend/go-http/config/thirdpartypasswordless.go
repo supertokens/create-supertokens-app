@@ -27,7 +27,7 @@ var SuperTokensConfig = supertokens.TypeInput{
 			ContactMethodEmailOrPhone: plessmodels.ContactMethodEmailOrPhoneConfig{
 				Enabled: true,
 			},
-			Providers: [] tpmodels.TypeProvider{
+			Providers: []tpmodels.TypeProvider{
 				thirdparty.Google(tpmodels.GoogleConfig{
 					ClientID:     "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
 					ClientSecret: "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",
@@ -47,7 +47,7 @@ var SuperTokensConfig = supertokens.TypeInput{
 			},
 		}),
 		session.Init(nil), // initializes session features
-		dashboard.Init(dashboardmodels.TypeInput{
+		dashboard.Init(&dashboardmodels.TypeInput{
 			ApiKey: "supertokens_is_awesome",
 		}),
 	},

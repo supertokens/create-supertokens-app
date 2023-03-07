@@ -20,7 +20,7 @@ var SuperTokensConfig = supertokens.TypeInput{
 	RecipeList: []supertokens.Recipe{
 		emailpassword.Init(nil),
 		session.Init(nil),
-		dashboard.Init(dashboardmodels.TypeInput{
+		dashboard.Init(&dashboardmodels.TypeInput{
 			ApiKey: "supertokens_is_awesome",
 		}),
 	},
