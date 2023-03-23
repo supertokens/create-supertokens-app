@@ -16,7 +16,5 @@ export const connectionUri = 'https://try.supertokens.com';
 export const recipeList = [
   EmailPassword.init(),
   Session.init(),
-  Dashboard.init({
-    apiKey: 'supertokens_is_awesome',
-  }),
+  Dashboard.init(),
 ];
