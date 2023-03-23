@@ -20,9 +20,7 @@ export let backendConfig = (): AuthConfig => {
                 flowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
             }),
             SessionNode.init(),
-            Dashboard.init({
-                apiKey: "supertokens_is_awesome",
-            }),
+            Dashboard.init(),
         ],
         isInServerlessEnv: true,
     };

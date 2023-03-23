@@ -40,9 +40,7 @@ export let backendConfig = (): AuthConfig => {
                 },
             }),
             SessionNode.init(),
-            Dashboard.init({
-                apiKey: "supertokens_is_awesome",
-            }),
+            Dashboard.init(),
         ],
         isInServerlessEnv: true,
     };
