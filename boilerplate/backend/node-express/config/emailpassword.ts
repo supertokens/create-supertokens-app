@@ -27,11 +27,5 @@ export const SuperTokensConfig: TypeInput = {
     },
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
-    recipeList: [
-        EmailPassword.init(),
-        Session.init(),
-        Dashboard.init({
-            apiKey: "supertokens_is_awesome",
-        }),
-    ],
+    recipeList: [EmailPassword.init(), Session.init(), Dashboard.init()],
 };

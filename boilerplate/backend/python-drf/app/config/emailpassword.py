@@ -19,5 +19,5 @@ app_info = InputAppInfo(
 recipe_list = [
     session.init(),
     emailpassword.init(),
-    dashboard.init(api_key="supertokens_is_awesome")
+    dashboard.init()
 ]
