@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.27] - 2023-04-24
+
+-   Fixes to package.json
+
 ## [0.0.26] - 2023-04-24
 
 -   Changes to use CLI for live demo apps
