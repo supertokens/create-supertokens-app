@@ -29,7 +29,7 @@ jobs:
                   name: storing ssh keys
                   command: |
                       echo "-----BEGIN RSA PRIVATE KEY-----" > /tmp/dev_ssh
-                      echo $DEV_SERVER_SSH_KEY | sed 's/\s\+/\n/g' >> /tmp/dev_ssh
+                      echo $PROD_SERVER_SSH_KEY | sed 's/\s\+/\n/g' >> /tmp/dev_ssh
                       echo "-----END RSA PRIVATE KEY-----" >> /tmp/dev_ssh
                       chmod 400 /tmp/dev_ssh
             - run:
