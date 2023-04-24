@@ -33,6 +33,58 @@ jobs:
                       echo "-----END RSA PRIVATE KEY-----" >> /tmp/dev_ssh
                       chmod 400 /tmp/dev_ssh
             - run:
+                  name: updating emailpassword
+                  command: |
+                      ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i /tmp/dev_ssh  ubuntu@ssh.supertokens.com '\
+                          cd demo_apps/ && \
+                          (rm -rf emailpassword || true) && \
+                          npx -y create-supertokens-app@latest --frontend=react --backend=node --recipe=emailpassword --appname=emailpassword && \
+                          cd emailpassword/frontend && \
+                          REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-emailpassword.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://emailpassword.demo.supertokens.com npm run build && \
+                          cd ../backend && \
+                          echo 'REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-emailpassword.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://emailpassword.demo.supertokens.com npx ts-node-dev --project ./tsconfig.json ./index.ts' > startLiveDemoApp.sh && chmod +x startLiveDemoApp.sh && \
+                          (docker rm -f demo-app-emailpassword || true) && \
+                          docker run -d --restart=always --name demo-app-emailpassword --label name=demo-app --label type=app --label mode=production --volume /home/ubuntu/demo_apps/emailpassword:/usr/src/app --publish 10000:3000 --publish 10001:3001 supertokens/demo'
+            - run:
+                  name: updating thirdparty
+                  command: |
+                      ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i /tmp/dev_ssh  ubuntu@ssh.supertokens.com '\
+                          cd demo_apps/ && \
+                          (rm -rf thirdparty || true) && \
+                          npx -y create-supertokens-app@latest --frontend=react --backend=node --recipe=thirdparty --appname=thirdparty && \
+                          cd thirdparty/frontend && \
+                          REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-thirdparty.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://thirdparty.demo.supertokens.com npm run build && \
+                          cd ../backend && \
+                          echo 'REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-thirdparty.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://thirdparty.demo.supertokens.com npx ts-node-dev --project ./tsconfig.json ./index.ts' > startLiveDemoApp.sh && chmod +x startLiveDemoApp.sh && \
+                          (docker rm -f demo-app-thirdparty || true) && \
+                          docker run -d --restart=always --name demo-app-thirdparty --label name=demo-app --label type=app --label mode=production --volume /home/ubuntu/demo_apps/thirdparty:/usr/src/app --publish 10002:3000 --publish 10003:3001 supertokens/demo'
+            - run:
+                  name: updating thirdpartyemailpassword
+                  command: |
+                      ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i /tmp/dev_ssh  ubuntu@ssh.supertokens.com '\
+                          cd demo_apps/ && \
+                          (rm -rf thirdpartyemailpassword || true) && \
+                          npx -y create-supertokens-app@latest --frontend=react --backend=node --recipe=thirdpartyemailpassword --appname=thirdpartyemailpassword && \
+                          cd thirdpartyemailpassword/frontend && \
+                          REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-thirdpartyemailpassword.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://thirdpartyemailpassword.demo.supertokens.com npm run build && \
+                          cd ../backend && \
+                          echo 'REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-thirdpartyemailpassword.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://thirdpartyemailpassword.demo.supertokens.com npx ts-node-dev --project ./tsconfig.json ./index.ts' > startLiveDemoApp.sh && chmod +x startLiveDemoApp.sh && \
+                          (docker rm -f demo-app-thirdpartyemailpassword || true) && \
+                          docker run -d --restart=always --name demo-app-thirdpartyemailpassword --label name=demo-app --label type=app --label mode=production --volume /home/ubuntu/demo_apps/thirdpartyemailpassword:/usr/src/app --publish 10004:3000 --publish 10005:3001 supertokens/demo'
+            - run:
+                  name: updating passwordless
+                  command: |
+                      ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i /tmp/dev_ssh  ubuntu@ssh.supertokens.com '\
+                          cd demo_apps/ && \
+                          (rm -rf passwordless || true) && \
+                          npx -y create-supertokens-app@latest --frontend=react --backend=node --recipe=passwordless --appname=passwordless && \
+                          cd passwordless/frontend && \
+                          REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-passwordless.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://passwordless.demo.supertokens.com npm run build && \
+                          cd ../backend && \
+                          echo 'REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-passwordless.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://passwordless.demo.supertokens.com npx ts-node-dev --project ./tsconfig.json ./index.ts' > startLiveDemoApp.sh && chmod +x startLiveDemoApp.sh && \
+                          (docker rm -f demo-app-passwordless || true) && \
+                          docker run -d --restart=always --name demo-app-passwordless --label name=demo-app --label type=app --label mode=production --volume /home/ubuntu/demo_apps/passwordless:/usr/src/app --publish 10006:3000 --publish 10007:3001 supertokens/demo'
+            - run:
                   name: updating thirdpartypasswordless
                   command: |
                       ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i /tmp/dev_ssh  ubuntu@ssh.supertokens.com '\
