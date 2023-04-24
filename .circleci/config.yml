@@ -40,9 +40,9 @@ jobs:
                           (rm -rf thirdpartypasswordless || true) && \
                           npx -y create-supertokens-app@latest --frontend=react --backend=node --recipe=thirdpartypasswordless --appname=thirdpartypasswordless && \
                           cd thirdpartypasswordless/frontend && \
-                          REACT_APP_API_PORT=10001 REACT_APP_API_URL=https://api-thirdpartypasswordless.demo.supertokens.com REACT_APP_WEBSITE_PORT=10000 REACT_APP_WEBSITE_URL=https://thirdpartypasswordless.demo.supertokens.com npm run build && \
+                          REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-thirdpartypasswordless.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://thirdpartypasswordless.demo.supertokens.com npm run build && \
                           cd ../backend && \
-                          echo '#!/bin/bash\nREACT_APP_API_PORT=10001 REACT_APP_API_URL=https://api-thirdpartypasswordless.demo.supertokens.com REACT_APP_WEBSITE_PORT=10000 REACT_APP_WEBSITE_URL=https://thirdpartypasswordless.demo.supertokens.com npx ts-node-dev --project ./tsconfig.json ./index.ts' > startLiveDemoApp.sh && chmod +x startLiveDemoApp.sh && \
+                          echo '#!/bin/bash\nREACT_APP_API_PORT=3001 REACT_APP_API_URL=https://api-thirdpartypasswordless.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=https://thirdpartypasswordless.demo.supertokens.com npx ts-node-dev --project ./tsconfig.json ./index.ts' > startLiveDemoApp.sh && chmod +x startLiveDemoApp.sh && \
                           docker run -d --restart=always --name demo-app-thirdpartypasswordless --label name=demo-app --label type=app --label mode=production --volume /home/ubuntu/demo_apps/thirdpartypasswordless:/usr/src/app --publish 10006:3000 --publish 10007:3001 supertokens/demo'
             - slack/status
 
