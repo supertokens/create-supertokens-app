@@ -153,8 +153,11 @@ function getPackageJsonString(input: {
         "main": "index.js",
         "scripts": {
             "start:frontend": "cd frontend && ${frontendStartScript}",
+            "start:frontend-live-demo-app": "cd frontend && npx -y serve -s build",
             "start:backend": "cd backend && ${backendStartScript}",
-            "start": "npm-run-all --parallel start:frontend start:backend"
+            "start:backend-live-demo-app": "cd backend && ./startLiveDemoApp.sh",
+            "start": "npm-run-all --parallel start:frontend start:backend",
+            "start-live-demo-app": "npm-run-all --parallel start:frontend-live-demo-app start:backend-live-demo-app"
         },
         "keywords": [],
         "author": "",

@@ -15,6 +15,36 @@ jobs:
                       cd .circleci
                       ./publish.sh
             - slack/status
+    update-demo-apps:
+        circleci_ip_ranges: true
+        docker:
+            - image: ubuntu:20.04
+        steps:
+            - run:
+                  name: Install SSH and curl
+                  command: |
+                      apt update
+                      apt-get install openssh-client curl -y
+            - run:
+                  name: storing ssh keys
+                  command: |
+                      echo "-----BEGIN RSA PRIVATE KEY-----" > /tmp/dev_ssh
+                      echo $DEV_SERVER_SSH_KEY | sed 's/\s\+/\n/g' >> /tmp/dev_ssh
+                      echo "-----END RSA PRIVATE KEY-----" >> /tmp/dev_ssh
+                      chmod 400 /tmp/dev_ssh
+            - run:
+                  name: updating thirdpartypasswordless
+                  command: |
+                      ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i /tmp/dev_ssh  ubuntu@ssh.supertokens.com '\
+                          cd demo_apps/ && \
+                          (rm -rf thirdpartypasswordless || true) && \
+                          npx -y create-supertokens-app@latest --frontend=react --backend=node --recipe=thirdpartypasswordless --appname=thirdpartypasswordless && \
+                          cd thirdpartypasswordless/frontend && \
+                          REACT_APP_API_PORT=10001 REACT_APP_API_URL=https://api-thirdpartypasswordless.demo.supertokens.com REACT_APP_WEBSITE_PORT=10000 REACT_APP_WEBSITE_URL=https://thirdpartypasswordless.demo.supertokens.com npm run build && \
+                          cd ../backend && \
+                          echo '#!/bin/bash\nREACT_APP_API_PORT=10001 REACT_APP_API_URL=https://api-thirdpartypasswordless.demo.supertokens.com REACT_APP_WEBSITE_PORT=10000 REACT_APP_WEBSITE_URL=https://thirdpartypasswordless.demo.supertokens.com npx ts-node-dev --project ./tsconfig.json ./index.ts' > startLiveDemoApp.sh && chmod +x startLiveDemoApp.sh && \
+                          docker run -d --restart=always --name demo-app-thirdpartypasswordless --label name=demo-app --label type=app --label mode=production --volume /home/ubuntu/demo_apps/thirdpartypasswordless:/usr/src/app --publish 10006:3000 --publish 10007:3001 supertokens/demo'
+            - slack/status
 
 workflows:
     version: 2
@@ -28,3 +58,11 @@ workflows:
                           only: /v[0-9]+(\.[0-9]+)*/
                       branches:
                           ignore: /.*/
+            - update-demo-apps:
+                  context:
+                      - slack-notification
+                      - saas-backend-production
+                  filters:
+                      branches:
+                          only:
+                              - master
