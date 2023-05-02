@@ -1,10 +1,10 @@
 import * as React from "react";
-import * as SuperTokens from "supertokens-auth-react";
+import { canHandleRoute, getRoutingComponent } from "supertokens-auth-react/ui";
 
 class SuperTokensReactComponent extends React.Component {
     override render() {
-        if (SuperTokens.canHandleRoute()) {
-            return SuperTokens.getRoutingComponent();
+        if (canHandleRoute()) {
+            return getRoutingComponent();
         }
         return "Route not found";
     }

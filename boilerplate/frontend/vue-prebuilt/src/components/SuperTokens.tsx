@@ -1,8 +1,8 @@
-import SuperTokens from "supertokens-auth-react";
+import { canHandleRoute, getRoutingComponent } from "supertokens-auth-react/ui";
 
 function MyComponent(props: any) {
-  if (SuperTokens.canHandleRoute()) {
-    return SuperTokens.getRoutingComponent();
+  if (canHandleRoute()) {
+    return getRoutingComponent();
   }
   return "Route not found";
 }
