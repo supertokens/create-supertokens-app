@@ -1,4 +1,4 @@
-import { PreBuiltUIList } from "@/config";
+import { PreBuiltUIList } from "@/configUI";
 import { canHandleRoute, getRoutingComponent } from "supertokens-auth-react/ui";
 
 function MyComponent(props: any) {

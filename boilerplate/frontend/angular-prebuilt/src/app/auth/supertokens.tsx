@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PreBuiltUIList } from "src/config";
+import { PreBuiltUIList } from "src/configUI";
 import { canHandleRoute, getRoutingComponent } from "supertokens-auth-react/ui";
 
 class SuperTokensReactComponent extends React.Component {
