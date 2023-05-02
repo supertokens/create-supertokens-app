@@ -46,5 +46,5 @@ recipe_list = [
             ),
         ]
     ),
-    dashboard.init(api_key="supertokens_is_awesome")
+    dashboard.init(),
 ]

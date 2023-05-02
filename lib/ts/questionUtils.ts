@@ -1,5 +1,5 @@
 import os from "os";
-import { Answers, QuestionOption, RecipeQuestionOption } from "./types.js";
+import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
 
 export function getPythonRunScripts(): string[] {
     if (os.platform() === "win32") {
@@ -65,4 +65,22 @@ export function modifyAnswersForPythonFrameworks(answers: Answers) {
     }
 
     return _answers;
+}
+
+/**
+ * Decides whether the user should be prompted to select their backend.This question is skipped for full stack frameworks
+ */
+export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags): boolean {
+    if (userFlags.backend !== undefined) {
+        return true;
+    }
+
+    let frontEndInFlags = userFlags.frontend;
+
+    if (frontEndInFlags !== undefined) {
+        // Priority goes to flags
+        return frontEndInFlags === "next" || frontEndInFlags === "capacitor";
+    }
+
+    return answers.frontend === "next" || answers.frontend === "capacitor";
 }

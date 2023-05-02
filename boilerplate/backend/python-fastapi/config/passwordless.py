@@ -25,5 +25,5 @@ recipe_list = [
         flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
         contact_config=ContactEmailOrPhoneConfig()
     ),
-    dashboard.init(api_key="supertokens_is_awesome")
+    dashboard.init()
 ]

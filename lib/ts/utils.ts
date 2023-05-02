@@ -2,7 +2,7 @@ import { getFrontendOptions, getBackendOptionForProcessing } from "./config.js";
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
-import { Answers, DownloadLocations, ExecOutput, UserFlags } from "./types";
+import { Answers, DownloadLocations, ExecOutput, QuestionOption, UserFlags } from "./types";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
@@ -31,12 +31,15 @@ export async function getDownloadLocationFromAnswers(
 ): Promise<DownloadLocations | undefined> {
     const branchToUse = userArguments.branch || "master";
 
-    // const downloadURL = `https://codeload.github.com/supertokens/create-supertokens-app/tar.gz/${branchToUse}`;
-    const downloadURL = `https://github.com/supertokens/create-supertokens-app/archive/${branchToUse}.tar.gz`;
+    let downloadURL = `https://github.com/supertokens/create-supertokens-app/archive/${branchToUse}.tar.gz`;
 
     const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
+
+    if (selectedFrontend?.externalAppInfo?.isExternal === true) {
+        downloadURL = selectedFrontend!.location.main;
+    }
 
     const selectedBackend = (await getBackendOptionForProcessing(userArguments)).find((element) => {
         return element.value === answers.backend;
@@ -47,6 +50,7 @@ export async function getDownloadLocationFromAnswers(
             frontend: normaliseLocationPath(selectedFrontend.location.main),
             backend: normaliseLocationPath(selectedFrontend.location.main),
             download: downloadURL,
+            isExternalApp: selectedFrontend?.externalAppInfo?.isExternal === true,
         };
     }
 
@@ -60,6 +64,26 @@ export async function getDownloadLocationFromAnswers(
     }
 
     return undefined;
+}
+
+export async function downloadExternalApp(locations: DownloadLocations, folderName: string): Promise<void> {
+    const downloadResponse = await fetch(locations.download);
+
+    if (!downloadResponse.ok || downloadResponse.body === null) {
+        throw new Error("Failed to download project");
+    }
+
+    await pipeline(
+        downloadResponse.body,
+        tar.extract(
+            {
+                cwd: `./${folderName}`,
+                strip: 1,
+                strict: true,
+            },
+            []
+        )
+    );
 }
 
 export async function downloadApp(locations: DownloadLocations, folderName: string): Promise<void> {
@@ -76,6 +100,10 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
     fs.mkdirSync(projectDirectory);
 
     const isFullStack = locations.frontend === locations.backend;
+
+    if (locations.isExternalApp === true) {
+        return await downloadExternalApp(locations, folderName);
+    }
 
     const downloadResponse = await fetch(locations.download);
 
@@ -125,8 +153,11 @@ function getPackageJsonString(input: {
         "main": "index.js",
         "scripts": {
             "start:frontend": "cd frontend && ${frontendStartScript}",
+            "start:frontend-live-demo-app": "cd frontend && npx serve -s build",
             "start:backend": "cd backend && ${backendStartScript}",
-            "start": "npm-run-all --parallel start:frontend start:backend"
+            "start:backend-live-demo-app": "cd backend && ./startLiveDemoApp.sh",
+            "start": "npm-run-all --parallel start:frontend start:backend",
+            "start-live-demo-app": "npx npm-run-all --parallel start:frontend-live-demo-app start:backend-live-demo-app"
         },
         "keywords": [],
         "author": "",
@@ -136,6 +167,71 @@ function getPackageJsonString(input: {
         }
     }
     `;
+}
+
+async function performAdditionalSetupForFrontendIfNeeded(
+    selectedFrontend: QuestionOption,
+    folderName: string,
+    userArguments: UserFlags
+) {
+    /**
+     * For all frontends we check if supertokens-web-js has been installed correctly and manually
+     * install it if it is missing. This is because old versions of npm sometimes does not install
+     * peer dependencies when running `npm install`
+     */
+    const sourceFolder = selectedFrontend.isFullStack !== true ? `${folderName}/frontend` : `${folderName}`;
+
+    // If this is false then the project does not use the react SDK
+    const doesUseAuthReact = fs.existsSync(`${sourceFolder}/node_modules/supertokens-auth-react`);
+
+    const doesWebJsExist = (): boolean => {
+        const doesExistInNodeModules = fs.existsSync(`${sourceFolder}/node_modules/supertokens-web-js`);
+        const doesExistInAuthReact = fs.existsSync(
+            `${sourceFolder}/node_modules/supertokens-auth-react/node_modules/supertokens-web-js`
+        );
+
+        return doesExistInAuthReact || doesExistInNodeModules;
+    };
+
+    // We only check for web-js being present if the project uses the auth react SDK
+    if (doesUseAuthReact && !doesWebJsExist()) {
+        const installPrefix = userArguments.manager === "yarn" ? "yarn add" : "npm i";
+
+        let result = await new Promise<ExecOutput>((res) => {
+            let stderr: string[] = [];
+            const additionalSetup = exec(`cd ${sourceFolder} && ${installPrefix} supertokens-web-js`);
+
+            additionalSetup.on("exit", (code) => {
+                const errorString = stderr.join("\n");
+                res({
+                    code,
+                    error: errorString.length === 0 ? undefined : errorString,
+                });
+            });
+
+            additionalSetup.stderr?.on("data", (data) => {
+                // Record any messages printed as errors
+                stderr.push(data.toString());
+            });
+
+            additionalSetup.stdout?.on("data", (data) => {
+                /**
+                 * Record any messages printed as errors, we do this for stdout
+                 * as well because some scripts use the output stream for errors
+                 * too (npm for example) while others use stderr only
+                 *
+                 * This means that we will output everything if the script exits with
+                 * non zero
+                 */
+                stderr.push(data.toString());
+            });
+        });
+
+        if (result.code !== 0) {
+            const error = result.error !== undefined ? result.error : defaultSetupErrorString;
+            throw new Error(error);
+        }
+    }
 }
 
 async function setupFrontendBackendApp(
@@ -282,6 +378,8 @@ async function setupFrontendBackendApp(
 
         throw new Error(error);
     }
+
+    await performAdditionalSetupForFrontendIfNeeded(selectedFrontend, folderName, userArguments);
 
     spinner.text = "Installing backend dependencies";
     const backendSetup = new Promise<ExecOutput>((res) => {
@@ -496,6 +594,8 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
 
         throw new Error(error);
     }
+
+    await performAdditionalSetupForFrontendIfNeeded(selectedFullStack, folderName, userArguments);
 }
 
 export async function setupProject(
@@ -505,6 +605,10 @@ export async function setupProject(
     userArguments: UserFlags,
     spinner: Ora
 ) {
+    if (locations.isExternalApp === true) {
+        return;
+    }
+
     const isFullStack = locations.frontend === locations.backend;
 
     if (!isFullStack) {
@@ -560,6 +664,11 @@ export async function runProjectOrPrintStartCommand(answers: Answers, userArgume
 
     if (selectedFrontend === undefined) {
         throw new Error("Should never come here");
+    }
+
+    if (selectedFrontend.externalAppInfo?.isExternal === true) {
+        Logger.log(selectedFrontend.externalAppInfo.message);
+        return;
     }
 
     let appRunScript = `${await getPackageManagerCommand(userArguments)} run start`;

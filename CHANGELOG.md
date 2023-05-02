@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.29] - 2023-04-24
+
+-   Fixes to package.json
+
+## [0.0.28] - 2023-04-24
+
+-   Fixes to package.json
+
+## [0.0.27] - 2023-04-24
+
+-   Fixes to package.json
+
+## [0.0.26] - 2023-04-24
+
+-   Changes to use CLI for live demo apps
+
+## [0.0.25] - 2023-02-20
+
+-   Adds Capacitor as an option for frontend stacks. This uses https://github.com/RobSchilderr/capacitor-supertokens-nextjs-turborepo as a template
+
+## [0.0.24] - 2023-02-10
+
+-   Fixes an issue where peer dependencies would not get installed correctly for older versions of npm
+
 ## [0.0.23] - 2023-01-06
 
 -   Fixes an issue with golang apps failing to install dependencies

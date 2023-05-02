@@ -1,5 +1,13 @@
 import { TypeInput } from "supertokens-node/types";
 
+export function getApiDomain() {
+    return "";
+}
+
+export function getWebsiteDomain() {
+    return "";
+}
+
 export const SuperTokensConfig: TypeInput = {
     supertokens: {
         // this is the location of the SuperTokens core.

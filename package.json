@@ -1,7 +1,7 @@
 {
     "name": "create-supertokens-app",
     "type": "module",
-    "version": "0.0.23",
+    "version": "0.0.29",
     "description": "",
     "main": "index.js",
     "scripts": {

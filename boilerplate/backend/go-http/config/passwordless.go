@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/supertokens/supertokens-golang/recipe/dashboard"
-	"github.com/supertokens/supertokens-golang/recipe/dashboard/dashboardmodels"
 	"github.com/supertokens/supertokens-golang/recipe/passwordless"
 	"github.com/supertokens/supertokens-golang/recipe/passwordless/plessmodels"
 	"github.com/supertokens/supertokens-golang/recipe/session"
@@ -26,8 +25,6 @@ var SuperTokensConfig = supertokens.TypeInput{
 			},
 		}),
 		session.Init(nil), // initializes session features
-		dashboard.Init(dashboardmodels.TypeInput{
-			ApiKey: "supertokens_is_awesome",
-		}),
+		dashboard.Init(nil),
 	},
 }

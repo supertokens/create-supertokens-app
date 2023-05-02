@@ -8,3 +8,7 @@ export let frontendConfig = () => {
         recipeList: [],
     };
 };
+
+export const recipeDetails = {
+    docsLink: "",
+};
