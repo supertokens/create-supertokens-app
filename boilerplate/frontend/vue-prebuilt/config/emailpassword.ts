@@ -1,5 +1,4 @@
 import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
-import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
 import Session from "supertokens-auth-react/recipe/session";
 
 export const SuperTokensConfig = {
@@ -15,5 +14,3 @@ export const SuperTokensConfig = {
     Session.init(),
   ],
 };
-
-export const PreBuiltUIList = [EmailPasswordPreBuiltUI];
