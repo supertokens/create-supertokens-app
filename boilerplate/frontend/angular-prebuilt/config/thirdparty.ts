@@ -1,4 +1,5 @@
 import * as ThirdParty from "supertokens-auth-react/recipe/thirdparty";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
 import { Github, Google, Apple } from "supertokens-auth-react/recipe/thirdparty";
 import Session from "supertokens-auth-react/recipe/session";
 
@@ -19,3 +20,5 @@ export const SuperTokensConfig = {
         Session.init(),
     ],
 };
+
+export const PreBuiltUIList = [ThirdPartyPreBuiltUI];

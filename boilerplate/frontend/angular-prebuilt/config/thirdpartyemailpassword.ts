@@ -1,4 +1,5 @@
 import * as ThirdPartyEmailPassword from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";
 import { Github, Google, Apple } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import Session from "supertokens-auth-react/recipe/session";
 
@@ -19,3 +20,5 @@ export const SuperTokensConfig = {
         Session.init(),
     ],
 };
+
+export const PreBuiltUIList = [ThirdPartyEmailPasswordPreBuiltUI];
