@@ -26,8 +26,7 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
             displayName: "React",
             location: {
                 main: "frontend/supertokens-react",
-                finalConfig: "/src/config.tsx",
-                configFiles: "/config",
+                config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
             },
             script: {
                 setup: [`${packagerCommand} install`],
@@ -41,14 +40,18 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
             location: {
                 main: "fullstack/next",
                 config: {
-                    frontend: {
-                        configFiles: "/config/frontend",
-                        finalConfig: "/config/frontendConfig.tsx",
-                    },
-                    backend: {
-                        configFiles: "/config/backend",
-                        finalConfig: "/config/backendConfig.ts",
-                    },
+                    frontend: [
+                        {
+                            configFiles: "/config/frontend",
+                            finalConfig: "/config/frontendConfig.tsx",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/config/backend",
+                            finalConfig: "/config/backendConfig.ts",
+                        },
+                    ],
                 },
             },
             script: {
@@ -61,8 +64,10 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
             displayName: "Angular",
             location: {
                 main: "frontend/angular-prebuilt",
-                finalConfig: "/src/config.ts",
-                configFiles: "/config",
+                config: [
+                    { finalConfig: "/src/config.ts", configFiles: "/config" },
+                    { finalConfig: "/src/configUI.ts", configFiles: "/configUI" },
+                ],
             },
             script: {
                 setup: [`${packagerCommand} install`],
@@ -74,8 +79,10 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
             displayName: "Vue.js",
             location: {
                 main: "frontend/vue-prebuilt",
-                finalConfig: "/src/config.ts",
-                configFiles: "/config",
+                config: [
+                    { finalConfig: "/src/config.ts", configFiles: "/config" },
+                    { finalConfig: "/src/configUI.ts", configFiles: "/configUI" },
+                ],
             },
             script: {
                 setup: [`${packagerCommand} install`],
@@ -93,14 +100,18 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
             location: {
                 main: "https://github.com/RobSchilderr/capacitor-supertokens-nextjs-turborepo/archive/master.tar.gz",
                 config: {
-                    frontend: {
-                        configFiles: "",
-                        finalConfig: "",
-                    },
-                    backend: {
-                        configFiles: "",
-                        finalConfig: "",
-                    },
+                    frontend: [
+                        {
+                            configFiles: "",
+                            finalConfig: "",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "",
+                            finalConfig: "",
+                        },
+                    ],
                 },
             },
             // For capacitor we have no setup, we simple download the template and then link to the template
@@ -118,8 +129,7 @@ const pythonOptions: QuestionOption[] = [
         displayName: "Flask",
         location: {
             main: "backend/python-flask",
-            finalConfig: "/config.py",
-            configFiles: "/config",
+            config: [{ finalConfig: "/config.py", configFiles: "/config" }],
         },
         script: {
             setup: [],
@@ -131,8 +141,7 @@ const pythonOptions: QuestionOption[] = [
         displayName: "FastAPI",
         location: {
             main: "backend/python-fastapi",
-            finalConfig: "/config.py",
-            configFiles: "/config",
+            config: [{ finalConfig: "/config.py", configFiles: "/config" }],
         },
         script: {
             setup: [],
@@ -144,8 +153,12 @@ const pythonOptions: QuestionOption[] = [
         displayName: "Django Rest Framework",
         location: {
             main: "backend/python-drf",
-            finalConfig: "./app/config.py",
-            configFiles: "./app/config",
+            config: [
+                {
+                    finalConfig: "./app/config.py",
+                    configFiles: "./app/config",
+                },
+            ],
         },
         script: {
             setup: [],
@@ -163,8 +176,12 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
             displayName: "Node.js",
             location: {
                 main: "backend/node-express",
-                finalConfig: "/config.ts",
-                configFiles: "/config",
+                config: [
+                    {
+                        finalConfig: "/config.ts",
+                        configFiles: "/config",
+                    },
+                ],
             },
             script: {
                 setup: [`${packagerCommand} install`],
@@ -176,8 +193,7 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
             displayName: "Nest.js",
             location: {
                 main: "backend/nest",
-                finalConfig: "/src/config.ts",
-                configFiles: "/config",
+                config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
                 setup: [`${packagerCommand} install`],
@@ -189,8 +205,7 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
             displayName: "Python",
             location: {
                 main: "",
-                finalConfig: "",
-                configFiles: "",
+                config: [{ finalConfig: "", configFiles: "" }],
             },
             script: {
                 setup: [],
@@ -202,8 +217,7 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
             displayName: "Golang",
             location: {
                 main: "backend/go-http",
-                finalConfig: "/config.go",
-                configFiles: "/config",
+                config: [{ finalConfig: "/config.go", configFiles: "/config" }],
             },
             script: {
                 setup: ["go mod init go-http", "go get ./...", "go mod tidy"],

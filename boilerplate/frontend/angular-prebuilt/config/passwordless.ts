@@ -1,5 +1,4 @@
 import Passwordless from "supertokens-auth-react/recipe/passwordless";
-import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import Session from "supertokens-auth-react/recipe/session";
 
 export const SuperTokensConfig = {
@@ -17,5 +16,3 @@ export const SuperTokensConfig = {
         Session.init(),
     ],
 };
-
-export const PreBuiltUIList = [PasswordlessPreBuiltUI];

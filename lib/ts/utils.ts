@@ -280,54 +280,51 @@ async function setupFrontendBackendApp(
     }
 
     spinner.text = "Configuring files";
-    // Move the recipe config file for the frontend folder to the correct place
-    const frontendFiles = fs.readdirSync(
-        `./${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`
-    );
-    const frontendRecipeConfig = frontendFiles.filter((i) => i.includes(answers.recipe));
 
-    if (frontendRecipeConfig.length === 0) {
-        throw new Error("Should never come here");
+    for (const config of selectedFrontend.location.config) {
+        // Move the recipe config file for the frontend folder to the correct place
+        const frontendFiles = fs.readdirSync(`./${folderName}/frontend/${normaliseLocationPath(config.configFiles)}`);
+        const frontendRecipeConfig = frontendFiles.filter((i) => i.includes(answers.recipe));
+
+        if (frontendRecipeConfig.length === 0) {
+            throw new Error("Should never come here");
+        }
+
+        fs.copyFileSync(
+            `${folderName}/frontend/${normaliseLocationPath(config.configFiles)}/${frontendRecipeConfig[0]}`,
+            `${folderName}/frontend/${normaliseLocationPath(config.finalConfig)}`
+        );
+
+        // Remove the configs folder
+        fs.rmSync(`${folderName}/frontend/${normaliseLocationPath(config.configFiles)}`, {
+            recursive: true,
+            force: true,
+        });
     }
-
-    fs.copyFileSync(
-        `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}/${
-            frontendRecipeConfig[0]
-        }`,
-        `${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.finalConfig)}`
-    );
-
-    // Remove the configs folder
-    fs.rmSync(`${folderName}/frontend/${normaliseLocationPath(selectedFrontend.location.configFiles)}`, {
-        recursive: true,
-        force: true,
-    });
 
     if (selectedBackend.location === undefined) {
         throw new Error("Should not come here");
     }
 
-    const backendFiles = fs.readdirSync(
-        `./${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}`
-    );
-    const backendRecipeConfig = backendFiles.filter((i) => i.includes(answers.recipe));
+    for (const config of selectedBackend.location.config) {
+        const backendFiles = fs.readdirSync(`./${folderName}/backend/${normaliseLocationPath(config.configFiles)}`);
+        const backendRecipeConfig = backendFiles.filter((i) => i.includes(answers.recipe));
 
-    if (backendRecipeConfig.length === 0) {
-        throw new Error("Should never come here");
+        if (backendRecipeConfig.length === 0) {
+            throw new Error("Should never come here");
+        }
+
+        fs.copyFileSync(
+            `${folderName}/backend/${normaliseLocationPath(config.configFiles)}/${backendRecipeConfig[0]}`,
+            `${folderName}/backend/${normaliseLocationPath(config.finalConfig)}`
+        );
+
+        // Remove the configs folder
+        fs.rmSync(`${folderName}/backend/${normaliseLocationPath(config.configFiles)}`, {
+            recursive: true,
+            force: true,
+        });
     }
-
-    fs.copyFileSync(
-        `${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}/${
-            backendRecipeConfig[0]
-        }`,
-        `${folderName}/backend/${normaliseLocationPath(selectedBackend.location.finalConfig)}`
-    );
-
-    // Remove the configs folder
-    fs.rmSync(`${folderName}/backend/${normaliseLocationPath(selectedBackend.location.configFiles)}`, {
-        recursive: true,
-        force: true,
-    });
 
     spinner.text = "Installing frontend dependencies";
     const frontendSetup = new Promise<ExecOutput>((res) => {
@@ -493,50 +490,46 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
     }
 
     spinner.text = "Configuring files";
-    // Move the recipe config file for the frontend folder to the correct place
-    const frontendFiles = fs.readdirSync(
-        `./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`
-    );
-    const frontendRecipeConfig = frontendFiles.filter((i) => i.includes(answers.recipe));
+    for (const config of selectedFullStack.location.config.frontend) {
+        // Move the recipe config file for the frontend folder to the correct place
+        const frontendFiles = fs.readdirSync(`./${folderName}/${normaliseLocationPath(config.configFiles)}`);
+        const frontendRecipeConfig = frontendFiles.filter((i) => i.includes(answers.recipe));
 
-    if (frontendRecipeConfig.length === 0) {
-        throw new Error("Should never come here");
+        if (frontendRecipeConfig.length === 0) {
+            throw new Error("Should never come here");
+        }
+
+        fs.copyFileSync(
+            `${folderName}/${normaliseLocationPath(config.configFiles)}/${frontendRecipeConfig[0]}`,
+            `${folderName}/${normaliseLocationPath(config.finalConfig)}`
+        );
+
+        // Remove the configs folder
+        fs.rmSync(`${folderName}/${normaliseLocationPath(config.configFiles)}`, {
+            recursive: true,
+            force: true,
+        });
     }
 
-    fs.copyFileSync(
-        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}/${
-            frontendRecipeConfig[0]
-        }`,
-        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.finalConfig)}`
-    );
+    for (const config of selectedFullStack.location.config.backend) {
+        const backendFiles = fs.readdirSync(`./${folderName}/${normaliseLocationPath(config.configFiles)}`);
+        const backendRecipeConfig = backendFiles.filter((i) => i.includes(answers.recipe));
 
-    // Remove the configs folder
-    fs.rmSync(`${folderName}/${normaliseLocationPath(selectedFullStack.location.config.frontend.configFiles)}`, {
-        recursive: true,
-        force: true,
-    });
+        if (backendRecipeConfig.length === 0) {
+            throw new Error("Should never come here");
+        }
 
-    const backendFiles = fs.readdirSync(
-        `./${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}`
-    );
-    const backendRecipeConfig = backendFiles.filter((i) => i.includes(answers.recipe));
+        fs.copyFileSync(
+            `${folderName}/${normaliseLocationPath(config.configFiles)}/${backendRecipeConfig[0]}`,
+            `${folderName}/${normaliseLocationPath(config.finalConfig)}`
+        );
 
-    if (backendRecipeConfig.length === 0) {
-        throw new Error("Should never come here");
+        // Remove the configs folder
+        fs.rmSync(`${folderName}/${normaliseLocationPath(config.configFiles)}`, {
+            recursive: true,
+            force: true,
+        });
     }
-
-    fs.copyFileSync(
-        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}/${
-            backendRecipeConfig[0]
-        }`,
-        `${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.finalConfig)}`
-    );
-
-    // Remove the configs folder
-    fs.rmSync(`${folderName}/${normaliseLocationPath(selectedFullStack.location.config.backend.configFiles)}`, {
-        recursive: true,
-        force: true,
-    });
 
     spinner.text = "Installing dependencies";
 

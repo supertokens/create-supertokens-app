@@ -1,5 +1,4 @@
 import * as ThirdPartyPasswordless from "supertokens-auth-react/recipe/thirdpartypasswordless";
-import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
 import { Github, Google, Apple } from "supertokens-auth-react/recipe/thirdpartypasswordless";
 import Session from "supertokens-auth-react/recipe/session";
 
@@ -25,5 +24,3 @@ export const SuperTokensConfig = {
         Session.init(),
     ],
 };
-
-export const PreBuiltUIList = [ThirdPartyPasswordlessPreBuiltUI];

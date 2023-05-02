@@ -6,5 +6,3 @@ export const SuperTokensConfig = {
   },
   recipeList: [],
 };
-
-export const PreBuiltUIList = [];
