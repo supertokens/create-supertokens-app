@@ -1,4 +1,5 @@
 import PasswordlessReact from "supertokens-auth-react/recipe/passwordless";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
@@ -32,3 +33,5 @@ export let frontendConfig = () => {
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/passwordless/introduction",
 };
+
+export const PreBuiltUIList = [PasswordlessPreBuiltUI];

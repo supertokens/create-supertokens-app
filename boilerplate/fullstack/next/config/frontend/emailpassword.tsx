@@ -1,4 +1,5 @@
 import EmailPasswordReact from "supertokens-auth-react/recipe/emailpassword";
+import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
@@ -27,3 +28,5 @@ export let frontendConfig = () => {
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/emailpassword/introduction",
 };
+
+export const PreBuiltUIList = [EmailPasswordPreBuiltUI];

@@ -1,4 +1,5 @@
 import ThirdPartyPasswordless from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
 import Session from "supertokens-auth-react/recipe/session";
 
 export function getApiDomain() {
@@ -39,3 +40,5 @@ export const SuperTokensConfig = {
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
 };
+
+export const PreBuiltUIList = [ThirdPartyPasswordlessPreBuiltUI];

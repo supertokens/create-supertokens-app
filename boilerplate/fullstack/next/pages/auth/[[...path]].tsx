@@ -3,15 +3,17 @@ import React, { useEffect } from "react";
 import styles from "../../styles/Home.module.css";
 import dynamic from "next/dynamic";
 import SuperTokens from "supertokens-auth-react";
+import { canHandleRoute, getRoutingComponent } from "supertokens-auth-react/ui";
+import { PreBuiltUIList } from "../../config/frontendConfig";
 
 const SuperTokensComponentNoSSR = dynamic<React.ComponentProps<typeof SuperTokens.getRoutingComponent>>(
-    new Promise((res) => res(SuperTokens.getRoutingComponent)),
+    new Promise((res) => res(() => getRoutingComponent(PreBuiltUIList))),
     { ssr: false }
 );
 
 export default function Auth(): JSX.Element {
     useEffect(() => {
-        if (SuperTokens.canHandleRoute() === false) {
+        if (canHandleRoute(PreBuiltUIList) === false) {
             SuperTokens.redirectToAuth({
                 redirectBack: false,
             });
