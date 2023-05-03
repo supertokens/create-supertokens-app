@@ -13,11 +13,7 @@ export const SuperTokensConfig = {
     recipeList: [
         ThirdPartyPasswordless.init({
             signInUpFeature: {
-                providers: [
-                    Github.init(),
-                    Google.init(),
-                    Apple.init(),
-                ],
+                providers: [Github.init(), Google.init(), Apple.init()],
             },
             contactMethod: "EMAIL_OR_PHONE",
         }),
