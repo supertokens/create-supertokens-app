@@ -6,7 +6,7 @@ import SuperTokens from "supertokens-auth-react";
 import { canHandleRoute, getRoutingComponent } from "supertokens-auth-react/ui";
 import { PreBuiltUIList } from "../../config/frontendConfig";
 
-const SuperTokensComponentNoSSR = dynamic<React.ComponentProps<typeof SuperTokens.getRoutingComponent>>(
+const SuperTokensComponentNoSSR = dynamic<{}>(
     new Promise((res) => res(() => getRoutingComponent(PreBuiltUIList))),
     { ssr: false }
 );
