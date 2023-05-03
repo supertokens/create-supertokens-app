@@ -126,7 +126,7 @@ type ExternalAppInfo =
  * location: Path strings for where to download/locate specific parts from
  *  - main: The path for the folder from where to download the boilerplate
  *  - finalConfig: The path of the config file used by the project, this should include the file extension as well
- *  - configFiles: The path where all the recipe configs are (This should be a folder because the recipe name will pre post fixed when loading the config)
+ *  - configFiles: The path where all the recipe config are (This should be a folder because the recipe name will pre post fixed when loading the config)
  *
  * NOTE: For fullstack options the structure of this object is different
  *
@@ -145,8 +145,7 @@ export type QuestionOption = {
           externalAppInfo?: ExternalAppInfo;
           location: {
               main: string;
-              finalConfig: string;
-              configFiles: string;
+              config: { finalConfig: string; configFiles: string }[];
           };
       }
     | {
@@ -155,14 +154,8 @@ export type QuestionOption = {
           location: {
               main: string;
               config: {
-                  frontend: {
-                      configFiles: string;
-                      finalConfig: string;
-                  };
-                  backend: {
-                      configFiles: string;
-                      finalConfig: string;
-                  };
+                  frontend: { finalConfig: string; configFiles: string }[];
+                  backend: { finalConfig: string; configFiles: string }[];
               };
           };
       }

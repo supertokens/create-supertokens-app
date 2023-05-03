@@ -21,3 +21,5 @@ export const SuperTokensConfig = {
 export const recipeDetails = {
     docsLink: "",
 };
+
+export const PreBuiltUIList = [];

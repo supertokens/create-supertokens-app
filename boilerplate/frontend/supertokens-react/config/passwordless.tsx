@@ -1,4 +1,5 @@
 import Passwordless from "supertokens-auth-react/recipe/passwordless";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import Session from "supertokens-auth-react/recipe/session";
 
 export function getApiDomain() {
@@ -32,3 +33,5 @@ export const SuperTokensConfig = {
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/passwordless/introduction",
 };
+
+export const PreBuiltUIList = [PasswordlessPreBuiltUI];

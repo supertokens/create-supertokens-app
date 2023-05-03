@@ -1,4 +1,5 @@
 import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
+import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
 import Session from "supertokens-auth-react/recipe/session";
 
 export function getApiDomain() {
@@ -27,3 +28,5 @@ export const SuperTokensConfig = {
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/emailpassword/introduction",
 };
+
+export const PreBuiltUIList = [EmailPasswordPreBuiltUI];

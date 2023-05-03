@@ -1,4 +1,5 @@
 import ThirdPartyPasswordlessReact from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
@@ -39,3 +40,5 @@ export let frontendConfig = () => {
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
 };
+
+export const PreBuiltUIList = [ThirdPartyPasswordlessPreBuiltUI];

@@ -12,3 +12,5 @@ export let frontendConfig = () => {
 export const recipeDetails = {
     docsLink: "",
 };
+
+export const PreBuiltUIList = [];

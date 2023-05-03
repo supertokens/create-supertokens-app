@@ -1,33 +1,25 @@
-import ThirdPartyPasswordlessReact from "supertokens-auth-react/recipe/thirdpartypasswordless";
-import SessionReact from "supertokens-auth-react/recipe/session";
-import Session from "supertokens-web-js/recipe/session";
+import ThirdPartyPasswordless from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import {
+  Github,
+  Google,
+  Apple,
+} from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import Session from "supertokens-auth-react/recipe/session";
 
-export const SuperTokensReactConfig = {
+export const SuperTokensConfig = {
   appInfo: {
     appName: "SuperTokens Demo App",
     apiDomain: "http://localhost:3001",
     websiteDomain: "http://localhost:3000",
   },
   recipeList: [
-    ThirdPartyPasswordlessReact.init({
+    ThirdPartyPasswordless.init({
       useShadowDom: false,
       signInUpFeature: {
-        providers: [
-          ThirdPartyPasswordlessReact.Github.init(),
-          ThirdPartyPasswordlessReact.Google.init(),
-          ThirdPartyPasswordlessReact.Apple.init(),
-        ],
+        providers: [Github.init(), Google.init(), Apple.init()],
       },
       contactMethod: "EMAIL_OR_PHONE",
     }),
-    SessionReact.init(),
+    Session.init(),
   ],
-};
-
-export const SuperTokensWebJSConfig = {
-  appInfo: {
-    appName: "SuperTokens Demo",
-    apiDomain: "http://localhost:3001",
-  },
-  recipeList: [Session.init()],
 };

@@ -1,4 +1,5 @@
 import ThirdParty, { Google, Github, Apple } from "supertokens-auth-react/recipe/thirdparty";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
 import Session from "supertokens-auth-react/recipe/session";
 
 export function getApiDomain() {
@@ -34,3 +35,5 @@ export const SuperTokensConfig = {
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/thirdparty/introduction",
 };
+
+export const PreBuiltUIList = [ThirdPartyPreBuiltUI];
