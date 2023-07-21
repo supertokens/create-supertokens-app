@@ -49,8 +49,8 @@ export const SuperTokensConfig: TypeInput = {
                             thirdPartyId: "github",
                             clients: [
                                 {
-                                    clientId: "e97051221f4b6426e8fe8d51486396703012f5bd",
-                                    clientSecret: "467101b197249757c71f",
+                                    clientId: "467101b197249757c71f",
+                                    clientSecret: "e97051221f4b6426e8fe8d51486396703012f5bd",
                                 }
                             ],
                         },
