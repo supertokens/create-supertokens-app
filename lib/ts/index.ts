@@ -124,8 +124,10 @@ async function run() {
             const recipe = answers.recipe;
             const option = answers.backend === "go-http" ? "Golang" : "Python";
             const errorMessage = `${option} has been temporarily disabled. You can follow our documentation to set up the project manually: https://supertokens.com/docs/${recipe}/introduction`;
+            const error = new Error(errorMessage);
+            (error as any).skipGithubLink = true;
 
-            throw new Error(errorMessage);
+            throw error;
         }
 
         console.log("");
@@ -211,9 +213,12 @@ async function run() {
             error: String(e) + (e as any).stack === undefined ? "" : (e as any).stack,
         });
         Logger.error((e as any).message);
-        Logger.error(
-            "If you think this is an issue with the tool, please report this as an issue at https://github.com/supertokens/create-supertokens-app/issues"
-        );
+
+        if ((e as any).skipGithubLink !== true) {
+            Logger.error(
+                "If you think this is an issue with the tool, please report this as an issue at https://github.com/supertokens/create-supertokens-app/issues"
+            );
+        }
     }
 }
 
