@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.32] - 2023-06-24
+
+-   Temporarily uses supertokens-auth-react v0.33 instead of latest for Python and Golang because their latest SDKs have not been released yet
+
 ## [0.0.31] - 2023-06-21
 
 -   Temporarily disables python and golang apps cause their latest SDKs have not been released yet

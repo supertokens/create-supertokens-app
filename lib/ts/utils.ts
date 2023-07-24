@@ -171,6 +171,7 @@ function getPackageJsonString(input: {
 
 async function performAdditionalSetupForFrontendIfNeeded(
     selectedFrontend: QuestionOption,
+    selectedBackend: QuestionOption,
     folderName: string,
     userArguments: UserFlags
 ) {
@@ -230,6 +231,56 @@ async function performAdditionalSetupForFrontendIfNeeded(
         if (result.code !== 0) {
             const error = result.error !== undefined ? result.error : defaultSetupErrorString;
             throw new Error(error);
+        }
+    }
+
+    if (doesUseAuthReact) {
+        // This is for golang and python since they have not been updated yet
+        // For now we install 0.33 of react instead of latest
+        // This block will be removed once the SDKs are updated
+        if (
+            selectedBackend.value === "go-http" ||
+            selectedBackend.value === "python" ||
+            selectedBackend.value === "python-drf" ||
+            selectedBackend.value === "python-fastapi" ||
+            selectedBackend.value === "python-flask"
+        ) {
+            const installPrefix = userArguments.manager === "yarn" ? "yarn add" : "npm i";
+
+            let result = await new Promise<ExecOutput>((res) => {
+                let stderr: string[] = [];
+                const additionalSetup = exec(`cd ${sourceFolder} && ${installPrefix} supertokens-auth-react@0.33`);
+
+                additionalSetup.on("exit", (code) => {
+                    const errorString = stderr.join("\n");
+                    res({
+                        code,
+                        error: errorString.length === 0 ? undefined : errorString,
+                    });
+                });
+
+                additionalSetup.stderr?.on("data", (data) => {
+                    // Record any messages printed as errors
+                    stderr.push(data.toString());
+                });
+
+                additionalSetup.stdout?.on("data", (data) => {
+                    /**
+                     * Record any messages printed as errors, we do this for stdout
+                     * as well because some scripts use the output stream for errors
+                     * too (npm for example) while others use stderr only
+                     *
+                     * This means that we will output everything if the script exits with
+                     * non zero
+                     */
+                    stderr.push(data.toString());
+                });
+            });
+
+            if (result.code !== 0) {
+                const error = result.error !== undefined ? result.error : defaultSetupErrorString;
+                throw new Error(error);
+            }
         }
     }
 }
@@ -376,7 +427,7 @@ async function setupFrontendBackendApp(
         throw new Error(error);
     }
 
-    await performAdditionalSetupForFrontendIfNeeded(selectedFrontend, folderName, userArguments);
+    await performAdditionalSetupForFrontendIfNeeded(selectedFrontend, selectedBackend, folderName, userArguments);
 
     spinner.text = "Installing backend dependencies";
     const backendSetup = new Promise<ExecOutput>((res) => {
@@ -588,7 +639,7 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
         throw new Error(error);
     }
 
-    await performAdditionalSetupForFrontendIfNeeded(selectedFullStack, folderName, userArguments);
+    await performAdditionalSetupForFrontendIfNeeded(selectedFullStack, selectedFullStack, folderName, userArguments);
 }
 
 export async function setupProject(
