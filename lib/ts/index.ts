@@ -112,24 +112,6 @@ async function run() {
             backend: answers.backend,
         });
 
-        // This is to exit early for golang and python since they have not been updated yet
-        // This block will be removed in the next release
-        if (
-            answers.backend === "go-http" ||
-            answers.backend === "python" ||
-            answers.backend === "python-drf" ||
-            answers.backend === "python-fastapi" ||
-            answers.backend === "python-flask"
-        ) {
-            const recipe = answers.recipe;
-            const option = answers.backend === "go-http" ? "Golang" : "Python";
-            const errorMessage = `${option} has been temporarily disabled. You can follow our documentation to set up the project manually: https://supertokens.com/docs/${recipe}/introduction`;
-            const error = new Error(errorMessage);
-            (error as any).skipGithubLink = true;
-
-            throw error;
-        }
-
         console.log("");
         const downloadSpinner = Ora({
             spinner: "dots10",
