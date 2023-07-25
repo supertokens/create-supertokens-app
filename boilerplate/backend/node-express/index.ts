@@ -4,6 +4,7 @@ import supertokens from "supertokens-node";
 import { verifySession } from "supertokens-node/recipe/session/framework/express";
 import { middleware, errorHandler, SessionRequest } from "supertokens-node/framework/express";
 import { getWebsiteDomain, SuperTokensConfig } from "./config";
+import Multitenancy from "supertokens-node/recipe/multitenancy";
 
 supertokens.init(SuperTokensConfig);
 
@@ -29,6 +30,13 @@ app.get("/sessioninfo", verifySession(), async (req: SessionRequest, res) => {
         userId: session!.getUserId(),
         accessTokenPayload: session!.getAccessTokenPayload(),
     });
+});
+
+// This API is used by the frontend to create the tenants drop down when the app loads.
+// Depending on your UX, you can remove this API.
+app.get("/tenants", async (req, res) => {
+    let tenants = await Multitenancy.listAllTenants();
+    res.send(tenants);
 });
 
 // In case of session related errors, this error handler
