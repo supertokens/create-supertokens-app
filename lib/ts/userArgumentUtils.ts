@@ -92,6 +92,16 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
         }
 
         _answers.frontend = selectedFrontend[0].id;
+
+        if (_answers.recipe === "multitenancy") {
+            if (_answers.frontend === "react") {
+                _answers.frontend = "react-multitenancy";
+            } else if (_answers.frontend === "angular-prebuilt") {
+                _answers.frontend = "angular-prebuilt-multitenancy";
+            } else if (_answers.frontend === "vue-prebuilt") {
+                _answers.frontend = "vue-prebuilt-multitenancy";
+            }
+        }
     }
 
     if (userArguments.backend !== undefined) {

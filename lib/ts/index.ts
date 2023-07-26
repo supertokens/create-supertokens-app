@@ -106,6 +106,8 @@ async function run() {
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersForPythonFrameworks(answers);
 
+        console.log(answers);
+
         AnalyticsManager.sendAnalyticsEvent({
             eventName: "cli_selection_complete",
             frontend: answers.frontend,

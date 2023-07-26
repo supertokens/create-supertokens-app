@@ -34,6 +34,19 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
             },
         },
         {
+            value: "react-multitenancy",
+            displayName: "React",
+            location: {
+                main: "frontend/supertokens-react-multitenancy",
+                config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
+            },
+            script: {
+                setup: [`${packagerCommand} install`],
+                run: [`${packagerCommand} run start`],
+            },
+            shouldDisplay: false,
+        },
+        {
             isFullStack: true,
             value: "next",
             displayName: "Next.js",
