@@ -28,9 +28,7 @@ export type SupportedFrontends =
     | "angular-prebuilt"
     | "vue-prebuilt"
     | "capacitor"
-    | "react-multitenancy"
-    | "angular-prebuilt-multitenancy"
-    | "vue-prebuilt-multitenancy";
+    | "react-multitenancy";
 
 export const allFrontends: {
     displayValue: string;
