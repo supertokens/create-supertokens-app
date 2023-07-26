@@ -117,6 +117,29 @@ async function run() {
             backend: answers.backend,
         });
 
+        if (answers.recipe === "multitenancy") {
+            let errorPlaceholder = "";
+            if (answers.frontend === "angular-prebuilt") {
+                errorPlaceholder = "Angular";
+            } else if (answers.frontend === "vue-prebuilt") {
+                errorPlaceholder = "Vue";
+            } else if (answers.backend === "go-http") {
+                errorPlaceholder = "Golang";
+            } else if (
+                answers.backend === "python" ||
+                answers.backend === "python-flask" ||
+                answers.backend === "python-drf" ||
+                answers.backend === "python-fastapi"
+            ) {
+                errorPlaceholder = "Python";
+            }
+
+            const errorMessage = `create-supertokens-app does not support Multitenancy for ${errorPlaceholder} yet. You can refer to our docs to set it up manually: https://supertokens.io/docs/multitenancy/introduction`;
+            const error = new Error(errorMessage);
+            (error as any).skipGithubLink = true;
+            throw error;
+        }
+
         console.log("");
         const downloadSpinner = Ora({
             spinner: "dots10",
