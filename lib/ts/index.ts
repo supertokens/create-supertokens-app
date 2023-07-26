@@ -5,7 +5,11 @@ import { Answers, DownloadLocations, UserFlags } from "./types.js";
 import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOrPrintStartCommand } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { modifyAnswersBasedOnFlags, validateUserArguments } from "./userArgumentUtils.js";
+import {
+    modifyAnswersBasedOnFlags,
+    modifyAnswersBasedOnSelection,
+    validateUserArguments,
+} from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 import fs from "fs";
 import Ora from "ora";
@@ -105,6 +109,7 @@ async function run() {
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersForPythonFrameworks(answers);
+        answers = modifyAnswersBasedOnSelection(answers, userArguments);
 
         console.log(answers);
 

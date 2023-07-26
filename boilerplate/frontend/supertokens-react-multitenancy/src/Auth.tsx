@@ -14,7 +14,11 @@ export const Auth = () => {
         return null;
     }
 
-    if (tenantId !== null || session.doesSessionExist === true || new URLSearchParams(location.search).has("tenantId")) {
+    if (
+        tenantId !== null ||
+        session.doesSessionExist === true ||
+        new URLSearchParams(location.search).has("tenantId")
+    ) {
         return (
             <div className="App app-container">
                 <div className="fill">
@@ -28,4 +32,4 @@ export const Auth = () => {
     } else {
         return <TenantSelector />;
     }
-}
+};

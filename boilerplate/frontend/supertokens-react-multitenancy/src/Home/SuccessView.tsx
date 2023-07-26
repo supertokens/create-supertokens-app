@@ -10,7 +10,7 @@ interface ILink {
     icon: string;
 }
 
-export default function SuccessView(props: { userId: string, tenantId?: string }) {
+export default function SuccessView(props: { userId: string; tenantId?: string }) {
     let userId = props.userId;
 
     async function logoutClicked() {
@@ -52,9 +52,7 @@ export default function SuccessView(props: { userId: string, tenantId?: string }
                         {userId}
                     </div>
 
-                    <div>
-                        Your tenantID is:
-                    </div>
+                    <div>Your tenantID is:</div>
                     <div className="truncate" id="tenant-id">
                         {props.tenantId}
                     </div>

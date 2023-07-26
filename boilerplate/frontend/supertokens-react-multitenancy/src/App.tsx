@@ -14,12 +14,13 @@ SuperTokens.init(SuperTokensConfig);
 // allow users to go back and select another tenant without logging in
 const ChangeTenantsButton = () => {
     return (
-        <div 
+        <div
             data-supertokens="link tenants-link"
             onClick={() => {
                 localStorage.removeItem("tenantId");
                 window.location.reload();
-            }}>
+            }}
+        >
             Log in to a different organisation
         </div>
     );
@@ -34,7 +35,7 @@ function App() {
         <SuperTokensWrapper>
             <ThirdpartyEmailPasswordComponentsOverrideProvider
                 components={{
-                    EmailPasswordSignInFooter_Override: ({DefaultComponent, ...props}) => {
+                    EmailPasswordSignInFooter_Override: ({ DefaultComponent, ...props }) => {
                         return (
                             <div>
                                 <DefaultComponent {...props} />
@@ -42,10 +43,11 @@ function App() {
                             </div>
                         );
                     },
-                }}>
+                }}
+            >
                 <ThirdpartyPasswordlessComponentsOverrideProvider
                     components={{
-                        PasswordlessSignInUpFooter_Override: ({DefaultComponent, ...props}) => {
+                        PasswordlessSignInUpFooter_Override: ({ DefaultComponent, ...props }) => {
                             return (
                                 <div>
                                     <DefaultComponent {...props} />
@@ -53,36 +55,33 @@ function App() {
                                 </div>
                             );
                         },
-                    }}>
-                        <div className="App app-container">
-                            <Router>
-                                <Routes>
-                                    {
-                                        /*
-                                        * The Auth component handles showing the tenant dropdown
-                                        * to users who are not logged in. It also handles showing
-                                        * the pre built UI provided by SuperTokens after users have
-                                        * selected a tenant
-                                        */
-                                    }
-                                    <Route 
-                                        path="/auth/*"
-                                        element={<Auth />}/>
+                    }}
+                >
+                    <div className="App app-container">
+                        <Router>
+                            <Routes>
+                                {/*
+                                 * The Auth component handles showing the tenant dropdown
+                                 * to users who are not logged in. It also handles showing
+                                 * the pre built UI provided by SuperTokens after users have
+                                 * selected a tenant
+                                 */}
+                                <Route path="/auth/*" element={<Auth />} />
 
-                                    <Route
-                                        path="/"
-                                        element={
-                                            /* This protects the "/" route so that it shows
+                                <Route
+                                    path="/"
+                                    element={
+                                        /* This protects the "/" route so that it shows
                                         <Home /> only if the user is logged in.
                                         Else it redirects the user to "/auth" */
-                                            <SessionAuth>
-                                                <Home />
-                                            </SessionAuth>
-                                        }
-                                    />
-                                </Routes>
-                            </Router>
-                        </div>
+                                        <SessionAuth>
+                                            <Home />
+                                        </SessionAuth>
+                                    }
+                                />
+                            </Routes>
+                        </Router>
+                    </div>
                 </ThirdpartyPasswordlessComponentsOverrideProvider>
             </ThirdpartyEmailPasswordComponentsOverrideProvider>
         </SuperTokensWrapper>

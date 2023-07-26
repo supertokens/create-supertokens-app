@@ -12,7 +12,10 @@ export default function Home() {
     console.log(sessionContext);
     return (
         <div className="fill" id="home-container">
-            <SuccessView userId={sessionContext.userId} tenantId={sessionContext.accessTokenPayload["tId"] || undefined}/>
+            <SuccessView
+                userId={sessionContext.userId}
+                tenantId={sessionContext.accessTokenPayload["tId"] || undefined}
+            />
         </div>
     );
 }

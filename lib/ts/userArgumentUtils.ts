@@ -73,6 +73,24 @@ export function validateUserArguments(userArguments: UserFlags) {
     }
 }
 
+export function modifyAnswersBasedOnSelection(answers: Answers, userArguments: UserFlags): Answers {
+    let _answers = answers;
+
+    if (userArguments.frontend !== undefined) {
+        if (_answers.recipe === "multitenancy") {
+            if (_answers.frontend === "react") {
+                _answers.frontend = "react-multitenancy";
+            } else if (_answers.frontend === "angular-prebuilt") {
+                _answers.frontend = "angular-prebuilt-multitenancy";
+            } else if (_answers.frontend === "vue-prebuilt") {
+                _answers.frontend = "vue-prebuilt-multitenancy";
+            }
+        }
+    }
+
+    return _answers;
+}
+
 export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserFlags): Answers {
     let _answers = answers;
 
