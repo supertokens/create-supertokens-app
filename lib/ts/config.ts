@@ -75,6 +75,7 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
         {
             isFullStack: true,
             value: "next-multitenancy",
+            shouldDisplay: false,
             displayName: "Next.js",
             location: {
                 main: "fullstack/next-multitenancy",
