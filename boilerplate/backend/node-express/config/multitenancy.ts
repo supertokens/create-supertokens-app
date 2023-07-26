@@ -1,4 +1,5 @@
-import Multitenancy from "supertokens-node/recipe/multitenancy";
+import ThirdPartyEmailPassword from "supertokens-node/recipe/thirdpartyemailpassword";
+import ThirdPartyPasswordless from "supertokens-node/recipe/thirdpartypasswordless";
 import Session from "supertokens-node/recipe/session";
 import { TypeInput } from "supertokens-node/types";
 import Dashboard from "supertokens-node/recipe/dashboard";
@@ -27,5 +28,13 @@ export const SuperTokensConfig: TypeInput = {
     },
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
-    recipeList: [Multitenancy.init(), Session.init(), Dashboard.init()],
+    recipeList: [
+        ThirdPartyEmailPassword.init(),
+        ThirdPartyPasswordless.init({
+            contactMethod: "EMAIL",
+            flowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
+        }),
+        Session.init(),
+        Dashboard.init(),
+    ],
 };

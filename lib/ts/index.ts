@@ -109,9 +109,7 @@ async function run() {
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersForPythonFrameworks(answers);
-        answers = modifyAnswersBasedOnSelection(answers, userArguments);
-
-        console.log(answers);
+        answers = modifyAnswersBasedOnSelection(answers);
 
         AnalyticsManager.sendAnalyticsEvent({
             eventName: "cli_selection_complete",

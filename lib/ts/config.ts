@@ -261,6 +261,10 @@ export const recipeOptions: RecipeQuestionOption[] = [
         value: "thirdpartypasswordless",
         displayName: "Social Login + Passwordless",
     },
+    {
+        value: "multitenancy",
+        displayName: "Multi-tenant Authentication",
+    },
 ];
 
 /**
