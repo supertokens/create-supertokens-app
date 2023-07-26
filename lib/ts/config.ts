@@ -73,6 +73,32 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
             },
         },
         {
+            isFullStack: true,
+            value: "next-multitenancy",
+            displayName: "Next.js",
+            location: {
+                main: "fullstack/next-multitenancy",
+                config: {
+                    frontend: [
+                        {
+                            configFiles: "/config/frontend",
+                            finalConfig: "/config/frontendConfig.tsx",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/config/backend",
+                            finalConfig: "/config/backendConfig.ts",
+                        },
+                    ],
+                },
+            },
+            script: {
+                run: [`${packagerCommand} run dev`],
+                setup: [`${packagerCommand} install`],
+            },
+        },
+        {
             value: "angular-prebuilt",
             displayName: "Angular",
             location: {

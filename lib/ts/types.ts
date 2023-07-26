@@ -24,6 +24,7 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
 export type SupportedFrontends =
     | "react"
     | "next"
+    | "next-multitenancy"
     | "angular-prebuilt"
     | "vue-prebuilt"
     | "capacitor"

@@ -16,12 +16,12 @@ export let backendConfig = (): AuthConfig => {
         // recipeList contains all the modules that you want to
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
         recipeList: [
-            ThirdPartyEmailPasswordNode.init(), 
+            ThirdPartyEmailPasswordNode.init(),
             ThirdPartyPasswordlessNode.init({
                 contactMethod: "EMAIL",
                 flowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
             }),
-            SessionNode.init(), 
+            SessionNode.init(),
             Dashboard.init(),
         ],
         isInServerlessEnv: true,

@@ -70,9 +70,7 @@ function ProtectedPage() {
                     <div>Your userID is:</div>
                     <div className={`${styles.truncate} ${styles.userId}`}>{session.userId}</div>
                     <div>Your tenantID is:</div>
-                    <div className={`${styles.truncate} ${styles.tenantId}`}>
-                        {session.accessTokenPayload["tId"]}
-                    </div>
+                    <div className={`${styles.truncate} ${styles.tenantId}`}>{session.accessTokenPayload["tId"]}</div>
                     <div onClick={fetchUserData} className={styles.sessionButton}>
                         Call API
                     </div>

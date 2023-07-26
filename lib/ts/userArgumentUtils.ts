@@ -83,6 +83,8 @@ export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
             _answers.frontend = "angular-prebuilt-multitenancy";
         } else if (_answers.frontend === "vue-prebuilt") {
             _answers.frontend = "vue-prebuilt-multitenancy";
+        } else if (_answers.frontend === "next") {
+            _answers.frontend = "next-multitenancy";
         }
     }
 
