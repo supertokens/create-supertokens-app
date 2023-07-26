@@ -34,11 +34,51 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
             },
         },
         {
+            value: "react-multitenancy",
+            displayName: "React",
+            location: {
+                main: "frontend/supertokens-react-multitenancy",
+                config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
+            },
+            script: {
+                setup: [`${packagerCommand} install`],
+                run: [`${packagerCommand} run start`],
+            },
+            shouldDisplay: false,
+        },
+        {
             isFullStack: true,
             value: "next",
             displayName: "Next.js",
             location: {
                 main: "fullstack/next",
+                config: {
+                    frontend: [
+                        {
+                            configFiles: "/config/frontend",
+                            finalConfig: "/config/frontendConfig.tsx",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/config/backend",
+                            finalConfig: "/config/backendConfig.ts",
+                        },
+                    ],
+                },
+            },
+            script: {
+                run: [`${packagerCommand} run dev`],
+                setup: [`${packagerCommand} install`],
+            },
+        },
+        {
+            isFullStack: true,
+            value: "next-multitenancy",
+            shouldDisplay: false,
+            displayName: "Next.js",
+            location: {
+                main: "fullstack/next-multitenancy",
                 config: {
                     frontend: [
                         {
@@ -247,6 +287,10 @@ export const recipeOptions: RecipeQuestionOption[] = [
     {
         value: "thirdpartypasswordless",
         displayName: "Social Login + Passwordless",
+    },
+    {
+        value: "multitenancy",
+        displayName: "Multi-tenant Authentication",
     },
 ];
 

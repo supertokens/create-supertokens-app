@@ -73,6 +73,20 @@ export function validateUserArguments(userArguments: UserFlags) {
     }
 }
 
+export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
+    let _answers = answers;
+
+    if (_answers.recipe === "multitenancy") {
+        if (_answers.frontend === "react") {
+            _answers.frontend = "react-multitenancy";
+        } else if (_answers.frontend === "next") {
+            _answers.frontend = "next-multitenancy";
+        }
+    }
+
+    return _answers;
+}
+
 export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserFlags): Answers {
     let _answers = answers;
 

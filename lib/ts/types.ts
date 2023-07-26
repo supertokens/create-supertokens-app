@@ -21,7 +21,14 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
     return false;
 }
 
-export type SupportedFrontends = "react" | "next" | "angular-prebuilt" | "vue-prebuilt" | "capacitor";
+export type SupportedFrontends =
+    | "react"
+    | "next"
+    | "next-multitenancy"
+    | "angular-prebuilt"
+    | "vue-prebuilt"
+    | "capacitor"
+    | "react-multitenancy";
 
 export const allFrontends: {
     displayValue: string;

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.33] - 2023-07-26
+
+-   Adds sample apps for Multitenancy with Express and Nest on the backend, and React and Next on the frontend.
+
 ## [0.0.32] - 2023-06-24
 
 -   Temporarily uses supertokens-auth-react v0.33 instead of latest for Python and Golang because their latest SDKs have not been released yet
