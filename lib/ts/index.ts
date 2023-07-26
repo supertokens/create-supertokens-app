@@ -134,7 +134,7 @@ async function run() {
                 errorPlaceholder = "Python";
             }
 
-            const errorMessage = `create-supertokens-app does not support Multitenancy for ${errorPlaceholder} yet. You can refer to our docs to set it up manually: https://supertokens.io/docs/multitenancy/introduction`;
+            const errorMessage = `create-supertokens-app does not support Multitenancy for ${errorPlaceholder} yet. You can refer to our docs to set it up manually: https://supertokens.com/docs/multitenancy/introduction`;
             const error = new Error(errorMessage);
             (error as any).skipGithubLink = true;
             throw error;
