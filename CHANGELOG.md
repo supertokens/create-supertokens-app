@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.34] - 2023-07-27
+
+-   Fixes an issue where multitenancy could not be used as a command line flag
+
 ## [0.0.33] - 2023-07-26
 
 -   Adds sample apps for Multitenancy with Express and Nest on the backend, and React and Next on the frontend.
