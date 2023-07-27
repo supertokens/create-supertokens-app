@@ -3,7 +3,8 @@ export type Recipe =
     | "thirdpartyemailpassword"
     | "passwordless"
     | "thirdpartypasswordless"
-    | "thirdparty";
+    | "thirdparty"
+    | "multitenancy";
 
 export const allRecipes: Recipe[] = [
     "emailpassword",
@@ -11,6 +12,7 @@ export const allRecipes: Recipe[] = [
     "passwordless",
     "thirdpartypasswordless",
     "thirdparty",
+    "multitenancy",
 ];
 
 export function isValidRecipeName(recipe: string): recipe is Recipe {
@@ -28,6 +30,10 @@ export type SupportedFrontends =
     | "angular-prebuilt"
     | "vue-prebuilt"
     | "capacitor"
+    /*
+     * react-multitenancy is intentionally not added to allFrontends because the user is not expected to use this
+     * as an option directly and should not be aware of it.
+     */
     | "react-multitenancy";
 
 export const allFrontends: {
