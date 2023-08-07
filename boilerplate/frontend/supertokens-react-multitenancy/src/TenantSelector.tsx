@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getApiDomain } from "./config";
 
-export const TenantSelector = () => {
+type Props = {
+    setHasSelectedTenantId: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const TenantSelector = ({ setHasSelectedTenantId }: Props) => {
     type Tenant = {
         tenantId: string;
     };
@@ -55,7 +59,7 @@ export const TenantSelector = () => {
                     onClick={() => {
                         if (selectedTenantId !== "") {
                             localStorage.setItem("tenantId", selectedTenantId);
-                            window.location.reload();
+                            setHasSelectedTenantId(true);
                         }
                     }}
                 >
