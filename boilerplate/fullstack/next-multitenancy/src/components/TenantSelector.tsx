@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./TenantSelector.module.css";
 
-export const TenantSelector = () => {
+export const TenantSelector = (props: {
+    setHasSelectedTenantId: React.Dispatch<React.SetStateAction<boolean>>
+}) => {
     type Tenant = {
         tenantId: string;
     };
@@ -55,7 +57,7 @@ export const TenantSelector = () => {
                     onClick={() => {
                         if (selectedTenantId !== "") {
                             localStorage.setItem("tenantId", selectedTenantId);
-                            window.location.reload();
+                            props.setHasSelectedTenantId(true);
                         }
                     }}
                 >
