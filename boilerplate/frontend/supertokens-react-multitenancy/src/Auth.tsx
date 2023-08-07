@@ -20,7 +20,7 @@ const ChangeTenantsButton = ({ setHasSelectedTenantId }: ChangeTenantsButtonProp
             data-supertokens="link tenants-link"
             onClick={() => {
                 localStorage.removeItem("tenantId");
-                setHasSelectedTenantId(true);
+                setHasSelectedTenantId(false);
             }}
         >
             Log in to a different organisation
