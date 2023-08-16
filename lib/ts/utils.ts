@@ -119,11 +119,22 @@ export async function downloadApp(locations: DownloadLocations, folderName: stri
                 strip: isFullStack ? 4 : 3,
                 strict: true,
                 filter: (path, _) => {
-                    if (path.includes(locations.frontend)) {
+                    let frontendLocation = locations.frontend;
+                    let backendLocation = locations.backend;
+
+                    if (!frontendLocation.endsWith("/")) {
+                        frontendLocation += "/";
+                    }
+
+                    if (!backendLocation.endsWith("/")) {
+                        backendLocation += "/";
+                    }
+
+                    if (path.includes(frontendLocation)) {
                         return true;
                     }
 
-                    if (path.includes(locations.backend)) {
+                    if (path.includes(backendLocation)) {
                         return true;
                     }
 
