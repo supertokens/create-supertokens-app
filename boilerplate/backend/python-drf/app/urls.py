@@ -21,4 +21,5 @@ from app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("sessioninfo/", views.SessionInfoAPI.as_view()),
+    path("tenants/", views.TenantsAPI.as_view()),
 ]
