@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-## [0.0.34] - 2023-08-16
+## [0.0.36] - 2023-08-24
+
+-   Adds support for multitenancy to golang and python
+
+## [0.0.35] - 2023-08-16
 
 -   Fixes an issue where the CLI would not download additional files when not using the multitenancy recipe
 
