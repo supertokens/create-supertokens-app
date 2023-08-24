@@ -7,7 +7,7 @@ from supertokens_python import init, get_all_cors_headers
 from supertokens_python.framework.fastapi import get_middleware
 from supertokens_python.recipe.session import SessionContainer
 from supertokens_python.recipe.session.framework.fastapi import verify_session
-from supertokens_python.recipe.multitenancy.syncio import list_all_tenants
+from supertokens_python.recipe.multitenancy.asyncio import list_all_tenants
 
 import config
 
