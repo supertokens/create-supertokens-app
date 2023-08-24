@@ -123,15 +123,6 @@ async function run() {
                 errorPlaceholder = "Angular";
             } else if (answers.frontend === "vue-prebuilt") {
                 errorPlaceholder = "Vue";
-            } else if (answers.backend === "go-http") {
-                errorPlaceholder = "Golang";
-            } else if (
-                answers.backend === "python" ||
-                answers.backend === "python-flask" ||
-                answers.backend === "python-drf" ||
-                answers.backend === "python-fastapi"
-            ) {
-                errorPlaceholder = "Python";
             }
 
             if (errorPlaceholder !== "") {

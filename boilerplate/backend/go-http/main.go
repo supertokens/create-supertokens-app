@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/supertokens/supertokens-golang/recipe/multitenancy"
 	"github.com/supertokens/supertokens-golang/recipe/session"
 	"github.com/supertokens/supertokens-golang/supertokens"
 )
@@ -22,6 +23,11 @@ func main() {
 
 			if r.URL.Path == "/sessioninfo" {
 				session.VerifySession(nil, sessioninfo).ServeHTTP(rw, r)
+				return
+			}
+
+			if r.URL.Path == "/tenants" && r.Method == "GET" {
+				tenants(rw, r)
 				return
 			}
 
@@ -68,6 +74,34 @@ func sessioninfo(w http.ResponseWriter, r *http.Request) {
 		"accessTokenPayload": sessionContainer.GetAccessTokenPayload(),
 		"sessionData":        sessionData,
 	})
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte("error in converting to json"))
+	} else {
+		w.Write(bytes)
+	}
+}
+
+func tenants(w http.ResponseWriter, r *http.Request) {
+	tenantsList, err := multitenancy.ListAllTenants()
+
+	if err != nil {
+		err = supertokens.ErrorHandler(err, r, w)
+		if err != nil {
+			w.WriteHeader(500)
+			w.Write([]byte(err.Error()))
+		}
+		return
+	}
+
+	w.WriteHeader(200)
+	w.Header().Add("content-type", "application/json")
+
+	bytes, err := json.Marshal(map[string]interface{}{
+		"status": "OK",
+		"tenants": tenantsList.OK.Tenants,
+	})
+
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte("error in converting to json"))
