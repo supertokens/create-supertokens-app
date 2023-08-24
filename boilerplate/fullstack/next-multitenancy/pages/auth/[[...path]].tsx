@@ -16,9 +16,7 @@ const SuperTokensComponentNoSSR = dynamic<{}>(new Promise((res) => res(() => get
 
 // We display this component as part of the SuperTokens login form to
 // allow users to go back and select another tenant without logging in
-const ChangeTenantsButton = (props: {
-    setHasSelectedTenantId: React.Dispatch<React.SetStateAction<boolean>>
-}) => {
+const ChangeTenantsButton = (props: { setHasSelectedTenantId: React.Dispatch<React.SetStateAction<boolean>> }) => {
     return (
         <div
             data-supertokens="link tenants-link"
