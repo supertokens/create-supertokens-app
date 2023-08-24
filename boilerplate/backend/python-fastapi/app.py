@@ -7,6 +7,7 @@ from supertokens_python import init, get_all_cors_headers
 from supertokens_python.framework.fastapi import get_middleware
 from supertokens_python.recipe.session import SessionContainer
 from supertokens_python.recipe.session.framework.fastapi import verify_session
+from supertokens_python.recipe.multitenancy.syncio import list_all_tenants
 
 import config
 
@@ -28,6 +29,20 @@ async def secure_api(s: SessionContainer = Depends(verify_session())):
         "sessionHandle": s.get_handle(),
         "userId": s.get_user_id(),
         "accessTokenPayload": s.get_access_token_payload(),
+    }
+
+@app.get("/tenants")
+async def get_tenants():
+    tenantReponse = await list_all_tenants()
+
+    tenantsList = []
+
+    for tenant in tenantReponse.tenants:
+        tenantsList.append(tenant.to_json())
+
+    return {
+        "status": "OK",
+        "tenants": tenantsList,
     }
 
 

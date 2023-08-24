@@ -8,6 +8,7 @@ from supertokens_python import (
 )
 from supertokens_python.framework.flask import Middleware
 from supertokens_python.recipe.session.framework.flask import verify_session
+from supertokens_python.recipe.multitenancy.syncio import list_all_tenants
 import config
 
 init(
@@ -39,6 +40,20 @@ def get_session_info():
             "accessTokenPayload": session_.get_access_token_payload(),
         }
     )
+
+@app.route("/tenants", methods=["GET"])  # type: ignore
+def get_tenants():
+    tenantReponse = list_all_tenants()
+
+    tenantsList = []
+
+    for tenant in tenantReponse.tenants:
+        tenantsList.append(tenant.to_json())
+
+    return jsonify({
+        "status": "OK",
+        "tenants": tenantsList,
+    })
 
 
 # This is required since if this is not there, then OPTIONS requests for
