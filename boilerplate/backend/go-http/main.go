@@ -97,7 +97,10 @@ func tenants(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Header().Add("content-type", "application/json")
 
-	bytes, err := json.Marshal(tenantsList)
+	bytes, err := json.Marshal(map[string]interface{}{
+		"status": "OK",
+		"tenants": tenantsList.OK.Tenants,
+	})
 
 	if err != nil {
 		w.WriteHeader(500)

@@ -126,7 +126,6 @@ async function run() {
             } else if (
                 answers.backend === "python" ||
                 answers.backend === "python-flask" ||
-                answers.backend === "python-drf" ||
                 answers.backend === "python-fastapi"
             ) {
                 errorPlaceholder = "Python";
