@@ -130,6 +130,10 @@ export async function getPackageManagerCommand(userArguments: UserFlags): Promis
         return "yarn";
     }
 
+    if (userArguments.manager === "bun") {
+        return "bun";
+    }
+
     return "npm";
 }
 
