@@ -200,9 +200,9 @@ export type DownloadLocations = {
     isExternalApp?: boolean;
 };
 
-export type SupportedPackageManagers = "npm" | "yarn";
+export type SupportedPackageManagers = "npm" | "yarn" | "bun";
 
-export const allPackageManagers: SupportedPackageManagers[] = ["npm", "yarn"];
+export const allPackageManagers: SupportedPackageManagers[] = ["npm", "yarn", "bun"];
 
 export function isValidPackageManager(manager: string): manager is SupportedPackageManagers {
     if (allPackageManagers.includes(manager as SupportedPackageManagers)) {

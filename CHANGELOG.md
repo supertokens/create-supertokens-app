@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.37] - 2023-08-24
+
+-   Adds bun support when running the CLI. To use bun when using this tool use the additional `--manager=bun` flag.
+
 ## [0.0.36] - 2023-08-24
 
 -   Adds support for multitenancy to golang and python
