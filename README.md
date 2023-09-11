@@ -10,9 +10,17 @@
 
 ## Usage
 
+### Using npm
+
 Run the tool using the following command
 
 `npx create-supertokens-app`
+
+### Using Bun
+
+Run the tool using the following command
+
+`bun create supertokens-app@latest --manager=bun`
 
 You can then select the tech stack that is relevant to you.
 
