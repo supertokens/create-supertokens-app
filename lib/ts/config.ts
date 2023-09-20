@@ -138,7 +138,7 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 message: getCapacitorMessage(),
             },
             location: {
-                main: "https://github.com/RobSchilderr/capacitor-supertokens-nextjs-turborepo/archive/master.tar.gz",
+                main: "https://github.com/RobSchilderr/nextjs-native-starter/archive/master.tar.gz",
                 config: {
                     frontend: [
                         {
