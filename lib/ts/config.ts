@@ -13,7 +13,7 @@ import chalk from "chalk";
 function getCapacitorMessage() {
     // prettier-ignore
     {
-        return `create-supertokens-app uses ${chalk.bold("capacitor-supertokens-nextjs-turborepo")} as a template app for Capacitor. ${chalk.bold("capacitor-supertokens-nextjs-turborepo")} is a starter project created by ${chalk.blue("https://github.com/RobSchilderr")}, if you face any problems please open an issue here: ${chalk.blue("https://github.com/RobSchilderr/capacitor-supertokens-nextjs-turborepo/issues")} or reach out to us on the SuperTokens Discord server: ${chalk.blue("https://supertokens.com/discord")}.\n\nTo get started refer to the README on Github ${chalk.blue("https://github.com/RobSchilderr/capacitor-supertokens-nextjs-turborepo")}`;
+        return `create-supertokens-app uses ${chalk.bold("nextjs-native-starter")} as a template app for Capacitor. ${chalk.bold("nextjs-native-starter")} is a starter project created by ${chalk.blue("https://github.com/RobSchilderr")}, if you face any problems please open an issue here: ${chalk.blue("https://github.com/RobSchilderr/nextjs-native-starter/issues")} or reach out to us on the SuperTokens Discord server: ${chalk.blue("https://supertokens.com/discord")}.\n\nTo get started refer to the README on Github ${chalk.blue("https://github.com/RobSchilderr/nextjs-native-starter")}`;
     }
 }
 
@@ -138,7 +138,7 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 message: getCapacitorMessage(),
             },
             location: {
-                main: "https://github.com/RobSchilderr/capacitor-supertokens-nextjs-turborepo/archive/master.tar.gz",
+                main: "https://github.com/RobSchilderr/nextjs-native-starter/archive/master.tar.gz",
                 config: {
                     frontend: [
                         {
