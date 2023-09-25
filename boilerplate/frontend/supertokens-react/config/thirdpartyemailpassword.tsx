@@ -37,3 +37,7 @@ export const recipeDetails = {
 };
 
 export const PreBuiltUIList = [ThirdPartyEmailPasswordPreBuiltUI];
+
+export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
+    return props.children;
+};
