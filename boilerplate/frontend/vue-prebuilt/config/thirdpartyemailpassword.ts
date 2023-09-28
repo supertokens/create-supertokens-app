@@ -2,6 +2,7 @@ import ThirdPartyEmailPassword, {
   Github,
   Google,
   Apple,
+  Twitter,
 } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import Session from "supertokens-auth-react/recipe/session";
 
@@ -15,7 +16,7 @@ export const SuperTokensConfig = {
     ThirdPartyEmailPassword.init({
       useShadowDom: false,
       signInAndUpFeature: {
-        providers: [Github.init(), Google.init(), Apple.init()],
+        providers: [Github.init(), Google.init(), Apple.init(), Twitter.init()],
       },
     }),
     Session.init(),

@@ -3,6 +3,7 @@ import {
   Github,
   Google,
   Apple,
+  Twitter,
 } from "supertokens-auth-react/recipe/thirdpartypasswordless";
 import Session from "supertokens-auth-react/recipe/session";
 
@@ -16,7 +17,7 @@ export const SuperTokensConfig = {
     ThirdPartyPasswordless.init({
       useShadowDom: false,
       signInUpFeature: {
-        providers: [Github.init(), Google.init(), Apple.init()],
+        providers: [Github.init(), Google.init(), Apple.init(), Twitter.init()],
       },
       contactMethod: "EMAIL_OR_PHONE",
     }),

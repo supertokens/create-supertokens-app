@@ -99,6 +99,17 @@ var SuperTokensConfig = supertokens.TypeInput{
 						},
 					},
 				},
+				{
+					Config: tpmodels.ProviderConfig{
+						ThirdPartyId: "twitter",
+						Clients: []tpmodels.ProviderClientConfig{
+							{
+								ClientID:     "4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ",
+								ClientSecret: "BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC",
+							},
+						},
+					},
+				},
 			},
 		}),
 		session.Init(nil),
