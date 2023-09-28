@@ -1,5 +1,5 @@
 import * as ThirdParty from "supertokens-auth-react/recipe/thirdparty";
-import { Github, Google, Apple } from "supertokens-auth-react/recipe/thirdparty";
+import { Github, Google, Apple, Twitter } from "supertokens-auth-react/recipe/thirdparty";
 import Session from "supertokens-auth-react/recipe/session";
 
 export const SuperTokensConfig = {
@@ -13,7 +13,7 @@ export const SuperTokensConfig = {
     recipeList: [
         ThirdParty.init({
             signInAndUpFeature: {
-                providers: [Github.init(), Google.init(), Apple.init()],
+                providers: [Github.init(), Google.init(), Apple.init(), Twitter.init()],
             },
         }),
         Session.init(),

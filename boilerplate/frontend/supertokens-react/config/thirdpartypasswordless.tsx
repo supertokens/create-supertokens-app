@@ -32,6 +32,7 @@ export const SuperTokensConfig = {
                     ThirdPartyPasswordless.Github.init(),
                     ThirdPartyPasswordless.Google.init(),
                     ThirdPartyPasswordless.Apple.init(),
+                    ThirdPartyPasswordless.Twitter.init(),
                 ],
             },
             contactMethod: "EMAIL_OR_PHONE",
