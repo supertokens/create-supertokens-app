@@ -57,6 +57,18 @@ export const recipeList = [
           ],
         },
       },
+      {
+        config: {
+          thirdPartyId: 'twitter',
+          clients: [
+            {
+              clientId: '4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ',
+              clientSecret:
+                'BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC',
+            },
+          ],
+        },
+      },
     ],
   }),
   Session.init(),

@@ -60,6 +60,17 @@ recipe_list = [
                     ],
                 ),
             ),
+            ProviderInput(
+                config=ProviderConfig(
+                    third_party_id="twitter",
+                    clients=[
+                        ProviderClientConfig(
+                            client_id='4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ',
+                            client_secret='BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC'
+                        ),
+                    ],
+                ),
+            ),
         ]
     ),
     dashboard.init()
