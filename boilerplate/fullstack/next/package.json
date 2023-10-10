@@ -10,7 +10,8 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "supertokens-auth-react": "latest",
-        "supertokens-node": "latest"
+        "supertokens-node": "latest",
+        "supertokens-web-js": "latest"
     },
     "devDependencies": {
         "@types/react": "18.0.17",
