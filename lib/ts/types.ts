@@ -27,6 +27,7 @@ export type SupportedFrontends =
     | "react"
     | "next"
     | "next-multitenancy"
+    | "next-app-directory"
     | "angular-prebuilt"
     | "vue-prebuilt"
     | "capacitor"
@@ -186,6 +187,7 @@ export type Answers = {
     recipe: string;
     appname: string;
     backendPython: PythonFrameworks;
+    frontendNext: SupportedFrontends;
 };
 
 /**

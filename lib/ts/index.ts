@@ -18,7 +18,7 @@ import Emoji from "node-emoji";
 import AnalyticsManager from "./analytics.js";
 import figlet from "figlet";
 import { package_version } from "./version.js";
-import { modifyAnswersForPythonFrameworks } from "./questionUtils.js";
+import { modifyAnswersBasedOnNextJsFramework, modifyAnswersForPythonFrameworks } from "./questionUtils.js";
 
 async function printInformation(): Promise<void> {
     const font: figlet.Fonts = "Doom";
@@ -109,6 +109,7 @@ async function run() {
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersForPythonFrameworks(answers);
+        answers = modifyAnswersBasedOnNextJsFramework(answers);
         answers = modifyAnswersBasedOnSelection(answers);
 
         AnalyticsManager.sendAnalyticsEvent({
@@ -123,6 +124,8 @@ async function run() {
                 errorPlaceholder = "Angular";
             } else if (answers.frontend === "vue-prebuilt") {
                 errorPlaceholder = "Vue";
+            } else if (answers.frontend === "next-app-directory") {
+                errorPlaceholder = "Next.js with App directory";
             }
 
             if (errorPlaceholder !== "") {
