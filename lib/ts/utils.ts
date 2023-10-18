@@ -1,4 +1,4 @@
-import { getFrontendOptions, getBackendOptionForProcessing } from "./config.js";
+import { getBackendOptionForProcessing, getFrontendOptionsForProcessing } from "./config.js";
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
@@ -33,7 +33,7 @@ export async function getDownloadLocationFromAnswers(
 
     let downloadURL = `https://github.com/supertokens/create-supertokens-app/archive/${branchToUse}.tar.gz`;
 
-    const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
+    const selectedFrontend = (await getFrontendOptionsForProcessing(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
@@ -269,7 +269,7 @@ async function setupFrontendBackendApp(
     fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
     fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
 
-    const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
+    const selectedFrontend = (await getFrontendOptionsForProcessing(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
@@ -492,7 +492,7 @@ async function setupFrontendBackendApp(
 }
 
 async function setupFullstack(answers: Answers, folderName: string, userArguments: UserFlags, spinner: Ora) {
-    const selectedFullStack = (await getFrontendOptions(userArguments)).find((element) => {
+    const selectedFullStack = (await getFrontendOptionsForProcessing(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 
@@ -662,7 +662,7 @@ export async function getAnalyticsId(): Promise<string> {
 export async function runProjectOrPrintStartCommand(answers: Answers, userArguments: UserFlags) {
     const folderName = answers.appname;
 
-    const selectedFrontend = (await getFrontendOptions(userArguments)).find((element) => {
+    const selectedFrontend = (await getFrontendOptionsForProcessing(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
 

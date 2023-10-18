@@ -163,6 +163,65 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
     ];
 }
 
+export async function getNextJSOptions(userArguments: UserFlags): Promise<QuestionOption[]> {
+    const packagerCommand = await getPackageManagerCommand(userArguments);
+
+    return [
+        {
+            displayName: "Using the App directory",
+            location: {
+                main: "fullstack/next-app-dir",
+                config: {
+                    frontend: [
+                        {
+                            configFiles: "/app/config/frontend",
+                            finalConfig: "/app/config/frontend.tsx",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/app/config/backend",
+                            finalConfig: "/app/config/backend.ts",
+                        },
+                    ],
+                },
+            },
+            script: {
+                run: [`${packagerCommand} run dev`],
+                setup: [`${packagerCommand} install`],
+            },
+            value: "next-app-directory",
+            isFullStack: true,
+        },
+        {
+            isFullStack: true,
+            value: "next",
+            displayName: "Using the Pages directory",
+            location: {
+                main: "fullstack/next",
+                config: {
+                    frontend: [
+                        {
+                            configFiles: "/config/frontend",
+                            finalConfig: "/config/frontendConfig.tsx",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/config/backend",
+                            finalConfig: "/config/backendConfig.ts",
+                        },
+                    ],
+                },
+            },
+            script: {
+                run: [`${packagerCommand} run dev`],
+                setup: [`${packagerCommand} install`],
+            },
+        },
+    ];
+}
+
 const pythonOptions: QuestionOption[] = [
     {
         value: "python-flask",
@@ -331,6 +390,15 @@ export async function getQuestions(flags: UserFlags) {
             when: flags.frontend === undefined,
         },
         {
+            name: "frontendNext",
+            type: "list",
+            message: "Choose how you want to organise your Next.js routes:",
+            choices: mapOptionsToChoices(await getNextJSOptions(flags)),
+            when: (answers: Answers) => {
+                return answers.frontend === "next";
+            },
+        },
+        {
             name: "backend",
             type: "list",
             message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
@@ -377,6 +445,12 @@ export async function getQuestions(flags: UserFlags) {
             },
         },
     ];
+}
+
+export async function getFrontendOptionsForProcessing(userArguments: UserFlags): Promise<QuestionOption[]> {
+    const optionsWithoutNext = await getFrontendOptions(userArguments);
+    const nextOptions = await getNextJSOptions(userArguments);
+    return [...optionsWithoutNext, ...nextOptions];
 }
 
 export async function getBackendOptionForProcessing(userArguments: UserFlags): Promise<QuestionOption[]> {

@@ -42,7 +42,7 @@ export const frontendConfig = (): SuperTokensConfig => {
 };
 
 export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/thirdpartyemailpassword/introduction",
+    docsLink: "https://supertokens.com/docs/thirdparty/introduction",
 };
 
 export const PreBuiltUIList = [ThirdPartyPreBuiltUI];
