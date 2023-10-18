@@ -1,6 +1,6 @@
 import PasswordlessReact from "supertokens-auth-react/recipe/passwordless";
 import Session from "supertokens-auth-react/recipe/session";
-import { appInfo } from "./appinfo";
+import { appInfo } from "./appInfo";
 import { useRouter } from "next/navigation";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";

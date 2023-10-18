@@ -14,6 +14,7 @@ export async function getSSRSession(
 ): Promise<{
     session: SessionContainer | undefined;
     hasToken: boolean;
+    hasInvalidClaims: boolean;
     baseResponse: CollectingResponse;
     nextResponse?: NextResponse;
 }> {
@@ -37,6 +38,7 @@ export async function getSSRSession(
         let session = await Session.getSession(baseRequest, baseResponse, options);
         return {
             session,
+            hasInvalidClaims: false,
             hasToken: session !== undefined,
             baseResponse,
         };
@@ -44,6 +46,7 @@ export async function getSSRSession(
         if (Session.Error.isErrorFromSuperTokens(err)) {
             return {
                 hasToken: err.type !== Session.Error.UNAUTHORISED,
+                hasInvalidClaims: err.type === Session.Error.INVALID_CLAIMS,
                 session: undefined,
                 baseResponse,
                 nextResponse: new NextResponse("Authentication required", {

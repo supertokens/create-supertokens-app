@@ -1,6 +1,6 @@
 import ThirdPartyPasswordlessReact from "supertokens-auth-react/recipe/thirdpartypasswordless";
 import Session from "supertokens-auth-react/recipe/session";
-import { appInfo } from "./appinfo";
+import { appInfo } from "./appInfo";
 import { useRouter } from "next/navigation";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
