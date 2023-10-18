@@ -5,17 +5,15 @@ import { recipeDetails } from "../config/frontend";
 import Link from "next/link";
 import Image from "next/image";
 import Session from "supertokens-auth-react/recipe/session";
-import { useRouter } from "next/navigation";
+import SuperTokens from "supertokens-auth-react";
 
 const SignOutLink = (props: { name: string; link: string; icon: string }) => {
-    const router = useRouter();
-
     return (
         <div
             className={styles.linksContainerLink}
             onClick={async () => {
                 await Session.signOut();
-                router.refresh();
+                SuperTokens.redirectToAuth();
             }}
         >
             <Image className={styles.linkIcon} src={props.icon} alt={props.name} />
