@@ -1,6 +1,6 @@
 import SuperTokens from "supertokens-node";
 import { TypeInput } from "supertokens-node/types";
-import { appInfo } from "./appinfo";
+import { appInfo } from "./appInfo";
 
 export const backendConfig = (): TypeInput => {
     return {

@@ -60,7 +60,6 @@ export async function withSession(
     request: NextRequest,
     handler: (session: SessionContainer | undefined) => Promise<NextResponse>,
     options?: VerifySessionOptions
-    // TODO: Add verify session options here and pass it to getSSRSession so that get session can get the options
 ) {
     let { session, nextResponse, baseResponse } = await getSSRSession(request, options);
     if (nextResponse) {
@@ -69,7 +68,11 @@ export async function withSession(
 
     let userResponse = await handler(session);
 
+    let didAddCookies = false;
+    let didAddHeaders = false;
+
     for (const respCookie of baseResponse.cookies) {
+        didAddCookies = true;
         userResponse.headers.append(
             "Set-Cookie",
             serialize(respCookie.key, respCookie.value, {
@@ -84,8 +87,16 @@ export async function withSession(
     }
 
     baseResponse.headers.forEach((value, key) => {
+        didAddHeaders = true;
         userResponse.headers.set(key, value);
     });
+
+    if (didAddCookies || didAddHeaders) {
+        if (userResponse.headers.has("Cache-Control")) {
+            // This is needed for production deployments with Vercel
+            userResponse.headers.set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
+        }
+    }
 
     return userResponse;
 }

@@ -11,7 +11,6 @@ export const TryRefreshComponent = () => {
     useEffect(() => {
         void Session.attemptRefreshingSession()
             .then((hasSession) => {
-                console.log(hasSession);
                 if (hasSession) {
                     router.refresh();
                 } else {
