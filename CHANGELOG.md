@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.39] - 2023-10-18
+
+-   Adds generation for a nextjs app using the app directory
+
 ## [0.0.38] - 2023-09-20
 
 -   Updates repo name and URL for the capacitor template app
