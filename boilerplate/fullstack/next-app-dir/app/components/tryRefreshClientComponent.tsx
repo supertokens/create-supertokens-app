@@ -6,20 +6,20 @@ import Session from "supertokens-auth-react/recipe/session";
 import SuperTokens from "supertokens-auth-react";
 
 export const TryRefreshComponent = () => {
-  const router = useRouter();
+    const router = useRouter();
 
-  useEffect(() => {
-    void Session.attemptRefreshingSession()
-      .then((hasSession) => {
-        console.log(hasSession);
-        if (hasSession) {
-          router.refresh();
-        } else {
-          redirect("/auth");
-        }
-      })
-      .catch(console.error);
-  }, []);
+    useEffect(() => {
+        void Session.attemptRefreshingSession()
+            .then((hasSession) => {
+                console.log(hasSession);
+                if (hasSession) {
+                    router.refresh();
+                } else {
+                    redirect("/auth");
+                }
+            })
+            .catch(console.error);
+    }, []);
 
-  return <div>Loading...</div>;
+    return <div>Loading...</div>;
 };

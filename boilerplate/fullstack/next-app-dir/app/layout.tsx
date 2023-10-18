@@ -6,20 +6,16 @@ import { SuperTokensProvider } from "./components/supertokensProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SuperTokens 💫",
-  description: "SuperTokens demo app",
+    title: "SuperTokens 💫",
+    description: "SuperTokens demo app",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en">
-      <SuperTokensProvider>
-        <body className={inter.className}>{children}</body>
-      </SuperTokensProvider>
-    </html>
-  );
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <html lang="en">
+            <SuperTokensProvider>
+                <body className={inter.className}>{children}</body>
+            </SuperTokensProvider>
+        </html>
+    );
 }

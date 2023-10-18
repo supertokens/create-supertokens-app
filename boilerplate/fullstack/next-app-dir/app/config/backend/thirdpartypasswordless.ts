@@ -82,8 +82,8 @@ export let backendConfig = (): TypeInput => {
 
 let initialized = false;
 export function ensureSuperTokensInit() {
-  if (!initialized) {
-    SuperTokens.init(backendConfig());
-    initialized = true;
-  }
+    if (!initialized) {
+        SuperTokens.init(backendConfig());
+        initialized = true;
+    }
 }

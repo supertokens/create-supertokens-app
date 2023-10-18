@@ -8,42 +8,29 @@ import { CallAPIButton } from "./callApiButton";
 import { LinksComponent } from "./linksComponent";
 
 export async function HomePage() {
-  const { session, hasToken } = await getSSRSession();
+    const { session, hasToken } = await getSSRSession();
 
-  if (!session) {
-    if (!hasToken) {
-      return redirect("/auth");
+    if (!session) {
+        if (!hasToken) {
+            return redirect("/auth");
+        }
+        return <TryRefreshComponent />;
     }
-    return <TryRefreshComponent />;
-  }
 
-  return (
-    <div className={styles.homeContainer}>
-      <div className={styles.mainContainer}>
-        <div
-          className={`${styles.topBand} ${styles.successTitle} ${styles.bold500}`}
-        >
-          <Image
-            src={CelebrateIcon}
-            alt="Login successful"
-            className={styles.successIcon}
-          />{" "}
-          Login successful
+    return (
+        <div className={styles.homeContainer}>
+            <div className={styles.mainContainer}>
+                <div className={`${styles.topBand} ${styles.successTitle} ${styles.bold500}`}>
+                    <Image src={CelebrateIcon} alt="Login successful" className={styles.successIcon} /> Login successful
+                </div>
+                <div className={styles.innerContent}>
+                    <div>Your userID is:</div>
+                    <div className={`${styles.truncate} ${styles.userId}`}>{session.getUserId()}</div>
+                    <CallAPIButton />
+                </div>
+            </div>
+            <LinksComponent />
+            <Image className={styles.separatorLine} src={SeparatorLine} alt="separator" />
         </div>
-        <div className={styles.innerContent}>
-          <div>Your userID is:</div>
-          <div className={`${styles.truncate} ${styles.userId}`}>
-            {session.getUserId()}
-          </div>
-          <CallAPIButton />
-        </div>
-      </div>
-      <LinksComponent />
-      <Image
-        className={styles.separatorLine}
-        src={SeparatorLine}
-        alt="separator"
-      />
-    </div>
-  );
+    );
 }

@@ -8,75 +8,59 @@ import Session from "supertokens-auth-react/recipe/session";
 import { useRouter } from "next/navigation";
 
 const SignOutLink = (props: { name: string; link: string; icon: string }) => {
-  const router = useRouter();
+    const router = useRouter();
 
-  return (
-    <div
-      className={styles.linksContainerLink}
-      onClick={async () => {
-        await Session.signOut();
-        router.refresh();
-      }}
-    >
-      <Image className={styles.linkIcon} src={props.icon} alt={props.name} />
-      <div role={"button"}>{props.name}</div>
-    </div>
-  );
+    return (
+        <div
+            className={styles.linksContainerLink}
+            onClick={async () => {
+                await Session.signOut();
+                router.refresh();
+            }}
+        >
+            <Image className={styles.linkIcon} src={props.icon} alt={props.name} />
+            <div role={"button"}>{props.name}</div>
+        </div>
+    );
 };
 
 export const LinksComponent = () => {
-  const links: {
-    name: string;
-    link: string;
-    icon: string;
-  }[] = [
-    {
-      name: "Blogs",
-      link: "https://supertokens.com/blog",
-      icon: BlogsIcon,
-    },
-    {
-      name: "Guides",
-      link: recipeDetails.docsLink,
-      icon: GuideIcon,
-    },
-    {
-      name: "Sign Out",
-      link: "",
-      icon: SignOutIcon,
-    },
-  ];
+    const links: {
+        name: string;
+        link: string;
+        icon: string;
+    }[] = [
+        {
+            name: "Blogs",
+            link: "https://supertokens.com/blog",
+            icon: BlogsIcon,
+        },
+        {
+            name: "Guides",
+            link: recipeDetails.docsLink,
+            icon: GuideIcon,
+        },
+        {
+            name: "Sign Out",
+            link: "",
+            icon: SignOutIcon,
+        },
+    ];
 
-  return (
-    <div className={styles.bottomLinksContainer}>
-      {links.map((link) => {
-        if (link.name === "Sign Out") {
-          return (
-            <SignOutLink
-              name={link.name}
-              link={link.link}
-              icon={link.icon}
-              key={link.name}
-            />
-          );
-        }
+    return (
+        <div className={styles.bottomLinksContainer}>
+            {links.map((link) => {
+                if (link.name === "Sign Out") {
+                    return <SignOutLink name={link.name} link={link.link} icon={link.icon} key={link.name} />;
+                }
 
-        return (
-          <Link
-            href={link.link}
-            className={styles.linksContainerLink}
-            key={link.name}
-            target="_blank"
-          >
-            <Image
-              className={styles.linkIcon}
-              src={link.icon}
-              alt={link.name}
-            />
-            <div role={"button"}>{link.name}</div>
-          </Link>
-        );
-      })}
-    </div>
-  );
+                return (
+                    <Link href={link.link} className={styles.linksContainerLink} key={link.name} target="_blank">
+                        <Image className={styles.linkIcon} src={link.icon} alt={link.name} />
+                        <div role={"button"}>{link.name}</div>
+                    </Link>
+                );
+            })}
+        </div>
+    );
 };

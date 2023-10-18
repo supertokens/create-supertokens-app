@@ -5,17 +5,17 @@ import { useRouter } from "next/navigation";
 import Session from "supertokens-auth-react/recipe/session";
 
 export const SignOut = () => {
-  const session = useSessionContext();
-  const router = useRouter();
+    const session = useSessionContext();
+    const router = useRouter();
 
-  if (session.loading === true) {
-    return null;
-  }
+    if (session.loading === true) {
+        return null;
+    }
 
-  const signOut = async () => {
-    await Session.signOut();
-    router.refresh();
-  };
+    const signOut = async () => {
+        await Session.signOut();
+        router.refresh();
+    };
 
-  return <button onClick={signOut}>Sign out</button>;
+    return <button onClick={signOut}>Sign out</button>;
 };
