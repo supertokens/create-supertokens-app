@@ -1,14 +1,17 @@
 import { serialize } from "cookie";
 import { cookies, headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import Session, { SessionContainer } from "supertokens-node/recipe/session";
+import Session, { SessionContainer, VerifySessionOptions } from "supertokens-node/recipe/session";
 import { ensureSuperTokensInit } from "./config/backend";
 import { PreParsedRequest, CollectingResponse } from "supertokens-node/framework/custom";
 import { HTTPMethod } from "supertokens-node/types";
 
 ensureSuperTokensInit();
 
-export async function getSSRSession(req?: NextRequest): Promise<{
+export async function getSSRSession(
+    req?: NextRequest,
+    options?: VerifySessionOptions
+): Promise<{
     session: SessionContainer | undefined;
     hasToken: boolean;
     baseResponse: CollectingResponse;
@@ -31,7 +34,7 @@ export async function getSSRSession(req?: NextRequest): Promise<{
     let baseResponse = new CollectingResponse();
 
     try {
-        let session = await Session.getSession(baseRequest, baseResponse);
+        let session = await Session.getSession(baseRequest, baseResponse, options);
         return {
             session,
             hasToken: session !== undefined,
@@ -55,11 +58,11 @@ export async function getSSRSession(req?: NextRequest): Promise<{
 
 export async function withSession(
     request: NextRequest,
-    handler: (session: SessionContainer | undefined) => Promise<NextResponse>
+    handler: (session: SessionContainer | undefined) => Promise<NextResponse>,
+    options?: VerifySessionOptions
     // TODO: Add verify session options here and pass it to getSSRSession so that get session can get the options
-    // TODO: Test header based auth and that custom headers are sent correctly
 ) {
-    let { session, nextResponse, baseResponse } = await getSSRSession(request);
+    let { session, nextResponse, baseResponse } = await getSSRSession(request, options);
     if (nextResponse) {
         return nextResponse;
     }
