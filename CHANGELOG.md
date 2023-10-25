@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.40] - 2023-10-25
+
+-   Adds generation for a nextjs app using the app directory with the Multitenancy recipe
+
 ## [0.0.39] - 2023-10-18
 
 -   Adds generation for a nextjs app using the app directory
