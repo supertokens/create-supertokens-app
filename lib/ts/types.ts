@@ -28,6 +28,7 @@ export type SupportedFrontends =
     | "next"
     | "next-multitenancy"
     | "next-app-directory"
+    | "next-app-directory-multitenancy"
     | "angular-prebuilt"
     | "vue-prebuilt"
     | "capacitor"

@@ -81,6 +81,8 @@ export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
             _answers.frontend = "react-multitenancy";
         } else if (_answers.frontend === "next") {
             _answers.frontend = "next-multitenancy";
+        } else if (_answers.frontend === "next-app-directory") {
+            _answers.frontend = "next-app-directory-multitenancy";
         }
     }
 

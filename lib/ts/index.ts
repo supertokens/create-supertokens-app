@@ -124,8 +124,6 @@ async function run() {
                 errorPlaceholder = "Angular";
             } else if (answers.frontend === "vue-prebuilt") {
                 errorPlaceholder = "Vue";
-            } else if (answers.frontend === "next-app-directory") {
-                errorPlaceholder = "Next.js with App directory";
             }
 
             if (errorPlaceholder !== "") {
