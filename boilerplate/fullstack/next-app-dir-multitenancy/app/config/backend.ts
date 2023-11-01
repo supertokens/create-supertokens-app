@@ -1,4 +1,4 @@
-import { appInfo } from "./appinfo";
+import { appInfo } from "./appInfo";
 import { TypeInput } from "supertokens-node/types";
 import SuperTokens from "supertokens-node";
 

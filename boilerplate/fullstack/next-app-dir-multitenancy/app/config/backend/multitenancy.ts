@@ -2,7 +2,7 @@ import ThirdPartyEmailPasswordNode from "supertokens-node/recipe/thirdpartyemail
 import ThirdPartyPasswordlessNode from "supertokens-node/recipe/thirdpartypasswordless";
 import SessionNode from "supertokens-node/recipe/session";
 import Dashboard from "supertokens-node/recipe/dashboard";
-import { appInfo } from "./appinfo";
+import { appInfo } from "./appInfo";
 import { TypeInput } from "supertokens-node/types";
 import SuperTokens from "supertokens-node";
 

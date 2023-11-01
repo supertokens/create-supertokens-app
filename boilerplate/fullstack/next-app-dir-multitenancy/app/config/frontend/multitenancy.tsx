@@ -2,7 +2,7 @@ import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpar
 import ThirdPartyPasswordlessReact from "supertokens-auth-react/recipe/thirdpartypasswordless";
 import MultitenancyReact from "supertokens-auth-react/recipe/multitenancy";
 import Session from "supertokens-auth-react/recipe/session";
-import { appInfo } from "./appinfo";
+import { appInfo } from "./appInfo";
 import { useRouter } from "next/navigation";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";

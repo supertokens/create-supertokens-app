@@ -1,5 +1,5 @@
 export const appInfo = {
-  // Learn more about this on https://supertokens.com/docs/thirdpartypasswordless/appinfo
+  // Learn more about this on https://supertokens.com/docs/thirdpartypasswordless/appInfo
   appName: 'ST',
   apiDomain: '',
   websiteDomain: '',
