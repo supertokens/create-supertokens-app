@@ -29,7 +29,7 @@ pnpm create next-app --example with-supertokens with-supertokens-app
 - Run the following command
 
 ```bash
-npx create-supertokens-app@latest --recipe=thirdpartyemailpassword --frontend=next --appname=with-supertokens
+npx create-supertokens-app@latest --frontend=next
 ```
 
 - Select the option to use the app directory
