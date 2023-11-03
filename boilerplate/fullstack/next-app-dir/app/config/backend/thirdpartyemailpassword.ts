@@ -75,6 +75,7 @@ export let backendConfig = (): TypeInput => {
             Dashboard.init(),
         ],
         isInServerlessEnv: true,
+        framework: "custom",
     };
 };
 
