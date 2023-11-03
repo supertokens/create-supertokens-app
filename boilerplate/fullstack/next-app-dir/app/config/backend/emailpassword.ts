@@ -16,6 +16,7 @@ export let backendConfig = (): TypeInput => {
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
         recipeList: [EmailPasswordNode.init(), SessionNode.init(), Dashboard.init()],
         isInServerlessEnv: true,
+        framework: "custom",
     };
 };
 
