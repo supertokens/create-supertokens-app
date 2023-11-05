@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <SuperTokensProvider>
-                <body className={inter.className}>{children}</body>
-            </SuperTokensProvider>
+            <body className={inter.className}>
+                <SuperTokensProvider>{children}</SuperTokensProvider>
+            </body>
         </html>
     );
 }
