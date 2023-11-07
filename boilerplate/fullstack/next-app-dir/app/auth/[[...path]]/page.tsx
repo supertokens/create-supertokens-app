@@ -11,11 +11,14 @@ export default function Auth() {
     useEffect(() => {
         if (SuperTokens.canHandleRoute(PreBuiltUIList) === false) {
             redirectToAuth({ redirectBack: false });
+        } else {
+            setLoaded(true);
         }
-        setLoaded(true);
     }, []);
 
     if (loaded) {
         return SuperTokens.getRoutingComponent(PreBuiltUIList);
     }
+
+    return null;
 }
