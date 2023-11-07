@@ -1,2 +1,4 @@
+Django
+django-cors-headers
 djangorestframework
-supertokens-python[django]
+supertokens-python
