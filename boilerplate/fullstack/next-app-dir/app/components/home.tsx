@@ -21,14 +21,14 @@ export async function HomePage() {
         }
 
         if (hasInvalidClaims) {
-            return <SessionAuthForNextJS />;
+            return <SessionAuthForNextJS ssrSessionExists={false} />;
         } else {
             return <TryRefreshComponent />;
         }
     }
 
     return (
-        <SessionAuthForNextJS>
+        <SessionAuthForNextJS ssrSessionExists={true}>
             <div className={styles.homeContainer}>
                 <div className={styles.mainContainer}>
                     <div className={`${styles.topBand} ${styles.successTitle} ${styles.bold500}`}>
