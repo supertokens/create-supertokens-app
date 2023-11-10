@@ -7,9 +7,5 @@ type Props = Parameters<typeof SessionAuth>[0] & {
 };
 
 export const SessionAuthForNextJS = (props: Props) => {
-    if (typeof window === "undefined") {
-        return props.children;
-    }
-
     return <SessionAuth {...props}>{props.children}</SessionAuth>;
 };

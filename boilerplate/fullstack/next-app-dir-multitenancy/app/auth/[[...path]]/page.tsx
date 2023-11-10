@@ -11,11 +11,6 @@ import { ChangeTenantsButton } from "../../../app/components/changeTenantsButton
 import { TenantSelector } from "../../../app/components/TenantSelector";
 
 export default function Auth() {
-    if (typeof window === "undefined") {
-        return null;
-    }
-
-    const tenantId = localStorage.getItem("tenantId");
     const session = useSessionContext();
     const [hasSelectedTenantId, setHasSelectedTenantId] = React.useState(false);
 
@@ -31,6 +26,7 @@ export default function Auth() {
     }
 
     const SuperTokensComponent = SuperTokens.getRoutingComponent(PreBuiltUIList);
+    const tenantId = localStorage.getItem("tenantId");
 
     if (
         hasSelectedTenantId ||
