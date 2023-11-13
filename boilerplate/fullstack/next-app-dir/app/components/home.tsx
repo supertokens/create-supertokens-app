@@ -21,7 +21,7 @@ export async function HomePage() {
         }
 
         if (hasInvalidClaims) {
-            return <SessionAuthForNextJS ssrSessionExists={false} />;
+            return <SessionAuthForNextJS ssrSessionExists={true} />;
         } else {
             return <TryRefreshComponent />;
         }
