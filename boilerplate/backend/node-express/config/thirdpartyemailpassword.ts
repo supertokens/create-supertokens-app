@@ -2,6 +2,7 @@ import ThirdPartyEmailPassword from "supertokens-node/recipe/thirdpartyemailpass
 import Session from "supertokens-node/recipe/session";
 import { TypeInput } from "supertokens-node/types";
 import Dashboard from "supertokens-node/recipe/dashboard";
+import UserRoles from "supertokens-node/recipe/userroles";
 
 export function getApiDomain() {
     const apiPort = process.env.REACT_APP_API_PORT || 3001;
@@ -85,5 +86,6 @@ export const SuperTokensConfig: TypeInput = {
         }),
         Session.init(),
         Dashboard.init(),
+        UserRoles.init(),
     ],
 };
