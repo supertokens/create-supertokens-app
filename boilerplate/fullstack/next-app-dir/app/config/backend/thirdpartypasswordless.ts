@@ -1,6 +1,7 @@
 import ThirdPartyPasswordlessNode from "supertokens-node/recipe/thirdpartypasswordless";
 import SessionNode from "supertokens-node/recipe/session";
 import Dashboard from "supertokens-node/recipe/dashboard";
+import UserRoles from "supertokens-node/recipe/userroles";
 import { appInfo } from "./appInfo";
 import { TypeInput } from "supertokens-node/types";
 import SuperTokens from "supertokens-node";
@@ -75,6 +76,7 @@ export let backendConfig = (): TypeInput => {
             }),
             SessionNode.init(),
             Dashboard.init(),
+            UserRoles.init(),
         ],
         isInServerlessEnv: true,
         framework: "custom",
