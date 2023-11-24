@@ -1,6 +1,7 @@
 import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpassword';
 import Session from 'supertokens-node/recipe/session';
 import Dashboard from 'supertokens-node/recipe/dashboard';
+import UserRoles from 'supertokens-node/recipe/userroles';
 
 export const appInfo = {
   // Learn more about this on https://supertokens.com/docs/thirdpartypasswordless/appInfo
@@ -73,4 +74,5 @@ export const recipeList = [
   }),
   Session.init(),
   Dashboard.init(),
+  UserRoles.init(),
 ];
