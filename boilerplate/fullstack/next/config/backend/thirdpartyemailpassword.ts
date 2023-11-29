@@ -1,6 +1,7 @@
 import ThirdPartyEmailPasswordNode from "supertokens-node/recipe/thirdpartyemailpassword";
 import SessionNode from "supertokens-node/recipe/session";
 import Dashboard from "supertokens-node/recipe/dashboard";
+import UserRoles from "supertokens-node/recipe/userroles";
 import { appInfo } from "./appInfo";
 import { AuthConfig } from "../interfaces";
 
@@ -73,6 +74,7 @@ export let backendConfig = (): AuthConfig => {
             }),
             SessionNode.init(),
             Dashboard.init(),
+            UserRoles.init(),
         ],
         isInServerlessEnv: true,
     };
