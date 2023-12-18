@@ -43,7 +43,7 @@ export let frontendConfig = () => {
 };
 
 export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/thirdpartyemailpassword/introduction",
+    docsLink: "https://supertokens.com/docs/multifactorauth/introduction",
 };
 
 export const PreBuiltUIList = [ThirdPartyEmailPasswordPreBuiltUI, MultiFactorAuthPreBuiltUI, TOTPPreBuiltUI];
