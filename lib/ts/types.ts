@@ -4,7 +4,8 @@ export type Recipe =
     | "passwordless"
     | "thirdpartypasswordless"
     | "thirdparty"
-    | "multitenancy";
+    | "multitenancy"
+    | "multifactorauth";
 
 export const allRecipes: Recipe[] = [
     "emailpassword",
@@ -13,6 +14,7 @@ export const allRecipes: Recipe[] = [
     "thirdpartypasswordless",
     "thirdparty",
     "multitenancy",
+    "multifactorauth",
 ];
 
 export function isValidRecipeName(recipe: string): recipe is Recipe {
