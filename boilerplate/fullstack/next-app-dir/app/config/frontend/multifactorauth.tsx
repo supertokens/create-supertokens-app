@@ -1,11 +1,11 @@
-import ThirdPartyPasswordlessReact from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import MultiFactorAuthReact from "supertokens-auth-react/recipe/multifactorauth";
 import TOTPReact from "supertokens-auth-react/recipe/totp";
 import Session from "supertokens-auth-react/recipe/session";
 import { appInfo } from "./appInfo";
 import { useRouter } from "next/navigation";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
-import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
+import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";
 import { MultiFactorAuthPreBuiltUI } from "supertokens-auth-react/recipe/multifactorauth/prebuiltui";
 import { TOTPPreBuiltUI } from "supertokens-auth-react/recipe/totp/prebuiltui";
 
@@ -20,15 +20,14 @@ export const frontendConfig = (): SuperTokensConfig => {
     return {
         appInfo,
         recipeList: [
-            ThirdPartyPasswordlessReact.init({
-                signInUpFeature: {
+            ThirdPartyEmailPasswordReact.init({
+                signInAndUpFeature: {
                     providers: [
-                        ThirdPartyPasswordlessReact.Github.init(),
-                        ThirdPartyPasswordlessReact.Google.init(),
-                        ThirdPartyPasswordlessReact.Apple.init(),
+                        ThirdPartyEmailPasswordReact.Google.init(),
+                        ThirdPartyEmailPasswordReact.Github.init(),
+                        ThirdPartyEmailPasswordReact.Apple.init(),
                     ],
                 },
-                contactMethod: "EMAIL_OR_PHONE",
             }),
             MultiFactorAuthReact.init(),
             TOTPReact.init(),
@@ -52,4 +51,4 @@ export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
 };
 
-export const PreBuiltUIList = [ThirdPartyPasswordlessPreBuiltUI, MultiFactorAuthPreBuiltUI, TOTPPreBuiltUI];
+export const PreBuiltUIList = [ThirdPartyEmailPasswordPreBuiltUI, MultiFactorAuthPreBuiltUI, TOTPPreBuiltUI];
