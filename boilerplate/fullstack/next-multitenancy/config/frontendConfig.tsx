@@ -1,6 +1,7 @@
+import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { appInfo } from "./appInfo";
 
-export let frontendConfig = () => {
+export let frontendConfig = (): SuperTokensConfig => {
     return {
         appInfo,
         // recipeList contains all the modules that you want to
