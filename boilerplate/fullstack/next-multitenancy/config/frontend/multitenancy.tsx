@@ -4,6 +4,7 @@ import Multitenancy from "supertokens-auth-react/recipe/multitenancy";
 import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";
 import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
 import SessionReact from "supertokens-auth-react/recipe/session";
+import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
 
@@ -13,7 +14,7 @@ export const styleOverride = `
 }
 `;
 
-export let frontendConfig = () => {
+export let frontendConfig = (): SuperTokensConfig => {
     return {
         appInfo,
         usesDynamicLoginMethods: true,

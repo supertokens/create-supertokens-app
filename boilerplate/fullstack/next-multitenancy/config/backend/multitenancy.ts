@@ -3,10 +3,10 @@ import ThirdPartyPasswordlessNode from "supertokens-node/recipe/thirdpartypasswo
 import SessionNode from "supertokens-node/recipe/session";
 import Dashboard from "supertokens-node/recipe/dashboard";
 import UserRoles from "supertokens-node/recipe/userroles";
+import { TypeInput } from "supertokens-node/types";
 import { appInfo } from "./appInfo";
-import { AuthConfig } from "../interfaces";
 
-export let backendConfig = (): AuthConfig => {
+export let backendConfig = (): TypeInput => {
     return {
         framework: "express",
         supertokens: {
