@@ -1,10 +1,11 @@
 import EmailPasswordReact from "supertokens-auth-react/recipe/emailpassword";
 import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
 import SessionReact from "supertokens-auth-react/recipe/session";
+import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { appInfo } from "./appInfo";
 import Router from "next/router";
 
-export let frontendConfig = () => {
+export let frontendConfig = (): SuperTokensConfig => {
     return {
         appInfo,
         // recipeList contains all the modules that you want to
