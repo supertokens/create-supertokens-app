@@ -1,7 +1,7 @@
+import { TypeInput } from "supertokens-node/types";
 import { appInfo } from "./appInfo";
-import { AuthConfig } from "../interfaces";
 
-export let backendConfig = (): AuthConfig => {
+export let backendConfig = (): TypeInput => {
     return {
         framework: "express",
         supertokens: {
