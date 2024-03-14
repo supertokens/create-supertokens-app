@@ -1,8 +1,11 @@
 import ThirdPartyEmailPasswordNode from "supertokens-node/recipe/thirdpartyemailpassword";
+import Passwordless from "supertokens-node/recipe/passwordless";
 import SessionNode from "supertokens-node/recipe/session";
 import Dashboard from "supertokens-node/recipe/dashboard";
 import UserRoles from "supertokens-node/recipe/userroles";
 import MultiFactorAuth from "supertokens-node/recipe/multifactorauth";
+import AccountLinking from "supertokens-node/recipe/accountlinking";
+import EmailVerification from "supertokens-node/recipe/emailverification";
 import TOTP from "supertokens-node/recipe/totp";
 import { appInfo } from "./appInfo";
 import { AuthConfig } from "../interfaces";
@@ -74,12 +77,33 @@ export let backendConfig = (): AuthConfig => {
                     },
                 ],
             }),
+            Passwordless.init({
+                contactMethod: "EMAIL_OR_PHONE",
+                flowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
+            }),
+            EmailVerification.init({
+                mode: "REQUIRED",
+            }),
+            AccountLinking.init({
+                shouldDoAutomaticAccountLinking: async () => ({
+                    shouldAutomaticallyLink: true,
+                    shouldRequireVerification: true,
+                }),
+            }),
             MultiFactorAuth.init({
                 firstFactors: ["thirdparty", "emailpassword"],
                 override: {
                     functions: (oI) => ({
                         ...oI,
-                        getMFARequirementsForAuth: () => ["totp"],
+                        getMFARequirementsForAuth: () => [
+                            {
+                                oneOf: [
+                                    MultiFactorAuth.FactorIds.TOTP,
+                                    MultiFactorAuth.FactorIds.OTP_EMAIL,
+                                    MultiFactorAuth.FactorIds.OTP_PHONE,
+                                ],
+                            },
+                        ],
                     }),
                 },
             }),

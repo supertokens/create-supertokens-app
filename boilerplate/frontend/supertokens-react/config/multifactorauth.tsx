@@ -5,8 +5,12 @@ import ThirdPartyEmailPassword, {
     Twitter,
 } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";
+import Passwordless from "supertokens-auth-react/recipe/passwordless";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import MultiFactorAuth from "supertokens-auth-react/recipe/multifactorauth";
 import { MultiFactorAuthPreBuiltUI } from "supertokens-auth-react/recipe/multifactorauth/prebuiltui";
+import EmailVerification from "supertokens-auth-react/recipe/emailverification";
+import { EmailVerificationPreBuiltUI } from "supertokens-auth-react/recipe/emailverification/prebuiltui";
 import TOTP from "supertokens-auth-react/recipe/totp";
 import { TOTPPreBuiltUI } from "supertokens-auth-react/recipe/totp/prebuiltui";
 import Session from "supertokens-auth-react/recipe/session";
@@ -37,7 +41,13 @@ export const SuperTokensConfig = {
                 providers: [Github.init(), Google.init(), Apple.init(), Twitter.init()],
             },
         }),
+        Passwordless.init({
+            contactMethod: "EMAIL_OR_PHONE",
+        }),
         MultiFactorAuth.init(),
+        EmailVerification.init({
+            mode: "REQUIRED",
+        }),
         TOTP.init(),
         Session.init(),
     ],
@@ -47,7 +57,13 @@ export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/multifactorauth/introduction",
 };
 
-export const PreBuiltUIList = [ThirdPartyEmailPasswordPreBuiltUI, MultiFactorAuthPreBuiltUI, TOTPPreBuiltUI];
+export const PreBuiltUIList = [
+    ThirdPartyEmailPasswordPreBuiltUI,
+    PasswordlessPreBuiltUI,
+    MultiFactorAuthPreBuiltUI,
+    EmailVerificationPreBuiltUI,
+    TOTPPreBuiltUI,
+];
 
 export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
     return props.children;
