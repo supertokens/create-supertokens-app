@@ -15,7 +15,8 @@
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.2.1",
         "react-scripts": "5.0.1",
-        "supertokens-auth-react": "latest",
+        "supertokens-auth-react": "github:supertokens/supertokens-auth-react#0.39",
+        "supertokens-web-js": "github:supertokens/supertokens-web-js#0.10",
         "typescript": "^4.8.2",
         "web-vitals": "^2.1.4"
     },

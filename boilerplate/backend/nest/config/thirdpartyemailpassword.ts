@@ -12,7 +12,7 @@ export const appInfo = {
   websiteBasePath: '/auth',
 };
 
-export const connectionUri = 'https://try.supertokens.com';
+export const connectionUri = 'http://localhost:3567';
 
 export const recipeList = [
   ThirdPartyEmailPassword.init({

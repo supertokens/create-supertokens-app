@@ -10,7 +10,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "supertokens-auth-react": "latest",
+    "supertokens-auth-react": "github:supertokens/supertokens-auth-react#0.39",
+    "supertokens-web-js": "github:supertokens/supertokens-web-js#0.10",
     "vue": "^3.2.38",
     "vue-router": "^4.1.5"
   },

@@ -12,8 +12,9 @@
         "next": "latest",
         "react": "^18",
         "react-dom": "^18",
-        "supertokens-auth-react": "^0.35.5",
-        "supertokens-node": "^16.3.0"
+        "supertokens-auth-react": "github:supertokens/supertokens-auth-react#0.39",
+        "supertokens-web-js": "github:supertokens/supertokens-web-js#0.10",
+        "supertokens-node": "github:supertokens/supertokens-node#17.0"
     },
     "devDependencies": {
         "@types/cookie": "^0.5.2",
