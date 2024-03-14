@@ -12,7 +12,7 @@ export let backendConfig = (): TypeInput => {
     return {
         supertokens: {
             // this is the location of the SuperTokens core.
-            connectionURI: "https://try.supertokens.com",
+            connectionURI: "http://localhost:3567",
         },
         appInfo,
         // recipeList contains all the modules that you want to
