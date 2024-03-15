@@ -56,7 +56,7 @@ export const frontendConfig = (): SuperTokensConfig => {
 };
 
 export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/multifactorauth/introduction",
+    docsLink: "https://supertokens.com/docs/mfa/introduction",
 };
 
 export const PreBuiltUIList = [
