@@ -139,7 +139,7 @@ async function run() {
                 const errorMessage = `create-supertokens-app does not support ${recipePlaceholder} for ${errorPlaceholder} yet. ${
                     answers.recipe === "multitenancy"
                         ? "You can refer to our docs to set it up manually: https://supertokens.com/docs/multitenancy/introduction"
-                        : ""
+                        : `You can use our Node SDK instead as a separate Node auth server to your ${errorPlaceholder} backend.`
                 }`;
                 const error = new Error(errorMessage);
                 (error as any).skipGithubLink = true;
