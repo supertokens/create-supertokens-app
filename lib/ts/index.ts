@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import inquirer from "inquirer";
 import { getQuestions } from "./config.js";
-import { Answers, DownloadLocations, UserFlags } from "./types.js";
+import { Answers, DownloadLocations, UserFlags, UserFlagsRaw } from "./types.js";
 import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOrPrintStartCommand } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -19,6 +19,7 @@ import AnalyticsManager from "./analytics.js";
 import figlet from "figlet";
 import { package_version } from "./version.js";
 import { modifyAnswersBasedOnNextJsFramework, modifyAnswersForPythonFrameworks } from "./questionUtils.js";
+import { inferredPackageManager } from "./packageManager.js";
 
 async function printInformation(): Promise<void> {
     const font: figlet.Fonts = "Doom";
@@ -86,7 +87,7 @@ async function run() {
             For example: `npx create-supertokens-app --recipe=emailpassword` will result
             in userArguments.recipe === "emailpassword"
 
-            Avalaible flags:
+            Available flags:
             --appname: App name
             --recipe: Auth mechanism
             --branch: Which branch to use when downloading from github (defaults to master)
@@ -96,9 +97,12 @@ async function run() {
             --manager: Which package manager to use
             --autostart: Whether the CLI should start the project after setting up
         */
-        const userArguments: UserFlags = (await yargs(hideBin(process.argv)).argv) as UserFlags;
-
-        validateUserArguments(userArguments);
+        const userArgumentsRaw = (await yargs(hideBin(process.argv)).argv) as UserFlagsRaw;
+        validateUserArguments(userArgumentsRaw);
+        const userArguments: UserFlags = {
+            ...userArgumentsRaw,
+            manager: userArgumentsRaw.manager ?? inferredPackageManager() ?? "npm",
+        };
 
         AnalyticsManager.sendAnalyticsEvent({
             eventName: "cli_started",
@@ -191,9 +195,9 @@ async function run() {
              * otherwise the user would have to manually delete the folder before
              * running the CLI again
              *
-             * NOTE: We dont do this for runProject because if running fails, the user
+             * NOTE: We don't do this for runProject because if running fails, the user
              * can fix the error (install missing library for example) and then run the
-             * app again themseves without having to run and wait for the CLI to finish
+             * app again themselves without having to run and wait for the CLI to finish
              */
             fs.rmSync(`${answers.appname}/`, {
                 recursive: true,

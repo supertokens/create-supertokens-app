@@ -30,12 +30,14 @@ The tool creates a folder for the created application. You can follow the instru
 
 When running the tool you can provide additional arguments.
 
-| Option     | About                                                    |          Usage           |
-| ---------- | -------------------------------------------------------- | :----------------------: |
-| `appname`  | The folder name to be used when creating the application |    `--appname=my-app`    |
-| `recipe`   | The type of authentication you want to use               | `--recipe=emailpassword` |
-| `frontend` | The frontend stack to use for the application            |    `--frontend=react`    |
-| `backend`  | The backend stack to use for the application             |     `--backend=node`     |
+| Option      | About                                                     |          Usage           |
+| ----------- | --------------------------------------------------------- | :----------------------: |
+| `appname`   | The folder name to be used when creating the application  |    `--appname=my-app`    |
+| `recipe`    | The type of authentication you want to use                | `--recipe=emailpassword` |
+| `frontend`  | The frontend stack to use for the application             |    `--frontend=react`    |
+| `backend`   | The backend stack to use for the application              |     `--backend=node`     |
+| `manager`   | Which package manager to use (npm, yarn, pnpm, bun)       |     `--manager=pnpm`     |
+| `autostart` | Whether the CLI should start the project after setting up |    `--autostart=true`    |
 
 ## Contributing
 
