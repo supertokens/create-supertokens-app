@@ -118,16 +118,29 @@ async function run() {
             backend: answers.backend,
         });
 
-        if (answers.recipe === "multitenancy") {
+        if (answers.recipe === "multitenancy" || answers.recipe === "multifactorauth") {
+            let recipePlaceholder = answers.recipe === "multitenancy" ? "Multitenancy" : "Multi-factor Auth";
             let errorPlaceholder = "";
-            if (answers.frontend === "angular-prebuilt") {
-                errorPlaceholder = "Angular";
-            } else if (answers.frontend === "vue-prebuilt") {
-                errorPlaceholder = "Vue";
+            if (answers.recipe === "multitenancy") {
+                if (answers.frontend === "angular-prebuilt") {
+                    errorPlaceholder = "Angular";
+                } else if (answers.frontend === "vue-prebuilt") {
+                    errorPlaceholder = "Vue";
+                }
+            } else if (answers.recipe === "multifactorauth") {
+                if (answers.backend === "go-http") {
+                    errorPlaceholder = "Go";
+                } else if (answers.backend && answers.backend.startsWith("python")) {
+                    errorPlaceholder = "Python";
+                }
             }
 
             if (errorPlaceholder !== "") {
-                const errorMessage = `create-supertokens-app does not support Multitenancy for ${errorPlaceholder} yet. You can refer to our docs to set it up manually: https://supertokens.com/docs/multitenancy/introduction`;
+                const errorMessage = `create-supertokens-app does not support ${recipePlaceholder} for ${errorPlaceholder} yet. ${
+                    answers.recipe === "multitenancy"
+                        ? "You can refer to our docs to set it up manually: https://supertokens.com/docs/multitenancy/introduction"
+                        : `You can use our Node SDK instead as a separate Node auth server to your ${errorPlaceholder} backend.`
+                }`;
                 const error = new Error(errorMessage);
                 (error as any).skipGithubLink = true;
                 throw error;

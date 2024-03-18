@@ -378,6 +378,10 @@ export const recipeOptions: RecipeQuestionOption[] = [
         value: "multitenancy",
         displayName: "Multi-tenant Authentication",
     },
+    {
+        value: "multifactorauth",
+        displayName: "Multi-factor Authentication",
+    },
 ];
 
 /**
