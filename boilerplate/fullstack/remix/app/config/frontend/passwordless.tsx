@@ -1,8 +1,8 @@
-import PasswordlessReact from "supertokens-auth-react/recipe/passwordless";
-import Session from "supertokens-auth-react/recipe/session";
+import PasswordlessReact from "supertokens-auth-react/recipe/passwordless/index.js";
+import Session from "supertokens-auth-react/recipe/session/index.js";
 import { appInfo } from "./appInfo";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
-import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui.js";
 
 export const frontendConfig = (): SuperTokensConfig => {
     return {

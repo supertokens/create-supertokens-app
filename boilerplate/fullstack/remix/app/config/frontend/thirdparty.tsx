@@ -1,8 +1,8 @@
-import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty";
-import Session from "supertokens-auth-react/recipe/session";
+import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty/index.js";
+import Session from "supertokens-auth-react/recipe/session/index.js";
 import { appInfo } from "./appInfo";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
-import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui.js";
 
 export const frontendConfig = (): SuperTokensConfig => {
     return {

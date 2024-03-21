@@ -1,16 +1,16 @@
-import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import MultiFactorAuthReact from "supertokens-auth-react/recipe/multifactorauth";
-import EmailVerification from "supertokens-auth-react/recipe/emailverification";
-import PasswordlessReact from "supertokens-auth-react/recipe/passwordless";
-import TOTPReact from "supertokens-auth-react/recipe/totp";
-import Session from "supertokens-auth-react/recipe/session";
+import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword/index.js";
+import MultiFactorAuthReact from "supertokens-auth-react/recipe/multifactorauth/index.js";
+import EmailVerification from "supertokens-auth-react/recipe/emailverification/index.js";
+import PasswordlessReact from "supertokens-auth-react/recipe/passwordless/index.js";
+import TOTPReact from "supertokens-auth-react/recipe/totp/index.js";
+import Session from "supertokens-auth-react/recipe/session/index.js";
 import { appInfo } from "./appInfo";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
-import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";
-import { MultiFactorAuthPreBuiltUI } from "supertokens-auth-react/recipe/multifactorauth/prebuiltui";
-import { EmailVerificationPreBuiltUI } from "supertokens-auth-react/recipe/emailverification/prebuiltui";
-import { TOTPPreBuiltUI } from "supertokens-auth-react/recipe/totp/prebuiltui";
-import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
+import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui.js";
+import { MultiFactorAuthPreBuiltUI } from "supertokens-auth-react/recipe/multifactorauth/prebuiltui.js";
+import { EmailVerificationPreBuiltUI } from "supertokens-auth-react/recipe/emailverification/prebuiltui.js";
+import { TOTPPreBuiltUI } from "supertokens-auth-react/recipe/totp/prebuiltui.js";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui.js";
 
 export const frontendConfig = (): SuperTokensConfig => {
     return {

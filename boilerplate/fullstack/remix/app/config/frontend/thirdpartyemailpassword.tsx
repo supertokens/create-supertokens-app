@@ -1,8 +1,8 @@
-import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import Session from "supertokens-auth-react/recipe/session";
+import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword/index.js";
+import Session from "supertokens-auth-react/recipe/session/index.js";
 import { appInfo } from "./appInfo";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
-import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";
+import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui.js";
 
 export const frontendConfig = (): SuperTokensConfig => {
     return {

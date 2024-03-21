@@ -3,6 +3,7 @@ import { recipeDetails } from "../config/frontend";
 import SuperTokens from "supertokens-auth-react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import SessionReact from "supertokens-auth-react/recipe/session/index.js";
 import { SessionDataForUI } from "../lib/superTokensTypes";
 import { getSessionDetails } from "../lib/superTokensHelpers";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
@@ -79,7 +80,10 @@ export default function Home() {
         nextResponse: Response | null;
     }>();
 
-    console.log(loaderData);
+    async function logoutClicked() {
+        await SessionReact.signOut();
+        SuperTokens.redirectToAuth();
+    }
 
     if (loaderData.nextResponse) {
         return (
@@ -166,10 +170,7 @@ export default function Home() {
                                     <button
                                         key={link.name}
                                         className="linksContainerLink signOutLink"
-                                        onClick={async () => {
-                                            await SessionReact.signOut();
-                                            SuperTokens.redirectToAuth();
-                                        }}
+                                        onClick={logoutClicked}
                                     >
                                         <img src={link.icon} alt={link.name} className="linkIcon" />
                                         <div role="button">{link.name}</div>
