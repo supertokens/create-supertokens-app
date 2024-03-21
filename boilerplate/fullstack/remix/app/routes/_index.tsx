@@ -27,14 +27,6 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
 }> {
     try {
         const { session, hasInvalidClaims, hasToken, RemixResponse } = await getSessionDetails(request);
-        console.log("does the user have invalid claims?", hasInvalidClaims);
-        console.log("does the user have an access token??", hasToken);
-        if (session) {
-            console.log("there is an active session");
-        }
-        if (!session) {
-            console.log("session does not exist or has expired");
-        }
 
         const res: SessionForRemixProps = {
             session: {
@@ -46,19 +38,14 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
             hasToken,
         };
 
-        console.log("\n\n", res, "\n\n");
-
         if (RemixResponse) {
-            console.log("RemixResponse is:", RemixResponse);
             return {
-                // session,
                 session: res,
                 hasInvalidClaims,
                 hasToken,
                 RemixResponse,
             };
         } else {
-            console.log("RemixResponse is null");
             return {
                 session: res,
                 hasInvalidClaims,
@@ -67,7 +54,6 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
             };
         }
     } catch (error) {
-        console.error("Error retrieving session:", error);
         throw error;
     }
 }
@@ -96,14 +82,11 @@ export default function Home() {
 
     if (!loaderData.session) {
         if (!loaderData.hasToken) {
-            console.log("Redirecting to /auth");
             return redirect("/auth");
         }
         if (loaderData.hasInvalidClaims) {
-            console.log("Session has invalid claims");
             return <SessionAuthForRemix />;
         } else {
-            console.log("Trying to refresh session");
             return <TryRefreshComponent />;
         }
     }

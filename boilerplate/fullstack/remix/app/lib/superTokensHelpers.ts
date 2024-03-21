@@ -7,6 +7,44 @@ import { getToken } from "supertokens-node/lib/build/recipe/session/cookieAndHea
 import { parseJWTWithoutSignatureVerification } from "supertokens-node/lib/build/recipe/session/jwt.js";
 import { serialize } from "cookie";
 
+export function handleAuthAPIRequest<PreParsedRequest>(RemixResponse: typeof Response) {
+    const stMiddleware = middleware<PreParsedRequest>((req) => {
+        return req;
+    });
+
+    return async function handleCall(req: PreParsedRequest) {
+        const baseResponse = new CollectingResponse();
+
+        const { handled, error } = await stMiddleware(req, baseResponse);
+
+        if (error) {
+            throw error;
+        }
+        if (!handled) {
+            return new RemixResponse("Not found", { status: 404 });
+        }
+
+        for (const respCookie of baseResponse.cookies) {
+            baseResponse.headers.append(
+                "Set-Cookie",
+                serialize(respCookie.key, respCookie.value, {
+                    domain: respCookie.domain,
+                    expires: new Date(respCookie.expires),
+                    httpOnly: respCookie.httpOnly,
+                    path: respCookie.path,
+                    sameSite: respCookie.sameSite,
+                    secure: respCookie.secure,
+                })
+            );
+        }
+
+        return new RemixResponse(baseResponse.body, {
+            headers: baseResponse.headers,
+            status: baseResponse.statusCode,
+        });
+    };
+}
+
 export function getCookieFromRequest(request: Request) {
     const cookies: Record<string, string> = {};
     const cookieHeader = request.headers.get("Cookie");
@@ -55,57 +93,38 @@ export async function getSessionDetails(
     hasInvalidClaims: boolean;
     RemixResponse?: Response;
 }> {
-    console.log("Getting session details...");
-
     const baseRequest = createPreParsedRequest(request);
-    console.log("Pre-parsed request created.");
-
     const baseResponse = new CollectingResponse();
-    console.log("Collecting response object created.");
-
     // Possible introp issue.
     const recipe = (SessionRecipe as any).default.instance;
-    console.log("Session recipe instance obtained.");
-
     const tokenTransferMethod = recipe.config.getTokenTransferMethod({
         req: baseRequest,
         forCreateNewSession: false,
         userContext,
     });
-    console.log("Token transfer method determined:", tokenTransferMethod);
-
     const transferMethods = tokenTransferMethod === "any" ? availableTokenTransferMethods : [tokenTransferMethod];
-    console.log("Available token transfer methods:", transferMethods);
-
     const hasToken = transferMethods.some((transferMethod) => {
         const token = getToken(baseRequest, "access", transferMethod);
         if (!token) {
-            console.log("Token not found for transfer method:", transferMethod);
             return false;
         }
         try {
             parseJWTWithoutSignatureVerification(token);
-            console.log("Token parsed successfully.");
             return true;
         } catch {
-            console.log("Failed to parse token:", token);
             return false;
         }
     });
-    console.log("Does the user have a token?", hasToken);
 
     try {
         const session = await Session.getSession(baseRequest, baseResponse, options, userContext);
-        console.log("Session obtained:", session);
         return {
             session,
             hasInvalidClaims: false,
             hasToken,
         };
     } catch (err) {
-        console.error("Error while getting session:", err);
         if (Session.Error.isErrorFromSuperTokens(err)) {
-            console.log("SuperTokens error detected.");
             return {
                 hasToken,
                 hasInvalidClaims: err.type === Session.Error.INVALID_CLAIMS,
@@ -115,46 +134,7 @@ export async function getSessionDetails(
                 }),
             };
         } else {
-            console.error("Unknown error occurred:", err);
             throw err;
         }
     }
-}
-
-export async function handleAuthAPIRequest<PreParsedRequest>(RemixResponse: typeof Response) {
-    const stMiddleware = middleware<PreParsedRequest>((req) => {
-        return req;
-    });
-
-    return async function handleCall(req: PreParsedRequest) {
-        const baseResponse = new CollectingResponse();
-
-        const { handled, error } = await stMiddleware(req, baseResponse);
-
-        if (error) {
-            throw error;
-        }
-        if (!handled) {
-            return new RemixResponse("Not found", { status: 404 });
-        }
-
-        for (const respCookie of baseResponse.cookies) {
-            baseResponse.headers.append(
-                "Set-Cookie",
-                serialize(respCookie.key, respCookie.value, {
-                    domain: respCookie.domain,
-                    expires: new Date(respCookie.expires),
-                    httpOnly: respCookie.httpOnly,
-                    path: respCookie.path,
-                    sameSite: respCookie.sameSite,
-                    secure: respCookie.secure,
-                })
-            );
-        }
-
-        return new RemixResponse(baseResponse.body, {
-            headers: baseResponse.headers,
-            status: baseResponse.statusCode,
-        });
-    };
 }
