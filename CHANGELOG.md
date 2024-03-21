@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.42] - 2024-03-21
+
+-   Adds Remix to the list of frameworks (as full-stack)
+
 ## [0.0.41] - 2023-12-19
 
 -   Adds multifactorauth recipe
