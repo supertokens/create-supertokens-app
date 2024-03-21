@@ -1,21 +1,21 @@
 ![SuperTokens banner](https://raw.githubusercontent.com/supertokens/supertokens-logo/master/images/Artboard%20%E2%80%93%2027%402x.png)
 
-# SuperTokens ThirdPartyEmailPassword Remix Demo App
+# SuperTokens with Remix
 
 This demo app demonstrates how to integrate SuperTokens into a Remix application.
 
-This SuperTokens/Remix integration achieves the following:
+Feautures:
 
 -   Initializes SuperTokens with frontend and backend configurations
 -   Creates a frontend route to handle authentication-related tasks
 -   Integrates the SuperTokens' pre-built login UI for secure user authentication
--   Protects frontend routes to ensure only authenticated users can access certain areas of the application
+-   Protects frontend routes to ensure only authenticated users can access the dashboard
 -   Exposes the SuperTokens authentication APIs used by frontend widgets
 
 ## Project structure & Parameters
 
 ```txt
-📦with-remix-thirdpartyemailpassword
+📦[your-app-name]
 ┣ 📂app
 ┃ ┣ 📂config
 ┃ ┃ ┣ 📜appInfo.tsx
@@ -64,23 +64,29 @@ Let's explore the important files:
 
 Follow the steps outlined below to run the application locally:
 
-1. Change directory to the **with-remix-thirdpartyemailpassword** folder.
+1. Change directory to the **[your-app-name]** folder.
 
     ```shell
-    cd supertokens-auth-react/examples/with-remix-thirdpartyemailpassword
+    cd your-app-name
     ```
 
-2. Run the command below to install the project dependencies:
-
-    ```shell
-    npm install
-    ```
-
-3. Run the application with the command below:
+2. Run the application with the command below:
 
     ```shell
     npm run dev
     ```
+
+## How to use
+
+### Using `create-supertokens-app`
+
+-   Run the following command
+
+```bash
+npx create-supertokens-app@latest --frontend=remix
+```
+
+-   Follow the instructions on screen
 
 ## Author
 
@@ -89,3 +95,8 @@ Created with :heart: by the folks at supertokens.com.
 ## License
 
 This project is licensed under the Apache 2.0 license.
+
+## Notes
+
+-   To know more about how this app works and to learn how to customise it based on your use cases refer to the [SuperTokens Documentation](https://supertokens.com/docs/guides)
+-   We have provided development OAuth keys for the various built-in third party providers in the `/app/config/backend.ts` file. Feel free to use them for development purposes, but **please create your own keys for production use**.
