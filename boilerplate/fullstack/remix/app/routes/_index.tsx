@@ -1,5 +1,4 @@
 import { CelebrateIcon, SeparatorLine, BlogsIcon, GuideIcon, SignOutIcon } from "../../assets/images";
-import { signOut } from "supertokens-auth-react/recipe/thirdpartyemailpassword/index.js";
 import { recipeDetails } from "../config/frontend";
 import SuperTokens from "supertokens-auth-react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
@@ -168,7 +167,7 @@ export default function Home() {
                                         key={link.name}
                                         className="linksContainerLink signOutLink"
                                         onClick={async () => {
-                                            await signOut();
+                                            await SessionReact.signOut();
                                             SuperTokens.redirectToAuth();
                                         }}
                                     >

@@ -79,6 +79,8 @@ After building your code you can use `npx .` to run the tool locally, make sure 
 
 If you are testing an example app you have created on your own branch, you can pass an additional flag to have the tool use your branch instead of master
 
+**Note:** The branch has to actually get on GitHub first before it can be tested.
+
 ```
 npx . --branch=your_branch
 ```
