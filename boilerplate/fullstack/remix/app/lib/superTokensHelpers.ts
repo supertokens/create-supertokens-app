@@ -1,6 +1,6 @@
 import { PreParsedRequest, CollectingResponse } from "supertokens-node/framework/custom/index.js";
 import { HTTPMethod } from "supertokens-node/types";
-import Session, { SessionContainer, VerifySessionOptions } from "supertokens-node/lib/build/recipe/session/index.js";
+import Session, { SessionContainer, VerifySessionOptions } from "supertokens-node/recipe/session/index.js";
 import SessionRecipe from "supertokens-node/lib/build/recipe/session/recipe.js";
 import { availableTokenTransferMethods } from "supertokens-node/lib/build/recipe/session/constants.js";
 import { getToken } from "supertokens-node/lib/build/recipe/session/cookieAndHeaders.js";
@@ -52,7 +52,7 @@ export async function getSessionDetails(
     session: SessionContainer | undefined;
     hasToken: boolean;
     hasInvalidClaims: boolean;
-    nextResponse?: Response;
+    RemixResponse?: Response;
 }> {
     console.log("Getting session details...");
 
@@ -109,7 +109,7 @@ export async function getSessionDetails(
                 hasToken,
                 hasInvalidClaims: err.type === Session.Error.INVALID_CLAIMS,
                 session: undefined,
-                nextResponse: new Response("Authentication required", {
+                RemixResponse: new Response("Authentication required", {
                     status: err.type === Session.Error.INVALID_CLAIMS ? 403 : 401,
                 }),
             };

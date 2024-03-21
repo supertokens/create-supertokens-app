@@ -1,12 +1,12 @@
-import { middleware, PreParsedRequest, CollectingResponse } from "supertokens-node/lib/build/framework/custom/index.js";
+import { middleware, PreParsedRequest, CollectingResponse } from "supertokens-node/framework/custom/index.js";
 import { serialize } from "cookie";
 
-export default function handleAuthAPIRequest<T extends PreParsedRequest>(NextResponse: typeof Response) {
-    const stMiddleware = middleware<T>((req) => {
+export default function handleAuthAPIRequest<PreParsedRequest>(RemixResponse: typeof Response) {
+    const stMiddleware = middleware<PreParsedRequest>((req) => {
         return req;
     });
 
-    return async function handleCall(req: T) {
+    return async function handleCall(req: PreParsedRequest) {
         const baseResponse = new CollectingResponse();
 
         const { handled, error } = await stMiddleware(req, baseResponse);
@@ -15,7 +15,7 @@ export default function handleAuthAPIRequest<T extends PreParsedRequest>(NextRes
             throw error;
         }
         if (!handled) {
-            return new NextResponse("Not found", { status: 404 });
+            return new RemixResponse("Not found", { status: 404 });
         }
 
         for (const respCookie of baseResponse.cookies) {
@@ -32,7 +32,7 @@ export default function handleAuthAPIRequest<T extends PreParsedRequest>(NextRes
             );
         }
 
-        return new NextResponse(baseResponse.body, {
+        return new RemixResponse(baseResponse.body, {
             headers: baseResponse.headers,
             status: baseResponse.statusCode,
         });

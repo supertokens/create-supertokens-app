@@ -23,10 +23,10 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
     session: SessionForRemixProps | undefined;
     hasInvalidClaims: boolean;
     hasToken: boolean;
-    nextResponse: Response | null;
+    RemixResponse: Response | null;
 }> {
     try {
-        const { session, hasInvalidClaims, hasToken, nextResponse } = await getSessionDetails(request);
+        const { session, hasInvalidClaims, hasToken, RemixResponse } = await getSessionDetails(request);
         console.log("does the user have invalid claims?", hasInvalidClaims);
         console.log("does the user have an access token??", hasToken);
         if (session) {
@@ -48,22 +48,22 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
 
         console.log("\n\n", res, "\n\n");
 
-        if (nextResponse) {
-            console.log("nextResponse is:", nextResponse);
+        if (RemixResponse) {
+            console.log("RemixResponse is:", RemixResponse);
             return {
                 // session,
                 session: res,
                 hasInvalidClaims,
                 hasToken,
-                nextResponse,
+                RemixResponse,
             };
         } else {
-            console.log("nextResponse is null");
+            console.log("RemixResponse is null");
             return {
                 session: res,
                 hasInvalidClaims,
                 hasToken,
-                nextResponse: null,
+                RemixResponse: null,
             };
         }
     } catch (error) {
@@ -77,7 +77,7 @@ export default function Home() {
         session: SessionForRemixProps | undefined;
         hasInvalidClaims: boolean;
         hasToken: boolean;
-        nextResponse: Response | null;
+        RemixResponse: Response | null;
     }>();
 
     async function logoutClicked() {
@@ -85,11 +85,11 @@ export default function Home() {
         SuperTokens.redirectToAuth();
     }
 
-    if (loaderData.nextResponse) {
+    if (loaderData.RemixResponse) {
         return (
             <div>
-                Something went wrong while trying to get the session. Error -{loaderData.nextResponse.status}{" "}
-                {loaderData.nextResponse.statusText}
+                Something went wrong while trying to get the session. Error -{loaderData.RemixResponse.status}{" "}
+                {loaderData.RemixResponse.statusText}
             </div>
         );
     }

@@ -3,6 +3,6 @@ export const appInfo = {
     appName: "SuperTokens Remix demo app",
     apiDomain: "http://localhost:3000",
     websiteDomain: "http://localhost:3000",
-    apiBasePath: "/api/auth",
+    apiBasePath: "/supertokens/auth",
     websiteBasePath: "/auth",
 };
