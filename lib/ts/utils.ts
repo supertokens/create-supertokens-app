@@ -169,7 +169,7 @@ function getPackageJsonString(input: {
             "start:backend": "cd backend && ${backendStartScript}",
             "start:backend-live-demo-app": "cd backend && ./startLiveDemoApp.sh",
             "start": "npm-run-all --parallel start:frontend start:backend",
-            "start-live-demo-app": "npm-run-all --parallel start:frontend-live-demo-app start:backend-live-demo-app"
+            "start-live-demo-app": "npx npm-run-all --parallel start:frontend-live-demo-app start:backend-live-demo-app"
         },
         "keywords": [],
         "author": "",
