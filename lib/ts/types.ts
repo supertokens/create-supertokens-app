@@ -205,9 +205,9 @@ export type DownloadLocations = {
     isExternalApp?: boolean;
 };
 
-export type SupportedPackageManagers = "npm" | "yarn" | "bun";
+export type SupportedPackageManagers = "npm" | "yarn" | "pnpm" | "bun";
 
-export const allPackageManagers: SupportedPackageManagers[] = ["npm", "yarn", "bun"];
+export const allPackageManagers: SupportedPackageManagers[] = ["npm", "yarn", "pnpm", "bun"];
 
 export function isValidPackageManager(manager: string): manager is SupportedPackageManagers {
     if (allPackageManagers.includes(manager as SupportedPackageManagers)) {
@@ -217,7 +217,7 @@ export function isValidPackageManager(manager: string): manager is SupportedPack
     return false;
 }
 
-export type UserFlags = {
+export type UserFlagsRaw = {
     appname?: string;
     recipe?: string;
     branch?: string;
@@ -226,6 +226,8 @@ export type UserFlags = {
     manager?: SupportedPackageManagers;
     autostart?: string | boolean;
 };
+
+export type UserFlags = UserFlagsRaw & { manager: NonNullable<UserFlagsRaw["manager"]> };
 
 export type ExecOutput = {
     code: number | null;

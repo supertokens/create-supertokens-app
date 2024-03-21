@@ -9,6 +9,7 @@ import {
     isValidPackageManager,
     isValidRecipeName,
     UserFlags,
+    UserFlagsRaw,
 } from "./types.js";
 import validateProjectName from "validate-npm-package-name";
 import path from "path";
@@ -35,7 +36,7 @@ export function validateFolderName(name: string): {
     return validateNpmName(path.basename(path.resolve(name)));
 }
 
-export function validateUserArguments(userArguments: UserFlags) {
+export function validateUserArguments(userArguments: UserFlagsRaw) {
     if (userArguments.appname !== undefined) {
         const validation = validateFolderName(userArguments.appname);
 
@@ -121,22 +122,6 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
     }
 
     return _answers;
-}
-
-export async function getPackageManagerCommand(userArguments: UserFlags): Promise<string> {
-    if (userArguments.manager === "npm") {
-        return "npm";
-    }
-
-    if (userArguments.manager === "yarn") {
-        return "yarn";
-    }
-
-    if (userArguments.manager === "bun") {
-        return "bun";
-    }
-
-    return "npm";
 }
 
 export function getShouldAutoStartFromArgs(userArguments: UserFlags): boolean {
