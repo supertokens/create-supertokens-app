@@ -16,13 +16,9 @@ interface SessionDataForUI {
 }
 
 interface SessionForRemixProps {
-    session?: {
-        userId?: string;
-        sessionHandle?: string;
-        accessTokenPayload: SessionDataForUI;
-    };
-    hasInvalidClaims: boolean;
-    hasToken: boolean;
+    userId?: string;
+    sessionHandle?: string;
+    accessTokenPayload: SessionDataForUI;
 }
 
 export async function loader({ request }: LoaderFunctionArgs): Promise<{
@@ -31,36 +27,28 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
     hasToken: boolean;
     RemixResponse: Response | null;
 }> {
-    try {
-        const { session, hasInvalidClaims, hasToken, RemixResponse } = await getSessionDetails(request);
+    const { session, hasInvalidClaims, hasToken, RemixResponse } = await getSessionDetails(request);
 
-        const res: SessionForRemixProps = {
-            session: {
-                userId: session?.getUserId(),
-                sessionHandle: session?.getHandle(),
-                accessTokenPayload: session?.getAccessTokenPayload(),
-            },
+    const res: SessionForRemixProps = {
+        userId: session?.getUserId(),
+        sessionHandle: session?.getHandle(),
+        accessTokenPayload: session?.getAccessTokenPayload(),
+    };
+
+    if (RemixResponse) {
+        return {
+            session: res,
             hasInvalidClaims,
             hasToken,
+            RemixResponse,
         };
-
-        if (RemixResponse) {
-            return {
-                session: res,
-                hasInvalidClaims,
-                hasToken,
-                RemixResponse,
-            };
-        } else {
-            return {
-                session: res,
-                hasInvalidClaims,
-                hasToken,
-                RemixResponse: null,
-            };
-        }
-    } catch (error) {
-        throw error;
+    } else {
+        return {
+            session: res,
+            hasInvalidClaims,
+            hasToken,
+            RemixResponse: null,
+        };
     }
 }
 
@@ -72,18 +60,12 @@ export default function Home() {
         RemixResponse: Response | null;
     }>();
 
+    console.log(loaderData);
+    console.log(loaderData.session);
+
     async function logoutClicked() {
         await SessionReact.signOut();
         SuperTokens.redirectToAuth();
-    }
-
-    if (loaderData.RemixResponse) {
-        return (
-            <div>
-                Something went wrong while trying to get the session. Error -{loaderData.RemixResponse.status}{" "}
-                {loaderData.RemixResponse.statusText}
-            </div>
-        );
     }
 
     if (!loaderData.session) {
@@ -96,12 +78,12 @@ export default function Home() {
             return <TryRefreshComponent />;
         }
     }
-    if (loaderData.session.session) {
+    if (loaderData.session) {
         const sessionData: SessionDataForUI = {
             note: "Retrieve authenticated user-specific data from your application post-verification through the use of the verifySession middleware.",
-            userId: loaderData.session.session?.userId || "",
-            sessionHandle: loaderData.session.session?.accessTokenPayload.sessionHandle,
-            accessTokenPayload: loaderData.session.session?.accessTokenPayload,
+            userId: loaderData.session?.userId || "",
+            sessionHandle: loaderData.session?.accessTokenPayload.sessionHandle,
+            accessTokenPayload: loaderData.session?.accessTokenPayload,
         };
 
         const displaySessionInformationWindow = (sessionData: SessionDataForUI) => {
@@ -141,7 +123,7 @@ export default function Home() {
                         <div className="innerContent">
                             <div>Your userID is: </div>
 
-                            <div className="truncate userId">{loaderData.session.session.userId}</div>
+                            <div className="truncate userId">{loaderData.session.userId}</div>
 
                             <button
                                 onClick={() => displaySessionInformationWindow(sessionData)}
