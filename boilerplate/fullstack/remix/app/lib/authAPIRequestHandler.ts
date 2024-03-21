@@ -1,6 +1,5 @@
 import { middleware, PreParsedRequest, CollectingResponse } from "supertokens-node/lib/build/framework/custom/index.js";
 import { serialize } from "cookie";
-// import { HTTPMethod, PartialRemixRequest } from '../lib/superTokensTypes'
 
 export default function handleAuthAPIRequest<T extends PreParsedRequest>(NextResponse: typeof Response) {
     const stMiddleware = middleware<T>((req) => {
