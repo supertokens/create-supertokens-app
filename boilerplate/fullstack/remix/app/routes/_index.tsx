@@ -4,10 +4,16 @@ import SuperTokens from "supertokens-auth-react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import SessionReact from "supertokens-auth-react/recipe/session/index.js";
-import { SessionDataForUI } from "../lib/superTokensTypes";
 import { getSessionDetails } from "../lib/superTokensHelpers";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
+
+interface SessionDataForUI {
+    note: string;
+    userId: string;
+    sessionHandle: string;
+    accessTokenPayload: object;
+}
 
 interface SessionForRemixProps {
     session?: {

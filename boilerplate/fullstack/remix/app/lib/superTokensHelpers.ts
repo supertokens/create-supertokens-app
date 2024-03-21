@@ -1,11 +1,12 @@
 import { PreParsedRequest, CollectingResponse, middleware } from "supertokens-node/framework/custom/index.js";
-import { HTTPMethod } from "supertokens-node/types";
 import Session, { SessionContainer, VerifySessionOptions } from "supertokens-node/recipe/session/index.js";
 import SessionRecipe from "supertokens-node/lib/build/recipe/session/recipe.js";
 import { availableTokenTransferMethods } from "supertokens-node/lib/build/recipe/session/constants.js";
 import { getToken } from "supertokens-node/lib/build/recipe/session/cookieAndHeaders.js";
 import { parseJWTWithoutSignatureVerification } from "supertokens-node/lib/build/recipe/session/jwt.js";
 import { serialize } from "cookie";
+
+type HTTPMethod = "post" | "get" | "delete" | "put" | "options" | "trace";
 
 export function handleAuthAPIRequest<PreParsedRequest>(RemixResponse: typeof Response) {
     const stMiddleware = middleware<PreParsedRequest>((req) => {
