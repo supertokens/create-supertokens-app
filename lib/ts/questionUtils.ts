@@ -41,7 +41,7 @@ export function getDjangoPythonRunScripts(): string[] {
     ];
 }
 
-// Converts the options array we declare to a format iquirer can use
+// Converts the options array we declare to a format inquirer can use
 export function mapOptionsToChoices(options: QuestionOption[] | RecipeQuestionOption[]) {
     return options
         .filter((i) => i.shouldDisplay !== false)

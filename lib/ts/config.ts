@@ -1,5 +1,5 @@
 import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
-import { getPackageManagerCommand, validateFolderName } from "./userArgumentUtils.js";
+import { validateFolderName } from "./userArgumentUtils.js";
 import {
     getDjangoPythonRunScripts,
     getPythonRunScripts,
@@ -17,9 +17,7 @@ function getCapacitorMessage() {
     }
 }
 
-export async function getFrontendOptions(userArguments: UserFlags): Promise<QuestionOption[]> {
-    const packagerCommand = await getPackageManagerCommand(userArguments);
-
+export async function getFrontendOptions({ manager }: UserFlags): Promise<QuestionOption[]> {
     return [
         {
             value: "react",
@@ -29,8 +27,8 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
             },
             script: {
-                setup: [`${packagerCommand} install`],
-                run: [`${packagerCommand} run start`],
+                setup: [`${manager} install`],
+                run: [`${manager} run start`],
             },
         },
         {
@@ -41,8 +39,8 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
             },
             script: {
-                setup: [`${packagerCommand} install`],
-                run: [`${packagerCommand} run start`],
+                setup: [`${manager} install`],
+                run: [`${manager} run start`],
             },
             shouldDisplay: false,
         },
@@ -68,8 +66,8 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 },
             },
             script: {
-                run: [`${packagerCommand} run dev`],
-                setup: [`${packagerCommand} install`],
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
             },
         },
         {
@@ -95,8 +93,8 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 },
             },
             script: {
-                run: [`${packagerCommand} run dev`],
-                setup: [`${packagerCommand} install`],
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
             },
         },
         {
@@ -122,8 +120,8 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 },
             },
             script: {
-                run: [`${packagerCommand} run dev`],
-                setup: [`${packagerCommand} install`],
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
             },
         },
         {
@@ -148,8 +146,8 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 },
             },
             script: {
-                run: [`${packagerCommand} run dev`],
-                setup: [`${packagerCommand} install`],
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
             },
         },
         {
@@ -163,8 +161,8 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 ],
             },
             script: {
-                setup: [`${packagerCommand} install`],
-                run: [`${packagerCommand} run dev`],
+                setup: [`${manager} install`],
+                run: [`${manager} run dev`],
             },
         },
         {
@@ -178,8 +176,8 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
                 ],
             },
             script: {
-                setup: [`${packagerCommand} install`],
-                run: [`${packagerCommand} run dev`],
+                setup: [`${manager} install`],
+                run: [`${manager} run dev`],
             },
         },
         {
@@ -216,9 +214,7 @@ export async function getFrontendOptions(userArguments: UserFlags): Promise<Ques
     ];
 }
 
-export async function getNextJSOptions(userArguments: UserFlags): Promise<QuestionOption[]> {
-    const packagerCommand = await getPackageManagerCommand(userArguments);
-
+export async function getNextJSOptions({ manager }: UserFlags): Promise<QuestionOption[]> {
     return [
         {
             displayName: "Using the App directory",
@@ -240,8 +236,8 @@ export async function getNextJSOptions(userArguments: UserFlags): Promise<Questi
                 },
             },
             script: {
-                run: [`${packagerCommand} run dev`],
-                setup: [`${packagerCommand} install`],
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
             },
             value: "next-app-directory",
             isFullStack: true,
@@ -268,8 +264,8 @@ export async function getNextJSOptions(userArguments: UserFlags): Promise<Questi
                 },
             },
             script: {
-                run: [`${packagerCommand} run dev`],
-                setup: [`${packagerCommand} install`],
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
             },
         },
     ];
@@ -319,9 +315,7 @@ const pythonOptions: QuestionOption[] = [
     },
 ];
 
-export async function getBackendOptions(userArguments: UserFlags): Promise<QuestionOption[]> {
-    const packagerCommand = await getPackageManagerCommand(userArguments);
-
+export async function getBackendOptions({ manager }: UserFlags): Promise<QuestionOption[]> {
     return [
         {
             value: "node",
@@ -336,8 +330,8 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
                 ],
             },
             script: {
-                setup: [`${packagerCommand} install`],
-                run: [`${packagerCommand} run start`],
+                setup: [`${manager} install`],
+                run: [`${manager} run start`],
             },
         },
         {
@@ -348,8 +342,8 @@ export async function getBackendOptions(userArguments: UserFlags): Promise<Quest
                 config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
-                setup: [`${packagerCommand} install`],
-                run: [`${packagerCommand} run start`],
+                setup: [`${manager} install`],
+                run: [`${manager} run start`],
             },
         },
         {
@@ -497,7 +491,7 @@ export async function getQuestions(flags: UserFlags) {
             message: "What type of authentication do you want to use?",
             choices: mapOptionsToChoices(recipeOptions),
             when: (answers: Answers) => {
-                // For capactor we dont ask this question because it has its own way of swapping between recipes
+                // For capacitor we don't ask this question because it has its own way of swapping between recipes
                 if (answers.frontend === "capacitor") {
                     return false;
                 }

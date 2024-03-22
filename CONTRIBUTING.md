@@ -85,6 +85,13 @@ If you are testing an example app you have created on your own branch, you can p
 npx . --branch=your_branch
 ```
 
+### Update package version if needed
+
+You should update the package's version following [semantic versioning](https://semver.org/) rules. This needs to be done in these files:
+
+-   `package.json`
+-   `lib/ts/version.ts`
+
 ### Create a pull request
 
 1. Reference the relevant issue or pull request and give a clear description of changes/features added when submitting a pull request

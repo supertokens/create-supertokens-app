@@ -8,11 +8,12 @@ import path from "path";
 import { exec } from "child_process";
 import { v4 as uuidv4 } from "uuid";
 import { Ora } from "ora";
-import { getPackageManagerCommand, getShouldAutoStartFromArgs } from "./userArgumentUtils.js";
+import { getShouldAutoStartFromArgs } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 import chalk from "chalk";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
+import { addPackageCommand } from "./packageManager.js";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -87,7 +88,7 @@ export async function downloadExternalApp(locations: DownloadLocations, folderNa
 }
 
 export async function downloadApp(locations: DownloadLocations, folderName: string): Promise<void> {
-    // create the directory if it doesnt already exist
+    // create the directory if it doesn't already exist
     const __dirname = path.resolve();
     const projectDirectory = __dirname + `/${folderName}`;
 
@@ -206,7 +207,7 @@ async function performAdditionalSetupForFrontendIfNeeded(
 
     // We only check for web-js being present if the project uses the auth react SDK
     if (doesUseAuthReact && !doesWebJsExist()) {
-        const installPrefix = userArguments.manager === "yarn" ? "yarn add" : "npm i";
+        const installPrefix = addPackageCommand(userArguments.manager);
 
         let result = await new Promise<ExecOutput>((res) => {
             let stderr: string[] = [];
@@ -453,7 +454,7 @@ async function setupFrontendBackendApp(
     );
 
     const rootSetup = new Promise<ExecOutput>((res) => {
-        const rootInstall = exec(`cd ${folderName}/ && npm install`);
+        const rootInstall = exec(`cd ${folderName}/ && ${userArguments.manager} install`);
         let stderr: string[] = [];
 
         rootInstall.on("exit", (code) => {
@@ -558,11 +559,11 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
 
         /**
          * Some stacks (Ex: Python) require all steps to be run in the same shell,
-         * so we combine all setup commands in one single command and eecute that
+         * so we combine all setup commands in one single command and execute that
          */
         const setupString = selectedFullStack.script.setup.join(" && ");
 
-        // For full stack the folder doesnt have frontend and backend folders so we directly run the setup on the root
+        // For full stack the folder doesn't have frontend and backend folders so we directly run the setup on the root
         const setup = exec(`cd ${folderName}/ && ${setupString}`);
 
         setup.on("exit", (code) => {
@@ -675,7 +676,7 @@ export async function runProjectOrPrintStartCommand(answers: Answers, userArgume
         return;
     }
 
-    let appRunScript = `${await getPackageManagerCommand(userArguments)} run start`;
+    let appRunScript = `${userArguments.manager} run start`;
 
     if (selectedFrontend.isFullStack) {
         appRunScript = selectedFrontend.script.run.join(" && ");

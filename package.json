@@ -26,6 +26,7 @@
         "tar": "^6.1.11",
         "uuid": "^8.3.2",
         "validate-npm-package-name": "^4.0.0",
+        "which-pm-runs": "^1.1.0",
         "yargs": "^17.5.1"
     },
     "bin": "lib/build/index.js",
@@ -36,6 +37,7 @@
         "@types/tar": "^6.1.2",
         "@types/uuid": "^8.3.4",
         "@types/validate-npm-package-name": "^4.0.0",
+        "@types/which-pm-runs": "^1.0.2",
         "@types/yargs": "^17.0.12",
         "clear-npx-cache": "^1.0.1",
         "madge": "^5.0.1",
