@@ -16,7 +16,7 @@ interface SessionDataForUI {
 }
 
 interface SessionForRemixProps {
-    userId?: string;
+    userId: string;
     sessionHandle?: string;
     accessTokenPayload: SessionDataForUI;
 }
@@ -30,9 +30,9 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
     const { session, hasInvalidClaims, hasToken, RemixResponse } = await getSessionDetails(request);
 
     const res: SessionForRemixProps = {
-        userId: session.getUserId(),
-        sessionHandle: session.getHandle(),
-        accessTokenPayload: session.getAccessTokenPayload(),
+        userId: session?.getUserId(),
+        sessionHandle: session?.getHandle(),
+        accessTokenPayload: session?.getAccessTokenPayload(),
     };
 
     if (RemixResponse) {
@@ -81,7 +81,7 @@ export default function Home() {
     if (loaderData.session) {
         const sessionData: SessionDataForUI = {
             note: "Retrieve authenticated user-specific data from your application post-verification through the use of the verifySession middleware.",
-            userId: loaderData.session.userId,
+            userId: loaderData.session?.userId,
             sessionHandle: loaderData.session.accessTokenPayload.sessionHandle,
             accessTokenPayload: loaderData.session.accessTokenPayload,
         };
