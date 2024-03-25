@@ -8,12 +8,12 @@ import { serialize } from "cookie";
 
 type HTTPMethod = "post" | "get" | "delete" | "put" | "options" | "trace";
 
-export function handleAuthAPIRequest<PreParsedRequest>(RemixResponse: typeof Response) {
-    const stMiddleware = middleware<PreParsedRequest>((req) => {
-        return req;
+export function handleAuthAPIRequest<Request>(RemixResponse: typeof Response) {
+    const stMiddleware = middleware<Request>((req) => {
+        return createPreParsedRequest(req);
     });
 
-    return async function handleCall(req: PreParsedRequest) {
+    return async function handleCall(req: Request) {
         const baseResponse = new CollectingResponse();
 
         const { handled, error } = await stMiddleware(req, baseResponse);
@@ -96,7 +96,7 @@ export async function getSessionDetails(
 }> {
     const baseRequest = createPreParsedRequest(request);
     const baseResponse = new CollectingResponse();
-    // Possible introp issue.
+    // Possible interop issue.
     const recipe = (SessionRecipe as any).default.instance;
     const tokenTransferMethod = recipe.config.getTokenTransferMethod({
         req: baseRequest,

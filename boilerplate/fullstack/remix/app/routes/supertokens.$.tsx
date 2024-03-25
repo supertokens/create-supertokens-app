@@ -1,11 +1,8 @@
 import { json } from "@remix-run/node";
 import { ActionFunctionArgs, LoaderFunctionArgs } from "react-router-dom";
-import { createPreParsedRequest, handleAuthAPIRequest } from "../lib/superTokensHelpers.js";
+import { handleAuthAPIRequest } from "../lib/superTokensHelpers.js";
 
-async function handleCall(request: Request) {
-    const preParsedRequest = createPreParsedRequest(request);
-    return await handleAuthAPIRequest(Response)(preParsedRequest);
-}
+const handleCall = handleAuthAPIRequest(Response);
 
 // Action function for handling POST requests
 export async function action({ request }: ActionFunctionArgs) {

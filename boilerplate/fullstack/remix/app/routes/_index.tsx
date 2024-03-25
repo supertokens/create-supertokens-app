@@ -8,28 +8,25 @@ import { getSessionDetails } from "../lib/superTokensHelpers";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
 
-interface SessionDataForUI {
-    note: string;
-    userId: string;
-    sessionHandle: string;
-    accessTokenPayload: object;
-}
-
-interface SessionForRemixProps {
-    userId: string;
+interface SessionProps {
+    userId?: string;
     sessionHandle?: string;
-    accessTokenPayload: SessionDataForUI;
+    accessTokenPayload: {
+        userId: string;
+        sessionHandle: string;
+        accessTokenPayload: object;
+    };
 }
 
 export async function loader({ request }: LoaderFunctionArgs): Promise<{
-    session: SessionForRemixProps | undefined;
+    session: SessionProps | undefined;
     hasInvalidClaims: boolean;
     hasToken: boolean;
     RemixResponse: Response | null;
 }> {
     const { session, hasInvalidClaims, hasToken, RemixResponse } = await getSessionDetails(request);
 
-    const res: SessionForRemixProps = {
+    const res: SessionProps = {
         userId: session?.getUserId(),
         sessionHandle: session?.getHandle(),
         accessTokenPayload: session?.getAccessTokenPayload(),
@@ -54,14 +51,11 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
 
 export default function Home() {
     const loaderData = useLoaderData<{
-        session: SessionForRemixProps | undefined;
+        session: SessionProps | undefined;
         hasInvalidClaims: boolean;
         hasToken: boolean;
         RemixResponse: Response | null;
     }>();
-
-    console.log(loaderData);
-    console.log(loaderData.session);
 
     async function logoutClicked() {
         await SessionReact.signOut();
@@ -79,14 +73,13 @@ export default function Home() {
         }
     }
     if (loaderData.session) {
-        const sessionData: SessionDataForUI = {
-            note: "Retrieve authenticated user-specific data from your application post-verification through the use of the verifySession middleware.",
+        const sessionData: SessionProps = {
             userId: loaderData.session?.userId,
             sessionHandle: loaderData.session.accessTokenPayload.sessionHandle,
             accessTokenPayload: loaderData.session.accessTokenPayload,
         };
 
-        const displaySessionInformationWindow = (sessionData: SessionDataForUI) => {
+        const displaySessionInformationWindow = (sessionData: SessionProps) => {
             window.alert("Session Information: " + JSON.stringify(sessionData));
         };
 
