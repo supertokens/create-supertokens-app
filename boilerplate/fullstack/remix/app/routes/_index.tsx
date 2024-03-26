@@ -22,7 +22,7 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
     session: SessionProps | undefined;
     hasInvalidClaims: boolean;
     hasToken: boolean;
-    RemixResponse: Response | null;
+    RemixResponse: Response | undefined;
 }> {
     const { session, hasInvalidClaims, hasToken, RemixResponse } = await getSessionDetails(request);
 
@@ -32,29 +32,19 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
         accessTokenPayload: session?.getAccessTokenPayload(),
     };
 
-    if (RemixResponse) {
-        return {
-            session: res,
-            hasInvalidClaims,
-            hasToken,
-            RemixResponse,
-        };
-    } else {
-        return {
-            session: res,
-            hasInvalidClaims,
-            hasToken,
-            RemixResponse: null,
-        };
-    }
+    return {
+        session: res,
+        hasInvalidClaims,
+        hasToken,
+        RemixResponse,
+    };
 }
 
 export default function Home() {
-    const loaderData = useLoaderData<{
+    const { session, hasInvalidClaims, hasToken } = useLoaderData<{
         session: SessionProps | undefined;
         hasInvalidClaims: boolean;
         hasToken: boolean;
-        RemixResponse: Response | null;
     }>();
 
     async function logoutClicked() {
@@ -62,97 +52,98 @@ export default function Home() {
         SuperTokens.redirectToAuth();
     }
 
-    if (!loaderData.session) {
-        if (!loaderData.hasToken) {
+    if (!session) {
+        if (!hasToken) {
             return redirect("/auth");
         }
-        if (loaderData.hasInvalidClaims) {
+        if (hasInvalidClaims) {
             return <SessionAuthForRemix />;
         } else {
             return <TryRefreshComponent />;
         }
     }
-    if (loaderData.session) {
-        const sessionData: SessionProps = {
-            userId: loaderData.session?.userId,
-            sessionHandle: loaderData.session.accessTokenPayload.sessionHandle,
-            accessTokenPayload: loaderData.session.accessTokenPayload,
-        };
 
-        const displaySessionInformationWindow = (sessionData: SessionProps) => {
-            window.alert("Session Information: " + JSON.stringify(sessionData));
-        };
+    const { userId, sessionHandle, accessTokenPayload }: SessionProps = {
+        userId: session?.userId,
+        sessionHandle: session.accessTokenPayload.sessionHandle,
+        accessTokenPayload: session.accessTokenPayload,
+    };
 
-        const links: {
-            name: string;
-            link: string;
-            icon: string;
-        }[] = [
-            {
-                name: "Blogs",
-                link: "https://supertokens.com/blog",
-                icon: BlogsIcon,
-            },
-            {
-                name: "Guides",
-                link: recipeDetails.docsLink,
-                icon: GuideIcon,
-            },
-            {
-                name: "Sign Out",
-                link: "",
-                icon: SignOutIcon,
-            },
-        ];
+    const displaySessionInformationWindow = (sessionData: SessionProps) => {
+        window.alert("Session Information: " + JSON.stringify(sessionData));
+    };
 
-        return (
-            <SessionAuthForRemix>
-                <div className="homeContainer">
-                    <div className="mainContainer">
-                        <div className="topBand successTitle bold500">
-                            <img src={CelebrateIcon} alt="Login successful" className="successIcon" />
-                            Login successful
-                        </div>
-                        <div className="innerContent">
-                            <div>Your userID is: </div>
+    const links: {
+        name: string;
+        link: string;
+        icon: string;
+    }[] = [
+        {
+            name: "Blogs",
+            link: "https://supertokens.com/blog",
+            icon: BlogsIcon,
+        },
+        {
+            name: "Guides",
+            link: recipeDetails.docsLink,
+            icon: GuideIcon,
+        },
+        {
+            name: "Sign Out",
+            link: "",
+            icon: SignOutIcon,
+        },
+    ];
 
-                            <div className="truncate userId">{loaderData.session.userId}</div>
-
-                            <button
-                                onClick={() => displaySessionInformationWindow(sessionData)}
-                                className="sessionButton"
-                            >
-                                Call API
-                            </button>
-                        </div>
+    return (
+        <SessionAuthForRemix>
+            <div className="homeContainer">
+                <div className="mainContainer">
+                    <div className="topBand successTitle bold500">
+                        <img src={CelebrateIcon} alt="Login successful" className="successIcon" />
+                        Login successful
                     </div>
+                    <div className="innerContent">
+                        <div>Your userID is: </div>
 
-                    <div className="bottomLinksContainer">
-                        {links.map((link) => {
-                            if (link.name === "Sign Out") {
-                                return (
-                                    <button
-                                        key={link.name}
-                                        className="linksContainerLink signOutLink"
-                                        onClick={logoutClicked}
-                                    >
-                                        <img src={link.icon} alt={link.name} className="linkIcon" />
-                                        <div role="button">{link.name}</div>
-                                    </button>
-                                );
+                        <div className="truncate userId">{userId}</div>
+
+                        <button
+                            onClick={() =>
+                                displaySessionInformationWindow({ userId, sessionHandle, accessTokenPayload })
                             }
+                            className="sessionButton"
+                        >
+                            Call API
+                        </button>
+                    </div>
+                </div>
+
+                <div className="bottomLinksContainer">
+                    {links.map((link) => {
+                        if (link.name === "Sign Out") {
                             return (
-                                <a href={link.link} className="linksContainerLink" key={link.name}>
+                                <button
+                                    key={link.name}
+                                    className="linksContainerLink signOutLink"
+                                    onClick={logoutClicked}
+                                >
                                     <img src={link.icon} alt={link.name} className="linkIcon" />
                                     <div role="button">{link.name}</div>
-                                </a>
+                                </button>
                             );
-                        })}
-                    </div>
-
-                    <img className="separatorLine" src={SeparatorLine} alt="separator" />
+                        }
+                        return (
+                            <a href={link.link} className="linksContainerLink" key={link.name}>
+                                <img src={link.icon} alt={link.name} className="linkIcon" />
+                                <div role="button">{link.name}</div>
+                            </a>
+                        );
+                    })}
                 </div>
-            </SessionAuthForRemix>
-        );
-    }
+
+                <img className="separatorLine" src={SeparatorLine} alt="separator" />
+            </div>
+        </SessionAuthForRemix>
+    );
 }
