@@ -1,10 +1,10 @@
-import { Meta, Links, Scripts, LiveReload, Outlet, ScrollRestoration } from "@remix-run/react";
+import { Meta, Links, Scripts, Outlet, ScrollRestoration } from "@remix-run/react";
 import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
 import { frontendConfig } from "./config/frontend";
 import { SessionAuth } from "supertokens-auth-react/recipe/session/index.js";
 import { useLocation } from "react-router-dom";
 import type { LinksFunction } from "@remix-run/node";
-import appStylesHref from "./app.css";
+import appStylesHref from "./app.css?url";
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: appStylesHref }];
 
 if (typeof window !== "undefined") {
@@ -33,7 +33,6 @@ export default function App() {
 
                     <ScrollRestoration />
                     <Scripts />
-                    <LiveReload />
                 </SuperTokensWrapper>
             </body>
         </html>

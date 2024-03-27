@@ -286,7 +286,6 @@ export async function withSession<Request, Response>(
 
         return userResponse;
     } catch (error) {
-        console.error(error);
         return await handler(error as Error, undefined);
     }
 }
