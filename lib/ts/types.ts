@@ -31,6 +31,7 @@ export type SupportedFrontends =
     | "next-multitenancy"
     | "next-app-directory"
     | "next-app-directory-multitenancy"
+    | "remix"
     | "angular-prebuilt"
     | "vue-prebuilt"
     | "capacitor"
