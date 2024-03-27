@@ -9,7 +9,6 @@ import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
 
 interface SessionProps {
-    userId?: string;
     accessTokenPayload: {
         userId: string;
         sessionHandle: string;
@@ -26,7 +25,6 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
     const { session, hasInvalidClaims, hasToken, RemixResponse } = await getSessionDetails(request);
 
     const res: SessionProps = {
-        userId: session?.getUserId(),
         accessTokenPayload: session?.getAccessTokenPayload(),
     };
 
@@ -98,17 +96,9 @@ export default function Home() {
                     <div className="innerContent">
                         <div>Your userID is: </div>
 
-                        <div className="truncate userId">{session.userId}</div>
+                        <div className="truncate userId">{session.accessTokenPayload.userId}</div>
 
-                        <button
-                            onClick={() =>
-                                displaySessionInformationWindow({
-                                    userId: session.userId,
-                                    accessTokenPayload: session.accessTokenPayload,
-                                })
-                            }
-                            className="sessionButton"
-                        >
+                        <button onClick={() => displaySessionInformationWindow(session)} className="sessionButton">
                             Call API
                         </button>
                     </div>
