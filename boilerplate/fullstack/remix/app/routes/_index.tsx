@@ -4,36 +4,36 @@ import SuperTokens from "supertokens-auth-react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import SessionReact from "supertokens-auth-react/recipe/session/index.js";
-import { getSessionDetails } from "../lib/superTokensHelpers";
+import { getSessionForSSR } from "../superTokensHelpers";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
 
 interface SessionProps {
     userId: string;
-    accessTokenPayload: {
-        sessionHandle: string;
-        accessTokenPayload: object;
-    };
+    sessionHandle: string;
+    accessTokenPayload: object;
 }
 
 export async function loader({ request }: LoaderFunctionArgs): Promise<{
     session: SessionProps | undefined;
     hasInvalidClaims: boolean;
     hasToken: boolean;
-    RemixResponse: Response | undefined;
 }> {
-    const { session, hasInvalidClaims, hasToken, RemixResponse } = await getSessionDetails(request);
+    const { session, hasInvalidClaims, hasToken } = await getSessionForSSR(request);
 
-    const res: SessionProps = {
-        userId: session?.getUserId() as string,
-        accessTokenPayload: session?.getAccessTokenPayload(),
-    };
+    let sessionProps: SessionProps | undefined = undefined;
+    if (session !== undefined) {
+        sessionProps = {
+            userId: session.getUserId(),
+            sessionHandle: session.getHandle(),
+            accessTokenPayload: session.getAccessTokenPayload(),
+        };
+    }
 
     return {
-        session: res,
+        session: sessionProps,
         hasInvalidClaims,
         hasToken,
-        RemixResponse,
     };
 }
 
@@ -49,7 +49,7 @@ export default function Home() {
         SuperTokens.redirectToAuth();
     }
 
-    if (!session) {
+    if (session === undefined) {
         if (!hasToken) {
             return redirect("/auth");
         }

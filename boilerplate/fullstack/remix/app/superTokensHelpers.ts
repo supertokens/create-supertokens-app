@@ -9,13 +9,11 @@ import SessionRecipe from "supertokens-node/lib/build/recipe/session/recipe.js";
 import { availableTokenTransferMethods } from "supertokens-node/lib/build/recipe/session/constants.js";
 import { getToken } from "supertokens-node/lib/build/recipe/session/cookieAndHeaders.js";
 import { parseJWTWithoutSignatureVerification } from "supertokens-node/lib/build/recipe/session/jwt.js";
-import { UserContext } from "supertokens-node/types";
-import { getUserContext } from "supertokens-node/lib/build/utils.js";
 import { serialize } from "cookie";
 
 type HTTPMethod = "post" | "get" | "delete" | "put" | "options" | "trace";
 
-export function handleAuthAPIRequest<Request>(RemixResponse: typeof Response) {
+export function handleAuthAPIRequest(RemixResponse: typeof Response) {
     const stMiddleware = middleware<Request>((req) => {
         return createPreParsedRequest(req);
     });
@@ -53,7 +51,7 @@ export function handleAuthAPIRequest<Request>(RemixResponse: typeof Response) {
     };
 }
 
-export function getCookieFromRequest(request: Request) {
+function getCookieFromRequest(request: Request) {
     const cookies: Record<string, string> = {};
     const cookieHeader = request.headers.get("Cookie");
     if (cookieHeader) {
@@ -66,7 +64,7 @@ export function getCookieFromRequest(request: Request) {
     return cookies;
 }
 
-export function getQueryFromRequest(request: Request) {
+function getQueryFromRequest(request: Request) {
     const query: Record<string, string> = {};
     const url = new URL(request.url);
     const searchParams = url.searchParams;
@@ -76,7 +74,7 @@ export function getQueryFromRequest(request: Request) {
     return query;
 }
 
-export function createPreParsedRequest(request: Request): PreParsedRequest {
+function createPreParsedRequest(request: Request): PreParsedRequest {
     return new PreParsedRequest({
         cookies: getCookieFromRequest(request),
         url: request.url as string,
@@ -92,29 +90,28 @@ export function createPreParsedRequest(request: Request): PreParsedRequest {
     });
 }
 
-export async function getSessionDetails(
-    baseRequest: PreParsedRequest | Request,
+async function getSessionDetails(
+    preParsedRequest: PreParsedRequest,
     options?: VerifySessionOptions,
-    userContext?: Record<string, unknown> | UserContext
+    userContext?: Record<string, unknown>
 ): Promise<{
     session: SessionContainer | undefined;
     hasToken: boolean;
     hasInvalidClaims: boolean;
-    baseResponse?: CollectingResponse;
+    baseResponse: CollectingResponse;
     RemixResponse?: Response;
 }> {
-    const request = baseRequest instanceof Request ? createPreParsedRequest(baseRequest) : baseRequest;
     const baseResponse = new CollectingResponse();
     // Possible interop issue.
     const recipe = (SessionRecipe as any).default.instance;
     const tokenTransferMethod = recipe.config.getTokenTransferMethod({
-        req: request,
+        req: preParsedRequest,
         forCreateNewSession: false,
         userContext,
     });
     const transferMethods = tokenTransferMethod === "any" ? availableTokenTransferMethods : [tokenTransferMethod];
     const hasToken = transferMethods.some((transferMethod) => {
-        const token = getToken(request, "access", transferMethod);
+        const token = getToken(preParsedRequest, "access", transferMethod);
         if (!token) {
             return false;
         }
@@ -127,7 +124,7 @@ export async function getSessionDetails(
     });
 
     try {
-        const session = await Session.getSession(request, baseResponse, options, userContext);
+        const session = await Session.getSession(preParsedRequest, baseResponse, options, userContext);
         return {
             session,
             hasInvalidClaims: false,
@@ -151,34 +148,35 @@ export async function getSessionDetails(
     }
 }
 
-export async function withSession<Request, Response>(
-    req: Request,
+export async function getSessionForSSR(
+    remixRequest: Request,
+    options?: VerifySessionOptions,
+    userContext?: Record<string, unknown>
+): Promise<{
+    session: SessionContainer | undefined;
+    hasToken: boolean;
+    hasInvalidClaims: boolean;
+}> {
+    const sessionDetails = await getSessionDetails(createPreParsedRequest(remixRequest), options, userContext);
+    return {
+        session: sessionDetails.session,
+        hasInvalidClaims: sessionDetails.hasInvalidClaims,
+        hasToken: sessionDetails.hasToken,
+    };
+}
+
+export async function withSession(
+    remixRequest: Request,
     handler: (error: Error | undefined, session: SessionContainer | undefined) => Promise<Response>,
     options?: VerifySessionOptions,
     userContext?: Record<string, any>
 ): Promise<Response> {
     try {
-        const query = getQueryFromRequest(req);
-        const cookies = getCookieFromRequest(req);
+        let baseRequest = createPreParsedRequest(remixRequest);
+        const { session, RemixResponse, baseResponse } = await getSessionDetails(baseRequest, options, userContext);
 
-        const baseRequest = new PreParsedRequest({
-            method: req.method as HTTPMethod,
-            url: req.url,
-            query: query,
-            headers: req.headers,
-            cookies: cookies,
-            getFormBody: () => req!.formData(),
-            getJSONBody: () => req!.json(),
-        });
-
-        const { session, RemixResponse, baseResponse } = await getSessionDetails(
-            baseRequest,
-            options,
-            getUserContext(userContext)
-        );
-
-        if (RemixResponse) {
-            return RemixResponse as Response;
+        if (RemixResponse !== undefined) {
+            return RemixResponse;
         }
 
         let userResponse: Response;
@@ -186,50 +184,44 @@ export async function withSession<Request, Response>(
         try {
             userResponse = await handler(undefined, session);
         } catch (err) {
-            if (baseResponse) {
-                await errorHandler()(err, baseRequest, baseResponse, (errorHandlerError: Error) => {
-                    if (errorHandlerError) {
-                        throw errorHandlerError;
-                    }
-                });
-            }
+            await errorHandler()(err, baseRequest, baseResponse, (errorHandlerError: Error) => {
+                if (errorHandlerError) {
+                    throw errorHandlerError;
+                }
+            });
 
             // The headers in the userResponse are set twice from baseResponse, but the resulting response contains unique headers.
-            userResponse = new Response(baseResponse?.body, {
-                status: baseResponse?.statusCode,
-                headers: baseResponse?.headers,
-            }) as Response;
+            userResponse = new Response(baseResponse.body, {
+                status: baseResponse.statusCode,
+                headers: baseResponse.headers,
+            });
 
             let didAddCookies = false;
             let didAddHeaders = false;
 
-            if (baseResponse) {
-                for (const respCookie of baseResponse.cookies) {
-                    didAddCookies = true;
-                    userResponse.headers.append(
-                        "Set-Cookie",
-                        serialize(respCookie.key, respCookie.value, {
-                            domain: respCookie.domain,
-                            expires: new Date(respCookie.expires),
-                            httpOnly: respCookie.httpOnly,
-                            path: respCookie.path,
-                            sameSite: respCookie.sameSite,
-                            secure: respCookie.secure,
-                        })
-                    );
-                }
+            for (const respCookie of baseResponse.cookies) {
+                didAddCookies = true;
+                userResponse.headers.append(
+                    "Set-Cookie",
+                    serialize(respCookie.key, respCookie.value, {
+                        domain: respCookie.domain,
+                        expires: new Date(respCookie.expires),
+                        httpOnly: respCookie.httpOnly,
+                        path: respCookie.path,
+                        sameSite: respCookie.sameSite,
+                        secure: respCookie.secure,
+                    })
+                );
             }
 
-            if (baseResponse) {
-                baseResponse.headers.forEach((value: string, key: string) => {
-                    didAddHeaders = true;
-                    userResponse.headers.set(key, value);
-                });
-                if (didAddCookies || didAddHeaders) {
-                    if (!userResponse.headers.has("Cache-Control")) {
-                        // This is needed for production deployments with Vercel
-                        userResponse.headers.set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
-                    }
+            baseResponse.headers.forEach((value: string, key: string) => {
+                didAddHeaders = true;
+                userResponse.headers.set(key, value);
+            });
+            if (didAddCookies || didAddHeaders) {
+                if (!userResponse.headers.has("Cache-Control")) {
+                    // This is needed for production deployments with Vercel
+                    userResponse.headers.set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
                 }
             }
         }

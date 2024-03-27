@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import { LoaderFunctionArgs } from "react-router-dom";
-import { withSession } from "../lib/superTokensHelpers.js";
+import { withSession } from "../superTokensHelpers";
 
 // Loader function for handling GET requests that also adds cache control headers
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -8,15 +8,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
         if (err) {
             return json(err, { status: 500 });
         }
-        if (!session) {
-            return new Response("Authentication required", { status: 401 });
-        }
 
         return json({
             note: "Fetch any data from your application for authenticated user after using verifySession middleware",
-            userId: session.getUserId(),
-            sessionHandle: session.getHandle(),
-            accessTokenPayload: session.getAccessTokenPayload(),
+            userId: session!.getUserId(),
+            sessionHandle: session!.getHandle(),
+            accessTokenPayload: session!.getAccessTokenPayload(),
         });
     });
 }
