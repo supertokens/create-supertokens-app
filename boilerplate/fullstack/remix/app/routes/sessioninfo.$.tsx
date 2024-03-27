@@ -1,5 +1,4 @@
-import { json } from "@remix-run/node";
-import { LoaderFunctionArgs } from "react-router-dom";
+import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { withSession } from "../superTokensHelpers";
 
 // Loader function for handling GET requests that also adds cache control headers
