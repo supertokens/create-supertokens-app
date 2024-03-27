@@ -44,8 +44,6 @@ export default function Home() {
         hasToken: boolean;
     }>();
 
-    console.log(session);
-
     async function logoutClicked() {
         await SessionReact.signOut();
         SuperTokens.redirectToAuth();
