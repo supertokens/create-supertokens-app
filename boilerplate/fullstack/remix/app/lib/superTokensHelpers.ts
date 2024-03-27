@@ -75,6 +75,7 @@ export function getQueryFromRequest(request: Request) {
     });
     return query;
 }
+
 export function createPreParsedRequest(request: Request): PreParsedRequest {
     return new PreParsedRequest({
         cookies: getCookieFromRequest(request),
@@ -92,27 +93,28 @@ export function createPreParsedRequest(request: Request): PreParsedRequest {
 }
 
 export async function getSessionDetails(
-    request: Request,
+    baseRequest: PreParsedRequest | Request,
     options?: VerifySessionOptions,
-    userContext?: Record<string, unknown>
+    userContext?: Record<string, unknown> | UserContext
 ): Promise<{
     session: SessionContainer | undefined;
     hasToken: boolean;
     hasInvalidClaims: boolean;
+    baseResponse?: CollectingResponse;
     RemixResponse?: Response;
 }> {
-    const baseRequest = createPreParsedRequest(request);
+    const request = baseRequest instanceof Request ? createPreParsedRequest(baseRequest) : baseRequest;
     const baseResponse = new CollectingResponse();
     // Possible interop issue.
     const recipe = (SessionRecipe as any).default.instance;
     const tokenTransferMethod = recipe.config.getTokenTransferMethod({
-        req: baseRequest,
+        req: request,
         forCreateNewSession: false,
         userContext,
     });
     const transferMethods = tokenTransferMethod === "any" ? availableTokenTransferMethods : [tokenTransferMethod];
     const hasToken = transferMethods.some((transferMethod) => {
-        const token = getToken(baseRequest, "access", transferMethod);
+        const token = getToken(request, "access", transferMethod);
         if (!token) {
             return false;
         }
@@ -125,65 +127,7 @@ export async function getSessionDetails(
     });
 
     try {
-        const session = await Session.getSession(baseRequest, baseResponse, options, userContext);
-        return {
-            session,
-            hasInvalidClaims: false,
-            hasToken,
-        };
-    } catch (err) {
-        if (Session.Error.isErrorFromSuperTokens(err)) {
-            return {
-                hasToken,
-                hasInvalidClaims: err.type === Session.Error.INVALID_CLAIMS,
-                session: undefined,
-                RemixResponse: new Response("Authentication required", {
-                    status: err.type === Session.Error.INVALID_CLAIMS ? 403 : 401,
-                }),
-            };
-        } else {
-            throw err;
-        }
-    }
-}
-
-async function commonSSRSession(
-    baseRequest: PreParsedRequest,
-    options: VerifySessionOptions | undefined,
-    userContext: UserContext
-): Promise<{
-    session: SessionContainer | undefined;
-    hasToken: boolean;
-    hasInvalidClaims: boolean;
-    baseResponse: CollectingResponse;
-    remixResponse?: Response;
-}> {
-    const baseResponse = new CollectingResponse();
-
-    // Possible interop issue.
-    const recipe = (SessionRecipe as any).default.instance;
-    const tokenTransferMethod = recipe.config.getTokenTransferMethod({
-        req: baseRequest,
-        forCreateNewSession: false,
-        userContext,
-    });
-    const transferMethods = tokenTransferMethod === "any" ? availableTokenTransferMethods : [tokenTransferMethod];
-    const hasToken = transferMethods.some((transferMethod) => {
-        const token = getToken(baseRequest, "access", transferMethod);
-        if (!token) {
-            return false;
-        }
-
-        try {
-            parseJWTWithoutSignatureVerification(token);
-            return true;
-        } catch {
-            return false;
-        }
-    });
-
-    try {
-        const session = await Session.getSession(baseRequest, baseResponse, options, userContext);
+        const session = await Session.getSession(request, baseResponse, options, userContext);
         return {
             session,
             hasInvalidClaims: false,
@@ -197,7 +141,7 @@ async function commonSSRSession(
                 hasInvalidClaims: err.type === Session.Error.INVALID_CLAIMS,
                 session: undefined,
                 baseResponse,
-                remixResponse: new Response("Authentication required", {
+                RemixResponse: new Response("Authentication required", {
                     status: err.type === Session.Error.INVALID_CLAIMS ? 403 : 401,
                 }),
             };
@@ -227,14 +171,14 @@ export async function withSession<Request, Response>(
             getJSONBody: () => req!.json(),
         });
 
-        const { session, remixResponse, baseResponse } = await commonSSRSession(
+        const { session, RemixResponse, baseResponse } = await getSessionDetails(
             baseRequest,
             options,
             getUserContext(userContext)
         );
 
-        if (remixResponse) {
-            return remixResponse as Response;
+        if (RemixResponse) {
+            return RemixResponse as Response;
         }
 
         let userResponse: Response;
@@ -242,44 +186,50 @@ export async function withSession<Request, Response>(
         try {
             userResponse = await handler(undefined, session);
         } catch (err) {
-            await errorHandler()(err, baseRequest, baseResponse, (errorHandlerError: Error) => {
-                if (errorHandlerError) {
-                    throw errorHandlerError;
-                }
-            });
+            if (baseResponse) {
+                await errorHandler()(err, baseRequest, baseResponse, (errorHandlerError: Error) => {
+                    if (errorHandlerError) {
+                        throw errorHandlerError;
+                    }
+                });
+            }
 
             // The headers in the userResponse are set twice from baseResponse, but the resulting response contains unique headers.
-            userResponse = new Response(baseResponse.body, {
-                status: baseResponse.statusCode,
-                headers: baseResponse.headers,
+            userResponse = new Response(baseResponse?.body, {
+                status: baseResponse?.statusCode,
+                headers: baseResponse?.headers,
             }) as Response;
 
             let didAddCookies = false;
             let didAddHeaders = false;
 
-            for (const respCookie of baseResponse.cookies) {
-                didAddCookies = true;
-                userResponse.headers.append(
-                    "Set-Cookie",
-                    serialize(respCookie.key, respCookie.value, {
-                        domain: respCookie.domain,
-                        expires: new Date(respCookie.expires),
-                        httpOnly: respCookie.httpOnly,
-                        path: respCookie.path,
-                        sameSite: respCookie.sameSite,
-                        secure: respCookie.secure,
-                    })
-                );
+            if (baseResponse) {
+                for (const respCookie of baseResponse.cookies) {
+                    didAddCookies = true;
+                    userResponse.headers.append(
+                        "Set-Cookie",
+                        serialize(respCookie.key, respCookie.value, {
+                            domain: respCookie.domain,
+                            expires: new Date(respCookie.expires),
+                            httpOnly: respCookie.httpOnly,
+                            path: respCookie.path,
+                            sameSite: respCookie.sameSite,
+                            secure: respCookie.secure,
+                        })
+                    );
+                }
             }
 
-            baseResponse.headers.forEach((value: string, key: string) => {
-                didAddHeaders = true;
-                userResponse.headers.set(key, value);
-            });
-            if (didAddCookies || didAddHeaders) {
-                if (!userResponse.headers.has("Cache-Control")) {
-                    // This is needed for production deployments with Vercel
-                    userResponse.headers.set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
+            if (baseResponse) {
+                baseResponse.headers.forEach((value: string, key: string) => {
+                    didAddHeaders = true;
+                    userResponse.headers.set(key, value);
+                });
+                if (didAddCookies || didAddHeaders) {
+                    if (!userResponse.headers.has("Cache-Control")) {
+                        // This is needed for production deployments with Vercel
+                        userResponse.headers.set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
+                    }
                 }
             }
         }

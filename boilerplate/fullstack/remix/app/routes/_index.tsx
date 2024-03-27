@@ -10,7 +10,6 @@ import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
 
 interface SessionProps {
     userId?: string;
-    sessionHandle?: string;
     accessTokenPayload: {
         userId: string;
         sessionHandle: string;
@@ -28,7 +27,6 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
 
     const res: SessionProps = {
         userId: session?.getUserId(),
-        sessionHandle: session?.getHandle(),
         accessTokenPayload: session?.getAccessTokenPayload(),
     };
 
@@ -62,12 +60,6 @@ export default function Home() {
             return <TryRefreshComponent />;
         }
     }
-
-    const { userId, sessionHandle, accessTokenPayload }: SessionProps = {
-        userId: session?.userId,
-        sessionHandle: session.accessTokenPayload.sessionHandle,
-        accessTokenPayload: session.accessTokenPayload,
-    };
 
     const displaySessionInformationWindow = (sessionData: SessionProps) => {
         window.alert("Session Information: " + JSON.stringify(sessionData));
@@ -106,11 +98,14 @@ export default function Home() {
                     <div className="innerContent">
                         <div>Your userID is: </div>
 
-                        <div className="truncate userId">{userId}</div>
+                        <div className="truncate userId">{session.userId}</div>
 
                         <button
                             onClick={() =>
-                                displaySessionInformationWindow({ userId, sessionHandle, accessTokenPayload })
+                                displaySessionInformationWindow({
+                                    userId: session.userId,
+                                    accessTokenPayload: session.accessTokenPayload,
+                                })
                             }
                             className="sessionButton"
                         >
