@@ -159,14 +159,14 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
                 config: {
                     frontend: [
                         {
-                            configFiles: "/app/config/frontend",
-                            finalConfig: "/app/config/frontend.ts",
+                            configFiles: "/src/config/frontend",
+                            finalConfig: "/src/config/frontend.ts",
                         },
                     ],
                     backend: [
                         {
-                            configFiles: "/app/config/backend",
-                            finalConfig: "/app/config/backend.ts",
+                            configFiles: "/src/config/backend",
+                            finalConfig: "/src/config/backend.ts",
                         },
                     ],
                 },
