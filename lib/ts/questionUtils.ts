@@ -89,8 +89,18 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
 
     if (frontEndInFlags !== undefined) {
         // Priority goes to flags
-        return frontEndInFlags === "next" || frontEndInFlags === "capacitor" || frontEndInFlags === "remix";
+        return (
+            frontEndInFlags === "next" ||
+            frontEndInFlags === "capacitor" ||
+            frontEndInFlags === "remix" ||
+            frontEndInFlags === "astro"
+        );
     }
 
-    return answers.frontend === "next" || answers.frontend === "capacitor" || answers.frontend === "remix";
+    return (
+        answers.frontend === "next" ||
+        answers.frontend === "capacitor" ||
+        answers.frontend === "remix" ||
+        answers.frontend === "astro"
+    );
 }

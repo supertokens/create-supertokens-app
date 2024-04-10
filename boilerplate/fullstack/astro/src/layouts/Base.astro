@@ -1,0 +1,18 @@
+---
+import Root from "../components/Root";
+import "../styles/app.css";
+---
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Astro SuperTokens demo</title>
+  </head>
+  <body>
+    <Root client:only="react">
+      <slot />
+    </Root>
+  </body>
+</html>

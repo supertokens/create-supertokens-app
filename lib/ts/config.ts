@@ -151,6 +151,32 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             },
         },
         {
+            isFullStack: true,
+            value: "astro",
+            displayName: "Astro",
+            location: {
+                main: "fullstack/astro",
+                config: {
+                    frontend: [
+                        {
+                            configFiles: "/app/config/frontend",
+                            finalConfig: "/app/config/frontend.ts",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/app/config/backend",
+                            finalConfig: "/app/config/backend.ts",
+                        },
+                    ],
+                },
+            },
+            script: {
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
+            },
+        },
+        {
             value: "angular-prebuilt",
             displayName: "Angular",
             location: {
