@@ -1,7 +1,7 @@
 import ThirdPartyPasswordlessReact from "supertokens-auth-react/recipe/thirdpartypasswordless/index.js";
 import Session from "supertokens-auth-react/recipe/session/index.js";
 import { appInfo } from "./appInfo";
-import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
+import { type SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui.js";
 
 export const frontendConfig = (): SuperTokensConfig => {

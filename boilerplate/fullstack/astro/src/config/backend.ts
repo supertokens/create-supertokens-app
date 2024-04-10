@@ -3,7 +3,7 @@ import SessionNode from "supertokens-node/recipe/session/index.js";
 import Dashboard from "supertokens-node/recipe/dashboard/index.js";
 import UserRoles from "supertokens-node/recipe/userroles/index.js";
 import { appInfo } from "./appInfo";
-import { TypeInput } from "supertokens-node/types";
+import { type TypeInput } from "supertokens-node/types";
 import SuperTokens from "supertokens-node";
 export const backendConfig = (): TypeInput => {
     return {

@@ -8,7 +8,7 @@ import AccountLinking from "supertokens-node/recipe/accountlinking/index.js";
 import EmailVerification from "supertokens-node/recipe/emailverification/index.js";
 import TOTP from "supertokens-node/recipe/totp/index.js";
 import { appInfo } from "./appInfo";
-import { TypeInput } from "supertokens-node/types";
+import { type TypeInput } from "supertokens-node/types";
 import SuperTokens from "supertokens-node";
 
 export let backendConfig = (): TypeInput => {
