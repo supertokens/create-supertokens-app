@@ -1,10 +1,9 @@
 import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty/index.js";
 import Session from "supertokens-auth-react/recipe/session/index.js";
 import { appInfo } from "./appInfo";
-import { type SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui.js";
 
-export const frontendConfig = (): SuperTokensConfig => {
+export const frontendConfig = () => {
     return {
         appInfo,
         recipeList: [
