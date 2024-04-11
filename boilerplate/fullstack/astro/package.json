@@ -1,0 +1,32 @@
+{
+    "name": "supertokens-astro-demo",
+    "type": "module",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "astro dev",
+        "start": "astro dev",
+        "build": "astro check && astro build",
+        "preview": "astro preview",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@astrojs/check": "^0.5.10",
+        "@astrojs/node": "^8.2.5",
+        "@astrojs/react": "^3.2.0",
+        "@types/react": "^18.2.75",
+        "@types/react-dom": "^18.2.24",
+        "astro": "^4.5.12",
+        "cookie": "^0.6.0",
+        "micromatch": "^4.0.5",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "supertokens-auth-react": "^0.39.1",
+        "supertokens-node": "^17.0.2",
+        "supertokens-web-js": "^0.10.1",
+        "typescript": "^5.4.3"
+    },
+    "devDependencies": {
+        "@types/cookie": "^0.6.0",
+        "@types/micromatch": "^4.0.6"
+    }
+}

@@ -1,0 +1,42 @@
+---
+import Base from "../layouts/Base.astro";
+import Home from "../components/Home";
+import { getSessionForSSR } from "../superTokensHelpers";
+import { ensureSuperTokensInit } from "../config/backend";
+
+interface SessionProps {
+  userId: string;
+  sessionHandle: string;
+  accessTokenPayload: object;
+}
+
+ensureSuperTokensInit();
+
+const { session, hasInvalidClaims, hasToken } = await getSessionForSSR(
+  Astro.request
+);
+
+let sessionProps: SessionProps | undefined = undefined;
+if (session !== undefined) {
+  sessionProps = {
+    userId: session.getUserId(),
+    sessionHandle: session.getHandle(),
+    accessTokenPayload: session.getAccessTokenPayload(),
+  };
+}
+
+const SSRData = {
+  session: sessionProps,
+  hasInvalidClaims,
+  hasToken,
+};
+---
+
+<Base>
+  <Home
+    client:only="react"
+    session={SSRData.session}
+    hasInvalidClaims={SSRData.hasInvalidClaims}
+    hasToken={SSRData.hasToken}
+  />
+</Base>
