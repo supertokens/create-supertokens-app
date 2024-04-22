@@ -1,8 +1,8 @@
 import { CelebrateIcon, SeparatorLine, BlogsIcon, GuideIcon, SignOutIcon } from "../../assets/images";
 import { recipeDetails } from "../config/frontend";
 import SuperTokens from "supertokens-auth-react";
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import SessionReact from "supertokens-auth-react/recipe/session/index.js";
 import { getSessionForSSR } from "../superTokensHelpers";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
@@ -38,6 +38,8 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
 }
 
 export default function Home() {
+    const navigate = useNavigate();
+
     const { session, hasInvalidClaims, hasToken } = useLoaderData<{
         session: SessionProps | undefined;
         hasInvalidClaims: boolean;
@@ -51,7 +53,7 @@ export default function Home() {
 
     if (session === undefined) {
         if (!hasToken) {
-            return redirect("/auth");
+            return navigate("/auth");
         }
         if (hasInvalidClaims) {
             return <SessionAuthForRemix />;
