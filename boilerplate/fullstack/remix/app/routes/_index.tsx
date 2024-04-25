@@ -58,7 +58,7 @@ export default function Home() {
         if (hasInvalidClaims) {
             return <SessionAuthForRemix />;
         } else {
-            return <TryRefreshComponent />;
+            return <TryRefreshComponent key={Date.now()} />;
         }
     }
 

@@ -32,7 +32,7 @@ export default function Home({
         if (hasInvalidClaims) {
             return <SessionAuthForAstro />;
         } else {
-            return <TryRefreshComponent />;
+            return <TryRefreshComponent key={Date.now()} />;
         }
     }
 

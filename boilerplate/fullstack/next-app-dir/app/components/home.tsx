@@ -51,7 +51,7 @@ export async function HomePage() {
         if (hasInvalidClaims) {
             return <SessionAuthForNextJS />;
         } else {
-            return <TryRefreshComponent />;
+            return <TryRefreshComponent key={Date.now()} />;
         }
     }
 
