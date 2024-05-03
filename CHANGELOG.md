@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-## [0.0.45] - 2024-04-25
-
--   Adds `key={Date.now()}` in the `TryRefreshComponent` to fix the issue with the `TryRefreshComponent` not running `useEffect` callback if session is refreshed multiple times.
-
 ## [0.0.44] - 2024-04-10
 
 -   Adds Astro to the list of frameworks (as full-stack), using the pre-built UI.
