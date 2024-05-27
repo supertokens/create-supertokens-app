@@ -1,4 +1,5 @@
-import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpassword';
+import ThirdParty from 'supertokens-node/recipe/thirdparty';
+import EmailPassword from 'supertokens-node/recipe/emailpassword';
 import Session from 'supertokens-node/recipe/session';
 import Dashboard from 'supertokens-node/recipe/dashboard';
 import UserRoles from 'supertokens-node/recipe/userroles';
@@ -15,7 +16,8 @@ export const appInfo = {
 export const connectionUri = 'https://try.supertokens.com';
 
 export const recipeList = [
-  ThirdPartyEmailPassword.init({
+  EmailPassword.init(),
+  ThirdParty.init({
     providers: [
       // We have provided you with development keys which you can use for testing.
       // IMPORTANT: Please replace them with your own OAuth keys for production use.

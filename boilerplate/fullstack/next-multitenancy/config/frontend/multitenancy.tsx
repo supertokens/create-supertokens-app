@@ -1,8 +1,10 @@
-import ThirdPartyEmailPassword from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import ThirdPartyPasswordless from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import ThirdParty from "supertokens-auth-react/recipe/thirdparty";
+import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
+import Passwordless from "supertokens-auth-react/recipe/passwordless";
 import Multitenancy from "supertokens-auth-react/recipe/multitenancy";
-import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";
-import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
+import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { appInfo } from "./appInfo";
@@ -18,14 +20,13 @@ export let frontendConfig = (): SuperTokensConfig => {
     return {
         appInfo,
         usesDynamicLoginMethods: true,
+        style: styleOverride,
         // recipeList contains all the modules that you want to
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
         recipeList: [
-            ThirdPartyEmailPassword.init({
-                style: styleOverride,
-            }),
-            ThirdPartyPasswordless.init({
-                style: styleOverride,
+            EmailPassword.init(),
+            ThirdParty.init(),
+            Passwordless.init({
                 contactMethod: "EMAIL",
             }),
             SessionReact.init({
@@ -70,4 +71,4 @@ export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/multitenancy/introduction",
 };
 
-export const PreBuiltUIList = [ThirdPartyEmailPasswordPreBuiltUI, ThirdPartyPasswordlessPreBuiltUI];
+export const PreBuiltUIList = [ThirdPartyPreBuiltUI, EmailPasswordPreBuiltUI, PasswordlessPreBuiltUI];

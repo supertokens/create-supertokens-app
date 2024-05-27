@@ -1,4 +1,5 @@
-import ThirdPartyPasswordless from 'supertokens-node/recipe/thirdpartypasswordless';
+import ThirdParty from 'supertokens-node/recipe/thirdparty';
+import Passwordless from 'supertokens-node/recipe/passwordless';
 import Session from 'supertokens-node/recipe/session';
 import Dashboard from 'supertokens-node/recipe/dashboard';
 import UserRoles from 'supertokens-node/recipe/userroles';
@@ -15,7 +16,11 @@ export const appInfo = {
 export const connectionUri = 'https://try.supertokens.com';
 
 export const recipeList = [
-  ThirdPartyPasswordless.init({
+  Passwordless.init({
+    contactMethod: 'EMAIL_OR_PHONE',
+    flowType: 'USER_INPUT_CODE_AND_MAGIC_LINK',
+  }),
+  ThirdParty.init({
     providers: [
       // We have provided you with development keys which you can use for testing.
       // IMPORTANT: Please replace them with your own OAuth keys for production use.
@@ -71,8 +76,6 @@ export const recipeList = [
         },
       },
     ],
-    contactMethod: 'EMAIL_OR_PHONE',
-    flowType: 'USER_INPUT_CODE_AND_MAGIC_LINK',
   }),
   Session.init(),
   Dashboard.init(),

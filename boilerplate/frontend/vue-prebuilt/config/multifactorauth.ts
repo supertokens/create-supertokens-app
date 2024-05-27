@@ -1,9 +1,10 @@
-import ThirdPartyEmailPassword, {
+import ThirdParty, {
   Google,
   Github,
   Apple,
   Twitter,
-} from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+} from "supertokens-auth-react/recipe/thirdparty";
+import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
 import Passwordless from "supertokens-auth-react/recipe/passwordless";
 import MultiFactorAuth from "supertokens-auth-react/recipe/multifactorauth";
 import EmailVerification from "supertokens-auth-react/recipe/emailverification";
@@ -19,7 +20,8 @@ export const SuperTokensConfig = {
   // recipeList contains all the modules that you want to
   // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
   recipeList: [
-    ThirdPartyEmailPassword.init({
+    EmailPassword.init(),
+    ThirdParty.init({
       signInAndUpFeature: {
         providers: [Github.init(), Google.init(), Apple.init(), Twitter.init()],
       },

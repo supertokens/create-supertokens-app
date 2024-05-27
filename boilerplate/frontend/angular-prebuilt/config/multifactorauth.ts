@@ -1,9 +1,5 @@
-import ThirdPartyEmailPassword, {
-    Google,
-    Github,
-    Apple,
-    Twitter,
-} from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import ThirdPartyEmailPassword, { Google, Github, Apple, Twitter } from "supertokens-auth-react/recipe/thirdparty";
+import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
 import Passwordless from "supertokens-auth-react/recipe/passwordless";
 import EmailVerification from "supertokens-auth-react/recipe/emailverification";
 import MultiFactorAuth from "supertokens-auth-react/recipe/multifactorauth";

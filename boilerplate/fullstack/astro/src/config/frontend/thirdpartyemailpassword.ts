@@ -1,18 +1,21 @@
-import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword/index.js";
+import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty/index.js";
+import EmailPasswordReact from "supertokens-auth-react/recipe/emailpassword/index.js";
 import Session from "supertokens-auth-react/recipe/session/index.js";
 import { appInfo } from "./appInfo";
-import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui.js";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui.js";
+import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui.js";
 
 export const frontendConfig = () => {
     return {
         appInfo,
         recipeList: [
-            ThirdPartyEmailPasswordReact.init({
+            EmailPasswordReact.init(),
+            ThirdPartyReact.init({
                 signInAndUpFeature: {
                     providers: [
-                        ThirdPartyEmailPasswordReact.Google.init(),
-                        ThirdPartyEmailPasswordReact.Github.init(),
-                        ThirdPartyEmailPasswordReact.Apple.init(),
+                        ThirdPartyReact.Google.init(),
+                        ThirdPartyReact.Github.init(),
+                        ThirdPartyReact.Apple.init(),
                     ],
                 },
             }),
@@ -25,4 +28,4 @@ export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/thirdpartyemailpassword/introduction",
 };
 
-export const PreBuiltUIList = [ThirdPartyEmailPasswordPreBuiltUI];
+export const PreBuiltUIList = [ThirdPartyPreBuiltUI, EmailPasswordPreBuiltUI];
