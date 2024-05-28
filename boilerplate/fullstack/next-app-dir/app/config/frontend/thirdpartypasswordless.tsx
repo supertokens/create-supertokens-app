@@ -19,7 +19,7 @@ export const frontendConfig = (): SuperTokensConfig => {
         appInfo,
         recipeList: [
             ThirdPartyReact.init({
-                signInUpFeature: {
+                signInAndUpFeature: {
                     providers: [
                         ThirdPartyReact.Github.init(),
                         ThirdPartyReact.Google.init(),

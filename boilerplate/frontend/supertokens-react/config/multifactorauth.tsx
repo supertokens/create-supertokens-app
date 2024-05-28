@@ -42,7 +42,7 @@ export const SuperTokensConfig = {
         Passwordless.init({
             contactMethod: "EMAIL_OR_PHONE",
         }),
-        MultiFactorAuth.init(),
+        MultiFactorAuth.init({ firstFactors: ["thirdparty", "emailpassword"] }),
         EmailVerification.init({
             mode: "REQUIRED",
         }),

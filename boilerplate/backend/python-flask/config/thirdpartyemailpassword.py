@@ -24,7 +24,6 @@ recipe_list = [
     emailpassword.init(),
     thirdparty.init(
         sign_in_and_up_feature=thirdparty.SignInAndUpFeature(providers=[
-        providers=[
             ProviderInput(
                 config=ProviderConfig(
                     third_party_id="google",
@@ -73,7 +72,7 @@ recipe_list = [
                     ],
                 ),
             ),
-        ]
+        ])
     ),
     dashboard.init(),
 ]

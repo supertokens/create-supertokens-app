@@ -24,6 +24,7 @@ recipe_list = [
     passwordless.init(
         flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
         contact_config=ContactEmailOrPhoneConfig(),
+    ),
     thirdparty.init(
         sign_in_and_up_feature=thirdparty.SignInAndUpFeature(providers=[
             ProviderInput(

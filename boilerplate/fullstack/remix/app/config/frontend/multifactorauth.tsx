@@ -32,7 +32,7 @@ export const frontendConfig = (): SuperTokensConfig => {
                 contactMethod: "EMAIL_OR_PHONE",
             }),
             EmailVerification.init({ mode: "REQUIRED" }),
-            MultiFactorAuthReact.init(),
+            MultiFactorAuthReact.init({ firstFactors: ["thirdparty", "emailpassword"] }),
             TOTPReact.init(),
             Session.init(),
         ],
