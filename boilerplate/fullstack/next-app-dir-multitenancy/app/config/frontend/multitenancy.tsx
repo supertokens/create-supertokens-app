@@ -77,4 +77,4 @@ export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/multitenancy/introduction",
 };
 
-export const PreBuiltUIList = [ThirdPartyEmailPasswordPreBuiltUI, ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI];
+export const PreBuiltUIList = [EmailPasswordPreBuiltUI, ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI];

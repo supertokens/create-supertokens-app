@@ -10,14 +10,16 @@ export const frontendConfig = (): SuperTokensConfig => {
     return {
         appInfo,
         recipeList: [
-            ThirdPartyPasswordlessReact.init({
-                signInUpFeature: {
+            ThirdPartyReact.init({
+                signInAndUpFeature: {
                     providers: [
-                        ThirdPartyPasswordlessReact.Github.init(),
-                        ThirdPartyPasswordlessReact.Google.init(),
-                        ThirdPartyPasswordlessReact.Apple.init(),
+                        ThirdPartyReact.Github.init(),
+                        ThirdPartyReact.Google.init(),
+                        ThirdPartyReact.Apple.init(),
                     ],
                 },
+            }),
+            PasswordlessReact.init({
                 contactMethod: "EMAIL_OR_PHONE",
             }),
             Session.init(),
