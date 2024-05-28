@@ -7,7 +7,7 @@ import (
 	"github.com/supertokens/supertokens-golang/recipe/thirdparty"
 	"github.com/supertokens/supertokens-golang/recipe/thirdparty/tpmodels"
 	"github.com/supertokens/supertokens-golang/recipe/passwordless"
-	"github.com/supertokens/supertokens-golang/recipe/passwordless/tplmodels"
+	"github.com/supertokens/supertokens-golang/recipe/passwordless/plessmodels"
 	"github.com/supertokens/supertokens-golang/supertokens"
 )
 
@@ -21,7 +21,7 @@ var SuperTokensConfig = supertokens.TypeInput{
 		WebsiteDomain: "http://localhost:3000",
 	},
 	RecipeList: []supertokens.Recipe{
-		passwordless.Init(tplmodels.TypeInput{
+		passwordless.Init(plessmodels.TypeInput{
 			FlowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
 			ContactMethodEmailOrPhone: plessmodels.ContactMethodEmailOrPhoneConfig{
 				Enabled: true,
