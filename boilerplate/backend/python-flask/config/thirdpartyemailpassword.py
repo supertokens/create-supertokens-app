@@ -1,4 +1,4 @@
-from supertokens_python.recipe import session, thirdpartyemailpassword, dashboard
+from supertokens_python.recipe import session, thirdparty, emailpassword, dashboard
 from supertokens_python.recipe.thirdparty.provider import ProviderInput, ProviderConfig, ProviderClientConfig
 from supertokens_python import (
     InputAppInfo,
@@ -21,7 +21,9 @@ framework = "flask"
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
 recipe_list = [
     session.init(),
-    thirdpartyemailpassword.init(
+    emailpassword.init(),
+    thirdparty.init(
+        sign_in_and_up_feature=thirdparty.SignInAndUpFeature(providers=[
         providers=[
             ProviderInput(
                 config=ProviderConfig(

@@ -1,4 +1,4 @@
-from supertokens_python.recipe import session, thirdpartyemailpassword, dashboard
+from supertokens_python.recipe import session, thirdparty, emailpassword, dashboard
 from supertokens_python.recipe.thirdparty.provider import ProviderInput, ProviderConfig, ProviderClientConfig
 from supertokens_python import (
     InputAppInfo,
@@ -19,8 +19,9 @@ app_info = InputAppInfo(
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
 recipe_list = [
     session.init(),
-    thirdpartyemailpassword.init(
-        providers=[
+    emailpassword.init(),
+    thirdparty.init(
+        sign_in_and_up_feature=thirdparty.SignInAndUpFeature(providers=[
             ProviderInput(
                 config=ProviderConfig(
                     third_party_id="google",
@@ -69,7 +70,7 @@ recipe_list = [
                     ],
                 ),
             ),
-        ]
+        ])
     ),
     dashboard.init()
 ]

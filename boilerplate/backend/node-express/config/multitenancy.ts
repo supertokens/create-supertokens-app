@@ -31,8 +31,9 @@ export const SuperTokensConfig: TypeInput = {
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [
-        ThirdPartyEmailPassword.init(),
-        ThirdPartyPasswordless.init({
+        ThirdParty.init(),
+        EmailPassword.init(),
+        Passwordless.init({
             contactMethod: "EMAIL",
             flowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
         }),
