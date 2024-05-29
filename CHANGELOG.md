@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.45] - 2024-05-29
+
+-   Adds a recipe that enables Email Password + Social Login + Passwordless at the same time
+
 ## [0.0.44] - 2024-04-10
 
 -   Adds Astro to the list of frameworks (as full-stack), using the pre-built UI.
