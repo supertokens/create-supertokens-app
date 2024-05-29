@@ -1,3 +1,4 @@
-import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 
-export const PreBuiltUIList = [ThirdPartyPasswordlessPreBuiltUI];
+export const PreBuiltUIList = [ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI];

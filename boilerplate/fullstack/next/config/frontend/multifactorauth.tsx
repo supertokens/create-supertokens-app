@@ -1,5 +1,7 @@
-import ThirdPartyEmailPasswordReact from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";
+import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty";
+import EmailPasswordReact from "supertokens-auth-react/recipe/emailpassword";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
+import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
 import PasswordlessReact from "supertokens-auth-react/recipe/passwordless";
 import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import MultiFactorAuth from "supertokens-auth-react/recipe/multifactorauth";
@@ -18,19 +20,20 @@ export let frontendConfig = () => {
         // recipeList contains all the modules that you want to
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
         recipeList: [
-            ThirdPartyEmailPasswordReact.init({
+            EmailPasswordReact.init(),
+            ThirdPartyReact.init({
                 signInAndUpFeature: {
                     providers: [
-                        ThirdPartyEmailPasswordReact.Google.init(),
-                        ThirdPartyEmailPasswordReact.Github.init(),
-                        ThirdPartyEmailPasswordReact.Apple.init(),
+                        ThirdPartyReact.Google.init(),
+                        ThirdPartyReact.Github.init(),
+                        ThirdPartyReact.Apple.init(),
                     ],
                 },
             }),
             PasswordlessReact.init({
                 contactMethod: "EMAIL_OR_PHONE",
             }),
-            MultiFactorAuth.init(),
+            MultiFactorAuth.init({ firstFactors: ["thirdparty", "emailpassword"] }),
             EmailVerification.init({ mode: "REQUIRED" }),
             TOTP.init(),
             SessionReact.init(),
@@ -55,7 +58,8 @@ export const recipeDetails = {
 };
 
 export const PreBuiltUIList = [
-    ThirdPartyEmailPasswordPreBuiltUI,
+    ThirdPartyPreBuiltUI,
+    EmailPasswordPreBuiltUI,
     MultiFactorAuthPreBuiltUI,
     PasswordlessPreBuiltUI,
     EmailVerificationPreBuiltUI,

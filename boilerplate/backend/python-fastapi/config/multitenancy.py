@@ -1,4 +1,4 @@
-from supertokens_python.recipe import session, thirdpartyemailpassword, dashboard, thirdpartypasswordless
+from supertokens_python.recipe import session, thirdparty, emailpassword, dashboard, passwordless
 from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig
 from supertokens_python import (
     InputAppInfo,
@@ -21,8 +21,9 @@ framework = "fastapi"
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
 recipe_list = [
     session.init(),
-    thirdpartyemailpassword.init(),
-    thirdpartypasswordless.init(
+    thirdparty.init(),
+    emailpassword.init(),
+    passwordless.init(
         flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
         contact_config=ContactEmailOrPhoneConfig(),
     ),

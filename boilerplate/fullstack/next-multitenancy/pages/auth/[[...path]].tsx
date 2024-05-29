@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
 import dynamic from "next/dynamic";
 import SuperTokens from "supertokens-auth-react";
-import { canHandleRoute, getRoutingComponent } from "supertokens-auth-react/ui";
+import {
+    canHandleRoute,
+    getRoutingComponent,
+    AuthRecipeComponentsOverrideContextProvider,
+} from "supertokens-auth-react/ui";
 import { PreBuiltUIList } from "../../config/frontendConfig";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { TenantSelector } from "../../src/components/TenantSelector";
-import { ThirdpartyEmailPasswordComponentsOverrideProvider } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import { ThirdpartyPasswordlessComponentsOverrideProvider } from "supertokens-auth-react/recipe/thirdpartypasswordless";
 
 const SuperTokensComponentNoSSR = dynamic<{}>(new Promise((res) => res(() => getRoutingComponent(PreBuiltUIList))), {
     ssr: false,
@@ -58,9 +60,9 @@ export default function Auth(): JSX.Element {
         new URLSearchParams(location.search).has("tenantId")
     ) {
         return (
-            <ThirdpartyEmailPasswordComponentsOverrideProvider
+            <AuthRecipeComponentsOverrideContextProvider
                 components={{
-                    EmailPasswordSignInFooter_Override: ({ DefaultComponent, ...props }) => {
+                    AuthPageFooter_Override: ({ DefaultComponent, ...props }) => {
                         return (
                             <div>
                                 <DefaultComponent {...props} />
@@ -70,35 +72,22 @@ export default function Auth(): JSX.Element {
                     },
                 }}
             >
-                <ThirdpartyPasswordlessComponentsOverrideProvider
-                    components={{
-                        PasswordlessSignInUpFooter_Override: ({ DefaultComponent, ...props }) => {
-                            return (
-                                <div>
-                                    <DefaultComponent {...props} />
-                                    <ChangeTenantsButton setHasSelectedTenantId={setHasSelectedTenantId} />
-                                </div>
-                            );
-                        },
-                    }}
-                >
-                    <div className={styles.container}>
-                        <Head>
-                            <title>SuperTokens 💫</title>
-                            <link
-                                href="//fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap"
-                                rel="stylesheet"
-                                type="text/css"
-                            />
-                            <link rel="icon" href="/favicon.ico" />
-                        </Head>
+                <div className={styles.container}>
+                    <Head>
+                        <title>SuperTokens 💫</title>
+                        <link
+                            href="//fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap"
+                            rel="stylesheet"
+                            type="text/css"
+                        />
+                        <link rel="icon" href="/favicon.ico" />
+                    </Head>
 
-                        <main className={styles.main}>
-                            <SuperTokensComponentNoSSR />
-                        </main>
-                    </div>
-                </ThirdpartyPasswordlessComponentsOverrideProvider>
-            </ThirdpartyEmailPasswordComponentsOverrideProvider>
+                    <main className={styles.main}>
+                        <SuperTokensComponentNoSSR />
+                    </main>
+                </div>
+            </AuthRecipeComponentsOverrideContextProvider>
         );
     } else {
         return <TenantSelector setHasSelectedTenantId={setHasSelectedTenantId} />;

@@ -1,10 +1,7 @@
-import ThirdPartyEmailPassword, {
-    Google,
-    Github,
-    Apple,
-    Twitter,
-} from "supertokens-auth-react/recipe/thirdpartyemailpassword";
-import { ThirdPartyEmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartyemailpassword/prebuiltui";
+import ThirdParty, { Google, Github, Apple, Twitter } from "supertokens-auth-react/recipe/thirdparty";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
+import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
+import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
 import Passwordless from "supertokens-auth-react/recipe/passwordless";
 import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import MultiFactorAuth from "supertokens-auth-react/recipe/multifactorauth";
@@ -36,15 +33,16 @@ export const SuperTokensConfig = {
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [
-        ThirdPartyEmailPassword.init({
+        ThirdParty.init({
             signInAndUpFeature: {
                 providers: [Github.init(), Google.init(), Apple.init(), Twitter.init()],
             },
         }),
+        EmailPassword.init(),
         Passwordless.init({
             contactMethod: "EMAIL_OR_PHONE",
         }),
-        MultiFactorAuth.init(),
+        MultiFactorAuth.init({ firstFactors: ["thirdparty", "emailpassword"] }),
         EmailVerification.init({
             mode: "REQUIRED",
         }),
@@ -58,7 +56,8 @@ export const recipeDetails = {
 };
 
 export const PreBuiltUIList = [
-    ThirdPartyEmailPasswordPreBuiltUI,
+    ThirdPartyPreBuiltUI,
+    EmailPasswordPreBuiltUI,
     PasswordlessPreBuiltUI,
     MultiFactorAuthPreBuiltUI,
     EmailVerificationPreBuiltUI,

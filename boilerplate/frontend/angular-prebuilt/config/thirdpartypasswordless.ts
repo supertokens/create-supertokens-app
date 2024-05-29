@@ -1,5 +1,6 @@
-import * as ThirdPartyPasswordless from "supertokens-auth-react/recipe/thirdpartypasswordless";
-import { Github, Google, Apple, Twitter } from "supertokens-auth-react/recipe/thirdpartypasswordless";
+import * as ThirdParty from "supertokens-auth-react/recipe/thirdparty";
+import * as Passwordless from "supertokens-auth-react/recipe/passwordless";
+import { Github, Google, Apple, Twitter } from "supertokens-auth-react/recipe/thirdparty";
 import Session from "supertokens-auth-react/recipe/session";
 
 export const SuperTokensConfig = {
@@ -11,10 +12,12 @@ export const SuperTokensConfig = {
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [
-        ThirdPartyPasswordless.init({
-            signInUpFeature: {
+        ThirdParty.init({
+            signInAndUpFeature: {
                 providers: [Github.init(), Google.init(), Apple.init(), Twitter.init()],
             },
+        }),
+        Passwordless.init({
             contactMethod: "EMAIL_OR_PHONE",
         }),
         Session.init(),

@@ -1,5 +1,6 @@
-import ThirdPartyEmailPassword from 'supertokens-node/recipe/thirdpartyemailpassword';
-import ThirdPartyPasswordless from 'supertokens-node/recipe/thirdpartypasswordless';
+import ThirdParty from 'supertokens-node/recipe/thirdparty';
+import EmailPassword from 'supertokens-node/recipe/emailpassword';
+import Passwordless from 'supertokens-node/recipe/passwordless';
 import Session from 'supertokens-node/recipe/session';
 import Dashboard from 'supertokens-node/recipe/dashboard';
 import UserRoles from 'supertokens-node/recipe/userroles';
@@ -16,8 +17,9 @@ export const appInfo = {
 export const connectionUri = 'https://try.supertokens.com';
 
 export const recipeList = [
-  ThirdPartyEmailPassword.init(),
-  ThirdPartyPasswordless.init({
+  EmailPassword.init(),
+  ThirdParty.init(),
+  Passwordless.init({
     contactMethod: 'EMAIL',
     flowType: 'USER_INPUT_CODE_AND_MAGIC_LINK',
   }),

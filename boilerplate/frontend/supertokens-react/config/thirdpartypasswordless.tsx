@@ -1,7 +1,7 @@
-import ThirdPartyPasswordless, {
-    ThirdpartyPasswordlessComponentsOverrideProvider,
-} from "supertokens-auth-react/recipe/thirdpartypasswordless";
-import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
+import ThirdParty from "supertokens-auth-react/recipe/thirdparty";
+import Passwordless, { PasswordlessComponentsOverrideProvider } from "supertokens-auth-react/recipe/passwordless";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import Session from "supertokens-auth-react/recipe/session";
 import React from "react";
 
@@ -26,15 +26,17 @@ export const SuperTokensConfig = {
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [
-        ThirdPartyPasswordless.init({
-            signInUpFeature: {
+        ThirdParty.init({
+            signInAndUpFeature: {
                 providers: [
-                    ThirdPartyPasswordless.Github.init(),
-                    ThirdPartyPasswordless.Google.init(),
-                    ThirdPartyPasswordless.Apple.init(),
-                    ThirdPartyPasswordless.Twitter.init(),
+                    ThirdParty.Github.init(),
+                    ThirdParty.Google.init(),
+                    ThirdParty.Apple.init(),
+                    ThirdParty.Twitter.init(),
                 ],
             },
+        }),
+        Passwordless.init({
             contactMethod: "EMAIL_OR_PHONE",
         }),
         Session.init(),
@@ -45,11 +47,11 @@ export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
 };
 
-export const PreBuiltUIList = [ThirdPartyPasswordlessPreBuiltUI];
+export const PreBuiltUIList = [ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI];
 
 export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
     return (
-        <ThirdpartyPasswordlessComponentsOverrideProvider
+        <PasswordlessComponentsOverrideProvider
             components={{
                 PasswordlessUserInputCodeFormFooter_Override: ({ DefaultComponent, ...props }) => {
                     const loginAttemptInfo = props.loginAttemptInfo;
@@ -96,6 +98,6 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
             }}
         >
             {props.children}
-        </ThirdpartyPasswordlessComponentsOverrideProvider>
+        </PasswordlessComponentsOverrideProvider>
     );
 };

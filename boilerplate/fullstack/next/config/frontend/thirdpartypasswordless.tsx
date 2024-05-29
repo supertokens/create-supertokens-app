@@ -1,5 +1,7 @@
-import ThirdPartyPasswordlessReact from "supertokens-auth-react/recipe/thirdpartypasswordless";
-import { ThirdPartyPasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/thirdpartypasswordless/prebuiltui";
+import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty";
+import PasswordlessReact from "supertokens-auth-react/recipe/passwordless";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
 import { appInfo } from "./appInfo";
@@ -11,14 +13,16 @@ export let frontendConfig = (): SuperTokensConfig => {
         // recipeList contains all the modules that you want to
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
         recipeList: [
-            ThirdPartyPasswordlessReact.init({
-                signInUpFeature: {
+            ThirdPartyReact.init({
+                signInAndUpFeature: {
                     providers: [
-                        ThirdPartyPasswordlessReact.Github.init(),
-                        ThirdPartyPasswordlessReact.Google.init(),
-                        ThirdPartyPasswordlessReact.Apple.init(),
+                        ThirdPartyReact.Github.init(),
+                        ThirdPartyReact.Google.init(),
+                        ThirdPartyReact.Apple.init(),
                     ],
                 },
+            }),
+            PasswordlessReact.init({
                 contactMethod: "EMAIL_OR_PHONE",
             }),
             SessionReact.init(),
@@ -42,4 +46,4 @@ export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
 };
 
-export const PreBuiltUIList = [ThirdPartyPasswordlessPreBuiltUI];
+export const PreBuiltUIList = [ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI];

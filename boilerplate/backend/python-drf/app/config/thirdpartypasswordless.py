@@ -1,5 +1,5 @@
 from supertokens_python import init, InputAppInfo, SupertokensConfig
-from supertokens_python.recipe import thirdpartypasswordless, session, dashboard
+from supertokens_python.recipe import thirdparty, passwordless, session, dashboard
 from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig
 from supertokens_python.recipe.thirdparty.provider import ProviderInput, ProviderConfig, ProviderClientConfig
 from supertokens_python import (
@@ -21,10 +21,12 @@ app_info = InputAppInfo(
 # use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
 recipe_list = [
     session.init(),
-    thirdpartypasswordless.init(
+    passwordless.init(
         flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
         contact_config=ContactEmailOrPhoneConfig(),
-        providers=[
+    ),
+    thirdparty.init(
+        sign_in_and_up_feature=thirdparty.SignInAndUpFeature(providers=[
             ProviderInput(
                 config=ProviderConfig(
                     third_party_id="google",
@@ -73,7 +75,7 @@ recipe_list = [
                     ],
                 ),
             ),
-        ]
+        ])
     ),
     dashboard.init()
 ]
