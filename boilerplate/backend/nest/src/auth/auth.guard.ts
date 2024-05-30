@@ -1,34 +1,26 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Error as STError } from 'supertokens-node';
-import { VerifySessionOptions } from 'supertokens-node/recipe/session';
-
-import { verifySession } from 'supertokens-node/recipe/session/framework/express';
+import {
+  getSession,
+  VerifySessionOptions,
+} from 'supertokens-node/recipe/session';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly verifyOptions?: VerifySessionOptions) {}
+  constructor(private readonly getSessionOptions?: VerifySessionOptions) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  public async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = context.switchToHttp();
 
-    let err = undefined;
+    const req = ctx.getRequest();
     const resp = ctx.getResponse();
-    // You can create an optional version of this by passing {sessionRequired: false} to verifySession
-    await verifySession(this.verifyOptions)(ctx.getRequest(), resp, (res) => {
-      err = res;
-    });
 
-    if (resp.headersSent) {
-      throw new STError({
-        message: 'RESPONSE_SENT',
-        type: 'RESPONSE_SENT',
-      });
-    }
+    // If the session doesn't exist and {sessionRequired: true} is passed to the AuthGuard constructor (default is true),
+    // getSession will throw an error that will be handled by the exception filter, returning a 401 response.
 
-    if (err) {
-      throw err;
-    }
-
+    // To avoid an error when the session doesn't exist, pass {sessionRequired: false} to the AuthGuard constructor.
+    // In this case, req.session will be undefined if the session doesn't exist.
+    const session = await getSession(req, resp, this.getSessionOptions);
+    req.session = session;
     return true;
   }
 }

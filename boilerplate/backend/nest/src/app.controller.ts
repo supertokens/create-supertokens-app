@@ -16,7 +16,9 @@ export class AppController {
 
   @Get('/sessioninfo')
   @UseGuards(new AuthGuard())
-  getSessionInformation(@Session() session: SessionContainer): any {
+  getSessionInfo(
+    @Session() session: SessionContainer,
+  ): Record<string, unknown> {
     return {
       sessionHandle: session.getHandle(),
       userId: session.getUserId(),
