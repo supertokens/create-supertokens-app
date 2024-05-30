@@ -1,4 +1,5 @@
 export type Recipe =
+    | "all_auth"
     | "emailpassword"
     | "thirdpartyemailpassword"
     | "passwordless"
@@ -8,6 +9,7 @@ export type Recipe =
     | "multifactorauth";
 
 export const allRecipes: Recipe[] = [
+    "all_auth",
     "emailpassword",
     "thirdpartyemailpassword",
     "passwordless",
@@ -53,6 +55,14 @@ export const allFrontends: {
     {
         id: "next",
         displayValue: "next",
+    },
+    {
+        id: "astro",
+        displayValue: "astro",
+    },
+    {
+        id: "remix",
+        displayValue: "remix",
     },
     {
         id: "angular-prebuilt",
