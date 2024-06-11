@@ -49,7 +49,7 @@ export async function HomePage() {
         }
 
         if (hasInvalidClaims) {
-            return <SessionAuthForNextJS />;
+            return <SessionAuthForNextJS ssrSessionExists={true} />;
         } else {
             // To learn about why the 'key' attribute is required refer to: https://github.com/supertokens/supertokens-node/issues/826#issuecomment-2092144048
             return <TryRefreshComponent key={Date.now()} />;
@@ -57,7 +57,7 @@ export async function HomePage() {
     }
 
     return (
-        <SessionAuthForNextJS>
+        <SessionAuthForNextJS ssrSessionExists={true}>
             <div className={styles.homeContainer}>
                 <div className={styles.mainContainer}>
                     <div className={`${styles.topBand} ${styles.successTitle} ${styles.bold500}`}>
