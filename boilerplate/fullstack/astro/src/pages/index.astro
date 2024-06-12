@@ -2,9 +2,6 @@
 import Base from "../layouts/Base.astro";
 import Home from "../components/Home";
 import { getSessionForSSR } from "../superTokensHelpers";
-import { ensureSuperTokensInit } from "../config/backend";
-
-ensureSuperTokensInit();
 
 const { accessTokenPayload, hasToken, error } = await getSessionForSSR(
   Astro.request

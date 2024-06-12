@@ -7,13 +7,10 @@ import { CelebrateIcon, SeparatorLine } from "../../assets/images";
 import { CallAPIButton } from "./callApiButton";
 import { LinksComponent } from "./linksComponent";
 import { SessionAuthForNextJS } from "./sessionAuthForNextJS";
-import { ensureSuperTokensInit } from "../config/backend";
 import jwksClient from "jwks-rsa";
 import JsonWebToken from "jsonwebtoken";
 import type { JwtHeader, JwtPayload, SigningKeyCallback } from "jsonwebtoken";
 import { appInfo } from "../config/appInfo";
-
-ensureSuperTokensInit();
 
 const client = jwksClient({
     jwksUri: `${appInfo.apiDomain}${appInfo.apiBasePath}/jwt/jwks.json`,
