@@ -74,7 +74,7 @@ var SuperTokensConfig = supertokens.TypeInput{
 						},
 					},
 				},
-			}
+			},
 		}),
 		session.Init(nil),
 		dashboard.Init(nil),
