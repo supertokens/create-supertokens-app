@@ -7,43 +7,23 @@ import SessionReact from "supertokens-auth-react/recipe/session/index.js";
 import { getSessionForSSR } from "../superTokensHelpers";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
-
-interface SessionProps {
-    userId: string;
-    sessionHandle: string;
-    accessTokenPayload: object;
-}
+import { JwtPayload } from "jsonwebtoken";
 
 export async function loader({ request }: LoaderFunctionArgs): Promise<{
-    session: SessionProps | undefined;
-    hasInvalidClaims: boolean;
+    accessTokenPayload: JwtPayload | undefined;
     hasToken: boolean;
+    error: Error | undefined;
 }> {
-    const { session, hasInvalidClaims, hasToken } = await getSessionForSSR(request);
-
-    let sessionProps: SessionProps | undefined = undefined;
-    if (session !== undefined) {
-        sessionProps = {
-            userId: session.getUserId(),
-            sessionHandle: session.getHandle(),
-            accessTokenPayload: session.getAccessTokenPayload(),
-        };
-    }
-
-    return {
-        session: sessionProps,
-        hasInvalidClaims,
-        hasToken,
-    };
+    return getSessionForSSR(request);
 }
 
 export default function Home() {
     const navigate = useNavigate();
 
-    const { session, hasInvalidClaims, hasToken } = useLoaderData<{
-        session: SessionProps | undefined;
-        hasInvalidClaims: boolean;
+    const { accessTokenPayload, hasToken, error } = useLoaderData<{
+        accessTokenPayload: JwtPayload | undefined;
         hasToken: boolean;
+        error: Error | undefined;
     }>();
 
     async function logoutClicked() {
@@ -51,20 +31,32 @@ export default function Home() {
         SuperTokens.redirectToAuth();
     }
 
-    if (session === undefined) {
+    if (error) {
+        return <div>Something went wrong while trying to get the session. Error - {error.message}</div>;
+    }
+
+    // `accessTokenPayload` will be undefined if it the session does not exist or has expired
+    if (accessTokenPayload === undefined) {
+        /**
+         * This means that the user is not logged in. If you want to display some other UI in this
+         * case, you can do so here.
+         */
         if (!hasToken) {
             return navigate("/auth");
         }
-        if (hasInvalidClaims) {
-            return <SessionAuthForRemix />;
-        } else {
-            // To learn about why the 'key' attribute is required refer to: https://github.com/supertokens/supertokens-node/issues/826#issuecomment-2092144048
-            return <TryRefreshComponent key={Date.now()} />;
-        }
+        /**
+         * This means that the session does not exist but we have session tokens for the user. In this case
+         * the `TryRefreshComponent` will try to refresh the session.
+         *
+         * To learn about why the 'key' attribute is required refer to: https://github.com/supertokens/supertokens-node/issues/826#issuecomment-2092144048
+         */
+        return <TryRefreshComponent key={Date.now()} />;
     }
 
-    const displaySessionInformationWindow = (sessionData: SessionProps) => {
-        window.alert("Session Information: " + JSON.stringify(sessionData));
+    const fetchUserData = async () => {
+        const userInfoResponse = await fetch("http://localhost:3000/sessioninfo");
+
+        alert(JSON.stringify(await userInfoResponse.json()));
     };
 
     const links: {
@@ -89,6 +81,10 @@ export default function Home() {
         },
     ];
 
+    /**
+     * SessionAuthForRemix will handle proper redirection for the user based on the different session states.
+     * It will redirect to the login page if the session does not exist etc.
+     */
     return (
         <SessionAuthForRemix>
             <div className="homeContainer">
@@ -100,9 +96,9 @@ export default function Home() {
                     <div className="innerContent">
                         <div>Your userID is: </div>
 
-                        <div className="truncate userId">{session.userId}</div>
+                        <div className="truncate userId">{accessTokenPayload.sub}</div>
 
-                        <button onClick={() => displaySessionInformationWindow(session)} className="sessionButton">
+                        <button onClick={() => fetchUserData()} className="sessionButton">
                             Call API
                         </button>
                     </div>

@@ -10,8 +10,43 @@ import { availableTokenTransferMethods } from "supertokens-node/lib/build/recipe
 import { getToken } from "supertokens-node/lib/build/recipe/session/cookieAndHeaders.js";
 import { parseJWTWithoutSignatureVerification } from "supertokens-node/lib/build/recipe/session/jwt.js";
 import { serialize } from "cookie";
+import JsonWebToken from "jsonwebtoken";
+import type { JwtHeader, JwtPayload, SigningKeyCallback } from "jsonwebtoken";
+import jwksClient from "jwks-rsa";
+import { appInfo } from "./config/appInfo";
 
 type HTTPMethod = "post" | "get" | "delete" | "put" | "options" | "trace";
+
+const client = jwksClient({
+    jwksUri: `${appInfo.apiDomain}${appInfo.apiBasePath}/jwt/jwks.json`,
+});
+
+function getAccessToken(request: Request): string | undefined {
+    return getCookieFromRequest(request)["sAccessToken"];
+}
+
+function getPublicKey(header: JwtHeader, callback: SigningKeyCallback) {
+    client.getSigningKey(header.kid, (err, key) => {
+        if (err) {
+            callback(err);
+        } else {
+            const signingKey = key?.getPublicKey();
+            callback(null, signingKey);
+        }
+    });
+}
+
+async function verifyToken(token: string): Promise<JwtPayload> {
+    return new Promise((resolve, reject) => {
+        JsonWebToken.verify(token, getPublicKey, {}, (err, decoded) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(decoded as JwtPayload);
+            }
+        });
+    });
+}
 
 export function handleAuthAPIRequest(RemixResponse: typeof Response) {
     const stMiddleware = middleware<Request>((req) => {
@@ -148,21 +183,32 @@ async function getSessionDetails(
     }
 }
 
-export async function getSessionForSSR(
-    remixRequest: Request,
-    options?: VerifySessionOptions,
-    userContext?: Record<string, unknown>
-): Promise<{
-    session: SessionContainer | undefined;
+/**
+ * A helper function to retrieve session details on the server side.
+ *
+ * NOTE: This function does not use the getSession function from the supertokens-node SDK
+ * because getSession can update the access token. These updated tokens would not be
+ * propagated to the client side, as request interceptors do not run on the server side.
+ */
+export async function getSessionForSSR(remixRequest: Request): Promise<{
+    accessTokenPayload: JwtPayload | undefined;
     hasToken: boolean;
-    hasInvalidClaims: boolean;
+    error: Error | undefined;
 }> {
-    const sessionDetails = await getSessionDetails(createPreParsedRequest(remixRequest), options, userContext);
-    return {
-        session: sessionDetails.session,
-        hasInvalidClaims: sessionDetails.hasInvalidClaims,
-        hasToken: sessionDetails.hasToken,
-    };
+    const accessToken = getAccessToken(remixRequest);
+    const hasToken = !!accessToken;
+    try {
+        if (accessToken) {
+            const decoded = await verifyToken(accessToken);
+            return { accessTokenPayload: decoded, hasToken, error: undefined };
+        }
+        return { accessTokenPayload: undefined, hasToken, error: undefined };
+    } catch (error) {
+        if (error instanceof JsonWebToken.TokenExpiredError) {
+            return { accessTokenPayload: undefined, hasToken, error: undefined };
+        }
+        return { accessTokenPayload: undefined, hasToken, error: error as Error };
+    }
 }
 
 export async function withSession(
@@ -172,7 +218,7 @@ export async function withSession(
     userContext?: Record<string, any>
 ): Promise<Response> {
     try {
-        let baseRequest = createPreParsedRequest(remixRequest);
+        const baseRequest = createPreParsedRequest(remixRequest);
         const { session, RemixResponse, baseResponse } = await getSessionDetails(baseRequest, options, userContext);
 
         if (RemixResponse !== undefined) {
@@ -195,34 +241,34 @@ export async function withSession(
                 status: baseResponse.statusCode,
                 headers: baseResponse.headers,
             });
+        }
 
-            let didAddCookies = false;
-            let didAddHeaders = false;
+        let didAddCookies = false;
+        let didAddHeaders = false;
 
-            for (const respCookie of baseResponse.cookies) {
-                didAddCookies = true;
-                userResponse.headers.append(
-                    "Set-Cookie",
-                    serialize(respCookie.key, respCookie.value, {
-                        domain: respCookie.domain,
-                        expires: new Date(respCookie.expires),
-                        httpOnly: respCookie.httpOnly,
-                        path: respCookie.path,
-                        sameSite: respCookie.sameSite,
-                        secure: respCookie.secure,
-                    })
-                );
-            }
+        for (const respCookie of baseResponse.cookies) {
+            didAddCookies = true;
+            userResponse.headers.append(
+                "Set-Cookie",
+                serialize(respCookie.key, respCookie.value, {
+                    domain: respCookie.domain,
+                    expires: new Date(respCookie.expires),
+                    httpOnly: respCookie.httpOnly,
+                    path: respCookie.path,
+                    sameSite: respCookie.sameSite,
+                    secure: respCookie.secure,
+                })
+            );
+        }
 
-            baseResponse.headers.forEach((value: string, key: string) => {
-                didAddHeaders = true;
-                userResponse.headers.set(key, value);
-            });
-            if (didAddCookies || didAddHeaders) {
-                if (!userResponse.headers.has("Cache-Control")) {
-                    // This is needed for production deployments with Vercel
-                    userResponse.headers.set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
-                }
+        baseResponse.headers.forEach((value: string, key: string) => {
+            didAddHeaders = true;
+            userResponse.headers.set(key, value);
+        });
+        if (didAddCookies || didAddHeaders) {
+            if (!userResponse.headers.has("Cache-Control")) {
+                // This is needed for production deployments with Vercel
+                userResponse.headers.set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
             }
         }
 
