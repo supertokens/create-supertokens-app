@@ -29,15 +29,7 @@ export let frontendConfig = (): SuperTokensConfig => {
             Passwordless.init({
                 contactMethod: "EMAIL",
             }),
-            SessionReact.init({
-                onHandleEvent: (event) => {
-                    // This is done to remove the saved tenantId so that when the user next
-                    // visits the login page, they see the tenant drop down.
-                    if (["SIGN_OUT", "UNAUTHORISED", "SESSION_CREATED"].includes(event.action)) {
-                        localStorage.removeItem("tenantId");
-                    }
-                },
-            }),
+            SessionReact.init(),
             Multitenancy.init({
                 override: {
                     functions: (oI) => {

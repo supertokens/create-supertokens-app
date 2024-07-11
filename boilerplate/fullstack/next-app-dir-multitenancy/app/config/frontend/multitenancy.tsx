@@ -36,15 +36,7 @@ export const frontendConfig = (): SuperTokensConfig => {
             }),
             EmailPasswordReact.init(),
             ThirdPartyReact.init(),
-            Session.init({
-                onHandleEvent: (event) => {
-                    // This is done to remove the saved tenantId so that when the user next
-                    // visits the login page, they see the tenant drop down.
-                    if (["SIGN_OUT", "UNAUTHORISED", "SESSION_CREATED"].includes(event.action)) {
-                        localStorage.removeItem("tenantId");
-                    }
-                },
-            }),
+            Session.init(),
             MultitenancyReact.init({
                 override: {
                     functions: (oI) => {
