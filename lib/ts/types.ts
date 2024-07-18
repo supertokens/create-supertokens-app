@@ -230,6 +230,7 @@ export function isValidPackageManager(manager: string): manager is SupportedPack
 }
 
 export type UserFlagsRaw = {
+    dashboardDemo?: boolean;
     appname?: string;
     recipe?: string;
     branch?: string;

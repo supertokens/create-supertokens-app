@@ -88,6 +88,7 @@ async function run() {
             in userArguments.recipe === "emailpassword"
 
             Available flags:
+            --dashboardDemo: boolean; This is a special flag, which bypasses everything and generates a project just to see the dashboard demo.
             --appname: App name
             --recipe: Auth mechanism
             --branch: Which branch to use when downloading from github (defaults to master)
@@ -103,6 +104,13 @@ async function run() {
             ...userArgumentsRaw,
             manager: userArgumentsRaw.manager ?? inferredPackageManager() ?? "npm",
         };
+
+        if (userArguments.dashboardDemo === true) {
+            userArguments.appname = "dashboard-demo";
+            userArguments.backend = "node";
+            userArguments.frontend = "react";
+            userArguments.recipe = "dashboardDemo";
+        }
 
         AnalyticsManager.sendAnalyticsEvent({
             eventName: "cli_started",
@@ -156,6 +164,8 @@ async function run() {
             spinner: "dots10",
             text: "Downloading files",
         }).start();
+
+        console.log("HAHAHAHAHAH!!");
 
         const folderLocations = await getDownloadLocationFromAnswers(answers, userArguments);
 
