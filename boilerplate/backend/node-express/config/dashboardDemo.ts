@@ -7,6 +7,7 @@ import Dashboard from "supertokens-node/recipe/dashboard";
 import MultiFactorAuth from "supertokens-node/recipe/multifactorauth";
 import EmailVerification from "supertokens-node/recipe/emailverification";
 import TOTP from "supertokens-node/recipe/totp";
+import UserRoles from "supertokens-node/recipe/userroles";
 
 export function getApiDomain() {
     const apiPort = process.env.REACT_APP_API_PORT || 3001;

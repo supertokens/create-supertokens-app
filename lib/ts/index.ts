@@ -106,7 +106,7 @@ async function run() {
         };
 
         if (userArguments.dashboardDemo === "true") {
-            userArguments.appname = "dashboard-demo";
+            userArguments.appname = "my-app";
             userArguments.backend = "node";
             userArguments.frontend = "react";
             userArguments.recipe = "dashboardDemo";
