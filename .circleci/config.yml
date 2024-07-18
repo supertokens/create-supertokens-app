@@ -39,7 +39,9 @@ jobs:
                           cd demo_apps/ && \
                           (rm -rf dashboard-demo || true) && \
                           npx -y create-supertokens-app@latest --dashboardDemo=true && \
-                          cd dashboard-demo/backend && \
+                          cd dashboard-demo/frontend && \
+                          REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://dashboard.demo.supertokens.com REACT_APP_WEBSITE_PORT=3000 REACT_APP_WEBSITE_URL=http://localhost npm run build && \
+                          cd ../backend && \
                           echo 'REACT_APP_API_PORT=3001 REACT_APP_API_URL=https://dashboard.demo.supertokens.com npx ts-node-dev --project ./tsconfig.json ./index.ts' > startLiveDemoApp.sh && chmod +x startLiveDemoApp.sh && \
                           (docker rm -f demo-app-dashboard || true) && \
                           docker run -d --restart=always --name demo-app-dashboard --label name=demo-app --label type=app --label mode=production --volume /home/ubuntu/demo_apps/dashboard-demo:/usr/src/app --publish 100009:3001 supertokens/demo'
