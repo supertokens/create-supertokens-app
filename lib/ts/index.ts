@@ -105,7 +105,7 @@ async function run() {
             manager: userArgumentsRaw.manager ?? inferredPackageManager() ?? "npm",
         };
 
-        if (userArguments.dashboardDemo === true) {
+        if (userArguments.dashboardDemo === "true") {
             userArguments.appname = "dashboard-demo";
             userArguments.backend = "node";
             userArguments.frontend = "react";
