@@ -15,6 +15,10 @@ export function getApiDomain() {
     return apiUrl;
 }
 
+export function getWebsiteDomain() {
+    return "http://localhost:3000";
+}
+
 export const SuperTokensConfig: TypeInput = {
     supertokens: {
         // this is the location of the SuperTokens core.
