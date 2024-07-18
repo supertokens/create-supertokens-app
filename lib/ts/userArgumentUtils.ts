@@ -37,6 +37,12 @@ export function validateFolderName(name: string): {
 }
 
 export function validateUserArguments(userArguments: UserFlagsRaw) {
+    if (userArguments.dashboardDemo !== undefined) {
+        if (userArguments.dashboardDemo !== "true") {
+            throw new Error("When using --dashboardDemo, please always set the value to true");
+        }
+        return;
+    }
     if (userArguments.appname !== undefined) {
         const validation = validateFolderName(userArguments.appname);
 
