@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.46] - 2024-07-18
+
+-   Adds a new flag `--dashboardDemo=true` which can be used to generate an app in which only the backend works, but can be used to show case the dashboard.
+
 ## [0.0.45] - 2024-05-29
 
 -   Adds a recipe that enables Email Password + Social Login + Passwordless at the same time
