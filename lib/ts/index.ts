@@ -165,8 +165,6 @@ async function run() {
             text: "Downloading files",
         }).start();
 
-        console.log("HAHAHAHAHAH!!");
-
         const folderLocations = await getDownloadLocationFromAnswers(answers, userArguments);
 
         if (folderLocations === undefined) {
