@@ -181,10 +181,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             displayName: "Angular",
             location: {
                 main: "frontend/angular-prebuilt",
-                config: [
-                    { finalConfig: "/src/config.ts", configFiles: "/config" },
-                    { finalConfig: "/src/configUI.ts", configFiles: "/configUI" },
-                ],
+                config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
                 setup: [`${manager} install`],
@@ -196,10 +193,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             displayName: "Vue.js",
             location: {
                 main: "frontend/vue-prebuilt",
-                config: [
-                    { finalConfig: "/src/config.ts", configFiles: "/config" },
-                    { finalConfig: "/src/configUI.ts", configFiles: "/configUI" },
-                ],
+                config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
                 setup: [`${manager} install`],

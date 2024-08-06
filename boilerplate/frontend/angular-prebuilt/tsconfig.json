@@ -4,9 +4,7 @@
     "compilerOptions": {
         "baseUrl": "./",
         "outDir": "./dist/out-tsc",
-        "jsx": "react",
         "forceConsistentCasingInFileNames": true,
-        "allowSyntheticDefaultImports": true,
         "strict": true,
         "noImplicitOverride": true,
         "noPropertyAccessFromIndexSignature": true,

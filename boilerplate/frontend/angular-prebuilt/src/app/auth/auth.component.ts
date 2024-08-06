@@ -1,26 +1,34 @@
-import { Component, OnDestroy, AfterViewInit } from "@angular/core";
-import * as React from "react";
-
-import * as ReactDOM from "react-dom";
-
-import SuperTokensReactComponent from "./supertokens";
+import { Component, OnDestroy, AfterViewInit, Renderer2, Inject } from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { initSuperTokensUI } from "src/config";
 
 @Component({
     selector: "app-auth",
-    template: '<div [id]="rootId"></div>',
+    template: '<div id="supertokensui"></div>',
 })
 export class AuthComponent implements OnDestroy, AfterViewInit {
-    title = "angularreactapp";
+    constructor(private renderer: Renderer2, @Inject(DOCUMENT) private document: Document) {}
 
-    public rootId = "rootId";
-
-    // We use the ngAfterViewInit lifecycle hook to render the React component after the Angular component  view gets initialized
     ngAfterViewInit() {
-        ReactDOM.render(React.createElement(SuperTokensReactComponent), document.getElementById(this.rootId));
+        this.loadScript("https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.44.0/build/static/js/main.38fe3894.js");
     }
 
-    // We use the ngOnDestroy lifecycle hook to unmount the React component when the Angular wrapper component is destroyed.
     ngOnDestroy() {
-        ReactDOM.unmountComponentAtNode(document.getElementById(this.rootId) as Element);
+        // Remove the script and CSS when the component is destroyed
+        const script = this.document.getElementById("supertokens-script");
+        if (script) {
+            script.remove();
+        }
+    }
+
+    private loadScript(src: string) {
+        const script = this.renderer.createElement("script");
+        script.type = "text/javascript";
+        script.src = src;
+        script.id = "supertokens-script";
+        script.onload = () => {
+            initSuperTokensUI();
+        };
+        this.renderer.appendChild(this.document.body, script);
     }
 }
