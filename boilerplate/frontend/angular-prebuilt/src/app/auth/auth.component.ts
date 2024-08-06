@@ -10,7 +10,7 @@ export class AuthComponent implements OnDestroy, AfterViewInit {
     constructor(private renderer: Renderer2, @Inject(DOCUMENT) private document: Document) {}
 
     ngAfterViewInit() {
-        this.loadScript("https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.44.0/build/static/js/main.38fe3894.js");
+        this.loadScript("${jsdeliveryprebuiltuiurl}");
     }
 
     ngOnDestroy() {

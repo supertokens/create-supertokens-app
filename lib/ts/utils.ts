@@ -244,6 +244,22 @@ async function performAdditionalSetupForFrontendIfNeeded(
             throw new Error(error);
         }
     }
+
+    // we check if any file in the code on the frontend has ${jsdeliveryprebuiltuiurl}, and if it does, we replace it with the actual url
+    const frontendFiles = fs.readdirSync(`${sourceFolder}`);
+    let actualBundleSource = "";
+    for (const file of frontendFiles) {
+        const fileContent = fs.readFileSync(`${sourceFolder}/${file}`, "utf8");
+        if (fileContent.includes("${jsdeliveryprebuiltuiurl}")) {
+            if (actualBundleSource === "") {
+                const response = await fetch("https://api.supertokens.com/0/frontend/auth-react");
+                const data: any = await response.json();
+                actualBundleSource = data.uri;
+            }
+            const updatedContent = fileContent.replace("${jsdeliveryprebuiltuiurl}", actualBundleSource);
+            fs.writeFileSync(`${sourceFolder}/${file}`, updatedContent);
+        }
+    }
 }
 
 async function setupFrontendBackendApp(
