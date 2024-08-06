@@ -249,10 +249,16 @@ async function performAdditionalSetupForFrontendIfNeeded(
     const frontendFiles = fs.readdirSync(`${sourceFolder}`);
     let actualBundleSource = "";
     for (const file of frontendFiles) {
+        console.log(`${sourceFolder}/${file}`);
         const fileContent = fs.readFileSync(`${sourceFolder}/${file}`, "utf8");
         if (fileContent.includes("${jsdeliveryprebuiltuiurl}")) {
             if (actualBundleSource === "") {
                 const response = await fetch("https://api.supertokens.com/0/frontend/auth-react");
+                if (!response.ok) {
+                    throw new Error(
+                        "Failed to fetch the actual bundle source for pre built UI. Please try again in sometime"
+                    );
+                }
                 const data: any = await response.json();
                 actualBundleSource = data.uri;
             }
