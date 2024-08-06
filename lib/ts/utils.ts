@@ -262,7 +262,7 @@ async function performAdditionalSetupForFrontendIfNeeded(
             const fileContent = fs.readFileSync(filePath, "utf8");
             if (fileContent.includes("${jsdeliveryprebuiltuiurl}")) {
                 if (actualBundleSource === "") {
-                    const response = await fetch("https://api.supertokens.com/0/frontend/auth-react");
+                    const response = await fetch("https://api.supertokens.com/0/frontend/auth-reactt");
                     if (!response.ok) {
                         throw new Error(
                             "Failed to fetch the actual bundle source for pre built UI. Please try again in sometime"
