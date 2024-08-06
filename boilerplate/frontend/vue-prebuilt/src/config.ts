@@ -1,8 +1,3 @@
-export const SuperTokensConfig = {
-  appInfo: {
-    appName: "SuperTokens Demo App",
-    apiDomain: "",
-    websiteDomain: "",
-  },
-  recipeList: [],
-};
+export function initSuperTokensUI() {}
+
+export function initSuperTokensWebJS() {}

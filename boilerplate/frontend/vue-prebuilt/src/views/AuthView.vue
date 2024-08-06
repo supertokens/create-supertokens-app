@@ -1,18 +1,34 @@
 <script lang="ts">
-import React from "react";
-import SuperTokensReactComponent from "../components/SuperTokens";
-import ReactDOM from "react-dom";
+import { defineComponent, onMounted, onUnmounted } from "vue";
+import { initSuperTokensUI } from "../config";
 
-export default {
-  mounted: () => {
-    ReactDOM.render(
-      React.createElement(SuperTokensReactComponent as React.FC),
-      document.getElementById("authapp")
-    );
+export default defineComponent({
+  setup() {
+    const loadScript = (src: string) => {
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = src;
+      script.id = "supertokens-script";
+      script.onload = () => {
+        initSuperTokensUI();
+      };
+      document.body.appendChild(script);
+    };
+
+    onMounted(() => {
+      loadScript("${jsdeliveryprebuiltuiurl}");
+    });
+
+    onUnmounted(() => {
+      const script = document.getElementById("supertokens-script");
+      if (script) {
+        script.remove();
+      }
+    });
   },
-};
+});
 </script>
 
 <template>
-  <div id="authapp" />
+  <div id="supertokensui" />
 </template>

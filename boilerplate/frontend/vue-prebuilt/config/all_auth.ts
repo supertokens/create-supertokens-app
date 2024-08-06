@@ -1,31 +1,39 @@
-import ThirdParty from "supertokens-auth-react/recipe/thirdparty";
-import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
-import Passwordless from "supertokens-auth-react/recipe/passwordless";
-import {
-  Github,
-  Google,
-  Apple,
-  Twitter,
-} from "supertokens-auth-react/recipe/thirdparty";
-import Session from "supertokens-auth-react/recipe/session";
+import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
 
-export const SuperTokensConfig = {
-  appInfo: {
-    appName: "SuperTokens Demo App",
-    apiDomain: "http://localhost:3001",
-    websiteDomain: "http://localhost:3000",
-  },
-  useShadowDom: false,
-  recipeList: [
-    EmailPassword.init(),
-    ThirdParty.init({
-      signInAndUpFeature: {
-        providers: [Github.init(), Google.init(), Apple.init(), Twitter.init()],
-      },
-    }),
-    Passwordless.init({
-      contactMethod: "EMAIL_OR_PHONE",
-    }),
-    Session.init(),
-  ],
-};
+export function initSuperTokensUI() {
+  (window as any).supertokensUIInit("supertokensui", {
+    appInfo: {
+      websiteDomain: "http://localhost:3000",
+      apiDomain: "http://localhost:3001",
+      appName: "SuperTokens Demo App",
+    },
+    recipeList: [
+      (window as any).supertokensUIEmailPassword.init(),
+      (window as any).supertokensUIThirdParty.init({
+        signInAndUpFeature: {
+          providers: [
+            (window as any).supertokensUIThirdParty.Github.init(),
+            (window as any).supertokensUIThirdParty.Google.init(),
+            (window as any).supertokensUIThirdParty.Apple.init(),
+            (window as any).supertokensUIThirdParty.Twitter.init(),
+          ],
+        },
+      }),
+      (window as any).supertokensUIPasswordless.init({
+        contactMethod: "EMAIL_OR_PHONE",
+      }),
+      (window as any).supertokensUISession.init(),
+    ],
+  });
+}
+
+export function initSuperTokensWebJS() {
+  SuperTokens.init({
+    appInfo: {
+      appName: "SuperTokens Demo App",
+      apiDomain: "http://localhost:3001",
+    },
+    recipeList: [Session.init()],
+  });
+}

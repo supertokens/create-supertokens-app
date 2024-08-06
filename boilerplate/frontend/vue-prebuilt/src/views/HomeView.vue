@@ -1,5 +1,5 @@
 <script lang="ts">
-import * as Session from "supertokens-auth-react/recipe/session";
+import * as Session from "supertokens-web-js/recipe/session";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -61,6 +61,7 @@ export default defineComponent({
   align-items: center;
   height: 100vh;
 }
+
 .user {
   display: flex;
   flex-direction: row;
@@ -68,19 +69,23 @@ export default defineComponent({
   align-items: baseline;
   padding: 0.1rem;
 }
+
 span {
   margin-right: 0.3rem;
   font-size: large;
 }
+
 h3 {
   color: #ff3e00;
 }
+
 h1 {
   color: #ff3e00;
   text-transform: uppercase;
   font-size: 4em;
   font-weight: 100;
 }
+
 button {
   cursor: pointer;
   background-color: #ffb399;
@@ -92,6 +97,7 @@ button {
   border-radius: 2rem;
   font-size: large;
 }
+
 button:hover {
   transform: scale(1.1);
   background-color: #ff3e00;

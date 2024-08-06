@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from "@angular/core";
 
-import * as Session from "supertokens-auth-react/recipe/session";
+import * as Session from "supertokens-web-js/recipe/session";
 
 @Component({
     selector: "app-home",
@@ -8,7 +8,7 @@ import * as Session from "supertokens-auth-react/recipe/session";
     styleUrls: ["./home.component.css"],
 })
 export class HomeComponent implements AfterViewInit {
-    title = "angularreactapp";
+    title = "angularapp";
 
     public rootId = "rootId";
     public userId = "";

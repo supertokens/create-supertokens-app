@@ -1,9 +1,7 @@
 import { Component } from "@angular/core";
-import { SuperTokensConfig } from "src/config";
+import { initSuperTokensWebJS } from "src/config";
 
-import * as SuperTokens from "supertokens-auth-react";
-
-SuperTokens.init(SuperTokensConfig);
+initSuperTokensWebJS();
 
 @Component({
     selector: "app-root",
