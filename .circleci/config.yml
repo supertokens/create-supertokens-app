@@ -22,7 +22,7 @@ jobs:
         steps:
             - run:
                   name: Updating apps
-                  command: cd .circleci && ./updateApps.sh
+                  command: pwd
             - slack/status
 
 workflows:
