@@ -497,7 +497,10 @@ export async function getQuestions(flags: UserFlags) {
                     return false;
                 }
 
-                if (flags.frontend?.startsWith("next") || answers.frontend.startsWith("next")) {
+                if (
+                    (flags.frontend !== undefined && flags.frontend.startsWith("next")) ||
+                    answers.frontend.startsWith("next")
+                ) {
                     // This means that they want to use nextjs fullstack
                     return false;
                 }
