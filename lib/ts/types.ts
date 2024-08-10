@@ -79,7 +79,7 @@ export const allFrontends: {
 ];
 
 export function isValidFrontend(frontend: string): frontend is SupportedFrontends {
-    if (allFrontends.filter((i) => i.displayValue === frontend).length !== 0) {
+    if (allFrontends.filter((i) => i.id === frontend).length !== 0) {
         return true;
     }
 
@@ -125,7 +125,7 @@ export const allBackends: {
 ];
 
 export function isValidBackend(backend: string): backend is SupportedBackends {
-    if (allBackends.filter((i) => i.displayValue === backend).length !== 0) {
+    if (allBackends.filter((i) => i.id === backend).length !== 0) {
         return true;
     }
 
