@@ -201,12 +201,12 @@ export type RecipeQuestionOption = {
 };
 
 export type Answers = {
-    frontend: SupportedFrontends;
-    backend: SupportedBackends;
+    frontend?: SupportedFrontends;
+    backend?: SupportedBackends;
     recipe: string;
     appname: string;
-    backendPython: PythonFrameworks;
-    frontendNext: SupportedFrontends;
+    backendPython?: PythonFrameworks;
+    frontendNext?: SupportedFrontends;
 };
 
 /**
@@ -257,18 +257,18 @@ export type AnalyticsEvent =
       }
     | {
           eventName: "cli_completed";
-          frontend: string;
-          backend: string;
+          frontend?: string;
+          backend?: string;
       }
     | {
           eventName: "cli_selection_complete";
-          frontend: string;
-          backend: string;
+          frontend?: string;
+          backend?: string;
       }
     | {
           eventName: "cli_failed";
-          frontend: string;
-          backend: string;
+          frontend?: string;
+          backend?: string;
           error: string;
       };
 

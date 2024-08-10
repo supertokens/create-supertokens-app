@@ -98,7 +98,7 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
     }
 
     return (
-        answers.frontend.startsWith("next") ||
+        (answers.frontend !== undefined && answers.frontend.startsWith("next")) ||
         answers.frontend === "capacitor" ||
         answers.frontend === "remix" ||
         answers.frontend === "astro"
