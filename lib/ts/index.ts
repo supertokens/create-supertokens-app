@@ -240,7 +240,8 @@ async function run() {
             backend: answers?.backend ?? "",
             error: String(e) + (e as any).stack === undefined ? "" : (e as any).stack,
         });
-        Logger.error(e);
+        Logger.error((e as any).message);
+        Logger.error((e as any).stack);
 
         if ((e as any).skipGithubLink !== true) {
             Logger.error(
