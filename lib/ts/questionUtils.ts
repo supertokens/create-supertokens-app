@@ -90,7 +90,7 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
     if (frontEndInFlags !== undefined) {
         // Priority goes to flags
         return (
-            frontEndInFlags === "next" ||
+            frontEndInFlags.startsWith("next") ||
             frontEndInFlags === "capacitor" ||
             frontEndInFlags === "remix" ||
             frontEndInFlags === "astro"
