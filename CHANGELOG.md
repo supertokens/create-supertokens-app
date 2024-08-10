@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.49] - 2024-09-10
+
+-   Exposes next-app-directory as a flag for frontend
+
 ## [0.0.48] - 2024-09-10
 
 -   Changes dashboard demo to use nextjs, and cleans up code
