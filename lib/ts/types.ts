@@ -57,6 +57,10 @@ export const allFrontends: {
         displayValue: "next",
     },
     {
+        id: "next-app-directory",
+        displayValue: "next",
+    },
+    {
         id: "astro",
         displayValue: "astro",
     },
