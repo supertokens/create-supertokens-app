@@ -18,12 +18,12 @@ jobs:
     update-demo-apps:
         circleci_ip_ranges: true
         docker:
-            - image: rishabhpoddar/supertokens_website_sdk_testing
+            - image: rishabhpoddar/supertokens_node_driver_testing_node_20
         steps:
             - checkout
             - run:
                   name: Updating apps
-                  command: cd .circleci && nvm use 16 && ./updateApps.sh
+                  command: cd .circleci && ./updateApps.sh
             - slack/status
 
 workflows:
