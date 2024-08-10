@@ -18,7 +18,7 @@ import Emoji from "node-emoji";
 import AnalyticsManager from "./analytics.js";
 import figlet from "figlet";
 import { package_version } from "./version.js";
-import { modifyAnswersBasedOnNextJsFramework, modifyAnswersForPythonFrameworks } from "./questionUtils.js";
+import { modifyAnswersForPythonFrameworks } from "./questionUtils.js";
 import { inferredPackageManager } from "./packageManager.js";
 
 async function printInformation(): Promise<void> {
@@ -107,8 +107,7 @@ async function run() {
 
         if (userArguments.dashboardDemo === "true") {
             userArguments.appname = "dashboard-demo";
-            userArguments.backend = "node";
-            userArguments.frontend = "react";
+            userArguments.frontend = "next-app-directory";
             userArguments.recipe = "dashboardDemo";
         }
 
@@ -121,7 +120,6 @@ async function run() {
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersForPythonFrameworks(answers);
-        answers = modifyAnswersBasedOnNextJsFramework(answers);
         answers = modifyAnswersBasedOnSelection(answers);
 
         AnalyticsManager.sendAnalyticsEvent({
@@ -134,9 +132,9 @@ async function run() {
             let recipePlaceholder = answers.recipe === "multitenancy" ? "Multitenancy" : "Multi-factor Auth";
             let errorPlaceholder = "";
             if (answers.recipe === "multitenancy") {
-                if (answers.frontend === "angular-prebuilt") {
+                if (answers.frontend === "angular") {
                     errorPlaceholder = "Angular";
-                } else if (answers.frontend === "vue-prebuilt") {
+                } else if (answers.frontend === "vue") {
                     errorPlaceholder = "Vue";
                 }
             } else if (answers.recipe === "multifactorauth") {
@@ -241,7 +239,7 @@ async function run() {
             backend: answers?.backend ?? "",
             error: String(e) + (e as any).stack === undefined ? "" : (e as any).stack,
         });
-        Logger.error((e as any).message);
+        Logger.error((e as any).stack);
 
         if ((e as any).skipGithubLink !== true) {
             Logger.error(

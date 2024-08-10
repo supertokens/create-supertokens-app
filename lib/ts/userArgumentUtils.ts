@@ -108,7 +108,7 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
     }
 
     if (userArguments.frontend !== undefined) {
-        const selectedFrontend = allFrontends.filter((i) => userArguments.frontend === i.displayValue);
+        const selectedFrontend = allFrontends.filter((i) => userArguments.frontend === i.id);
 
         if (selectedFrontend.length === 0) {
             throw new Error("Should never come here");
@@ -118,7 +118,7 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
     }
 
     if (userArguments.backend !== undefined) {
-        const selectedBackend = allBackends.filter((i) => userArguments.backend === i.displayValue);
+        const selectedBackend = allBackends.filter((i) => userArguments.backend === i.id);
 
         if (selectedBackend.length === 0) {
             throw new Error("Should never come here");

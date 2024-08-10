@@ -177,7 +177,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             },
         },
         {
-            value: "angular-prebuilt",
+            value: "angular",
             displayName: "Angular",
             location: {
                 main: "frontend/angular-prebuilt",
@@ -189,7 +189,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             },
         },
         {
-            value: "vue-prebuilt",
+            value: "vue",
             displayName: "Vue.js",
             location: {
                 main: "frontend/vue-prebuilt",
@@ -497,7 +497,10 @@ export async function getQuestions(flags: UserFlags) {
                     return false;
                 }
 
-                if (flags.frontend === "next" || answers.frontend === "next") {
+                if (
+                    (flags.frontend !== undefined && flags.frontend.startsWith("next")) ||
+                    (answers.frontend !== undefined && answers.frontend.startsWith("next"))
+                ) {
                     // This means that they want to use nextjs fullstack
                     return false;
                 }

@@ -67,16 +67,6 @@ export function modifyAnswersForPythonFrameworks(answers: Answers) {
     return _answers;
 }
 
-export function modifyAnswersBasedOnNextJsFramework(answers: Answers) {
-    let _answers = answers;
-
-    if (answers.frontendNext === "next-app-directory") {
-        _answers.frontend = answers.frontendNext;
-    }
-
-    return _answers;
-}
-
 /**
  * Decides whether the user should be prompted to select their backend.This question is skipped for full stack frameworks
  */
@@ -90,7 +80,7 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
     if (frontEndInFlags !== undefined) {
         // Priority goes to flags
         return (
-            frontEndInFlags === "next" ||
+            frontEndInFlags.startsWith("next") ||
             frontEndInFlags === "capacitor" ||
             frontEndInFlags === "remix" ||
             frontEndInFlags === "astro"
@@ -98,7 +88,7 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
     }
 
     return (
-        answers.frontend === "next" ||
+        (answers.frontend !== undefined && answers.frontend.startsWith("next")) ||
         answers.frontend === "capacitor" ||
         answers.frontend === "remix" ||
         answers.frontend === "astro"

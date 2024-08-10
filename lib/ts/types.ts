@@ -35,8 +35,8 @@ export type SupportedFrontends =
     | "next-app-directory-multitenancy"
     | "remix"
     | "astro"
-    | "angular-prebuilt"
-    | "vue-prebuilt"
+    | "angular"
+    | "vue"
     | "capacitor"
     /*
      * react-multitenancy is intentionally not added to allFrontends because the user is not expected to use this
@@ -57,6 +57,10 @@ export const allFrontends: {
         displayValue: "next",
     },
     {
+        id: "next-app-directory",
+        displayValue: "next",
+    },
+    {
         id: "astro",
         displayValue: "astro",
     },
@@ -65,11 +69,11 @@ export const allFrontends: {
         displayValue: "remix",
     },
     {
-        id: "angular-prebuilt",
+        id: "angular",
         displayValue: "angular",
     },
     {
-        id: "vue-prebuilt",
+        id: "vue",
         displayValue: "vue",
     },
 ];
@@ -197,12 +201,11 @@ export type RecipeQuestionOption = {
 };
 
 export type Answers = {
-    frontend: SupportedFrontends;
-    backend: SupportedBackends;
+    frontend?: SupportedFrontends;
+    backend?: SupportedBackends;
     recipe: string;
     appname: string;
-    backendPython: PythonFrameworks;
-    frontendNext: SupportedFrontends;
+    backendPython?: PythonFrameworks;
 };
 
 /**
@@ -253,18 +256,18 @@ export type AnalyticsEvent =
       }
     | {
           eventName: "cli_completed";
-          frontend: string;
-          backend: string;
+          frontend?: string;
+          backend?: string;
       }
     | {
           eventName: "cli_selection_complete";
-          frontend: string;
-          backend: string;
+          frontend?: string;
+          backend?: string;
       }
     | {
           eventName: "cli_failed";
-          frontend: string;
-          backend: string;
+          frontend?: string;
+          backend?: string;
           error: string;
       };
 
