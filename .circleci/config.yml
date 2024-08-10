@@ -20,9 +20,10 @@ jobs:
         docker:
             - image: ubuntu:20.04
         steps:
+            - checkout
             - run:
                   name: Updating apps
-                  command: pwd
+                  command: cd .circleci && ./updateApps.sh
             - slack/status
 
 workflows:
