@@ -18,7 +18,7 @@ import Emoji from "node-emoji";
 import AnalyticsManager from "./analytics.js";
 import figlet from "figlet";
 import { package_version } from "./version.js";
-import { modifyAnswersBasedOnNextJsFramework, modifyAnswersForPythonFrameworks } from "./questionUtils.js";
+import { modifyAnswersForPythonFrameworks } from "./questionUtils.js";
 import { inferredPackageManager } from "./packageManager.js";
 
 async function printInformation(): Promise<void> {
@@ -120,7 +120,6 @@ async function run() {
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersForPythonFrameworks(answers);
-        answers = modifyAnswersBasedOnNextJsFramework(answers);
         answers = modifyAnswersBasedOnSelection(answers);
 
         AnalyticsManager.sendAnalyticsEvent({

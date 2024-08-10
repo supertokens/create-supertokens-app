@@ -206,7 +206,6 @@ export type Answers = {
     recipe: string;
     appname: string;
     backendPython?: PythonFrameworks;
-    frontendNext?: SupportedFrontends;
 };
 
 /**
