@@ -1,5 +1,4 @@
 git clone https://github.com/supertokens/live-apps.git
-nvm use 16
 
 cd live-apps 
 

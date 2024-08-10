@@ -23,7 +23,7 @@ jobs:
             - checkout
             - run:
                   name: Updating apps
-                  command: cd .circleci && ./updateApps.sh
+                  command: cd .circleci && nvm use 16 && ./updateApps.sh
             - slack/status
 
 workflows:
