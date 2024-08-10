@@ -18,7 +18,7 @@ jobs:
     update-demo-apps:
         circleci_ip_ranges: true
         docker:
-            - image: ubuntu:20.04
+            - image: rishabhpoddar/supertokens_website_sdk_testing
         steps:
             - checkout
             - run:
