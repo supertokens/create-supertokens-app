@@ -35,8 +35,8 @@ export type SupportedFrontends =
     | "next-app-directory-multitenancy"
     | "remix"
     | "astro"
-    | "angular-prebuilt"
-    | "vue-prebuilt"
+    | "angular"
+    | "vue"
     | "capacitor"
     /*
      * react-multitenancy is intentionally not added to allFrontends because the user is not expected to use this
@@ -69,11 +69,11 @@ export const allFrontends: {
         displayValue: "remix",
     },
     {
-        id: "angular-prebuilt",
+        id: "angular",
         displayValue: "angular",
     },
     {
-        id: "vue-prebuilt",
+        id: "vue",
         displayValue: "vue",
     },
 ];

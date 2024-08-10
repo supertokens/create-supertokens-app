@@ -177,7 +177,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             },
         },
         {
-            value: "angular-prebuilt",
+            value: "angular",
             displayName: "Angular",
             location: {
                 main: "frontend/angular-prebuilt",
@@ -189,7 +189,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             },
         },
         {
-            value: "vue-prebuilt",
+            value: "vue",
             displayName: "Vue.js",
             location: {
                 main: "frontend/vue-prebuilt",
