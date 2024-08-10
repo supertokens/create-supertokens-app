@@ -13,3 +13,7 @@ npx -y create-supertokens-app@latest --frontend=next-app-directory --recipe=thir
 cd thirdpartyemailpassword
 find . -type f -not -path '*/node_modules/*' -exec sed -i 's|http://localhost:3000|https://thirdpartyemailpassword.demo.supertokens.com|g' {} +
 cd ../
+
+git add --all
+git commit -m"updates to example apps"
+git push
