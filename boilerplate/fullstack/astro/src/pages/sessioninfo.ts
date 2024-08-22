@@ -1,5 +1,5 @@
 import { type APIRoute } from "astro";
-import { withSession } from "../superTokensHelpers";
+import { withSession } from "../../../superTokensHelpers";
 
 export const GET: APIRoute = async ({ params, request }) => {
     return withSession(request, async (err, session) => {
