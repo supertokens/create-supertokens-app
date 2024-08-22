@@ -11,20 +11,20 @@
         "@astrojs/check": "latest",
         "@astrojs/node": "latest",
         "@astrojs/react": "latest",
-        "@types/react": "^18.2.75",
-        "@types/react-dom": "^18.2.24",
+        "@types/react": "latest",
+        "@types/react-dom": "latest",
         "astro": "latest",
         "cookie": "^0.6.0",
         "jsonwebtoken": "^9.0.2",
         "jwks-rsa": "^3.1.0",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "supertokens-auth-react": "^0.39.1",
-        "supertokens-node": "^17.0.2",
-        "supertokens-web-js": "^0.10.1",
-        "typescript": "^5.4.3"
+        "react": "latest",
+        "react-dom": "latest",
+        "supertokens-auth-react": "latest",
+        "supertokens-node": "latest",
+        "supertokens-web-js": "latest"
     },
     "devDependencies": {
+        "typescript": "latest",
         "@types/cookie": "^0.6.0"
     }
 }
