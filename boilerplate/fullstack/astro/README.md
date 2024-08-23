@@ -36,12 +36,14 @@ Feautures:
 ┃ ┃ ┗ 📜frontend.tsx
 ┃ ┣ 📂pages
 ┃ ┃ ┣ 📂auth
-┃ ┃ ┃ ┣ 📂callback
+┃ ┃ ┃ ┣ 📂[...path]
 ┃ ┃ ┃ ┃ ┗ 📜[...route].astro
-┃ ┃ ┣ 📂supertokens
-┃ ┃ ┃ ┣ 📜[...path]
-┃ ┃ ┃ ┃ ┣ 📜[...route].ts
-┃ ┃ ┃ ┣ 📜[...route].ts
+┃ ┃ ┃ ┗ 📜[...route].astro
+┃ ┃ ┣ 📂api
+┃ ┃ ┃ ┣ 📂auth
+┃ ┃ ┃ ┃ ┣ 📂[...path]
+┃ ┃ ┃ ┃ ┃ ┗ 📜[...route].ts
+┃ ┃ ┃ ┃ ┗ 📜[...route].ts
 ┃ ┃ ┣ 📜auth.astro
 ┃ ┃ ┣ 📜index.astro
 ┃ ┃ ┗ 📜sessioninfo.ts
@@ -66,7 +68,7 @@ Let's explore the important files:
 |                | `frontend.tsx` : Frontend configuration, including settings for SuperTokens.           |
 | **pages**      | Contains route files for your application.                                             |
 |                | `index.astro` : Represents the default route or landing page.                          |
-|                | `auth.astro` : Handles authentication-related API endpoints.                           |
+|                | `auth.astro` : Shows the pre-built auth UI                                             |
 |                | `auth/...` : Deals with authentication callbacks using SuperTokens.                    |
 |                | `supertokens/...` : Deals with authentication routes or components using SuperTokens.  |
 

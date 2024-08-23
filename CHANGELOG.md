@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-## [0.0.50] - 2024-08-22
-
--   Updates Astro integration
-
 ## [0.0.49] - 2024-08-10
 
 -   Exposes next-app-directory as a flag for frontend
