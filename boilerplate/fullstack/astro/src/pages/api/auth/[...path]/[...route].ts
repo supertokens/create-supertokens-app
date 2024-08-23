@@ -1,5 +1,5 @@
-import { ensureSuperTokensInit } from "../../../config/backend.js";
-import { handleAuthAPIRequest } from "../../../superTokensHelpers.js";
+import { ensureSuperTokensInit } from "../../../../config/backend";
+import { handleAuthAPIRequest } from "../../../../superTokensHelpers";
 import type { APIRoute } from "astro";
 
 const handleCall = handleAuthAPIRequest(Response);

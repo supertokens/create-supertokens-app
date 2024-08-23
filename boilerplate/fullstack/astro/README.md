@@ -36,12 +36,14 @@ Feautures:
 ┃ ┃ ┗ 📜frontend.tsx
 ┃ ┣ 📂pages
 ┃ ┃ ┣ 📂auth
-┃ ┃ ┃ ┣ 📂callback
+┃ ┃ ┃ ┣ 📂[...path]
 ┃ ┃ ┃ ┃ ┗ 📜[...route].astro
-┃ ┃ ┣ 📂supertokens
-┃ ┃ ┃ ┣ 📜[...path]
-┃ ┃ ┃ ┃ ┣ 📜[...route].ts
-┃ ┃ ┃ ┣ 📜[...route].ts
+┃ ┃ ┃ ┗ 📜[...route].astro
+┃ ┃ ┣ 📂api
+┃ ┃ ┃ ┣ 📂auth
+┃ ┃ ┃ ┃ ┣ 📂[...path]
+┃ ┃ ┃ ┃ ┃ ┗ 📜[...route].ts
+┃ ┃ ┃ ┃ ┗ 📜[...route].ts
 ┃ ┃ ┣ 📜auth.astro
 ┃ ┃ ┣ 📜index.astro
 ┃ ┃ ┗ 📜sessioninfo.ts
@@ -66,7 +68,7 @@ Let's explore the important files:
 |                | `frontend.tsx` : Frontend configuration, including settings for SuperTokens.           |
 | **pages**      | Contains route files for your application.                                             |
 |                | `index.astro` : Represents the default route or landing page.                          |
-|                | `auth.astro` : Handles authentication-related API endpoints.                           |
+|                | `auth.astro` : Shows the pre-built auth UI                                             |
 |                | `auth/...` : Deals with authentication callbacks using SuperTokens.                    |
 |                | `supertokens/...` : Deals with authentication routes or components using SuperTokens.  |
 
@@ -97,6 +99,33 @@ npx create-supertokens-app@latest --frontend=astro
 ```
 
 -   Follow the instructions on screen
+
+### Specific Astro considerations for the pre-built UI method using React directly
+
+Since this demo is using out [pre-built UI](https://supertokens.com/docs/thirdpartyemailpassword/pre-built-ui/setup/frontend), it relies heavily on React. As such, in order to customize the auth and protected / unprotected routes behavior, take a look at the Root component in `src/components/Root.tsx`. The Root component is used in the `src/layouts/Base.astro` layout file, which is used in all demo pages.
+
+In order to create a public route, you can either customize the `isUnprotectedRoute` behavior in the Root component:
+
+```tsx
+const unprotectedRoutes = ["/auth", "/my-public-route"];
+
+export default function App({ children }: { children: React.ReactNode }) {
+    // const isUnprotectedRoute = location.pathname.startsWith("/auth"); -> remove this
+    const isUnprotectedRoute = unprotectedRoutes.some((route) => location.pathname.startsWith(route));
+
+    return (
+        <SuperTokensWrapper>{isUnprotectedRoute ? children : <SessionAuth>{children}</SessionAuth>}</SuperTokensWrapper>
+    );
+}
+```
+
+or, use your own layout component, but make sure to check whether a session exists if you'd like to protect that route (see `index.astro` for an example, using `getSessionForSSR`).
+
+### Alternatives
+
+If you'd like a more low-level approach, you can go for a custom UI setup. This amount to using our SDK methods with your UI - you can find an example [here]().
+
+If you'd like a simpler setup, you can use our universal pre-built UI. It's still build on React, but it doesn't explicitly depend on having React in your project. As a result, you only have to provide some routess and a div element to render the UI in. You can find an example [here]().
 
 ## Author
 

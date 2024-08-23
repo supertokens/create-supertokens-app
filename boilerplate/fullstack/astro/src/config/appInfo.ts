@@ -3,6 +3,6 @@ export const appInfo = {
     appName: "SuperTokens Astro demo app",
     apiDomain: "http://localhost:4321",
     websiteDomain: "http://localhost:4321",
-    apiBasePath: "/supertokens",
+    apiBasePath: "/api/auth",
     websiteBasePath: "/auth",
 };
