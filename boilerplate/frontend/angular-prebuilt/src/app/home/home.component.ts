@@ -20,6 +20,7 @@ export class HomeComponent implements AfterViewInit {
 
     async getUserInfo() {
         this.session = await Session.doesSessionExist();
+        console.log(this.session);
         if (this.session) {
             this.userId = await Session.getUserId();
         }

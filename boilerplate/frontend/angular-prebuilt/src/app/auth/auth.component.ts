@@ -1,6 +1,6 @@
 import { Component, OnDestroy, AfterViewInit, Renderer2, Inject } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { initSuperTokensUI } from "src/config";
+import { initSuperTokensUI } from "../../config";
 
 @Component({
     selector: "app-auth",
@@ -10,7 +10,7 @@ export class AuthComponent implements OnDestroy, AfterViewInit {
     constructor(private renderer: Renderer2, @Inject(DOCUMENT) private document: Document) {}
 
     ngAfterViewInit() {
-        this.loadScript("${jsdeliveryprebuiltuiurl}");
+        this.loadScript("https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.46.0/build/static/js/main.57ef81a3.js");
     }
 
     ngOnDestroy() {

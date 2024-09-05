@@ -1,12 +1,16 @@
 import { Component } from "@angular/core";
-import { initSuperTokensWebJS } from "src/config";
+import { RouterOutlet } from "@angular/router";
+import { initSuperTokensWebJS } from "../config";
 
 initSuperTokensWebJS();
 
 @Component({
     selector: "app-root",
-    template: "<router-outlet></router-outlet>",
+    standalone: true,
+    imports: [RouterOutlet],
+    templateUrl: "./app.component.html",
+    styleUrl: "./app.component.css",
 })
 export class AppComponent {
-    title = "with-angular-thirdpartyemailpassword";
+    title = "SuperTokens Demo";
 }
