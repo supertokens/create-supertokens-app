@@ -1,6 +1,6 @@
 import { Component, OnDestroy, AfterViewInit, Renderer2, Inject } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { initSuperTokensUI } from "src/config";
+import { initSuperTokensUI } from "../../config";
 
 @Component({
     selector: "app-auth",
