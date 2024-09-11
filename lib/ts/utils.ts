@@ -533,6 +533,8 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
         return element.value === answers.frontend;
     });
 
+    console.log(selectedFullStack);
+
     if (selectedFullStack === undefined || selectedFullStack.isFullStack !== true) {
         throw new Error("Should never come here");
     }
