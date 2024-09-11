@@ -465,7 +465,7 @@ export async function getQuestions(flags: UserFlags) {
             when: flags.frontend === undefined,
         },
         {
-            name: "frontendNext",
+            name: "frontend",
             type: "list",
             message: "Choose how you want to organise your Next.js routes:",
             choices: mapOptionsToChoices(await getNextJSOptions(flags)),

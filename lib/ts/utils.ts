@@ -529,7 +529,6 @@ async function setupFrontendBackendApp(
 }
 
 async function setupFullstack(answers: Answers, folderName: string, userArguments: UserFlags, spinner: Ora) {
-    console.log(answers);
     const selectedFullStack = (await getFrontendOptionsForProcessing(userArguments)).find((element) => {
         return element.value === answers.frontend;
     });
