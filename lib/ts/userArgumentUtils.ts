@@ -83,6 +83,9 @@ export function validateUserArguments(userArguments: UserFlagsRaw) {
 export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
     let _answers = answers;
 
+    console.log("Logging answers here");
+    console.log(_answers);
+
     if (_answers.recipe === "multitenancy") {
         if (_answers.frontend === "react") {
             _answers.frontend = "react-multitenancy";
