@@ -83,6 +83,12 @@ export function validateUserArguments(userArguments: UserFlagsRaw) {
 export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
     let _answers = answers;
 
+    if ("frontendNext" in _answers) {
+        // this is done cause the nextjs app or pages dir is selected by a frontendNext option and not hte frontend option,
+        // whereas everywhere else in the code, we check based on frontend option.
+        (_answers as any).frontend = (_answers as any).frontendNext;
+    }
+
     if (_answers.recipe === "multitenancy") {
         if (_answers.frontend === "react") {
             _answers.frontend = "react-multitenancy";
