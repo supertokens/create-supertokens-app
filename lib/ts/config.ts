@@ -532,6 +532,7 @@ export async function getQuestions(flags: UserFlags) {
 export async function getFrontendOptionsForProcessing(userArguments: UserFlags): Promise<QuestionOption[]> {
     const optionsWithoutNext = await getFrontendOptions(userArguments);
     const nextOptions = await getNextJSOptions(userArguments);
+    console.log([...optionsWithoutNext, ...nextOptions]);
     return [...optionsWithoutNext, ...nextOptions];
 }
 
