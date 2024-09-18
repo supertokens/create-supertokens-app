@@ -2,7 +2,7 @@ import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";
 import EmailVerification from "supertokens-web-js/recipe/emailverification";
 import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";
-import { appInfo } from "../appInfo";
+import { appInfo } from "./appInfo";
 
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
