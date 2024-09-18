@@ -35,6 +35,7 @@ export type SupportedFrontends =
     | "next-app-directory-multitenancy"
     | "remix"
     | "astro"
+    | "sveltekit"
     | "angular"
     | "vue"
     | "capacitor"

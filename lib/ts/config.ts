@@ -177,6 +177,32 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             },
         },
         {
+            isFullStack: true,
+            value: "sveltekit",
+            displayName: "SvelteKit",
+            location: {
+                main: "fullstack/sveltekit",
+                config: {
+                    frontend: [
+                        {
+                            configFiles: "/src/config/frontend",
+                            finalConfig: "/src/config/frontend.ts",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/src/config/backend",
+                            finalConfig: "/src/config/backend.ts",
+                        },
+                    ],
+                },
+            },
+            script: {
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
+            },
+        },
+        {
             value: "angular",
             displayName: "Angular",
             location: {
