@@ -70,6 +70,10 @@ export const allFrontends: {
         displayValue: "remix",
     },
     {
+        id: "sveltekit",
+        displayValue: "sveltekit",
+    },
+    {
         id: "angular",
         displayValue: "angular",
     },
