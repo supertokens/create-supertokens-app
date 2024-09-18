@@ -1,31 +1,36 @@
-import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty/index.js";
-import EmailPasswordReact from "supertokens-auth-react/recipe/emailpassword/index.js";
-import Session from "supertokens-auth-react/recipe/session/index.js";
-import { appInfo } from "./appInfo";
-import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui.js";
-import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui.js";
+import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
 
-export const frontendConfig = () => {
-    return {
-        appInfo,
+export function initSuperTokensUI() {
+    (window as any).supertokensUIInit("supertokensui", {
+        appInfo: {
+            websiteDomain: "http://localhost:3000",
+            apiDomain: "http://localhost:3001",
+            appName: "SuperTokens Demo App",
+        },
         recipeList: [
-            EmailPasswordReact.init(),
-            ThirdPartyReact.init({
+            (window as any).supertokensUIEmailPassword.init(),
+            (window as any).supertokensUIThirdParty.init({
                 signInAndUpFeature: {
                     providers: [
-                        ThirdPartyReact.Google.init(),
-                        ThirdPartyReact.Github.init(),
-                        ThirdPartyReact.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Github.init(),
+                        (window as any).supertokensUIThirdParty.Google.init(),
+                        (window as any).supertokensUIThirdParty.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Twitter.init(),
                     ],
                 },
             }),
-            Session.init(),
+            (window as any).supertokensUISession.init(),
         ],
-    };
-};
+    });
+}
 
-export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/thirdpartyemailpassword/introduction",
-};
-
-export const PreBuiltUIList = [ThirdPartyPreBuiltUI, EmailPasswordPreBuiltUI];
+export function initSuperTokensWebJS() {
+    SuperTokens.init({
+        appInfo: {
+            appName: "SuperTokens Demo App",
+            apiDomain: "http://localhost:3001",
+        },
+        recipeList: [Session.init()],
+    });
+}

@@ -1,33 +1,38 @@
-import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty/index.js";
-import PasswordlessReact from "supertokens-auth-react/recipe/passwordless/index.js";
-import Session from "supertokens-auth-react/recipe/session/index.js";
-import { appInfo } from "./appInfo";
-import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui.js";
-import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui.js";
+import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
 
-export const frontendConfig = () => {
-    return {
-        appInfo,
+export function initSuperTokensUI() {
+    (window as any).supertokensUIInit("supertokensui", {
+        appInfo: {
+            websiteDomain: "http://localhost:3000",
+            apiDomain: "http://localhost:3001",
+            appName: "SuperTokens Demo App",
+        },
         recipeList: [
-            ThirdPartyReact.init({
+            (window as any).supertokensUIThirdParty.init({
                 signInAndUpFeature: {
                     providers: [
-                        ThirdPartyReact.Github.init(),
-                        ThirdPartyReact.Google.init(),
-                        ThirdPartyReact.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Github.init(),
+                        (window as any).supertokensUIThirdParty.Google.init(),
+                        (window as any).supertokensUIThirdParty.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Twitter.init(),
                     ],
                 },
             }),
-            PasswordlessReact.init({
+            (window as any).supertokensUIPasswordless.init({
                 contactMethod: "EMAIL_OR_PHONE",
             }),
-            Session.init(),
+            (window as any).supertokensUISession.init(),
         ],
-    };
-};
+    });
+}
 
-export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
-};
-
-export const PreBuiltUIList = [ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI];
+export function initSuperTokensWebJS() {
+    SuperTokens.init({
+        appInfo: {
+            appName: "SuperTokens Demo App",
+            apiDomain: "http://localhost:3001",
+        },
+        recipeList: [Session.init()],
+    });
+}
