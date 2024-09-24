@@ -15,7 +15,7 @@
 		};
 
 		loadScript(
-			'https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.47.0/build/static/js/main.8f01ace8.js'
+			"${jsdeliveryprebuiltuiurl}"
 		);
 	});
 </script>
