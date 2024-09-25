@@ -83,7 +83,8 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
             frontEndInFlags.startsWith("next") ||
             frontEndInFlags === "capacitor" ||
             frontEndInFlags === "remix" ||
-            frontEndInFlags === "astro"
+            frontEndInFlags === "astro" ||
+            frontEndInFlags === "sveltekit"
         );
     }
 
@@ -91,6 +92,7 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
         (answers.frontend !== undefined && answers.frontend.startsWith("next")) ||
         answers.frontend === "capacitor" ||
         answers.frontend === "remix" ||
-        answers.frontend === "astro"
+        answers.frontend === "astro" ||
+        answers.frontend === "sveltekit"
     );
 }

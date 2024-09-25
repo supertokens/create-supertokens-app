@@ -4,7 +4,7 @@
 
 This demo app demonstrates how to integrate SuperTokens into an Astro application.
 
-Feautures:
+Features:
 
 -   Initializes SuperTokens with frontend and backend configurations
 -   Creates a frontend page to handle authentication-related tasks
@@ -123,7 +123,7 @@ or, use your own layout component, but make sure to check whether a session exis
 
 ### Alternatives
 
-If you'd like a more low-level approach, you can go for a custom UI setup. This amount to using our SDK methods with your UI - you can find an example [here]().
+If you'd like a more low-level approach, you can go for a custom UI setup. This amount to using our SDK methods with your UI - you can find an example [here](https://github.com/supertokens/supertokens-web-js/tree/master/examples/astro/with-thirdpartyemailpassword).
 
 If you'd like a simpler setup, you can use our universal pre-built UI. It's still build on React, but it doesn't explicitly depend on having React in your project. As a result, you only have to provide some routess and a div element to render the UI in. You can find an example [here]().
 

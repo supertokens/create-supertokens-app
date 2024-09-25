@@ -35,6 +35,7 @@ export type SupportedFrontends =
     | "next-app-directory-multitenancy"
     | "remix"
     | "astro"
+    | "sveltekit"
     | "angular"
     | "vue"
     | "capacitor"
@@ -67,6 +68,10 @@ export const allFrontends: {
     {
         id: "remix",
         displayValue: "remix",
+    },
+    {
+        id: "sveltekit",
+        displayValue: "sveltekit",
     },
     {
         id: "angular",
