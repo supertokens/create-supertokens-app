@@ -1,14 +1,9 @@
-import {
-    PreParsedRequest,
-    CollectingResponse,
-    middleware,
-    errorHandler,
-} from "supertokens-node/framework/custom/index.js";
-import Session, { type SessionContainer, type VerifySessionOptions } from "supertokens-node/recipe/session/index.js";
-import SessionRecipe from "supertokens-node/lib/build/recipe/session/recipe.js";
-import { availableTokenTransferMethods } from "supertokens-node/lib/build/recipe/session/constants.js";
-import { getToken } from "supertokens-node/lib/build/recipe/session/cookieAndHeaders.js";
-import { parseJWTWithoutSignatureVerification } from "supertokens-node/lib/build/recipe/session/jwt.js";
+import { PreParsedRequest, CollectingResponse, middleware, errorHandler } from "supertokens-node/framework/custom";
+import Session, { type SessionContainer, type VerifySessionOptions } from "supertokens-node/recipe/session";
+import SessionRecipe from "supertokens-node/lib/build/recipe/session/recipe";
+import { availableTokenTransferMethods } from "supertokens-node/lib/build/recipe/session/constants";
+import { getToken } from "supertokens-node/lib/build/recipe/session/cookieAndHeaders";
+import { parseJWTWithoutSignatureVerification } from "supertokens-node/lib/build/recipe/session/jwt";
 import { serialize } from "cookie";
 import JsonWebToken from "jsonwebtoken";
 import type { JwtHeader, JwtPayload, SigningKeyCallback } from "jsonwebtoken";

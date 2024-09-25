@@ -1,9 +1,9 @@
-import EmailPasswordNode from "supertokens-node/recipe/emailpassword/index.js";
-import ThirdPartyNode from "supertokens-node/recipe/thirdparty/index.js";
-import PasswordlessNode from "supertokens-node/recipe/passwordless/index.js";
-import SessionNode from "supertokens-node/recipe/session/index.js";
-import Dashboard from "supertokens-node/recipe/dashboard/index.js";
-import UserRoles from "supertokens-node/recipe/userroles/index.js";
+import EmailPasswordNode from "supertokens-node/recipe/emailpassword";
+import ThirdPartyNode from "supertokens-node/recipe/thirdparty";
+import PasswordlessNode from "supertokens-node/recipe/passwordless";
+import SessionNode from "supertokens-node/recipe/session";
+import Dashboard from "supertokens-node/recipe/dashboard";
+import UserRoles from "supertokens-node/recipe/userroles";
 import { appInfo } from "./appInfo";
 import { type TypeInput } from "supertokens-node/types";
 import SuperTokens from "supertokens-node";
