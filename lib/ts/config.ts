@@ -226,6 +226,19 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
                 run: [`${manager} run dev`],
             },
         },
+
+        {
+            value: "solid",
+            displayName: "SolidJS",
+            location: {
+                main: "frontend/solid-prebuilt",
+                config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
+            },
+            script: {
+                setup: [`${manager} install`],
+                run: [`${manager} run dev`],
+            },
+        },
         {
             value: "capacitor",
             isFullStack: true,

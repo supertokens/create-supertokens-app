@@ -38,6 +38,7 @@ export type SupportedFrontends =
     | "sveltekit"
     | "angular"
     | "vue"
+    | "solid"
     | "capacitor"
     /*
      * react-multitenancy is intentionally not added to allFrontends because the user is not expected to use this
@@ -80,6 +81,10 @@ export const allFrontends: {
     {
         id: "vue",
         displayValue: "vue",
+    },
+    {
+        id: "solid",
+        displayValue: "solid",
     },
 ];
 

@@ -1,5 +1,5 @@
 import { onMount } from "solid-js";
-import { initSuperTokensUI } from "../config";
+import { initSuperTokensUI } from "./config";
 
 const loadScript = (src: string) => {
     const script = document.createElement("script");
