@@ -1,28 +1,31 @@
-## Usage
+# SolidJS with SuperTokens Prebuilt UI
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+This demo app demonstrates how to integrate SuperTokens into a SolidJS application.
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+Features:
 
-## Available Scripts
+-   Initializes SuperTokens with frontend and backend configurations
+-   Creates a frontend page to handle authentication-related tasks
+-   Integrates the SuperTokens' pre-built login UI for secure user authentication
+-   Protects frontend to ensure only authenticated users can access the dashboard
 
-In the project directory, you can run:
+## Development server
 
-### `npm run dev`
+Run `npm run start` for a dev server. Navigate to `http://localhost:3000/`. The application will automatically reload if you change any of the source files.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+## Build
 
-### `npm run build`
+Run `npm run build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
+## Author
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+Created with :heart: by the folks at supertokens.com.
 
-## Deployment
+## License
 
-Learn more about deploying your application with the [documentations](https://vitejs.dev/guide/static-deploy.html)
+This project is licensed under the Apache 2.0 license.
+
+## Notes
+
+-   To know more about how this app works and to learn how to customize it based on your use cases refer to the [SuperTokens Documentation](https://supertokens.com/docs/guides)
+-   We have provided development OAuth keys for the various built-in third party providers in the `/app/config/backend.ts` file. Feel free to use them for development purposes, but **please create your own keys for production use**.
