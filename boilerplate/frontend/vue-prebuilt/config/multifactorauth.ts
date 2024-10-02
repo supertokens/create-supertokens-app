@@ -3,11 +3,14 @@ import Session from "supertokens-web-js/recipe/session";
 import EmailVerification from "supertokens-web-js/recipe/emailverification";
 import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";
 
+const api_port = import.meta.env.VITE_API_PORT || 3001;
+const app_port = import.meta.env.VITE_APP_PORT || 3000;
+
 export function initSuperTokensUI() {
   (window as any).supertokensUIInit("supertokensui", {
     appInfo: {
-      websiteDomain: "http://localhost:3000",
-      apiDomain: "http://localhost:3001",
+      websiteDomain: `http://localhost:${app_port}`,
+      apiDomain: `http://localhost:${api_port}`,
       appName: "SuperTokens Demo App",
     },
     recipeList: [
@@ -41,7 +44,7 @@ export function initSuperTokensWebJS() {
   SuperTokens.init({
     appInfo: {
       appName: "SuperTokens Demo App",
-      apiDomain: "http://localhost:3001",
+      apiDomain: `http://localhost:${api_port}`,
     },
     recipeList: [
       Session.init(),

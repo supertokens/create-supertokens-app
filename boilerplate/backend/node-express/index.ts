@@ -43,4 +43,6 @@ app.get("/tenants", async (req, res) => {
 // returns 401 to the client.
 app.use(errorHandler());
 
-app.listen(3001, () => console.log(`API Server listening on port 3001`));
+const port = process.env.REACT_APP_API_PORT || process.env.VITE_API_PORT || 3001;
+
+app.listen(port, () => console.log(`API Server listening on port ${port}`));
