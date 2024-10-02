@@ -12,7 +12,7 @@ export function getApiDomain() {
 }
 
 export function getWebsiteDomain() {
-    const websitePort = process.env.REACT_APP_WEBSITE_PORT || process.env.VITE_APP_PORT || 3000;
+    const websitePort = process.env.REACT_APP_WEBSITE_PORT || process.env.VITE_APP_PORT || process.env.PORT || 3000;
     const websiteUrl = process.env.REACT_APP_WEBSITE_URL || `http://localhost:${websitePort}`;
     return websiteUrl;
 }
