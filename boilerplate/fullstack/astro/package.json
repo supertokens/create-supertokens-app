@@ -15,7 +15,7 @@
         "@types/react-dom": "latest",
         "astro": "latest",
         "cookie": "^0.6.0",
-        "jsonwebtoken": "^9.0.2",
+        "jose": "^5.9.3",
         "jwks-rsa": "^3.1.0",
         "react": "latest",
         "react-dom": "latest",

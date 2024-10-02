@@ -4,24 +4,28 @@ import SuperTokens from "supertokens-auth-react";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import SessionReact from "supertokens-auth-react/recipe/session/index.js";
-import { getSessionForSSR } from "../superTokensHelpers";
+import { getSessionForSSR } from "supertokens-node/customFramework";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
-import { JwtPayload } from "jsonwebtoken";
+import { appInfo } from "../config/appInfo";
+import { createRemoteJWKSet, JWTPayload } from "jose"
+
+// Create a remote JWK set for verifying the token's signature
+const jwks = createRemoteJWKSet(new URL(`${appInfo.apiDomain}${appInfo.apiBasePath}/jwt/jwks.json`));
 
 export async function loader({ request }: LoaderFunctionArgs): Promise<{
-    accessTokenPayload: JwtPayload | undefined;
+    accessTokenPayload: JWTPayload | undefined;
     hasToken: boolean;
     error: Error | undefined;
 }> {
-    return getSessionForSSR(request);
+    return getSessionForSSR(request, jwks);
 }
 
 export default function Home() {
     const navigate = useNavigate();
 
     const { accessTokenPayload, hasToken, error } = useLoaderData<{
-        accessTokenPayload: JwtPayload | undefined;
+        accessTokenPayload: JWTPayload | undefined;
         hasToken: boolean;
         error: Error | undefined;
     }>();

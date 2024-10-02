@@ -1,10 +1,16 @@
 ---
 import Base from "../layouts/Base.astro";
 import Home from "../components/Home";
-import { getSessionForSSR } from "../superTokensHelpers";
+import { getSessionForSSR } from "supertokens-node/customFramework";
+import { appInfo } from "../config/appInfo";
+import { createRemoteJWKSet } from "jose"
+
+// Create a remote JWK set for verifying the token's signature
+const jwks = createRemoteJWKSet(new URL(`${appInfo.apiDomain}${appInfo.apiBasePath}/jwt/jwks.json`));
 
 const { accessTokenPayload, hasToken, error } = await getSessionForSSR(
-  Astro.request
+  Astro.request,
+  jwks
 );
 
 const SSRData = {
