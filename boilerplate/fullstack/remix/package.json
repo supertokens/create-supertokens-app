@@ -24,7 +24,7 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "supertokens-auth-react": "latest",
-        "supertokens-node": "file:../../../../supertokens-node/supertokens-node-20.1.3.tgz"
+        "supertokens-node": "latest"
     },
     "devDependencies": {
         "@remix-run/dev": "^2.8.0",

@@ -8,7 +8,7 @@ import { getSessionForSSR } from "supertokens-node/customFramework";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
 import { appInfo } from "../config/appInfo";
-import { createRemoteJWKSet, JWTPayload } from "jose"
+import { createRemoteJWKSet, JWTPayload } from "jose";
 
 // Create a remote JWK set for verifying the token's signature
 const jwks = createRemoteJWKSet(new URL(`${appInfo.apiDomain}${appInfo.apiBasePath}/jwt/jwks.json`));
