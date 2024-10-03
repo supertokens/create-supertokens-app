@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import { handleAuthAPIRequest } from "../../superTokensHelpers";
+import { handleAuthAPIRequest } from "supertokens-node/customFramework";
 import { ensureSuperTokensInit } from "../../config/backend";
 
 ensureSuperTokensInit();
