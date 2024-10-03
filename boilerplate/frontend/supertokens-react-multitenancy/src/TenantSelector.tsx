@@ -69,22 +69,24 @@ export const TenantSelector = ({ setTenantId, setShowTenantSelector }: Props) =>
                 </button>
             )}
 
-            <div
-                style={{
-                    marginTop: "10px",
-                    fontSize: "12px",
-                    color: "#007aff",
-                    cursor: "pointer",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    display: "flex",
-                }}
-                onClick={() => {
-                    setShowTenantSelector(false);
-                }}
-            >
-                Cancel
-            </div>
+            {tenants !== undefined && (
+                <div
+                    style={{
+                        marginTop: "10px",
+                        fontSize: "12px",
+                        color: "#007aff",
+                        cursor: "pointer",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                    }}
+                    onClick={() => {
+                        setShowTenantSelector(false);
+                    }}
+                >
+                    Cancel
+                </div>
+            )}
         </div>
     );
 };
