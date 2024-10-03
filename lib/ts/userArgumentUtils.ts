@@ -60,14 +60,14 @@ export function validateUserArguments(userArguments: UserFlagsRaw) {
 
     if (userArguments.frontend !== undefined) {
         if (!isValidFrontend(userArguments.frontend)) {
-            const availableFrontends = allFrontends.map((e) => `    - ${e.displayValue}`).join("\n");
+            const availableFrontends = allFrontends.map((e) => `    - ${e.id}`).join("\n");
             throw new Error("Invalid frontend provided, valid values:\n" + availableFrontends);
         }
     }
 
     if (userArguments.backend !== undefined) {
         if (!isValidBackend(userArguments.backend)) {
-            const avaiableBackends = allBackends.map((e) => `    - ${e.displayValue}`).join("\n");
+            const avaiableBackends = allBackends.map((e) => `    - ${e.id}`).join("\n");
             throw new Error("Invalid backend provided, valid values:\n" + avaiableBackends);
         }
     }

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.53] - 2024-10-03
+
+-   Corrects what is displayed to the user if they provide a wrong arg.
+
 ## [0.0.52] - 2024-09-30
 
 -   Adds SolidJS as a front-end prebuilt UI option.

@@ -47,44 +47,34 @@ export type SupportedFrontends =
     | "react-multitenancy";
 
 export const allFrontends: {
-    displayValue: string;
     id: SupportedFrontends;
 }[] = [
     {
         id: "react",
-        displayValue: "react",
     },
     {
         id: "next",
-        displayValue: "next",
     },
     {
         id: "next-app-directory",
-        displayValue: "next",
     },
     {
         id: "astro",
-        displayValue: "astro",
     },
     {
         id: "remix",
-        displayValue: "remix",
     },
     {
         id: "sveltekit",
-        displayValue: "sveltekit",
     },
     {
         id: "angular",
-        displayValue: "angular",
     },
     {
         id: "vue",
-        displayValue: "vue",
     },
     {
         id: "solid",
-        displayValue: "solid",
     },
 ];
 
@@ -101,36 +91,28 @@ type PythonFrameworks = "python-flask" | "python-drf" | "python-fastapi";
 export type SupportedBackends = "node" | "nest" | "python" | PythonFrameworks | "go-http";
 
 export const allBackends: {
-    displayValue: string;
     id: SupportedBackends;
 }[] = [
     {
         id: "node",
-        displayValue: "node",
     },
     {
         id: "nest",
-        displayValue: "nest",
     },
     {
         id: "python",
-        displayValue: "python",
     },
     {
         id: "python-flask",
-        displayValue: "python-flask",
     },
     {
         id: "python-drf",
-        displayValue: "python-drf",
     },
     {
         id: "python-fastapi",
-        displayValue: "python-fastapi",
     },
     {
         id: "go-http",
-        displayValue: "golang",
     },
 ];
 
