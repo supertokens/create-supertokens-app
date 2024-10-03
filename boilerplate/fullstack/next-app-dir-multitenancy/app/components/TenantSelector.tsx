@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "./TenantSelector.module.css";
-
-export const TenantSelector = (props: { setHasSelectedTenantId: React.Dispatch<React.SetStateAction<boolean>> }) => {
+export const TenantSelector = (props: {
+    setTenantId: React.Dispatch<React.SetStateAction<string | null>>;
+    setShowTenantSelector: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
     type Tenant = {
         tenantId: string;
     };
@@ -55,12 +57,32 @@ export const TenantSelector = (props: { setHasSelectedTenantId: React.Dispatch<R
                     onClick={() => {
                         if (selectedTenantId !== "") {
                             localStorage.setItem("tenantId", selectedTenantId);
-                            props.setHasSelectedTenantId(true);
+                            props.setShowTenantSelector(false);
+                            props.setTenantId(selectedTenantId);
                         }
                     }}
                 >
                     Continue
                 </button>
+            )}
+
+            {tenants !== undefined && (
+                <div
+                    style={{
+                        marginTop: "10px",
+                        fontSize: "12px",
+                        color: "#007aff",
+                        cursor: "pointer",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                    }}
+                    onClick={() => {
+                        props.setShowTenantSelector(false);
+                    }}
+                >
+                    Cancel
+                </div>
             )}
         </div>
     );
