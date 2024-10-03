@@ -1,5 +1,5 @@
 import { ensureSuperTokensInit } from "../../../config/backend";
-import { handleAuthAPIRequest } from "supertokens-node/customFramework";
+import { handleAuthAPIRequest } from "supertokens-node/customframework";
 import type { APIRoute } from "astro";
 
 const handleCall = handleAuthAPIRequest(Response);

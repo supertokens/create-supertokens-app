@@ -1,5 +1,5 @@
 import { type APIRoute } from "astro";
-import { withSession } from "supertokens-node/customFramework";
+import { withSession } from "supertokens-node/customframework";
 
 export const GET: APIRoute = async ({ params, request }) => {
     return withSession(request, async (err, session) => {
