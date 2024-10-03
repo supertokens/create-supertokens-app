@@ -1,51 +1,28 @@
-import Head from "next/head";
-import React, { useEffect, useState } from "react";
-import styles from "../../styles/Home.module.css";
-import dynamic from "next/dynamic";
-import SuperTokens from "supertokens-auth-react";
-import {
-    canHandleRoute,
-    getRoutingComponent,
+import React, { useEffect } from "react";
+import { redirectToAuth } from "supertokens-auth-react";
+import SuperTokens, {
     AuthRecipeComponentsOverrideContextProvider,
+    AuthPage,
+    getRoutingComponent,
 } from "supertokens-auth-react/ui";
 import { PreBuiltUIList } from "../../config/frontendConfig";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { TenantSelector } from "../../src/components/TenantSelector";
+import { redirect, usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 
 const SuperTokensComponentNoSSR = dynamic<{}>(new Promise((res) => res(() => getRoutingComponent(PreBuiltUIList))), {
     ssr: false,
 });
 
-// We display this component as part of the SuperTokens login form to
-// allow users to go back and select another tenant without logging in
-const ChangeTenantsButton = (props: { setHasSelectedTenantId: React.Dispatch<React.SetStateAction<boolean>> }) => {
-    return (
-        <div
-            data-supertokens="link tenants-link"
-            onClick={() => {
-                localStorage.removeItem("tenantId");
-                props.setHasSelectedTenantId(false);
-            }}
-        >
-            Log in to a different organisation
-        </div>
-    );
-};
-
-export default function Auth(): JSX.Element {
-    if (typeof window === "undefined") {
-        return <></>;
-    }
-
-    const tenantId = localStorage.getItem("tenantId");
+export default function Auth() {
     const session = useSessionContext();
-    const [hasSelectedTenantId, setHasSelectedTenantId] = React.useState(false);
+    const pathname = usePathname();
 
+    // if the user visits a page that is not handled by us (like /auth/random), then we redirect them back to the auth page.
     useEffect(() => {
-        if (canHandleRoute(PreBuiltUIList) === false) {
-            SuperTokens.redirectToAuth({
-                redirectBack: false,
-            });
+        if (SuperTokens.canHandleRoute(PreBuiltUIList) === false) {
+            redirectToAuth({ redirectBack: false });
         }
     }, []);
 
@@ -53,43 +30,110 @@ export default function Auth(): JSX.Element {
         return null;
     }
 
-    if (
-        hasSelectedTenantId ||
-        tenantId !== null ||
-        session.doesSessionExist === true ||
-        new URLSearchParams(location.search).has("tenantId")
-    ) {
-        return (
-            <AuthRecipeComponentsOverrideContextProvider
-                components={{
-                    AuthPageFooter_Override: ({ DefaultComponent, ...props }) => {
+    // if current path is /auth
+    if (pathname === "/auth") {
+        return <AuthComponentWithTenantSelector />;
+    }
+    return <SuperTokensComponentNoSSR />;
+}
+
+type ChangeTenantsButtonProps = {
+    setShowTenantSelector: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const ChangeTenantsButton = ({ setShowTenantSelector }: ChangeTenantsButtonProps) => {
+    return (
+        <div
+            data-supertokens="link tenants-link"
+            onClick={() => {
+                setShowTenantSelector(true);
+            }}
+        >
+            Log in to a different organisation
+        </div>
+    );
+};
+
+const LoginWithSSOButton = ({
+    setShowTenantSelector,
+}: {
+    setShowTenantSelector: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+    return (
+        <div
+            data-supertokens="link tenants-link"
+            onClick={() => {
+                localStorage.removeItem("tenantId");
+                setShowTenantSelector(true);
+            }}
+        >
+            Log in with Enterprise SSO
+        </div>
+    );
+};
+
+function AuthComponentWithTenantSelector() {
+    const [tenantId, setTenantId] = React.useState(localStorage.getItem("tenantId"));
+    const session = useSessionContext();
+    const [showTenantSelector, setShowTenantSelector] = React.useState(false);
+
+    if (session.loading) {
+        return null;
+    }
+
+    if (session.doesSessionExist) {
+        return redirect("/");
+    }
+
+    if (showTenantSelector) {
+        return <TenantSelector setTenantId={setTenantId} setShowTenantSelector={setShowTenantSelector} />;
+    }
+
+    return (
+        <AuthRecipeComponentsOverrideContextProvider
+            components={{
+                AuthPageFooter_Override: ({ DefaultComponent, ...props }) => {
+                    if (tenantId === null || tenantId === "public") {
                         return (
                             <div>
                                 <DefaultComponent {...props} />
-                                <ChangeTenantsButton setHasSelectedTenantId={setHasSelectedTenantId} />
+                                <LoginWithSSOButton setShowTenantSelector={setShowTenantSelector} />
+                                <div
+                                    style={{
+                                        marginTop: "5px",
+                                        fontSize: "12px",
+                                        color: "#666",
+                                    }}
+                                >
+                                    Selected tenant: {tenantId}
+                                </div>
                             </div>
                         );
-                    },
-                }}
-            >
-                <div className={styles.container}>
-                    <Head>
-                        <title>SuperTokens 💫</title>
-                        <link
-                            href="//fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap"
-                            rel="stylesheet"
-                            type="text/css"
-                        />
-                        <link rel="icon" href="/favicon.ico" />
-                    </Head>
-
-                    <main className={styles.main}>
-                        <SuperTokensComponentNoSSR />
-                    </main>
+                    } else {
+                        return (
+                            <div>
+                                <DefaultComponent {...props} />
+                                <ChangeTenantsButton setShowTenantSelector={setShowTenantSelector} />
+                                <div
+                                    style={{
+                                        marginTop: "5px",
+                                        fontSize: "12px",
+                                        color: "#666",
+                                    }}
+                                >
+                                    Selected tenant: {tenantId}
+                                </div>
+                            </div>
+                        );
+                    }
+                },
+            }}
+        >
+            <div className="App app-container" key={tenantId}>
+                <div className="fill">
+                    <AuthPage preBuiltUIList={PreBuiltUIList} />
                 </div>
-            </AuthRecipeComponentsOverrideContextProvider>
-        );
-    } else {
-        return <TenantSelector setHasSelectedTenantId={setHasSelectedTenantId} />;
-    }
+            </div>
+        </AuthRecipeComponentsOverrideContextProvider>
+    );
 }

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { getApiDomain } from "./config";
 
 type Props = {
-    setHasSelectedTenantId: React.Dispatch<React.SetStateAction<boolean>>;
+    setTenantId: React.Dispatch<React.SetStateAction<string | null>>;
+    setShowTenantSelector: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const TenantSelector = ({ setHasSelectedTenantId }: Props) => {
+export const TenantSelector = ({ setTenantId, setShowTenantSelector }: Props) => {
     type Tenant = {
         tenantId: string;
     };
@@ -59,12 +60,32 @@ export const TenantSelector = ({ setHasSelectedTenantId }: Props) => {
                     onClick={() => {
                         if (selectedTenantId !== "") {
                             localStorage.setItem("tenantId", selectedTenantId);
-                            setHasSelectedTenantId(true);
+                            setShowTenantSelector(false);
+                            setTenantId(selectedTenantId);
                         }
                     }}
                 >
                     Continue
                 </button>
+            )}
+
+            {tenants !== undefined && (
+                <div
+                    style={{
+                        marginTop: "10px",
+                        fontSize: "12px",
+                        color: "#007aff",
+                        cursor: "pointer",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                    }}
+                    onClick={() => {
+                        setShowTenantSelector(false);
+                    }}
+                >
+                    Cancel
+                </div>
             )}
         </div>
     );

@@ -3,8 +3,10 @@ import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
 import { SessionAuth } from "supertokens-auth-react/recipe/session";
 import { Routes, BrowserRouter as Router, Route } from "react-router-dom";
 import Home from "./Home";
-import { SuperTokensConfig } from "./config";
+import { SuperTokensConfig, PreBuiltUIList } from "./config";
 import { Auth } from "./Auth";
+import { getSuperTokensRoutesForReactRouterDom } from "supertokens-auth-react/ui";
+import * as reactRouterDom from "react-router-dom";
 
 SuperTokens.init(SuperTokensConfig);
 
@@ -24,7 +26,9 @@ function App() {
                          * the pre built UI provided by SuperTokens after users have
                          * selected a tenant
                          */}
-                        <Route path="/auth/*" element={<Auth />} />
+                        <Route path="/auth" element={<Auth />} />
+
+                        {getSuperTokensRoutesForReactRouterDom(reactRouterDom, PreBuiltUIList)}
 
                         <Route
                             path="/"
