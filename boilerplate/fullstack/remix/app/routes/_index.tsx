@@ -7,6 +7,7 @@ import SessionReact from "supertokens-auth-react/recipe/session/index.js";
 import { getSessionForSSR } from "supertokens-node/customframework";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
+import type { JWTPayload } from "jose";
 
 export async function loader({ request }: LoaderFunctionArgs): Promise<{
     accessTokenPayload: JWTPayload | undefined;
