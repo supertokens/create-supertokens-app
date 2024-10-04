@@ -65,4 +65,5 @@ def catch_all(u_path: str):  # pylint: disable=unused-argument
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int("3001"), debug=True)
+    port = int(os.environ.get('REACT_APP_API_PORT') or os.environ.get('VITE_API_PORT') or 3001)
+    app.run(host="0.0.0.0", port=port, debug=True)
