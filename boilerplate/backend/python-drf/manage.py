@@ -3,7 +3,9 @@
 import os
 import sys
 from django.core.management.commands.runserver import Command as runserver
-runserver.default_port = "3001"
+
+port = int(os.environ.get('REACT_APP_API_PORT') or os.environ.get('VITE_API_PORT') or 3001)
+runserver.default_port = port
 
 
 def main():
