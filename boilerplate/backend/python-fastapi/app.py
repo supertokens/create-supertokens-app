@@ -1,4 +1,5 @@
 import uvicorn
+import os
 
 from fastapi import FastAPI, Depends
 from starlette.middleware.cors import CORSMiddleware
@@ -55,4 +56,5 @@ app = CORSMiddleware(
 )
 
 if __name__  == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=3001)
+    port = int(os.environ.get('REACT_APP_API_PORT') or os.environ.get('VITE_API_PORT') or 3001)
+    uvicorn.run(app, host="0.0.0.0", port=port)
