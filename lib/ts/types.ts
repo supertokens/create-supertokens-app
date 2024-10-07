@@ -283,13 +283,7 @@ export type PromptListChoice = {
     value: string;
 };
 
-export const isValidUIBuildType = (userArguments: UserFlagsRaw): boolean => {
-    if (!userArguments.ui) return true;
-    return Object.values(UIBuildType).includes(userArguments.ui);
-};
-
 export interface IPromptFilterStrategy {
-    validValues: string[];
     filterChoices: (choices: PromptListChoice[], answers: Answers) => PromptListChoice[];
     validateUserArguments: (userArguments: UserFlagsRaw) => boolean;
 }

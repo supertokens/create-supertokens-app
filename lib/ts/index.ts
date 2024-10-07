@@ -5,11 +5,7 @@ import { Answers, DownloadLocations, UserFlags, UserFlagsRaw } from "./types.js"
 import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOrPrintStartCommand } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import {
-    modifyAnswersBasedOnFlags,
-    modifyAnswersBasedOnSelection,
-    validateUserArguments,
-} from "./userArgumentUtils.js";
+import { generateInitialAnswers, modifyAnswersBasedOnSelection, validateUserArguments } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 import fs from "fs";
 import Ora from "ora";
@@ -116,9 +112,9 @@ async function run() {
         });
 
         // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
-        answers = await inquirer.prompt(await getQuestions(userArguments));
+        const initialAnswers = generateInitialAnswers(userArguments);
+        answers = await inquirer.prompt(await getQuestions(userArguments), initialAnswers);
 
-        answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersForPythonFrameworks(answers);
         answers = modifyAnswersBasedOnSelection(answers);
 

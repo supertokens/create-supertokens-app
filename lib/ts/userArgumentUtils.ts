@@ -8,14 +8,13 @@ import {
     isValidFrontend,
     isValidPackageManager,
     isValidRecipeName,
-    isValidUIBuildType,
     UIBuildType,
     UserFlags,
     UserFlagsRaw,
 } from "./types.js";
 import validateProjectName from "validate-npm-package-name";
 import path from "path";
-import { isValidUiBasedOnFilters } from "./filterChoicesUtils.js";
+import { isValidUiType } from "./filterChoicesUtils.js";
 
 export function validateNpmName(name: string): {
     valid: boolean;
@@ -83,14 +82,12 @@ export function validateUserArguments(userArguments: UserFlagsRaw) {
     }
 
     if (userArguments.ui !== undefined) {
-        if (!isValidUIBuildType(userArguments)) {
+        if (!isValidUiType(userArguments)) {
             throw new Error(
-                `Invalid argument for ui provided. Supported arguments are ${Object.values(UIBuildType).join(", ")}`
+                `Invalid UI type provided, valid values: ${Object.values(UIBuildType).join(
+                    ", "
+                )} or provided frontend or recipe is not compatible with the UI type`
             );
-        }
-
-        if (!isValidUiBasedOnFilters(userArguments)) {
-            throw new Error(`UI type ${userArguments.ui} is not supported for the selected frontend or recipe.`);
         }
     }
 }
@@ -117,8 +114,8 @@ export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
     return _answers;
 }
 
-export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserFlags): Answers {
-    let _answers = answers;
+export function generateInitialAnswers(userArguments: UserFlags): Partial<Answers> {
+    let _answers: Partial<Answers> = {};
 
     if (userArguments.appname !== undefined) {
         _answers.appname = userArguments.appname;

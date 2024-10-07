@@ -513,13 +513,7 @@ export async function getQuestions(flags: UserFlags) {
             type: "list",
             message: "Choose the ui built type for your frontend:",
             choices: mapOptionsToChoices(uiBuildOptions),
-            when: (answers: Answers) => {
-                if (flags.ui) {
-                    answers.ui = flags.ui;
-                    return false;
-                }
-                return true;
-            },
+            when: flags.ui === undefined,
         },
         {
             name: "frontend",
