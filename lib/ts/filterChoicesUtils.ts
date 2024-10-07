@@ -4,7 +4,29 @@ type StrategyObject = Record<
     FILTER_CHOICES_STRATEGY,
     (choices: PromptListChoice[], flag: UserFlags) => Promise<PromptListChoice[]>
 >;
+/**
+ * An object containing strategies for filtering choices based on different criteria.
+ * Each strategy is an asynchronous function that takes an array of choices and a flags object,
+ * and returns a filtered array of choices.
+ *
+ * @type {StrategyObject}
+ *
+ * @property {Function} [FILTER_CHOICES_STRATEGY.UI_BUILD_FRONTEND] - Filters choices based on the frontend UI build type.
+ * If the `uibuild` flag is set to `PRE_BUILT`, it returns the original choices.
+ * Otherwise, it filters the choices to include only those frontend which have the BoilerPlate for Custom UI.
+ *
+ * @property {Function} [FILTER_CHOICES_STRATEGY.UI_BUILD_RECIPE] - Filters choices based on the recipe UI build type.
+ * If the `uibuild` flag is set to `PRE_BUILT`, it returns the original choices.
+ * Otherwise, it filters the choices to include only those frontend which have the BoilerPlate for Custom UI.
+ *
+ * @param {Array} choices - The array of choices to be filtered.
+ * @param {Object} flags - An object containing flags that determine the filtering criteria.
+ * @returns {Promise<Array>} A promise that resolves to the filtered array of choices.
+ */
 const STRATEGIES: StrategyObject = {
+    /**
+     * Filters choices based on the frontend UI build type.
+     */
     [FILTER_CHOICES_STRATEGY.UI_BUILD_FRONTEND]: async (choices, flags) => {
         if (flags.uibuild === UIBuildType.PRE_BUILT) {
             return choices;
@@ -12,9 +34,15 @@ const STRATEGIES: StrategyObject = {
         const SUPPORTED_FRONTENDS_CUSTOM_UI = ["react"];
         return choices.filter((choice) => SUPPORTED_FRONTENDS_CUSTOM_UI.includes(choice.value));
     },
+    /**
+     * Filters choices based on the recipe UI build type.
+     */
     [FILTER_CHOICES_STRATEGY.UI_BUILD_RECIPE]: async (choices, flags) => {
         if (flags.uibuild === UIBuildType.PRE_BUILT) {
             return choices;
+        }
+        if (flags.frontend !== "react") {
+            throw new Error("No Recipes Available for the selected UI Build Type and Frontend");
         }
         const SUPPORTED_RECIPES_CUSTOM_UI = ["emailpassword", "thirdpartyemailpassword"];
         return choices.filter((choice) => SUPPORTED_RECIPES_CUSTOM_UI.includes(choice.value));
