@@ -4,7 +4,8 @@ import styles from "../page.module.css";
 
 export const CallAPIButton = () => {
     const fetchUserData = async () => {
-        const userInfoResponse = await fetch("http://localhost:3000/api/user");
+        const port = process.env.NEXT_PUBLIC_PORT || 3000;
+        const userInfoResponse = await fetch(`http://localhost:${port}/api/user`);
 
         alert(JSON.stringify(await userInfoResponse.json()));
     };
