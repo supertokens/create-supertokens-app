@@ -192,7 +192,10 @@ export type RecipeQuestionOption = {
     shouldDisplay?: boolean;
 };
 
+export type UIBuildTypeOption = RecipeQuestionOption;
+
 export type Answers = {
+    uibuild: UIBuildType;
     frontend?: SupportedFrontends;
     backend?: SupportedBackends;
     recipe: string;
@@ -216,6 +219,11 @@ export type SupportedPackageManagers = "npm" | "yarn" | "pnpm" | "bun";
 
 export const allPackageManagers: SupportedPackageManagers[] = ["npm", "yarn", "pnpm", "bun"];
 
+export enum UIBuildType {
+    CUSTOM = "custom",
+    PRE_BUILT = "pre-built",
+}
+
 export function isValidPackageManager(manager: string): manager is SupportedPackageManagers {
     if (allPackageManagers.includes(manager as SupportedPackageManagers)) {
         return true;
@@ -232,6 +240,7 @@ export type UserFlagsRaw = {
     frontend?: SupportedFrontends;
     backend?: SupportedBackends;
     manager?: SupportedPackageManagers;
+    uibuild?: UIBuildType;
     autostart?: string | boolean;
 };
 
@@ -268,3 +277,13 @@ export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {
     os: string;
     cliversion: string;
 };
+
+export type PromptListChoice = {
+    name: string;
+    value: string;
+};
+
+export enum FILTER_CHOICES_STRATEGY {
+    UI_BUILD_FRONTEND = "UI_BUILD_FRONTEND",
+    UI_BUILD_RECIPE = "UI_BUILD_RECIPE",
+}

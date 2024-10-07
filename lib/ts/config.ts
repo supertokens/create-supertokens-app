@@ -1,4 +1,13 @@
-import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
+import {
+    Answers,
+    FILTER_CHOICES_STRATEGY,
+    QuestionOption,
+    RecipeQuestionOption,
+    UIBuildType,
+    UIBuildTypeOption,
+    UserFlags,
+} from "./types.js";
+import { filterChoices as _filterChoices } from "./filterChoicesUtils.js";
 import { validateFolderName } from "./userArgumentUtils.js";
 import {
     getDjangoPythonRunScripts,
@@ -467,11 +476,23 @@ export const recipeOptions: RecipeQuestionOption[] = [
     },
 ];
 
+export const uiBuildOptions: UIBuildTypeOption[] = [
+    {
+        value: UIBuildType.PRE_BUILT,
+        displayName: "Pre-built UI (Recommended)",
+    },
+    {
+        value: UIBuildType.CUSTOM,
+        displayName: "Custom UI",
+    },
+];
+
 /**
  * Export for all the questions to ask the user, should follow the exact format mentioned here https://github.com/SBoudrias/Inquirer.js#objects because this config is passed to inquirer. The order of questions depends on the position of the object in the array
  */
 
 export async function getQuestions(flags: UserFlags) {
+    const filterChoices = _filterChoices(flags);
     return [
         {
             name: "appname",
@@ -497,10 +518,37 @@ export async function getQuestions(flags: UserFlags) {
             },
         },
         {
+            name: "uibuild",
+            type: "list",
+            message: "Choose the ui built type for your frontend:",
+            choices: mapOptionsToChoices(uiBuildOptions),
+            when: flags.frontend === undefined,
+
+            /**
+             * Using the post processor assigns a valid `UIBuildType` value to the UserFlags object.
+             *
+             * If the provided input is invalid or not part of the `UIBuildType` enum,
+             * it defaults to `UIBuildType.PRE_BUILT`.
+             * @param {UIBuildType} input - The input value to be filtered, expected to be of type `UIBuildType`
+             * @returns {UIBuildType} the validated or default `UIBuildType`
+             */
+            filter: (input: UIBuildType) => {
+                if (!input || Object.values(UIBuildType).indexOf(input) === -1) {
+                    input = UIBuildType.PRE_BUILT;
+                }
+                flags.uibuild = input;
+                return input;
+            },
+        },
+        {
             name: "frontend",
             type: "list",
             message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
-            choices: mapOptionsToChoices(await getFrontendOptions(flags)),
+            choices: async () =>
+                filterChoices(
+                    mapOptionsToChoices(await getFrontendOptions(flags)),
+                    FILTER_CHOICES_STRATEGY.UI_BUILD_FRONTEND
+                ),
             when: flags.frontend === undefined,
         },
         {
@@ -555,7 +603,8 @@ export async function getQuestions(flags: UserFlags) {
             name: "recipe",
             type: "list",
             message: "What type of authentication do you want to use?",
-            choices: mapOptionsToChoices(recipeOptions),
+            choices: async () =>
+                filterChoices(mapOptionsToChoices(recipeOptions), FILTER_CHOICES_STRATEGY.UI_BUILD_RECIPE),
             when: (answers: Answers) => {
                 // For capacitor we don't ask this question because it has its own way of swapping between recipes
                 if (answers.frontend === "capacitor") {
