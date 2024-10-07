@@ -195,7 +195,7 @@ export type RecipeQuestionOption = {
 export type UIBuildTypeOption = RecipeQuestionOption;
 
 export type Answers = {
-    uibuild: UIBuildType;
+    ui: UIBuildType;
     frontend?: SupportedFrontends;
     backend?: SupportedBackends;
     recipe: string;
@@ -240,7 +240,7 @@ export type UserFlagsRaw = {
     frontend?: SupportedFrontends;
     backend?: SupportedBackends;
     manager?: SupportedPackageManagers;
-    uibuild?: UIBuildType;
+    ui?: UIBuildType;
     autostart?: string | boolean;
 };
 
@@ -283,7 +283,13 @@ export type PromptListChoice = {
     value: string;
 };
 
-export enum FILTER_CHOICES_STRATEGY {
-    UI_BUILD_FRONTEND = "UI_BUILD_FRONTEND",
-    UI_BUILD_RECIPE = "UI_BUILD_RECIPE",
+export const isValidUIBuildType = (userArguments: UserFlagsRaw): boolean => {
+    if (!userArguments.ui) return true;
+    return Object.values(UIBuildType).includes(userArguments.ui);
+};
+
+export interface IPromptFilterStrategy {
+    validValues: string[];
+    filterChoices: (choices: PromptListChoice[], answers: Answers) => PromptListChoice[];
+    validateUserArguments: (userArguments: UserFlagsRaw) => boolean;
 }

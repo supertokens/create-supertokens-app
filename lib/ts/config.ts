@@ -1,13 +1,5 @@
-import {
-    Answers,
-    FILTER_CHOICES_STRATEGY,
-    QuestionOption,
-    RecipeQuestionOption,
-    UIBuildType,
-    UIBuildTypeOption,
-    UserFlags,
-} from "./types.js";
-import { filterChoices as _filterChoices } from "./filterChoicesUtils.js";
+import { Answers, QuestionOption, RecipeQuestionOption, UIBuildType, UIBuildTypeOption, UserFlags } from "./types.js";
+import { FILTER_CHOICES_STRATEGY, filterChoices } from "./filterChoicesUtils.js";
 import { validateFolderName } from "./userArgumentUtils.js";
 import {
     getDjangoPythonRunScripts,
@@ -492,7 +484,6 @@ export const uiBuildOptions: UIBuildTypeOption[] = [
  */
 
 export async function getQuestions(flags: UserFlags) {
-    const filterChoices = _filterChoices(flags);
     return [
         {
             name: "appname",
@@ -518,36 +509,27 @@ export async function getQuestions(flags: UserFlags) {
             },
         },
         {
-            name: "uibuild",
+            name: "ui",
             type: "list",
             message: "Choose the ui built type for your frontend:",
             choices: mapOptionsToChoices(uiBuildOptions),
-            when: flags.frontend === undefined,
-
-            /**
-             * Using the post processor assigns a valid `UIBuildType` value to the UserFlags object.
-             *
-             * If the provided input is invalid or not part of the `UIBuildType` enum,
-             * it defaults to `UIBuildType.PRE_BUILT`.
-             * @param {UIBuildType} input - The input value to be filtered, expected to be of type `UIBuildType`
-             * @returns {UIBuildType} the validated or default `UIBuildType`
-             */
-            filter: (input: UIBuildType) => {
-                if (!input || Object.values(UIBuildType).indexOf(input) === -1) {
-                    input = UIBuildType.PRE_BUILT;
+            when: (answers: Answers) => {
+                if (flags.ui) {
+                    answers.ui = flags.ui;
+                    return false;
                 }
-                flags.uibuild = input;
-                return input;
+                return true;
             },
         },
         {
             name: "frontend",
             type: "list",
             message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
-            choices: async () =>
+            choices: async (answers: Answers) =>
                 filterChoices(
                     mapOptionsToChoices(await getFrontendOptions(flags)),
-                    FILTER_CHOICES_STRATEGY.UI_BUILD_FRONTEND
+                    answers,
+                    FILTER_CHOICES_STRATEGY.filterFrontendByUiType
                 ),
             when: flags.frontend === undefined,
         },
@@ -603,8 +585,12 @@ export async function getQuestions(flags: UserFlags) {
             name: "recipe",
             type: "list",
             message: "What type of authentication do you want to use?",
-            choices: async () =>
-                filterChoices(mapOptionsToChoices(recipeOptions), FILTER_CHOICES_STRATEGY.UI_BUILD_RECIPE),
+            choices: async (answers: Answers) =>
+                filterChoices(
+                    mapOptionsToChoices(recipeOptions),
+                    answers,
+                    FILTER_CHOICES_STRATEGY.filterRecipeByUiType
+                ),
             when: (answers: Answers) => {
                 // For capacitor we don't ask this question because it has its own way of swapping between recipes
                 if (answers.frontend === "capacitor") {

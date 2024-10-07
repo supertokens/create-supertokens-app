@@ -8,11 +8,14 @@ import {
     isValidFrontend,
     isValidPackageManager,
     isValidRecipeName,
+    isValidUIBuildType,
+    UIBuildType,
     UserFlags,
     UserFlagsRaw,
 } from "./types.js";
 import validateProjectName from "validate-npm-package-name";
 import path from "path";
+import { isValidUiBasedOnFilters } from "./filterChoicesUtils.js";
 
 export function validateNpmName(name: string): {
     valid: boolean;
@@ -78,6 +81,18 @@ export function validateUserArguments(userArguments: UserFlagsRaw) {
             throw new Error("Invalid package manager provided, valid values:\n" + availableManagers);
         }
     }
+
+    if (userArguments.ui !== undefined) {
+        if (!isValidUIBuildType(userArguments)) {
+            throw new Error(
+                `Invalid argument for ui provided. Supported arguments are ${Object.values(UIBuildType).join(", ")}`
+            );
+        }
+
+        if (!isValidUiBasedOnFilters(userArguments)) {
+            throw new Error(`UI type ${userArguments.ui} is not supported for the selected frontend or recipe.`);
+        }
+    }
 }
 
 export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
@@ -111,6 +126,10 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
 
     if (userArguments.recipe !== undefined) {
         _answers.recipe = userArguments.recipe;
+    }
+
+    if (userArguments.ui !== undefined) {
+        _answers.ui = userArguments.ui;
     }
 
     if (userArguments.frontend !== undefined) {
