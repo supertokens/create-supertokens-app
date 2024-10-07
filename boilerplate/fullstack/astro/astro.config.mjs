@@ -9,5 +9,8 @@ export default defineConfig({
     adapter: node({
         mode: "standalone",
     }),
+    server: {
+        port: parseInt(process.env.PUBLIC_PORT || "5167"),
+    },
     integrations: [react()],
 });
