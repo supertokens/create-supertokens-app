@@ -4,7 +4,7 @@ import { ensureSuperTokensInit } from "../../../../config/backend";
 
 ensureSuperTokensInit();
 
-const handleCall = handleAuthAPIRequest(Response);
+const handleCall = handleAuthAPIRequest();
 
 export async function fallback({ request }) {
     try {
