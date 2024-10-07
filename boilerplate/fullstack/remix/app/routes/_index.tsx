@@ -54,7 +54,8 @@ export default function Home() {
     }
 
     const fetchUserData = async () => {
-        const userInfoResponse = await fetch("http://localhost:3000/sessioninfo");
+        const port = import.meta.env.VITE_PORT || 3000;
+        const userInfoResponse = await fetch(`http://localhost:${port}/sessioninfo`);
 
         alert(JSON.stringify(await userInfoResponse.json()));
     };
