@@ -1,10 +1,10 @@
 ---
 import Base from "../layouts/Base.astro";
 import Home from "../components/Home";
-import { getSessionForSSR } from "../superTokensHelpers";
+import { getSessionForSSR } from "supertokens-node/customframework";
 
 const { accessTokenPayload, hasToken, error } = await getSessionForSSR(
-  Astro.request
+  Astro.request,
 );
 
 const SSRData = {

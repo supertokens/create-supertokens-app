@@ -3,14 +3,14 @@ import SuperTokens from "supertokens-auth-react";
 import SessionReact from "supertokens-auth-react/recipe/session/index.js";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForAstro } from "./sessionAuthForAstro";
-import type { JwtPayload } from "jsonwebtoken";
+import type { JWTPayload } from "jose";
 
 export default function Home({
     accessTokenPayload,
     hasToken,
     error,
 }: {
-    accessTokenPayload: JwtPayload | undefined;
+    accessTokenPayload: JWTPayload | undefined;
     hasToken: boolean;
     error: Error | undefined;
 }) {
