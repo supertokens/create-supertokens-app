@@ -5,7 +5,12 @@ import { Answers, DownloadLocations, UserFlags, UserFlagsRaw } from "./types.js"
 import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOrPrintStartCommand } from "./utils.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { generateInitialAnswers, modifyAnswersBasedOnSelection, validateUserArguments } from "./userArgumentUtils.js";
+import {
+    generateInitialAnswers,
+    modifyAnswersBasedOnSelection,
+    modifyUserArgumentsForAliasFlags,
+    validateUserArguments,
+} from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
 import fs from "fs";
 import Ora from "ora";
@@ -94,7 +99,8 @@ async function run() {
             --manager: Which package manager to use
             --autostart: Whether the CLI should start the project after setting up
         */
-        const userArgumentsRaw = (await yargs(hideBin(process.argv)).argv) as UserFlagsRaw;
+        let userArgumentsRaw = (await yargs(hideBin(process.argv)).argv) as UserFlagsRaw;
+        userArgumentsRaw = modifyUserArgumentsForAliasFlags(userArgumentsRaw);
         validateUserArguments(userArgumentsRaw);
         const userArguments: UserFlags = {
             ...userArgumentsRaw,

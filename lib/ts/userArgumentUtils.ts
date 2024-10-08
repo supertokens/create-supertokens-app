@@ -162,3 +162,13 @@ export function getShouldAutoStartFromArgs(userArguments: UserFlags): boolean {
 
     return false;
 }
+
+export function modifyUserArgumentsForAliasFlags(userArguments: UserFlagsRaw): UserFlagsRaw {
+    let _userArguments = structuredClone(userArguments);
+
+    if (_userArguments.ui === UIBuildType.CUSTOM && _userArguments.frontend === "react") {
+        _userArguments.frontend = "react-custom";
+    }
+
+    return _userArguments;
+}

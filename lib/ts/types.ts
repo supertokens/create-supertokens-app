@@ -29,6 +29,7 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
 
 export type SupportedFrontends =
     | "react"
+    | "react-custom"
     | "next"
     | "next-multitenancy"
     | "next-app-directory"
@@ -51,6 +52,9 @@ export const allFrontends: {
 }[] = [
     {
         id: "react",
+    },
+    {
+        id: "react-custom",
     },
     {
         id: "next",

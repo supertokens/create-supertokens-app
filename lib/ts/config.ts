@@ -24,7 +24,19 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "react",
             displayName: "React",
             location: {
-                main: "frontend/supertokens-react",
+                main: `frontend/supertokens-react`,
+                config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
+            },
+            script: {
+                setup: [`${manager} install`],
+                run: [`${manager} run start`],
+            },
+        },
+        {
+            value: "react-custom",
+            displayName: "React",
+            location: {
+                main: `frontend/supertokens-react-custom`,
                 config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
             },
             script: {
