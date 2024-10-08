@@ -10,7 +10,9 @@
         "check-circular-dependencies": "npx madge --circular --extensions js ./lib/build/",
         "build-pretty": "npm run build && npx prettier --write . && npx clear-npx-cache",
         "set-up-hooks": "cp hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
-        "pretty-check": "npx prettier --check ."
+        "pretty-check": "npx prettier --check .",
+        "dev": "npm run build",
+        "postdev": "node lib/build/index.js"
     },
     "keywords": [],
     "author": "",

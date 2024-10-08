@@ -2,7 +2,7 @@ import { getBackendOptionForProcessing, getFrontendOptionsForProcessing } from "
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
-import { Answers, DownloadLocations, ExecOutput, QuestionOption, UserFlags } from "./types";
+import { Answers, DownloadLocations, ExecOutput, QuestionOption, UIBuildType, UserFlags } from "./types";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
@@ -14,6 +14,7 @@ import chalk from "chalk";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 import { addPackageCommand } from "./packageManager.js";
+import { executeSetupScript } from "./scriptsUtils.js";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -32,7 +33,7 @@ export async function getDownloadLocationFromAnswers(
 ): Promise<DownloadLocations | undefined> {
     const branchToUse = userArguments.branch || "master";
 
-    let downloadURL = `https://github.com/supertokens/create-supertokens-app/archive/${branchToUse}.tar.gz`;
+    let downloadURL = `https://github.com/ceroy-ak/create-supertokens-app/archive/${branchToUse}.tar.gz`;
 
     const selectedFrontend = (await getFrontendOptionsForProcessing(userArguments)).find((element) => {
         return element.value === answers.frontend;
@@ -289,10 +290,18 @@ async function setupFrontendBackendApp(
     userArguments: UserFlags,
     spinner: Ora
 ) {
-    const frontendFolderName = locations.frontend
+    let frontendFolderName = locations.frontend
         .split("/")
         .filter((i) => i !== "frontend")
         .join("");
+
+    /**
+     * If the user has selected custom UI, we need to rename the frontend folder
+     * to point to the folder with all custom UI codes
+     */
+    if (answers.ui === UIBuildType.CUSTOM) {
+        frontendFolderName = locations.frontend + "-custom";
+    }
     const backendFolderName = locations.backend
         .split("/")
         .filter((i) => i !== "backend")
@@ -375,6 +384,17 @@ async function setupFrontendBackendApp(
     }
 
     spinner.text = "Installing frontend dependencies";
+
+    /**
+     * The optional setup script if exists will be executed here
+     * Use Case: run custom file/directory manipulation before npm/yarn/bun install
+     * Example: Copying a file from the template to the project folder
+     */
+    const optionalSetupScriptPath = `${folderName}/frontend/setupScript.js`;
+    if (fs.existsSync(optionalSetupScriptPath)) {
+        await executeSetupScript(optionalSetupScriptPath, answers);
+    }
+
     const frontendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
 
