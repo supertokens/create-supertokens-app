@@ -375,9 +375,11 @@ async function setupFrontendBackendApp(
         });
     }
 
-    spinner.text = "Installing frontend dependencies";
+    spinner.text = "Executing setup scripts";
 
-    await executeSetupScriptIfExists(selectedFrontend, answers);
+    await executeSetupScriptIfExists(selectedFrontend, `./${folderName}/frontend`, answers);
+
+    spinner.text = "Installing frontend dependencies";
 
     const frontendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
@@ -431,8 +433,6 @@ async function setupFrontendBackendApp(
     await performAdditionalSetupForFrontendIfNeeded(selectedFrontend, folderName, userArguments);
 
     spinner.text = "Installing backend dependencies";
-
-    await executeSetupScriptIfExists(selectedBackend, answers);
 
     const backendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
@@ -587,8 +587,6 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
     }
 
     spinner.text = "Installing dependencies";
-
-    await executeSetupScriptIfExists(selectedFullStack, answers);
 
     const setupResult = new Promise<ExecOutput>((res) => {
         if (selectedFullStack.script === undefined || selectedFullStack.script.setup.length === 0) {

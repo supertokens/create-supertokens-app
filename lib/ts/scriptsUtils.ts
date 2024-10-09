@@ -6,15 +6,19 @@ import { Answers, QuestionOption } from "./types";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function executeSetupScript(scriptPath: string, answers: Answers): Promise<void> {
+async function executeSetupScript(scriptPath: string, directoryPath: string, answers: Answers): Promise<void> {
     const scriptUrl = pathToFileURL(scriptPath).href;
     const script = await import(scriptUrl);
-    await script.default(answers);
+    await script.default(directoryPath, answers);
 }
 
-export async function executeSetupScriptIfExists(selectedStack: QuestionOption, answers: Answers): Promise<void> {
+export async function executeSetupScriptIfExists(
+    selectedStack: QuestionOption,
+    directoryPath: string,
+    answers: Answers
+): Promise<void> {
     const setupScriptPath = path.join(__dirname, `./setup-scripts/${selectedStack.location.main}.js`);
     if (fs.existsSync(setupScriptPath)) {
-        await executeSetupScript(setupScriptPath, answers);
+        await executeSetupScript(setupScriptPath, directoryPath, answers);
     }
 }
