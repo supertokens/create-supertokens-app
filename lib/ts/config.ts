@@ -1,4 +1,5 @@
-import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
+import { Answers, QuestionOption, RecipeQuestionOption, UIBuildType, UIBuildTypeOption, UserFlags } from "./types.js";
+import { FILTER_CHOICES_STRATEGY, filterChoices } from "./filterChoicesUtils.js";
 import { validateFolderName } from "./userArgumentUtils.js";
 import {
     getDjangoPythonRunScripts,
@@ -23,7 +24,19 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "react",
             displayName: "React",
             location: {
-                main: "frontend/supertokens-react",
+                main: `frontend/supertokens-react`,
+                config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
+            },
+            script: {
+                setup: [`${manager} install`],
+                run: [`${manager} run start`],
+            },
+        },
+        {
+            value: "react-custom",
+            displayName: "React",
+            location: {
+                main: `frontend/supertokens-react-custom`,
                 config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
             },
             script: {
@@ -467,6 +480,17 @@ export const recipeOptions: RecipeQuestionOption[] = [
     },
 ];
 
+export const uiBuildOptions: UIBuildTypeOption[] = [
+    {
+        value: UIBuildType.PRE_BUILT,
+        displayName: "Pre-built UI (Recommended)",
+    },
+    {
+        value: UIBuildType.CUSTOM,
+        displayName: "Custom UI",
+    },
+];
+
 /**
  * Export for all the questions to ask the user, should follow the exact format mentioned here https://github.com/SBoudrias/Inquirer.js#objects because this config is passed to inquirer. The order of questions depends on the position of the object in the array
  */
@@ -497,10 +521,22 @@ export async function getQuestions(flags: UserFlags) {
             },
         },
         {
+            name: "ui",
+            type: "list",
+            message: "Choose the ui built type for your frontend:",
+            choices: mapOptionsToChoices(uiBuildOptions),
+            when: flags.ui === undefined,
+        },
+        {
             name: "frontend",
             type: "list",
             message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
-            choices: mapOptionsToChoices(await getFrontendOptions(flags)),
+            choices: async (answers: Answers) =>
+                filterChoices(
+                    mapOptionsToChoices(await getFrontendOptions(flags)),
+                    answers,
+                    FILTER_CHOICES_STRATEGY.filterFrontendByUiType
+                ),
             when: flags.frontend === undefined,
         },
         {
@@ -555,7 +591,12 @@ export async function getQuestions(flags: UserFlags) {
             name: "recipe",
             type: "list",
             message: "What type of authentication do you want to use?",
-            choices: mapOptionsToChoices(recipeOptions),
+            choices: async (answers: Answers) =>
+                filterChoices(
+                    mapOptionsToChoices(recipeOptions),
+                    answers,
+                    FILTER_CHOICES_STRATEGY.filterRecipeByUiType
+                ),
             when: (answers: Answers) => {
                 // For capacitor we don't ask this question because it has its own way of swapping between recipes
                 if (answers.frontend === "capacitor") {

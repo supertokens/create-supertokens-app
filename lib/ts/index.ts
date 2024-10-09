@@ -6,8 +6,9 @@ import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOr
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import {
-    modifyAnswersBasedOnFlags,
+    generateInitialAnswers,
     modifyAnswersBasedOnSelection,
+    modifyUserArgumentsForAliasFlags,
     validateUserArguments,
 } from "./userArgumentUtils.js";
 import { Logger } from "./logger.js";
@@ -98,7 +99,8 @@ async function run() {
             --manager: Which package manager to use
             --autostart: Whether the CLI should start the project after setting up
         */
-        const userArgumentsRaw = (await yargs(hideBin(process.argv)).argv) as UserFlagsRaw;
+        let userArgumentsRaw = (await yargs(hideBin(process.argv)).argv) as UserFlagsRaw;
+        userArgumentsRaw = modifyUserArgumentsForAliasFlags(userArgumentsRaw);
         validateUserArguments(userArgumentsRaw);
         const userArguments: UserFlags = {
             ...userArgumentsRaw,
@@ -116,9 +118,9 @@ async function run() {
         });
 
         // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
-        answers = await inquirer.prompt(await getQuestions(userArguments));
+        const initialAnswers = generateInitialAnswers(userArguments);
+        answers = await inquirer.prompt(await getQuestions(userArguments), initialAnswers);
 
-        answers = modifyAnswersBasedOnFlags(answers, userArguments);
         answers = modifyAnswersForPythonFrameworks(answers);
         answers = modifyAnswersBasedOnSelection(answers);
 
