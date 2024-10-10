@@ -1,14 +1,14 @@
 import { RouteObject } from "react-router-dom";
-import SignIn from "./SignIn";
+import SocialLogin from "./SocialLogin";
 import CallbackHandler from "./CallbackHandler";
 
 const AuthRoutes: RouteObject[] = [
     {
-        path: "/signin",
-        element: <SignIn />,
+        path: "/authenticate",
+        element: <SocialLogin />,
     },
     {
-        path: "/callback/google",
+        path: "/authenticate/callback/:provider",
         element: <CallbackHandler />,
     },
 ];
