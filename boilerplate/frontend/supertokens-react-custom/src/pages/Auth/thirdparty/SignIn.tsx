@@ -1,5 +1,5 @@
-import { getAuthorisationURLWithQueryParamsAndSetState } from "supertokens-auth-react/recipe/thirdparty";
-import { getWebsiteDomain } from "../../config";
+import { getAuthorisationURLWithQueryParamsAndSetState } from "supertokens-web-js/recipe/thirdparty";
+import { getWebsiteDomain } from "../../../config";
 
 export default function SignIn() {
     const handleSigninWithGoogle = async () => {

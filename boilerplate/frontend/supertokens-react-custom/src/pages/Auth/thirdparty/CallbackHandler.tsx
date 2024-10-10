@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInAndUp } from "supertokens-auth-react/recipe/thirdparty";
+import { signInAndUp } from "supertokens-web-js/recipe/thirdparty";
 
 export default function CallbackHandler() {
     const navigate = useNavigate();

@@ -1,15 +1,10 @@
 import { RouteObject } from "react-router-dom";
-import SignUp from "./SignUp";
-import SignIn from "./SingIn";
+import LoginAndRegister from "./LoginAndRegister";
 
 const AuthRoutes: RouteObject[] = [
     {
-        path: "emailpassword/signin",
-        element: <SignIn />,
-    },
-    {
-        path: "emailpassword/signup",
-        element: <SignUp />,
+        path: "/authenticate",
+        element: <LoginAndRegister />,
     },
 ];
 

@@ -1,10 +1,10 @@
 import { RouteObject } from "react-router-dom";
-import SignIn from "./SingIn";
+import PasswordlessSignIn from "./PasswordlessSignIn";
 
 const AuthRoutes: RouteObject[] = [
     {
-        path: "passwordless/signin",
-        element: <SignIn />,
+        path: "/authenticate",
+        element: <PasswordlessSignIn />,
     },
 ];
 

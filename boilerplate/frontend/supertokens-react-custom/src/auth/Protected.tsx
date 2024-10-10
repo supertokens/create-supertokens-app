@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import Session from "supertokens-auth-react/recipe/session";
+import Session from "supertokens-web-js/recipe/session";
 
 export default function Protected() {
     const [isSessionStatusLoading, setIsSessionStatusLoading] = useState(true);
@@ -12,7 +12,7 @@ export default function Protected() {
             try {
                 const isSessionValid = await Session.doesSessionExist();
                 if (!isSessionValid) {
-                    navigate(`signin?redirectTo=${location.pathname}`);
+                    navigate(`/authenticate?redirectTo=${location.pathname}`);
                 }
             } catch (error) {
                 console.error(error);
@@ -20,9 +20,7 @@ export default function Protected() {
                 setIsSessionStatusLoading(false);
             }
         }
-
         checkSession();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (isSessionStatusLoading) {

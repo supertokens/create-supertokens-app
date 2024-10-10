@@ -1,12 +1,12 @@
-import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
-import { SuperTokensConfig } from "@/config";
+import SuperTokens from "supertokens-web-js";
+import { superTokensConfig } from "./config";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "@/pages/Home";
 import AuthRoutes from "@/pages/Auth";
 import DashboardPage from "@/pages/Dashboard";
 import Protected from "@/auth/Protected";
 
-SuperTokens.init(SuperTokensConfig);
+SuperTokens.init(superTokensConfig);
 
 const router = createBrowserRouter([
     {
@@ -27,11 +27,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-    return (
-        <SuperTokensWrapper>
-            <RouterProvider router={router} />
-        </SuperTokensWrapper>
-    );
+    return <RouterProvider router={router} />;
 }
 
 export default App;

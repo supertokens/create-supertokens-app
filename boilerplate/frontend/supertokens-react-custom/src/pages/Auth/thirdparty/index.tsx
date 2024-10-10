@@ -4,11 +4,11 @@ import CallbackHandler from "./CallbackHandler";
 
 const AuthRoutes: RouteObject[] = [
     {
-        path: "social/signin",
+        path: "/signin",
         element: <SignIn />,
     },
     {
-        path: "social/callback/google",
+        path: "/callback/google",
         element: <CallbackHandler />,
     },
 ];

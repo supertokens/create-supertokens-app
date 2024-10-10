@@ -37,7 +37,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             displayName: "React",
             location: {
                 main: `frontend/supertokens-react-custom`,
-                config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
+                config: [{ finalConfig: "/src/config.ts", configFiles: "/src/config" }],
             },
             script: {
                 setup: [`${manager} install`],
