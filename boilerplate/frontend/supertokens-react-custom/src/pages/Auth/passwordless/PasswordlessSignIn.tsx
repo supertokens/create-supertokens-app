@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Input from "@/components/Input";
 import useSessionInfo from "@/hooks/useSessionInfo";
 import { useEffect, useState } from "react";
-import useLogin from "./useLogin";
+import { submitOTP, resendOTP, sendOTP } from "./utils";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -27,7 +27,6 @@ export default function PasswordlessSignIn({
     const [otp, setOtp] = useState("");
     const [screen, setScreen] = useState<SCREEN>(SCREEN.EMAIL);
     const [isLoading, setIsLoading] = useState(false);
-    const { sendOTP, submitOTP, resendOTP } = useLogin();
     const navigation = useNavigate();
     const { sessionExists } = useSessionInfo();
 

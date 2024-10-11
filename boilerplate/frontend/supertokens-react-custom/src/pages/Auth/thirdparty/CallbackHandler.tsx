@@ -1,13 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import useSocialLogin from "./useSocialLogin";
+import { callbackHandler } from "./utils";
 import { GrYoga } from "react-icons/gr";
 import { toast } from "react-toastify";
 
 function CallbackHandler() {
     const alreadyExecuted = useRef(false);
     const navigate = useNavigate();
-    const { callbackHandler } = useSocialLogin();
     useEffect(() => {
         async function handleCallback() {
             const response = await callbackHandler();

@@ -4,7 +4,7 @@ import useSessionInfo from "@/hooks/useSessionInfo";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SUPPORTED_PROVIDERS } from "./constants";
-import useSocialLogin from "./useSocialLogin";
+import { socialLogin } from "./utils";
 import { toast } from "react-toastify";
 
 interface SocialLoginProps {
@@ -23,7 +23,6 @@ export default function SocialLogin({
     const { sessionExists } = useSessionInfo();
     const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigate();
-    const { socialLogin } = useSocialLogin();
 
     const handleLoginRequest = async (provider: string) => {
         setIsLoading(true);

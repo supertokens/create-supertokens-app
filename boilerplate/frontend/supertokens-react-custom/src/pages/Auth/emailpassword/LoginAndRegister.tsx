@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import useLogin from "./useLogin";
-import useRegister from "./useRegister";
+import { login, register } from "./utils";
 import useSessionInfo from "@/hooks/useSessionInfo";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
@@ -38,8 +37,6 @@ export default function LoginAndRegister({ showFooter = true, showHeader = true,
     const [isLoading, setIsLoading] = useState(false);
 
     const { sessionExists } = useSessionInfo();
-    const { register } = useRegister();
-    const { login } = useLogin();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (isLoading) return;
