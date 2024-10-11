@@ -1,5 +1,12 @@
-import { SUPPORTED_FRONTEND_FOR_CUSTOM_UI, SUPPORTED_RECIPE_FOR_CUSTOM_UI } from "./constants.js";
-import { Answers, IPromptFilterStrategy, PromptListChoice, UIBuildType, UserFlagsRaw } from "./types.js";
+import {
+    allFrontends,
+    Answers,
+    IPromptFilterStrategy,
+    PromptListChoice,
+    SupportedFrontends,
+    UIBuildType,
+    UserFlagsRaw,
+} from "./types.js";
 
 const getIsValueSupported = (value: string, supportedValues: string[]) => {
     return supportedValues.includes(value);
@@ -8,35 +15,54 @@ const getIsValueSupported = (value: string, supportedValues: string[]) => {
 /**
  * Frontend filter strategy based on the selected UI build type.
  */
+/**
+ * Strategy for filtering frontend choices based on the UI build type.
+ *
+ * @implements {IPromptFilterStrategy}
+ *
+ * @property {function} filterChoices - Filters the available choices based on the selected UI build type.
+ * @param {Array} choices - The list of available choices.
+ * @param {Object} answers - The answers provided by the user.
+ * @returns {Array} - The filtered list of choices.
+ *
+ * @property {function} validateUserArguments - Validates the user-provided arguments based on the UI build type.
+ * @param {Object} userArguments - The arguments provided by the user.
+ * @returns {boolean} - Returns true if the user arguments are valid, otherwise false.
+ */
 const filterFrontendByUiType: IPromptFilterStrategy = {
     filterChoices(choices, answers) {
         /**
-         * For pre-built UI, all choices are supported which are not part of SUPPORTED_FRONTEND_FOR_CUSTOM_UI.
+         * For pre-built UI
          */
         if (answers.ui === UIBuildType.PRE_BUILT) {
-            return choices.filter((choice) => !getIsValueSupported(choice.value, SUPPORTED_FRONTEND_FOR_CUSTOM_UI));
+            const prebuiltUiSupportedFrontends = getSupportedFrontendForUI(UIBuildType.PRE_BUILT);
+            return choices.filter((choice) => getIsValueSupported(choice.value, prebuiltUiSupportedFrontends));
         }
+
         /**
-         * For custom UI, only a subset of frontend are supported.
+         * For custom UI
          */
-        return choices.filter((choice) => getIsValueSupported(choice.value, SUPPORTED_FRONTEND_FOR_CUSTOM_UI));
+        const customUiSupportedFrontends = getSupportedFrontendForUI(UIBuildType.CUSTOM);
+        return choices.filter((choice) => getIsValueSupported(choice.value, customUiSupportedFrontends));
     },
     validateUserArguments(userArguments) {
         /**
-         * If the user has not selected a frontend, then it is valid as the value may be chosen during the inquirer prompt.
-         * For pre-built UI, which is the default option all frontend which are not part of SUPPORTED_FRONTEND_FOR_CUSTOM_UI are supported.
+         * For pre-built UI
          */
+        const prebuiltUiSupportedFrontends = getSupportedFrontendForUI(UIBuildType.PRE_BUILT);
         if (
             !userArguments.frontend ||
             (userArguments.ui === UIBuildType.PRE_BUILT &&
-                !getIsValueSupported(userArguments.frontend, SUPPORTED_FRONTEND_FOR_CUSTOM_UI))
+                getIsValueSupported(userArguments.frontend, prebuiltUiSupportedFrontends))
         ) {
             return true;
         }
+
         /**
-         * For custom UI, only a subset of frontend are supported.
+         * For custom UI
          */
-        return getIsValueSupported(userArguments.frontend, SUPPORTED_FRONTEND_FOR_CUSTOM_UI);
+        const customUiSupportedFrontends = getSupportedFrontendForUI(UIBuildType.CUSTOM);
+        return getIsValueSupported(userArguments.frontend, customUiSupportedFrontends);
     },
 };
 
@@ -46,25 +72,34 @@ const filterFrontendByUiType: IPromptFilterStrategy = {
 const filterRecipeByUiType: IPromptFilterStrategy = {
     filterChoices(choices, answers) {
         /**
-         * For pre-built UI, all recipes are supported.
+         * For pre-built UI
          */
+        const prebuiltUiSupportedRecipes = getSupportedRecipeForUI(UIBuildType.PRE_BUILT);
         if (answers.ui === UIBuildType.PRE_BUILT) {
-            return choices;
+            return choices.filter((choice) => getIsValueSupported(choice.value, prebuiltUiSupportedRecipes));
         }
         /**
-         * For custom UI, only a subset of recipes are supported.
+         * For custom UI
          */
-        return choices.filter((choice) => getIsValueSupported(choice.value, SUPPORTED_RECIPE_FOR_CUSTOM_UI));
+        const customUiSupportedRecipes = getSupportedRecipeForUI(UIBuildType.CUSTOM);
+        return choices.filter((choice) => getIsValueSupported(choice.value, customUiSupportedRecipes));
     },
     validateUserArguments(userArguments) {
         /**
-         * For pre-built UI, which is the default option all existing frontend are supported.
+         * For pre-built UI
          */
-        if (!userArguments.recipe || userArguments.ui === UIBuildType.PRE_BUILT) return true;
+        const prebuiltUiSupportedRecipes = getSupportedRecipeForUI(UIBuildType.PRE_BUILT);
+        if (
+            !userArguments.recipe ||
+            (userArguments.ui === UIBuildType.PRE_BUILT &&
+                getIsValueSupported(userArguments.recipe, prebuiltUiSupportedRecipes))
+        )
+            return true;
         /**
-         * For custom UI, only a subset of frontend are supported.
+         * For custom UI
          */
-        return getIsValueSupported(userArguments.recipe, SUPPORTED_RECIPE_FOR_CUSTOM_UI);
+        const customUiSupportedRecipes = getSupportedRecipeForUI(UIBuildType.CUSTOM);
+        return getIsValueSupported(userArguments.recipe, customUiSupportedRecipes);
     },
 };
 
@@ -129,4 +164,38 @@ export const isValidUiType = (userArguments: UserFlagsRaw): boolean => {
         FILTER_CHOICES_STRATEGY.filterFrontendByUiType,
         FILTER_CHOICES_STRATEGY.filterRecipeByUiType,
     ]);
+};
+
+/**
+ * Retrieves the supported frontend frameworks for a given UI build type.
+ *
+ * @param {UIBuildType} ui - The type of UI build.
+ * @returns {SupportedFrontends[]} An array of supported frontend frameworks for the given UI.
+ */
+const getSupportedFrontendForUI = (ui: UIBuildType): SupportedFrontends[] => {
+    const CUSTOM_ONLY: SupportedFrontends[] = ["react-custom"];
+    if (ui === UIBuildType.PRE_BUILT) {
+        // Return all frontends except the custom only ones
+        return allFrontends.map((frontend) => frontend.id).filter((frontend) => !CUSTOM_ONLY.includes(frontend));
+    }
+    return CUSTOM_ONLY;
+};
+
+/**
+ * Retrieves the list of supported recipes for the given UI build type.
+ *
+ * @param {UIBuildType} ui - The type of UI build (e.g., PRE_BUILT or CUSTOM).
+ * @returns {string[]} An array of supported recipe names for the given UI Build type.
+ */
+const getSupportedRecipeForUI = (ui: UIBuildType): string[] => {
+    const CUSTOM_SUPPORTED_RECIPES = [
+        "emailpassword",
+        "thirdparty",
+        "passwordless",
+        "thirdpartypasswordless",
+        "thirdpartyemailpassword",
+    ];
+    const PREBUILT_SUPPORTED_RECIPES = [...CUSTOM_SUPPORTED_RECIPES, "all_auth", "multitenancy", "multifactorauth"];
+
+    return ui === UIBuildType.PRE_BUILT ? PREBUILT_SUPPORTED_RECIPES : CUSTOM_SUPPORTED_RECIPES;
 };

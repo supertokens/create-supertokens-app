@@ -527,7 +527,7 @@ export async function getQuestions(flags: UserFlags) {
             type: "list",
             message: "Choose the ui build type for your frontend:",
             choices: mapOptionsToChoices(uiBuildOptions),
-            when: flags.ui === undefined,
+            when: (answers: Answers) => !answers.ui,
         },
         {
             name: "frontend",
