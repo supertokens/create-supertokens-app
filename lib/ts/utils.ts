@@ -2,7 +2,7 @@ import { getBackendOptionForProcessing, getFrontendOptionsForProcessing } from "
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
-import { Answers, DownloadLocations, ExecOutput, QuestionOption, UIBuildType, UserFlags } from "./types.js";
+import { Answers, DownloadLocations, ExecOutput, QuestionOption, UserFlags } from "./types.js";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
