@@ -1,5 +1,5 @@
 import os from "os";
-import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./types.js";
+import { Answers, QuestionOption, RecipeQuestionOption, UIBuildType, UserFlags } from "./types.js";
 
 export function getPythonRunScripts(): string[] {
     if (os.platform() === "win32") {
@@ -95,4 +95,24 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
         answers.frontend === "astro" ||
         answers.frontend === "sveltekit"
     );
+}
+
+export function getFrontendPromptMessage(answers: Answers): string {
+    if (answers.ui === UIBuildType.CUSTOM) {
+        return (
+            "Pick a frontend framework. For other frameworks, check the docs or" +
+            " select 'Pre-built UI' in the previous 'UI Build Type' step."
+        );
+    }
+    return "Choose a frontend framework (Visit our documentation for integration with other frameworks):";
+}
+
+export function getRecipePromptMessage(answers: Answers): string {
+    if (answers.ui === UIBuildType.CUSTOM) {
+        return (
+            "What type of authentication do you want to use?. For other methods, check the docs or select 'Pre-built UI'" +
+            " in the previous 'UI Build Type' step."
+        );
+    }
+    return "What type of authentication do you want to use?";
 }

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useSocialLogin from "./useSocialLogin";
+import { GrYoga } from "react-icons/gr";
 import { toast } from "react-toastify";
 
 function CallbackHandler() {
@@ -24,7 +25,8 @@ function CallbackHandler() {
         }
     }, []);
     return (
-        <div className="text-white text-4xl w-full h-[100dvh] flex items-center justify-center text-center">
+        <div className="text-white text-4xl w-full h-[100dvh] flex flex-col items-center justify-center text-center">
+            <GrYoga size={125} />
             loading...
         </div>
     );

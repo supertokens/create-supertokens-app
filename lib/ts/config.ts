@@ -3,7 +3,9 @@ import { FILTER_CHOICES_STRATEGY, filterChoices } from "./filterChoicesUtils.js"
 import { validateFolderName } from "./userArgumentUtils.js";
 import {
     getDjangoPythonRunScripts,
+    getFrontendPromptMessage,
     getPythonRunScripts,
+    getRecipePromptMessage,
     mapOptionsToChoices,
     shouldSkipBackendQuestion,
 } from "./questionUtils.js";
@@ -523,14 +525,14 @@ export async function getQuestions(flags: UserFlags) {
         {
             name: "ui",
             type: "list",
-            message: "Choose the ui built type for your frontend:",
+            message: "Choose the ui build type for your frontend:",
             choices: mapOptionsToChoices(uiBuildOptions),
             when: flags.ui === undefined,
         },
         {
             name: "frontend",
             type: "list",
-            message: "Choose a frontend framework (Visit our documentation for integration with other frameworks):",
+            message: (answers: Answers) => getFrontendPromptMessage(answers),
             choices: async (answers: Answers) =>
                 filterChoices(
                     mapOptionsToChoices(await getFrontendOptions(flags)),
@@ -590,7 +592,7 @@ export async function getQuestions(flags: UserFlags) {
         {
             name: "recipe",
             type: "list",
-            message: "What type of authentication do you want to use?",
+            message: (answers: Answers) => getRecipePromptMessage(answers),
             choices: async (answers: Answers) =>
                 filterChoices(
                     mapOptionsToChoices(recipeOptions),

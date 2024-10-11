@@ -22,6 +22,23 @@ async function modifyDirectoryCustomReact(frontendDir: string, answers: Answers)
     }
 
     /**
+     * Get Recipe Dependencies which would be injected into the recipe folder
+     * Step1: check if the dependency Exists
+     * Step2: Remove existing folder with the dependency name from the recipe folder
+     * Step3: Copy the dependency folder from the Auth folder to the recipe folder
+     */
+    const dependencies = getRecipeDependencies(recipe);
+    for (const dependency of dependencies) {
+        if (!allItems.includes(dependency)) {
+            throw new Error(`Dependency ${dependency} not found`);
+        }
+        const dependencyPath = path.join(authPath, dependency);
+        const recipeDependencyPath = path.join(authPath, recipe, dependency);
+        await fs.rm(recipeDependencyPath, { recursive: true });
+        await fs.cp(dependencyPath, recipeDependencyPath, { recursive: true });
+    }
+
+    /**
      * Remove all the folders except the recipe folder
      */
     for (const item of allItems) {
@@ -46,4 +63,12 @@ async function modifyDirectoryCustomReact(frontendDir: string, answers: Answers)
      * Remove the recipe folder as part of cleanup
      */
     await fs.rm(path.join(authPath, recipe), { recursive: true });
+}
+
+export function getRecipeDependencies(recipe: string): string[] {
+    const recipeDependencies: Record<string, string[]> = {
+        thirdpartyemailpassword: ["thirdparty", "emailpassword"],
+        thirdpartypasswordless: ["thirdparty", "passwordless"],
+    };
+    return recipeDependencies?.[recipe] || [];
 }
