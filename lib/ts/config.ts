@@ -539,7 +539,7 @@ export async function getQuestions(flags: UserFlags) {
                     answers,
                     FILTER_CHOICES_STRATEGY.filterFrontendByUiType
                 ),
-            when: flags.frontend === undefined,
+            when: (answers: Answers) => flags.frontend === undefined && !!answers.ui,
         },
         {
             name: "frontendNext",
