@@ -28,7 +28,7 @@ export default async function main(frontendDirectory: string, answers: Answers) 
     for (const item of allItemsInsideRecipe) {
         const itemPath = path.join(authPath, recipe, item);
         const newPath = path.join(authPath, item);
-        await fs.cp(itemPath, newPath);
+        await fs.cp(itemPath, newPath, { recursive: true });
     }
     await fs.rm(path.join(authPath, recipe), { recursive: true });
 }

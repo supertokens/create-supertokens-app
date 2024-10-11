@@ -7,7 +7,19 @@ import { SUPPORTED_PROVIDERS } from "./constants";
 import useSocialLogin from "./useSocialLogin";
 import { toast } from "react-toastify";
 
-export default function SocialLogin() {
+interface SocialLoginProps {
+    showHeader?: boolean;
+    showFooter?: boolean;
+    rootStyle?: React.CSSProperties;
+    view?: "full" | "compact";
+}
+
+export default function SocialLogin({
+    showFooter = true,
+    showHeader = true,
+    rootStyle,
+    view = "full",
+}: SocialLoginProps) {
     const { sessionExists } = useSessionInfo();
     const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigate();
@@ -30,26 +42,31 @@ export default function SocialLogin() {
         }
     }, [sessionExists]);
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center my-10">
+        <div className="w-full h-full flex flex-col items-center justify-center my-10" style={rootStyle}>
             <div>
-                <Header />
-                <div className="flex flex-col gap-5">
+                {showHeader && <Header />}
+                <div
+                    className={`flex gap-5 items-center justify-center ${
+                        view === "full" ? "flex-col" : "max-w-[250px] flex-wrap"
+                    }`}
+                >
                     {SUPPORTED_PROVIDERS.map((provider, index) => (
                         <button
                             key={index}
-                            className="bg-golden-bell-700 text-white px-5 py-2 rounded-md min-w-32 hover:bg-golden-bell-600 transition-all flex items-center justify-center gap-2
+                            className={`bg-golden-bell-700 text-white rounded-md  hover:bg-golden-bell-600 transition-all flex items-center justify-center gap-2
               disabled:bg-golden-bell-100 disabled:text-golden-bell-400 disabled:cursor-not-allowed
-            "
+              ${view === "full" ? "py-2 px-5 min-w-[100%]" : "w-10 h-10 rounded-full"}
+            `}
                             disabled={isLoading}
                             onClick={() => handleLoginRequest(provider.key)}
                         >
                             {provider.icon}
-                            Sign In With {provider.name}
+                            {view === "full" && `Sign In With ${provider.name}`}
                         </button>
                     ))}
                 </div>
             </div>
-            <Footer title="Thirdparty(Social) React Demo App" />
+            {showFooter && <Footer title="Thirdparty(Social) React Demo App" />}
         </div>
     );
 }

@@ -23,7 +23,11 @@ function CallbackHandler() {
             alreadyExecuted.current = true;
         }
     }, []);
-    return <div className="text-white text-4xl">loading...</div>;
+    return (
+        <div className="text-white text-4xl w-full h-[100dvh] flex items-center justify-center text-center">
+            loading...
+        </div>
+    );
 }
 
 export default CallbackHandler;

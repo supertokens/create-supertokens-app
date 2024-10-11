@@ -12,7 +12,17 @@ enum SCREEN {
     OTP,
 }
 
-export default function PasswordlessSignIn() {
+interface PasswordlessSignInProps {
+    showHeader?: boolean;
+    showFooter?: boolean;
+    rootStyle?: React.CSSProperties;
+}
+
+export default function PasswordlessSignIn({
+    showFooter = true,
+    showHeader = true,
+    rootStyle,
+}: PasswordlessSignInProps) {
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
     const [screen, setScreen] = useState<SCREEN>(SCREEN.EMAIL);
@@ -66,9 +76,9 @@ export default function PasswordlessSignIn() {
     }, [sessionExists]);
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center my-10">
+        <div className="w-full h-full flex flex-col items-center justify-center my-10" style={rootStyle}>
             <div>
-                <Header />
+                {showHeader && <Header />}
                 <form
                     onSubmit={handleSubmit}
                     className="flex flex-col 300 p-10 rounded-md gap-8 bg-gradient-to-r from-golden-bell-500 via-golden-bell-300 to-golden-bell-500"
@@ -116,7 +126,7 @@ export default function PasswordlessSignIn() {
                     )}
                 </form>
             </div>
-            <Footer title="Passwordless React Demo App" />
+            {showFooter && <Footer title="Passwordless React Demo App" />}
         </div>
     );
 }
