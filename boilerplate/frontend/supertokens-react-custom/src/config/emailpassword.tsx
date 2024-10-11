@@ -1,6 +1,5 @@
 import EmailPassword from "supertokens-web-js/recipe/emailpassword";
 import Session from "supertokens-web-js/recipe/session";
-import { SuperTokensConfig } from "supertokens-web-js/lib/build/types";
 
 export function getApiDomain() {
     const apiPort = import.meta.env.VITE_APP_API_PORT || 3001;
@@ -14,10 +13,10 @@ export function getWebsiteDomain() {
     return websiteUrl;
 }
 
-export const superTokensConfig: SuperTokensConfig = {
+export const superTokensConfig = {
     appInfo: {
         apiBasePath: "/auth",
-        appName: "Custom UI Demo",
+        appName: "SuperTokens Demo App",
         apiDomain: getApiDomain(),
     },
     recipeList: [Session.init(), EmailPassword.init()],

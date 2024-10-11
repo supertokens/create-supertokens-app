@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Session from "supertokens-web-js/recipe/session";
 
 function useSessionInfo() {
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState<undefined | boolean>(undefined);
     useEffect(() => {
         async function checkSession() {
             try {

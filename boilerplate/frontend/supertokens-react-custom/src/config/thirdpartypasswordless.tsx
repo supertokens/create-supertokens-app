@@ -1,7 +1,6 @@
 import Session from "supertokens-web-js/recipe/session";
 import ThirdParty from "supertokens-web-js/recipe/thirdparty";
 import Passwordless from "supertokens-web-js/recipe/passwordless";
-import { SuperTokensConfig } from "supertokens-web-js/lib/build/types";
 
 export function getApiDomain() {
     const apiPort = import.meta.env.VITE_APP_API_PORT || 3001;
@@ -15,7 +14,7 @@ export function getWebsiteDomain() {
     return websiteUrl;
 }
 
-export const superTokensConfig: SuperTokensConfig = {
+export const superTokensConfig = {
     appInfo: {
         apiBasePath: "/auth",
         appName: "SuperTokens Demo App",
