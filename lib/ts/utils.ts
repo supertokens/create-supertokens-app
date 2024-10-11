@@ -377,7 +377,7 @@ async function setupFrontendBackendApp(
 
     spinner.text = "Executing setup scripts";
 
-    await executeSetupScriptIfExists(selectedFrontend, `./${folderName}/frontend`, answers);
+    await executeSetupScriptIfExists(`./${folderName}/frontend`, answers);
 
     spinner.text = "Installing frontend dependencies";
 
