@@ -21,7 +21,13 @@ const initialFormInputState: FormInputState = {
     confirmPassword: "",
 };
 
-export default function LoginAndRegister() {
+interface LoginAndRegisterProps {
+    showHeader?: boolean;
+    showFooter?: boolean;
+    rootStyle?: React.CSSProperties;
+}
+
+export default function LoginAndRegister({ showFooter = true, showHeader = true, rootStyle }: LoginAndRegisterProps) {
     /**
      * The authentication type state. This would be used to switch between login and registration.
      */
@@ -81,9 +87,9 @@ export default function LoginAndRegister() {
     }, [authenticationType]);
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center my-10">
+        <div className="w-full h-full flex flex-col items-center justify-center my-10" style={rootStyle}>
             <div>
-                <Header />
+                {showHeader && <Header />}
                 <form
                     onSubmit={handleSubmit}
                     className="flex flex-col 300 p-10 rounded-md gap-8 bg-gradient-to-r from-golden-bell-500 via-golden-bell-300 to-golden-bell-500"
@@ -169,7 +175,7 @@ export default function LoginAndRegister() {
                     )}
                 </form>
             </div>
-            <Footer title="Email & Password React Demo App" />
+            {showFooter && <Footer title="Email & Password React Demo App" />}
         </div>
     );
 }
