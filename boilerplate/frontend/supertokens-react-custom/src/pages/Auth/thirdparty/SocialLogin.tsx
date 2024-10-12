@@ -28,6 +28,7 @@ export default function SocialLogin({
     const navigation = useNavigate();
 
     const handleLoginRequest = async (provider: string) => {
+        setIsLoading(true);
         try {
             const authUrl = await getAuthorisationURLWithQueryParamsAndSetState({
                 thirdPartyId: provider,
