@@ -1,11 +1,13 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Input from "@/components/Input";
+import Spinner from "@/components/Spinner";
 import useSessionInfo from "@/hooks/useSessionInfo";
 import { useEffect, useState } from "react";
-import { submitOTP, resendOTP, sendOTP } from "./utils";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { createCode, resendCode, clearLoginAttemptInfo, consumeCode } from "supertokens-web-js/recipe/passwordless";
+import STGeneralError from "supertokens-web-js/utils/error";
 
 enum SCREEN {
     EMAIL,
@@ -32,47 +34,115 @@ export default function PasswordlessSignIn({
 
     const handleResendOTP = async () => {
         setIsLoading(true);
-        const response = await resendOTP();
-        setIsLoading(false);
-        if (response.status === "success") {
+        try {
+            const response = await resendCode();
+
+            if (response.status === "RESTART_FLOW_ERROR") {
+                // this can happen if the user has already successfully logged in into
+                // another device whilst also trying to login to this one.
+
+                // we clear the login attempt info that was added when the createCode function
+                // was called - so that if the user does a page reload, they will now see the
+                // enter email / phone UI again.
+                await clearLoginAttemptInfo();
+                toast.error("Login failed. Please try again");
+                return;
+            }
             toast.success("OTP Resent Successfully");
             return;
+        } catch (error) {
+            console.error(error);
+            const errorMessage = (error as STGeneralError | Error)?.message || "Oops! Something went wrong.";
+            toast.error(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
-        toast.error(response.reason);
     };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsLoading(true);
-        if (screen === SCREEN.EMAIL) {
-            const response = await sendOTP(email);
-            setIsLoading(false);
-            if (response.status === "success") {
+        try {
+            /**
+             * Email Screen
+             */
+            if (screen === SCREEN.EMAIL) {
+                const response = await createCode({
+                    email,
+                });
+                /**
+         * For phone number, use this:
+    
+            let response = await createPasswordlessCode({
+                phoneNumber: "+1234567890"
+            });
+    
+        */
+
+                if (response.status === "SIGN_IN_UP_NOT_ALLOWED") {
+                    // the reason string is a user friendly message
+                    // about what went wrong. It can also contain a support code which users
+                    // can tell you so you know why their sign in / up was not allowed.
+                    throw new Error(response.reason);
+                }
                 setScreen(SCREEN.OTP);
                 toast.success("OTP Sent Successfully");
                 return;
             }
-            toast.error(response.reason);
-            return;
-        }
-        const response = await submitOTP(otp);
-        setIsLoading(false);
-        if (response.status === "success") {
-            toast.success("Logged In Successfully");
-            navigation("/dashboard");
-            return;
-        }
-        toast.error(response.reason);
-        if (response.redirectBackToLogin) {
-            setOtp("");
-            setScreen(SCREEN.EMAIL);
+
+            /**
+             * OTP Screen
+             */
+            const response = await consumeCode({
+                userInputCode: otp,
+            });
+
+            if (response.status === "OK") {
+                // we clear the login attempt info that was added when the createCode function
+                // was called since the login was successful.
+                await clearLoginAttemptInfo();
+                if (response.createdNewRecipeUser && response.user.loginMethods.length === 1) {
+                    toast.success("New User Created. Please Link your email and password");
+                } else {
+                    toast.success("Logged In Successfully");
+                }
+                navigation("/dashboard");
+                return;
+            } else if (response.status === "INCORRECT_USER_INPUT_CODE_ERROR") {
+                throw new Error(
+                    "Wrong OTP! Please try again. Number of attempts left: " +
+                        (response.maximumCodeInputAttempts - response.failedCodeInputAttemptCount)
+                );
+            } else if (response.status === "EXPIRED_USER_INPUT_CODE_ERROR") {
+                throw new Error("Old OTP entered. Please regenerate a new one and try again");
+            } else {
+                // this can happen if the user tried an incorrect OTP too many times.
+                // or if it was denied due to security reasons in case of automatic account linking
+
+                // we clear the login attempt info that was added when the createCode function
+                // was called - so that if the user does a page reload, they will now see the
+                // enter email / phone UI again.
+                await clearLoginAttemptInfo();
+                setScreen(SCREEN.EMAIL);
+                throw new Error("Login failed. Please try again");
+            }
+        } catch (error: unknown) {
+            console.error(error);
+            const errorMessage = (error as STGeneralError | Error)?.message || "Oops! Something went wrong.";
+            toast.error(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     };
     useEffect(() => {
-        if (sessionExists) {
+        if (!sessionExists.isLoading && sessionExists.isLoggedIn) {
             navigation("/dashboard");
         }
     }, [sessionExists]);
+
+    if (sessionExists.isLoading) {
+        return <Spinner />;
+    }
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center my-10" style={rootStyle}>
@@ -118,7 +188,14 @@ export default function PasswordlessSignIn({
                     {screen === SCREEN.OTP && (
                         <span className="text-[12px] text-center">
                             Haven't Received the OTP yet?{" "}
-                            <button className="outline border-0 outline-none underline" onClick={handleResendOTP}>
+                            <button
+                                className="outline border-0 outline-none underline"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleResendOTP();
+                                }}
+                                type="button"
+                            >
                                 Resend
                             </button>
                         </span>

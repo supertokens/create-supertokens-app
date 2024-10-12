@@ -4,8 +4,11 @@ import useSessionInfo from "@/hooks/useSessionInfo";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SUPPORTED_PROVIDERS } from "./constants";
-import { socialLogin } from "./utils";
+import { getWebsiteDomain } from "@/config";
+import { getAuthorisationURLWithQueryParamsAndSetState } from "supertokens-web-js/recipe/thirdparty";
+import STGeneralError from "supertokens-web-js/utils/error";
 import { toast } from "react-toastify";
+import Spinner from "@/components/Spinner";
 
 interface SocialLoginProps {
     showHeader?: boolean;
@@ -25,21 +28,31 @@ export default function SocialLogin({
     const navigation = useNavigate();
 
     const handleLoginRequest = async (provider: string) => {
-        setIsLoading(true);
-        const response = await socialLogin(provider);
-        if (response.status === "success") {
-            window.location.assign(response.redirectTo);
-            return;
+        try {
+            const authUrl = await getAuthorisationURLWithQueryParamsAndSetState({
+                thirdPartyId: provider,
+                frontendRedirectURI: `${getWebsiteDomain()}/authenticate/callback/${provider}`,
+            });
+            window.location.assign(authUrl);
+        } catch (error: unknown) {
+            console.error(error);
+            const errorMessage = (error as STGeneralError | Error)?.message || "Oops! Something went wrong.";
+            toast.error(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
-        toast.error(response.reason);
-        setIsLoading(false);
     };
 
     useEffect(() => {
-        if (sessionExists) {
+        if (!sessionExists.isLoading && sessionExists.isLoggedIn) {
             navigation("/dashboard");
         }
     }, [sessionExists]);
+
+    if (sessionExists.isLoading) {
+        return <Spinner />;
+    }
+
     return (
         <div className="w-full h-full flex flex-col items-center justify-center my-10" style={rootStyle}>
             <div>

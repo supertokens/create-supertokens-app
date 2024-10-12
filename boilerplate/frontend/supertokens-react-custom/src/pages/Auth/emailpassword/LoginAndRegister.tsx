@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { login, register } from "./utils";
 import useSessionInfo from "@/hooks/useSessionInfo";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Input from "@/components/Input";
 import { toast } from "react-toastify";
+import { signIn, signUp } from "supertokens-web-js/recipe/emailpassword";
+import STGeneralError from "supertokens-web-js/utils/error";
+import Spinner from "@/components/Spinner";
 
 type AuthenticationType = "login" | "registration";
 interface FormInputState {
@@ -46,35 +48,78 @@ export default function LoginAndRegister({ showFooter = true, showHeader = true,
         }
         setIsLoading(true);
         try {
+            /**
+             * User SignIn/Login flow
+             */
             if (authenticationType === "login") {
-                const response = await login(formInputState.email, formInputState.password);
-                if (response.status === "failure") {
-                    toast.error(response.reason);
-                    setFormInputState(initialFormInputState);
+                const response = await signIn({
+                    formFields: [
+                        {
+                            id: "email",
+                            value: formInputState.email,
+                        },
+                        {
+                            id: "password",
+                            value: formInputState.password,
+                        },
+                    ],
+                });
+
+                if (response.status === "FIELD_ERROR") {
+                    for (const formField of response.formFields) {
+                        throw new Error(formField.error);
+                    }
+                } else if (response.status === "WRONG_CREDENTIALS_ERROR") {
+                    throw new Error("Email password combination is incorrect.");
+                } else if (response.status === "SIGN_IN_NOT_ALLOWED") {
+                    throw new Error(response.reason);
+                } else {
+                    toast.success("Login Successful");
+                    navigation("/dashboard");
                     return;
                 }
-                toast.success("Login Successful");
-                navigation("/dashboard");
-                return;
             }
-            const response = await register(formInputState.email, formInputState.password);
-            if (response.status === "failure") {
-                toast.error(response.reason);
-                setFormInputState(initialFormInputState);
-                return;
+
+            /**
+             * User SignUp/Registration flow
+             */
+            const response = await signUp({
+                formFields: [
+                    {
+                        id: "email",
+                        value: formInputState.email,
+                    },
+                    {
+                        id: "password",
+                        value: formInputState.password,
+                    },
+                ],
+            });
+            if (response.status === "FIELD_ERROR") {
+                for (const formField of response.formFields) {
+                    throw new Error(formField.error);
+                }
+            } else if (response.status === "SIGN_UP_NOT_ALLOWED") {
+                throw new Error(response.reason);
+            } else {
+                toast.success("Registration Successful. Login to continue.");
+                setAuthenticationType("login");
             }
-            toast.success("Registration Successful. Login to continue.");
-            setAuthenticationType("login");
         } catch (error) {
             console.error(error);
-            toast.error("Oops! Something went wrong.");
+            const errorMessage = (error as STGeneralError | Error)?.message || "Oops! Something went wrong.";
+            toast.error(errorMessage);
         } finally {
+            /**
+             * Reset the form input state and loading state
+             */
+            setFormInputState(initialFormInputState);
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        if (sessionExists) {
+        if (!sessionExists.isLoading && sessionExists.isLoggedIn) {
             navigation("/dashboard");
         }
     }, [sessionExists]);
@@ -83,6 +128,9 @@ export default function LoginAndRegister({ showFooter = true, showHeader = true,
         setFormInputState(initialFormInputState);
     }, [authenticationType]);
 
+    if (sessionExists.isLoading) {
+        return <Spinner />;
+    }
     return (
         <div className="w-full h-full flex flex-col items-center justify-center my-10" style={rootStyle}>
             <div>
