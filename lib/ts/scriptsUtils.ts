@@ -2,7 +2,7 @@ import { Answers, UIBuildType } from "./types.js";
 import fs from "fs/promises";
 import path from "path";
 
-export async function executeSetupScriptIfExists(directoryPath: string, answers: Answers): Promise<void> {
+export async function executeSetupStepsIfExists(directoryPath: string, answers: Answers): Promise<void> {
     if (answers.ui === UIBuildType.CUSTOM && answers.frontend === "react-custom") {
         await modifyDirectoryCustomReact(directoryPath, answers);
     }

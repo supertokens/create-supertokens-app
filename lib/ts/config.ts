@@ -504,7 +504,7 @@ export async function getQuestions(flags: UserFlags) {
             type: "input",
             message: "What is your app called?",
             default: "my-app",
-            when: flags.appname === undefined,
+            when: (answers: Answers) => !answers.appname,
             validate: function (input: any) {
                 const validations = validateFolderName(input);
 
@@ -539,20 +539,14 @@ export async function getQuestions(flags: UserFlags) {
                     answers,
                     FILTER_CHOICES_STRATEGY.filterFrontendByUiType
                 ),
-            when: (answers: Answers) => flags.frontend === undefined && !!answers.ui,
+            when: (answers: Answers) => !answers.frontend && !!answers.ui,
         },
         {
             name: "frontendNext",
             type: "list",
             message: "Choose how you want to organise your Next.js routes:",
             choices: mapOptionsToChoices(await getNextJSOptions(flags)),
-            when: (answers: Answers) => {
-                if (flags.frontend !== undefined && flags.frontend === "next") {
-                    return true;
-                }
-
-                return answers.frontend === "next";
-            },
+            when: (answers: Answers) => answers.frontend === "next",
         },
         {
             name: "backend",
@@ -570,19 +564,19 @@ export async function getQuestions(flags: UserFlags) {
             message: "Choose a Python framework:",
             choices: mapOptionsToChoices(pythonOptions),
             when: (answers: Answers) => {
-                if (flags.backend !== undefined && flags.backend !== "python") {
+                if (answers.backend !== undefined && answers.backend !== "python") {
                     return false;
                 }
 
                 if (
-                    (flags.frontend !== undefined && flags.frontend.startsWith("next")) ||
+                    (answers.frontend !== undefined && answers.frontend.startsWith("next")) ||
                     (answers.frontend !== undefined && answers.frontend.startsWith("next"))
                 ) {
                     // This means that they want to use nextjs fullstack
                     return false;
                 }
 
-                if (answers.backend !== "python" && flags.backend !== "python") {
+                if (answers.backend !== "python" && answers.backend !== "python") {
                     return false;
                 }
 
@@ -605,7 +599,7 @@ export async function getQuestions(flags: UserFlags) {
                     return false;
                 }
 
-                return flags.recipe === undefined;
+                return !answers.recipe;
             },
         },
     ];
