@@ -13,7 +13,7 @@ onMounted(() => {
         document.body.appendChild(script);
     };
 
-    loadScript("https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.47.1/build/static/js/main.ba50d5ee.js");
+    loadScript("${jsdeliveryprebuiltuiurl}");
 });
 </script>
 
