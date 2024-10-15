@@ -136,6 +136,8 @@ async function run() {
                     errorPlaceholder = "Angular";
                 } else if (answers.frontend === "vue") {
                     errorPlaceholder = "Vue";
+                } else if (answers.frontend === "nuxtjs") {
+                    errorPlaceholder = "Nuxt.js";
                 }
             } else if (answers.recipe === "multifactorauth") {
                 if (answers.backend === "go-http") {
