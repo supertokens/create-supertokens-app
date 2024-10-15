@@ -87,14 +87,21 @@ export function isValidFrontend(frontend: string): frontend is SupportedFrontend
 }
 
 type PythonFrameworks = "python-flask" | "python-drf" | "python-fastapi";
+type NodeJSFrameworks = "koa" | "express" | "nest";
 
-export type SupportedBackends = "koa" | "node" | "nest" | "python" | PythonFrameworks | "go-http";
+export type SupportedBackends = "nodejs" | "python" | NodeJSFrameworks | PythonFrameworks | "go-http";
 
 export const allBackends: {
     id: SupportedBackends;
 }[] = [
     {
-        id: "node",
+        id: "nodejs",
+    },
+    {
+        id: "koa",
+    },
+    {
+        id: "express",
     },
     {
         id: "nest",
@@ -198,6 +205,7 @@ export type Answers = {
     recipe: string;
     appname: string;
     backendPython?: PythonFrameworks;
+    backendNodeJS?: NodeJSFrameworks;
 };
 
 /**
