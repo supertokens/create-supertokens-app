@@ -377,6 +377,18 @@ const pythonOptions: QuestionOption[] = [
 export async function getBackendOptions({ manager }: UserFlags): Promise<QuestionOption[]> {
     return [
         {
+            value: "koa",
+            displayName: "Koa.js",
+            location: {
+                main: "backend/koa",
+                config: [{ finalConfig: "/config.ts", configFiles: "/config" }],
+            },
+            script: {
+                setup: [`${manager} install`],
+                run: [`${manager} run start`],
+            },
+        },
+        {
             value: "node",
             displayName: "Node.js",
             location: {
