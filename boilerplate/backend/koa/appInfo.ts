@@ -3,6 +3,4 @@ export const appInfo = {
     appName: "SuperTokens Koa demo app",
     apiDomain: "http://localhost:3001",
     websiteDomain: "http://localhost:3000",
-    apiBasePath: "/api/auth",
-    websiteBasePath: "/auth",
 };
