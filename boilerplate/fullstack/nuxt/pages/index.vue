@@ -7,7 +7,10 @@
                 <span>UserId:</span>
                 <h3>{{ userId }}</h3>
 
-                <button @click="onLogout">Sign Out</button>
+                <div class="session__btn">
+                    <button class="btn" @click="callApi">Call API</button>
+                    <button class="btn" @click="onLogout">Sign Out</button>
+                </div>
             </div>
         </div>
         <div v-else>
@@ -17,7 +20,7 @@
                     <a href="https://supertokens.com">SuperTokens tutorial</a> to learn how to build Auth under a day.
                 </p>
                 <NuxtLink to="/auth">
-                    <button>Sign in</button>
+                    <button class="btn">Sign in</button>
                 </NuxtLink>
             </div>
         </div>
@@ -45,6 +48,14 @@ export default {
             if (this.session) {
                 this.userId = await Session.getUserId();
             }
+        },
+        async callApi() {
+            const { data, error } = await useFetch("/sessioninfo", {
+                method: "GET",
+                onResponse({ request, response, options }) {
+                    alert(JSON.stringify(response._data, null, 2));
+                },
+            });
         },
         async onLogout() {
             await Session.signOut();
@@ -77,31 +88,31 @@ span {
 }
 
 h3 {
-    color: #ff3e00;
+    color: #ff7547;
 }
 
 h1 {
-    color: #ff3e00;
+    color: #ff7547;
     text-transform: uppercase;
     font-size: 4em;
     font-weight: 100;
 }
 
-button {
-    cursor: pointer;
-    background-color: #ffb399;
+.btn {
     border: none;
-    color: rgb(82, 82, 82);
-    padding: 0.75rem;
-    margin: 2rem;
-    transition: all 0.5s ease-in-out;
-    border-radius: 2rem;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #fff;
+    transition: all 0.2s ease-in;
+    background-color: #ff7547;
     font-size: large;
 }
-
-button:hover {
-    transform: scale(1.1);
-    background-color: #ff3e00;
-    color: white;
+.btn:hover {
+    box-shadow: 0 8px 25px -8px #ffb399;
+}
+.session__btn {
+    display: flex;
+    justify-content: space-around;
 }
 </style>
