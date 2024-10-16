@@ -8,7 +8,7 @@ interface ExtendedRequestInit extends RequestInit {
 export async function convertToRequest(event: H3Event): Promise<Request> {
     const url = new URL(`${appInfo.apiDomain}${event._path}`);
     const headers = new Headers(event.node.req.headers as Record<string, string>);
-    const method = event.method || "GET";
+    const method = (event.method || "GET").toUpperCase();
 
     let body: ReadableStream | null = null;
     if (method !== "GET" && method !== "HEAD") {
