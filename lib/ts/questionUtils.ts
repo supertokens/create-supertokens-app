@@ -69,7 +69,7 @@ export function modifyAnswersForPythonFrameworks(answers: Answers) {
 
 export function modifyAnswersForNodeJSFrameworks(answers: Answers) {
     let _answers = answers;
-    if (answers.backend === "nodejs") {
+    if (answers.backend === "node") {
         _answers.backend = answers.backendNodeJS;
     }
     return _answers;

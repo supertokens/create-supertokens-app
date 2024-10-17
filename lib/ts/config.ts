@@ -449,7 +449,7 @@ export async function getNodeJSOptions({ manager }: UserFlags): Promise<Question
 export async function getBackendOptions(): Promise<QuestionOption[]> {
     return [
         {
-            value: "nodejs",
+            value: "node",
             displayName: "Node.js",
             location: {
                 main: "",
@@ -592,18 +592,10 @@ export async function getQuestions(flags: UserFlags) {
             message: "Choose a Node.js framework:",
             choices: mapOptionsToChoices(await getNodeJSOptions(flags)),
             when: (answers: Answers) => {
-                if (flags.backend !== undefined && flags.backend !== "nodejs") {
+                if (flags.backend !== undefined && flags.backend !== "node") {
                     return false;
                 }
-                if (
-                    (flags.frontend !== undefined && flags.frontend.startsWith("next")) ||
-                    (answers.frontend !== undefined && answers.frontend.startsWith("next"))
-                ) {
-                    // This means that they want to use nextjs fullstack
-                    return false;
-                }
-
-                if (answers.backend !== "nodejs" && flags.backend !== "nodejs") {
+                if (answers.backend !== "node" && flags.backend !== "node") {
                     return false;
                 }
                 return true;

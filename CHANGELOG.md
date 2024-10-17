@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.55] - 2024-10-17
+
+-   Adds Koa as a backend option.
 
 ## [0.0.54] - 2024-10-13
 
 -   Adds NuxtJS as a fullstack option.
--   Adds Koa as a backend option.
 
 ## [0.0.53] - 2024-10-03
 

@@ -93,13 +93,13 @@ export function isValidFrontend(frontend: string): frontend is SupportedFrontend
 type PythonFrameworks = "python-flask" | "python-drf" | "python-fastapi";
 type NodeJSFrameworks = "koa" | "express" | "nest";
 
-export type SupportedBackends = "nodejs" | "python" | NodeJSFrameworks | PythonFrameworks | "go-http";
+export type SupportedBackends = "node" | "python" | NodeJSFrameworks | PythonFrameworks | "go-http";
 
 export const allBackends: {
     id: SupportedBackends;
 }[] = [
     {
-        id: "nodejs",
+        id: "node",
     },
     {
         id: "koa",
