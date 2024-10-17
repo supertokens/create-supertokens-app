@@ -36,6 +36,7 @@ export type SupportedFrontends =
     | "remix"
     | "astro"
     | "sveltekit"
+    | "nuxtjs"
     | "angular"
     | "vue"
     | "solid"
@@ -66,6 +67,9 @@ export const allFrontends: {
     },
     {
         id: "sveltekit",
+    },
+    {
+        id: "nuxtjs",
     },
     {
         id: "angular",
