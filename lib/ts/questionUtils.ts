@@ -79,10 +79,6 @@ export function modifyAnswersForNodeJSFrameworks(answers: Answers) {
  * Decides whether the user should be prompted to select their backend.This question is skipped for full stack frameworks
  */
 export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags): boolean {
-    if (userFlags.backend !== undefined) {
-        return true;
-    }
-
     let frontEndInFlags = userFlags.frontend;
 
     if (frontEndInFlags !== undefined) {

@@ -582,6 +582,9 @@ export async function getQuestions(flags: UserFlags) {
             message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
             choices: mapOptionsToChoices(await getBackendOptions()),
             when: (answers: Answers) => {
+                if (flags.backend !== undefined) {
+                    return false;
+                }
                 // If shouldSkipBackendQuestion returns true we want to return false from here
                 return !shouldSkipBackendQuestion(answers, flags);
             },
@@ -598,7 +601,7 @@ export async function getQuestions(flags: UserFlags) {
                 if (answers.backend !== "node" && flags.backend !== "node") {
                     return false;
                 }
-                return true;
+                return !shouldSkipBackendQuestion(answers, flags);
             },
         },
         {
@@ -611,19 +614,11 @@ export async function getQuestions(flags: UserFlags) {
                     return false;
                 }
 
-                if (
-                    (flags.frontend !== undefined && flags.frontend.startsWith("next")) ||
-                    (answers.frontend !== undefined && answers.frontend.startsWith("next"))
-                ) {
-                    // This means that they want to use nextjs fullstack
-                    return false;
-                }
-
                 if (answers.backend !== "python" && flags.backend !== "python") {
                     return false;
                 }
 
-                return true;
+                return !shouldSkipBackendQuestion(answers, flags);
             },
         },
         {

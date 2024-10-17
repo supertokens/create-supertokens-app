@@ -1,5 +1,6 @@
 import {
     allBackends,
+    SupportedBackends,
     allFrontends,
     allPackageManagers,
     allRecipes,
@@ -124,15 +125,21 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
     }
 
     if (userArguments.backend !== undefined) {
-        const selectedBackend = allBackends.filter((i) => userArguments.backend === i.id);
+        const selectedBackend = allBackends.find(
+            (b) => b.id === userArguments.backend || b.frameworks?.some((f) => f.id === userArguments.backend)
+        );
 
-        if (selectedBackend.length === 0) {
-            throw new Error("Should never come here");
+        const backendValue: SupportedBackends | undefined =
+            selectedBackend?.id === userArguments.backend
+                ? selectedBackend.id
+                : selectedBackend?.frameworks?.find((f) => f.id === userArguments.backend)?.id;
+
+        if (!backendValue) {
+            throw new Error("Invalid backend specified");
         }
 
-        _answers.backend = selectedBackend[0].id;
+        _answers.backend = backendValue;
     }
-
     return _answers;
 }
 
