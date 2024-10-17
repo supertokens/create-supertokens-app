@@ -203,6 +203,32 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             },
         },
         {
+            isFullStack: true,
+            value: "nuxtjs",
+            displayName: "Nuxt.js",
+            location: {
+                main: "fullstack/nuxt",
+                config: {
+                    frontend: [
+                        {
+                            configFiles: "/config/frontend",
+                            finalConfig: "/config/frontend.ts",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/server/backend",
+                            finalConfig: "/server/backend.ts",
+                        },
+                    ],
+                },
+            },
+            script: {
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
+            },
+        },
+        {
             value: "angular",
             displayName: "Angular",
             location: {
