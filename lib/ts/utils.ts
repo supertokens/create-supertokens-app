@@ -2,7 +2,7 @@ import { getBackendOptionForProcessing, getFrontendOptionsForProcessing } from "
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
-import { Answers, DownloadLocations, ExecOutput, QuestionOption, UserFlags } from "./types";
+import { Answers, DownloadLocations, ExecOutput, QuestionOption, UserFlags } from "./types.js";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
@@ -14,6 +14,7 @@ import chalk from "chalk";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 import { addPackageCommand } from "./packageManager.js";
+import { executeSetupStepsIfExists } from "./scriptsUtils.js";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -374,7 +375,12 @@ async function setupFrontendBackendApp(
         });
     }
 
+    spinner.text = "Executing setup scripts";
+
+    await executeSetupStepsIfExists(`./${folderName}/frontend`, answers);
+
     spinner.text = "Installing frontend dependencies";
+
     const frontendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
 
@@ -427,6 +433,7 @@ async function setupFrontendBackendApp(
     await performAdditionalSetupForFrontendIfNeeded(selectedFrontend, folderName, userArguments);
 
     spinner.text = "Installing backend dependencies";
+
     const backendSetup = new Promise<ExecOutput>((res) => {
         let stderr: string[] = [];
 

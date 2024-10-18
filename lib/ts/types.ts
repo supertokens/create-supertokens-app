@@ -29,6 +29,7 @@ export function isValidRecipeName(recipe: string): recipe is Recipe {
 
 export type SupportedFrontends =
     | "react"
+    | "react-custom"
     | "next"
     | "next-multitenancy"
     | "next-app-directory"
@@ -52,6 +53,9 @@ export const allFrontends: {
 }[] = [
     {
         id: "react",
+    },
+    {
+        id: "react-custom",
     },
     {
         id: "next",
@@ -196,7 +200,10 @@ export type RecipeQuestionOption = {
     shouldDisplay?: boolean;
 };
 
+export type UIBuildTypeOption = RecipeQuestionOption;
+
 export type Answers = {
+    ui: UIBuildType;
     frontend?: SupportedFrontends;
     backend?: SupportedBackends;
     recipe: string;
@@ -220,6 +227,11 @@ export type SupportedPackageManagers = "npm" | "yarn" | "pnpm" | "bun";
 
 export const allPackageManagers: SupportedPackageManagers[] = ["npm", "yarn", "pnpm", "bun"];
 
+export enum UIBuildType {
+    CUSTOM = "custom",
+    PRE_BUILT = "pre-built",
+}
+
 export function isValidPackageManager(manager: string): manager is SupportedPackageManagers {
     if (allPackageManagers.includes(manager as SupportedPackageManagers)) {
         return true;
@@ -236,6 +248,7 @@ export type UserFlagsRaw = {
     frontend?: SupportedFrontends;
     backend?: SupportedBackends;
     manager?: SupportedPackageManagers;
+    ui?: UIBuildType;
     autostart?: string | boolean;
 };
 
@@ -272,3 +285,13 @@ export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {
     os: string;
     cliversion: string;
 };
+
+export type PromptListChoice = {
+    name: string;
+    value: string;
+};
+
+export interface IPromptFilterStrategy {
+    filterChoices: (choices: PromptListChoice[], answers: Answers) => PromptListChoice[];
+    validateUserArguments: (userArguments: UserFlagsRaw) => boolean;
+}

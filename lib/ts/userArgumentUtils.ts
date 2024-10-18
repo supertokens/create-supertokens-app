@@ -8,11 +8,13 @@ import {
     isValidFrontend,
     isValidPackageManager,
     isValidRecipeName,
+    UIBuildType,
     UserFlags,
     UserFlagsRaw,
 } from "./types.js";
 import validateProjectName from "validate-npm-package-name";
 import path from "path";
+import { isValidUiType } from "./filterChoicesUtils.js";
 
 export function validateNpmName(name: string): {
     valid: boolean;
@@ -78,6 +80,16 @@ export function validateUserArguments(userArguments: UserFlagsRaw) {
             throw new Error("Invalid package manager provided, valid values:\n" + availableManagers);
         }
     }
+
+    if (userArguments.ui !== undefined) {
+        if (!isValidUiType(userArguments)) {
+            throw new Error(
+                `Invalid UI type provided, valid values: ${Object.values(UIBuildType).join(
+                    ", "
+                )} or provided frontend or recipe is not compatible with the UI type`
+            );
+        }
+    }
 }
 
 export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
@@ -102,8 +114,8 @@ export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
     return _answers;
 }
 
-export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserFlags): Answers {
-    let _answers = answers;
+export function generateInitialAnswers(userArguments: UserFlags): Partial<Answers> {
+    let _answers: Partial<Answers> = {};
 
     if (userArguments.appname !== undefined) {
         _answers.appname = userArguments.appname;
@@ -111,6 +123,10 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
 
     if (userArguments.recipe !== undefined) {
         _answers.recipe = userArguments.recipe;
+    }
+
+    if (userArguments.ui !== undefined) {
+        _answers.ui = userArguments.ui;
     }
 
     if (userArguments.frontend !== undefined) {
@@ -145,4 +161,14 @@ export function getShouldAutoStartFromArgs(userArguments: UserFlags): boolean {
     }
 
     return false;
+}
+
+export function modifyUserArgumentsForAliasFlags(userArguments: UserFlagsRaw): UserFlagsRaw {
+    let _userArguments = structuredClone(userArguments);
+
+    if (_userArguments.ui === UIBuildType.CUSTOM && _userArguments.frontend === "react") {
+        _userArguments.frontend = "react-custom";
+    }
+
+    return _userArguments;
 }
