@@ -13,8 +13,24 @@ export default defineComponent({
     this.getUserInfo();
   },
   methods: {
-    redirectToLogin() {
-      window.location.href = "/auth";
+    async callApi() {
+      try {
+        const response = await fetch("http://localhost:3001/sessioninfo", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        alert(JSON.stringify(data, null, 2));
+      } catch (error) {
+        alert(`Failed to fetch session info: ${error}`);
+      }
     },
     async getUserInfo() {
       this.session = await Session.doesSessionExist();
@@ -39,7 +55,10 @@ export default defineComponent({
         <span>UserId:</span>
         <h3>{{ userId }}</h3>
 
-        <button @click="onLogout">Sign Out</button>
+        <div class="session__btn">
+          <button class="btn" @click="callApi">Call API</button>
+          <button class="btn" @click="onLogout">Sign Out</button>
+        </div>
       </div>
       <div v-else>
         <p>
@@ -47,7 +66,9 @@ export default defineComponent({
           <a href="https://supertokens.com">SuperTokens tutorial</a> to learn
           how to build Auth under a day.
         </p>
-        <button @click="redirectToLogin">Sign in</button>
+        <router-link to="/auth">
+          <button class="btn">Sign in</button>
+        </router-link>
       </div>
     </div>
   </main>
@@ -76,31 +97,31 @@ span {
 }
 
 h3 {
-  color: #ff3e00;
+  color: #ff7547;
 }
 
 h1 {
-  color: #ff3e00;
+  color: #ff7547;
   text-transform: uppercase;
   font-size: 4em;
   font-weight: 100;
 }
 
-button {
-  cursor: pointer;
-  background-color: #ffb399;
+.btn {
   border: none;
-  color: rgb(82, 82, 82);
-  padding: 0.75rem;
-  margin: 2rem;
-  transition: all 0.5s ease-in-out;
-  border-radius: 2rem;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.2s ease-in;
+  background-color: #ff7547;
   font-size: large;
 }
-
-button:hover {
-  transform: scale(1.1);
-  background-color: #ff3e00;
-  color: white;
+.btn:hover {
+  box-shadow: 0 8px 25px -8px #ffb399;
+}
+.session__btn {
+  display: flex;
+  justify-content: space-around;
 }
 </style>
