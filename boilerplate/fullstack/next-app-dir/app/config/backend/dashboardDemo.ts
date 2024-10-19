@@ -16,6 +16,7 @@ export let backendConfig = (): TypeInput => {
         supertokens: {
             // this is the location of the SuperTokens core.
             connectionURI: "https://try.supertokens.com/appid-demo-dashboard",
+            apiKey: process.env.API_KEY,
         },
         appInfo,
         // recipeList contains all the modules that you want to
