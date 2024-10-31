@@ -1,4 +1,4 @@
-import { withSession } from "../superTokensHelper";
+import { withSession } from "supertokens-node/custom";
 
 export default defineEventHandler(async (event) => {
     try {

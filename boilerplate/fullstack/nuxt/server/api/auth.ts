@@ -1,9 +1,9 @@
-import { handleAuthAPIRequest } from "../superTokensHelper";
+import { handleAuthAPIRequest } from "supertokens-node/custom";
 import { ensureSuperTokensInit } from "../backend";
 
 ensureSuperTokensInit();
 
-const handleCall = handleAuthAPIRequest(Response);
+const handleCall = handleAuthAPIRequest();
 
 export default defineEventHandler(async (event) => {
     try {
