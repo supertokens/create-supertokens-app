@@ -4,7 +4,7 @@ import SuperTokens from "supertokens-auth-react";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import SessionReact from "supertokens-auth-react/recipe/session/index.js";
-import { getSessionForSSR } from "supertokens-node/customframework";
+import { getSessionForSSR } from "supertokens-node/custom";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
 import type { JWTPayload } from "jose";

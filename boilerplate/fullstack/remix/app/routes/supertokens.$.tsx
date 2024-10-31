@@ -1,5 +1,5 @@
 import { json, ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { handleAuthAPIRequest } from "supertokens-node/customframework";
+import { handleAuthAPIRequest } from "supertokens-node/custom";
 
 const handleCall = handleAuthAPIRequest();
 

@@ -1,5 +1,5 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
-import { withSession } from "supertokens-node/customframework";
+import { withSession } from "supertokens-node/custom";
 
 // Loader function for handling GET requests that also adds cache control headers
 export async function loader({ request }: LoaderFunctionArgs) {
