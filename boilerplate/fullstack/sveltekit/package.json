@@ -32,7 +32,7 @@
     "dependencies": {
         "jsonwebtoken": "^9.0.2",
         "jwks-rsa": "^3.1.0",
-        "supertokens-node": "^20.1.2",
+        "supertokens-node": "latest",
         "supertokens-web-js": "^0.13.0"
     }
 }
