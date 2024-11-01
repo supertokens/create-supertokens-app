@@ -400,19 +400,14 @@ const pythonOptions: QuestionOption[] = [
     },
 ];
 
-export async function getBackendOptions({ manager }: UserFlags): Promise<QuestionOption[]> {
+export async function getNodeJSOptions({ manager }: UserFlags): Promise<QuestionOption[]> {
     return [
         {
-            value: "node",
-            displayName: "Node.js",
+            value: "koa",
+            displayName: "Koa.js",
             location: {
-                main: "backend/node-express",
-                config: [
-                    {
-                        finalConfig: "/config.ts",
-                        configFiles: "/config",
-                    },
-                ],
+                main: "backend/koa",
+                config: [{ finalConfig: "/config.ts", configFiles: "/config" }],
             },
             script: {
                 setup: [`${manager} install`],
@@ -429,6 +424,45 @@ export async function getBackendOptions({ manager }: UserFlags): Promise<Questio
             script: {
                 setup: [`${manager} install`],
                 run: [`${manager} run start`],
+            },
+        },
+        {
+            value: "express",
+            displayName: "Express.js",
+            location: {
+                main: "backend/node-express",
+                config: [
+                    {
+                        finalConfig: "/config.ts",
+                        configFiles: "/config",
+                    },
+                ],
+            },
+            script: {
+                setup: [`${manager} install`],
+                run: [`${manager} run start`],
+            },
+        },
+    ];
+}
+
+export async function getBackendOptions(): Promise<QuestionOption[]> {
+    return [
+        {
+            value: "node",
+            displayName: "Node.js",
+            location: {
+                main: "",
+                config: [
+                    {
+                        finalConfig: "",
+                        configFiles: "",
+                    },
+                ],
+            },
+            script: {
+                setup: [],
+                run: [],
             },
         },
         {
@@ -546,9 +580,27 @@ export async function getQuestions(flags: UserFlags) {
             name: "backend",
             type: "list",
             message: "Choose a backend framework (Visit our documentation for integration with other frameworks):",
-            choices: mapOptionsToChoices(await getBackendOptions(flags)),
+            choices: mapOptionsToChoices(await getBackendOptions()),
             when: (answers: Answers) => {
+                if (flags.backend !== undefined) {
+                    return false;
+                }
                 // If shouldSkipBackendQuestion returns true we want to return false from here
+                return !shouldSkipBackendQuestion(answers, flags);
+            },
+        },
+        {
+            name: "backendNodeJS",
+            type: "list",
+            message: "Choose a Node.js framework:",
+            choices: mapOptionsToChoices(await getNodeJSOptions(flags)),
+            when: (answers: Answers) => {
+                if (flags.backend !== undefined && flags.backend !== "node") {
+                    return false;
+                }
+                if (answers.backend !== "node" && flags.backend !== "node") {
+                    return false;
+                }
                 return !shouldSkipBackendQuestion(answers, flags);
             },
         },
@@ -562,19 +614,11 @@ export async function getQuestions(flags: UserFlags) {
                     return false;
                 }
 
-                if (
-                    (flags.frontend !== undefined && flags.frontend.startsWith("next")) ||
-                    (answers.frontend !== undefined && answers.frontend.startsWith("next"))
-                ) {
-                    // This means that they want to use nextjs fullstack
-                    return false;
-                }
-
                 if (answers.backend !== "python" && flags.backend !== "python") {
                     return false;
                 }
 
-                return true;
+                return !shouldSkipBackendQuestion(answers, flags);
             },
         },
         {
@@ -601,7 +645,7 @@ export async function getFrontendOptionsForProcessing(userArguments: UserFlags):
 }
 
 export async function getBackendOptionForProcessing(userArguments: UserFlags): Promise<QuestionOption[]> {
-    const optionsWithoutPython = await getBackendOptions(userArguments);
-
-    return [...optionsWithoutPython, ...pythonOptions];
+    const optionsWithoutPythonAndNodeJS = await getBackendOptions();
+    const optionsWithNodeJS = await getNodeJSOptions(userArguments);
+    return [...optionsWithoutPythonAndNodeJS, ...pythonOptions, ...optionsWithNodeJS];
 }
