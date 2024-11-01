@@ -7,7 +7,7 @@ import { CelebrateIcon, SeparatorLine } from "../../assets/images";
 import { CallAPIButton } from "./callApiButton";
 import { LinksComponent } from "./linksComponent";
 import { SessionAuthForNextJS } from "./sessionAuthForNextJS";
-import { getSSRSession } from "supertokens-node/nextjs";
+import { getSessionForSSR } from "../util";
 
 export async function HomePage() {
     const cookiesFromReq = await cookies();
@@ -17,7 +17,7 @@ export async function HomePage() {
             value,
         })
     );
-    const { accessTokenPayload, hasToken, error } = await getSSRSession(cookiesArray);
+    const { accessTokenPayload, hasToken, error } = await getSessionForSSR(cookiesArray);
 
     if (error) {
         return <div>Something went wrong while trying to get the session. Error - {error.message}</div>;
