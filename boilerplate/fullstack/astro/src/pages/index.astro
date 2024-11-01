@@ -1,24 +1,22 @@
 ---
 import Base from "../layouts/Base.astro";
 import Home from "../components/Home";
-import { getSessionForSSR } from "../superTokensHelpers";
+import { getSessionForSSR } from "supertokens-node/custom";
 
-const { accessTokenPayload, hasToken, error } = await getSessionForSSR(
-  Astro.request
-);
+const { accessTokenPayload, hasToken, error } = await getSessionForSSR(Astro.request);
 
 const SSRData = {
-  accessTokenPayload,
-  hasToken,
-  error,
+    accessTokenPayload,
+    hasToken,
+    error,
 };
 ---
 
 <Base>
-  <Home
-    client:only="react"
-    accessTokenPayload={SSRData.accessTokenPayload}
-    hasToken={SSRData.hasToken}
-    error={SSRData.error}
-  />
+    <Home
+        client:only="react"
+        accessTokenPayload={SSRData.accessTokenPayload}
+        hasToken={SSRData.hasToken}
+        error={SSRData.error}
+    />
 </Base>

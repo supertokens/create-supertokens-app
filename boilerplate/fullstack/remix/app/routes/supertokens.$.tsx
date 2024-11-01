@@ -1,7 +1,7 @@
 import { json, ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { handleAuthAPIRequest } from "../superTokensHelpers.js";
+import { handleAuthAPIRequest } from "supertokens-node/custom";
 
-const handleCall = handleAuthAPIRequest(Response);
+const handleCall = handleAuthAPIRequest();
 
 // Action function for handling POST requests
 export async function action({ request }: ActionFunctionArgs) {

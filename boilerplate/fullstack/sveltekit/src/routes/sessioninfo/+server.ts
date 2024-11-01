@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import { withSession } from "../../superTokensHelpers";
+import { withSession } from "supertokens-node/custom";
 
 export async function GET({ request }) {
     return withSession(request, async (err, session) => {
