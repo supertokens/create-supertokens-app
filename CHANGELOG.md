@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.55] - 2024-11-19
+
+-   Adds support for `multifactorauth` in Python backends.
+
 ## [0.0.54] - 2024-10-13
 
 -   Adds NuxtJS as a fullstack option.
