@@ -90,30 +90,25 @@ export function isValidFrontend(frontend: string): frontend is SupportedFrontend
     return false;
 }
 
+type BackendFrameworks = "node" | "python" | "go-http";
 type PythonFrameworks = "python-flask" | "python-drf" | "python-fastapi";
+type NodeJSFrameworks = "koa" | "express" | "nest";
 
-export type SupportedBackends = "node" | "nest" | "python" | PythonFrameworks | "go-http";
+export type SupportedBackends = BackendFrameworks | NodeJSFrameworks | PythonFrameworks;
 
 export const allBackends: {
-    id: SupportedBackends;
+    id: BackendFrameworks;
+    frameworks?: {
+        id: SupportedBackends;
+    }[];
 }[] = [
     {
         id: "node",
-    },
-    {
-        id: "nest",
+        frameworks: [{ id: "koa" }, { id: "express" }, { id: "nest" }],
     },
     {
         id: "python",
-    },
-    {
-        id: "python-flask",
-    },
-    {
-        id: "python-drf",
-    },
-    {
-        id: "python-fastapi",
+        frameworks: [{ id: "python-flask" }, { id: "python-drf" }, { id: "python-fastapi" }],
     },
     {
         id: "go-http",
@@ -121,11 +116,7 @@ export const allBackends: {
 ];
 
 export function isValidBackend(backend: string): backend is SupportedBackends {
-    if (allBackends.filter((i) => i.id === backend).length !== 0) {
-        return true;
-    }
-
-    return false;
+    return allBackends.some((b) => b.id === backend || (b.frameworks && b.frameworks.some((f) => f.id === backend)));
 }
 
 type ExternalAppInfo =
@@ -202,6 +193,7 @@ export type Answers = {
     recipe: string;
     appname: string;
     backendPython?: PythonFrameworks;
+    backendNodeJS?: NodeJSFrameworks;
 };
 
 /**
