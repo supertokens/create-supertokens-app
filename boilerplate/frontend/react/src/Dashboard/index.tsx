@@ -1,19 +1,25 @@
-import { useNavigate } from "react-router-dom";
+import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { signOut } from "supertokens-auth-react/recipe/session";
 import { recipeDetails } from "../config";
-import CallAPIView from "./CallAPIView";
-import { BlogsIcon, CelebrateIcon, GuideIcon, SeparatorLine, SignOutIcon } from "../assets/images";
+import SessionInfo from "./SessionInfo";
+import { BlogsIcon, CelebrateIcon, GuideIcon, SignOutIcon } from "../assets/images";
+import "./Dashboard.css";
+import { useNavigate } from "react-router-dom";
+import Footer from "./Footer";
 
-interface ILink {
+export interface Link {
     name: string;
     onClick: () => void;
     icon: string;
 }
 
-export default function SuccessView(props: { userId: string }) {
-    let userId = props.userId;
-
+export default function Dashboard() {
+    const sessionContext = useSessionContext();
     const navigate = useNavigate();
+
+    if (sessionContext.loading === true) {
+        return null;
+    }
 
     async function logoutClicked() {
         await signOut();
@@ -24,7 +30,7 @@ export default function SuccessView(props: { userId: string }) {
         window.open(url, "_blank");
     }
 
-    const links: ILink[] = [
+    const links: Link[] = [
         {
             name: "Blogs",
             onClick: () => openLink("https://supertokens.com/blog"),
@@ -43,7 +49,7 @@ export default function SuccessView(props: { userId: string }) {
     ];
 
     return (
-        <>
+        <div className="fill" id="home-container">
             <div className="main-container">
                 <div className="top-band success-title bold-500">
                     <img src={CelebrateIcon} alt="Login successful" className="success-icon" /> Login successful
@@ -51,22 +57,12 @@ export default function SuccessView(props: { userId: string }) {
                 <div className="inner-content">
                     <div>Your userID is:</div>
                     <div className="truncate" id="user-id">
-                        {userId}
+                        {sessionContext.userId}
                     </div>
-                    <CallAPIView />
+                    <SessionInfo />
                 </div>
             </div>
-            <div className="bottom-links-container">
-                {links.map((link) => (
-                    <div className="link" key={link.name}>
-                        <img className="link-icon" src={link.icon} alt={link.name} />
-                        <div role={"button"} onClick={link.onClick}>
-                            {link.name}
-                        </div>
-                    </div>
-                ))}
-            </div>
-            <img className="separator-line" src={SeparatorLine} alt="separator" />
-        </>
+            <Footer links={links} />
+        </div>
     );
 }
