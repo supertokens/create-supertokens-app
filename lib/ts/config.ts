@@ -23,7 +23,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "react",
             displayName: "React",
             location: {
-                main: "frontend/supertokens-react",
+                main: "frontend/react",
                 config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
             },
             script: {
