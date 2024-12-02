@@ -8,7 +8,6 @@ import SuperTokens from "supertokens-node";
 import ThirdParty from "supertokens-node/recipe/thirdparty";
 import EmailPassword from "supertokens-node/recipe/emailpassword";
 
-
 export const SuperTokensConfig: TypeInput = {
     framework: "koa",
     supertokens: {
@@ -30,4 +29,3 @@ export const SuperTokensConfig: TypeInput = {
         UserRoles.init(),
     ],
 };
-
