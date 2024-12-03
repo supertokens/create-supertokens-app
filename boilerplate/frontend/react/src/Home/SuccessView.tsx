@@ -11,7 +11,7 @@ interface ILink {
 }
 
 export default function SuccessView(props: { userId: string }) {
-    let userId = props.userId;
+    const userId = props.userId;
 
     const navigate = useNavigate();
 
