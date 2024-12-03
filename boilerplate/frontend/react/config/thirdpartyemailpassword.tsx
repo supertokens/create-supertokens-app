@@ -33,6 +33,11 @@ export const SuperTokensConfig = {
         }),
         Session.init(),
     ],
+    getRedirectionURL: async (context) => {
+        if (context.action === "SUCCESS" && context.newSessionCreated) {
+            return "/dashboard";
+        }
+    },
 };
 
 export const recipeDetails = {
