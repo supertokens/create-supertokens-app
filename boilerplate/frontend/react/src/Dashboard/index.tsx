@@ -3,7 +3,6 @@ import { signOut } from "supertokens-auth-react/recipe/session";
 import { recipeDetails } from "../config";
 import SessionInfo from "./SessionInfo";
 import { BlogsIcon, CelebrateIcon, GuideIcon, SignOutIcon } from "../assets/images";
-import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 
