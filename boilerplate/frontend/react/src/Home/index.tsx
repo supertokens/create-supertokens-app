@@ -8,7 +8,9 @@ export default function Home() {
             </div>
             <div className="main-container">
                 <div className="inner-content">
-                    <p>SuperTokens x React example project</p>
+                    <p>
+                        <strong>SuperTokens</strong> x <strong>React</strong> <br /> example project
+                    </p>
                     <div className="buttons">
                         <a href="/auth" className="sessionButton">
                             Sign-up / Login

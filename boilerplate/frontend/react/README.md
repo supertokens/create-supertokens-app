@@ -60,19 +60,19 @@ The application uses [React Router](https://reactrouter.com/) for routing and co
     - Sets up the routing structure using `react-router-dom`
     - Wraps the application with necessary providers:
         - `SuperTokensWrapper`: Manages auth state and session
-        - `ComponentWrapper`: Provides auth UI customization
+        - `ComponentWrapper`: Provides auth UI customization for specific auth recipes. For example, if you choose to use the `ThirdPartyPasswordless` recipe, the `ComponentWrapper` will provide the UI customization for the passwordless login flow (the SMS delivery, in particular).
     - Defines three main routes:
         - `/`: Public landing page - accessible regardless of auth state
         - `/auth`: Renders SuperTokens' pre-built auth UI - accessible regardless of auth state
         - `/dashboard`: Protected route requiring authentication
 
-3. **Home Component (`/Home`)**
+3. **Home Component (`/` route, `/Home/index.tsx` component)**
 
     - Public landing page accessible to all users
     - Provides navigation to authentication and dashboard
     - Displays basic application information and links
 
-4. **Dashboard Component (`/Dashboard`)**
+4. **Dashboard Component (`/dashboard` route, `/Dashboard/index.tsx` component)**
     - Protected route only accessible to authenticated users
     - Protected by `SessionAuth` component
     - Displays user information and session details
