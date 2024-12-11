@@ -1,4 +1,4 @@
-// This is temporary file, if you see this comment in this file report this as an issue for create-supertokens-app
+// This is a temporary file, if you see this comment in this file report this as an issue for create-supertokens-app
 export function getApiDomain() {
     return "";
 }

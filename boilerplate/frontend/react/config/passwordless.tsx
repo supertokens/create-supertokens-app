@@ -1,19 +1,17 @@
-import ThirdParty from "supertokens-auth-react/recipe/thirdparty";
 import Passwordless, { PasswordlessComponentsOverrideProvider } from "supertokens-auth-react/recipe/passwordless";
-import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
 import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
 import Session from "supertokens-auth-react/recipe/session";
 import React from "react";
 
 export function getApiDomain() {
-    const apiPort = process.env.REACT_APP_API_PORT || 3001;
-    const apiUrl = process.env.REACT_APP_API_URL || `http://localhost:${apiPort}`;
+    const apiPort = import.meta.env.VITE_APP_API_PORT || 3001;
+    const apiUrl = import.meta.env.VITE_APP_API_URL || `http://localhost:${apiPort}`;
     return apiUrl;
 }
-
+s;
 export function getWebsiteDomain() {
-    const websitePort = process.env.REACT_APP_WEBSITE_PORT || 3000;
-    const websiteUrl = process.env.REACT_APP_WEBSITE_URL || `http://localhost:${websitePort}`;
+    const websitePort = import.meta.env.VITE_APP_WEBSITE_PORT || 3000;
+    const websiteUrl = import.meta.env.VITE_APP_WEBSITE_URL || `http://localhost:${websitePort}`;
     return websiteUrl;
 }
 
@@ -26,28 +24,23 @@ export const SuperTokensConfig = {
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [
-        ThirdParty.init({
-            signInAndUpFeature: {
-                providers: [
-                    ThirdParty.Github.init(),
-                    ThirdParty.Google.init(),
-                    ThirdParty.Apple.init(),
-                    ThirdParty.Twitter.init(),
-                ],
-            },
-        }),
         Passwordless.init({
             contactMethod: "EMAIL_OR_PHONE",
         }),
         Session.init(),
     ],
+    getRedirectionURL: async (context) => {
+        if (context.action === "SUCCESS" && context.newSessionCreated) {
+            return "/dashboard";
+        }
+    },
 };
 
 export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
+    docsLink: "https://supertokens.com/docs/passwordless/introduction",
 };
 
-export const PreBuiltUIList = [ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI];
+export const PreBuiltUIList = [PasswordlessPreBuiltUI];
 
 export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
     return (
