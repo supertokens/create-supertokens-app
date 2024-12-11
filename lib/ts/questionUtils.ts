@@ -67,14 +67,18 @@ export function modifyAnswersForPythonFrameworks(answers: Answers) {
     return _answers;
 }
 
+export function modifyAnswersForNodeJSFrameworks(answers: Answers) {
+    let _answers = answers;
+    if (answers.backend === "node") {
+        _answers.backend = answers.backendNodeJS;
+    }
+    return _answers;
+}
+
 /**
  * Decides whether the user should be prompted to select their backend.This question is skipped for full stack frameworks
  */
 export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags): boolean {
-    if (userFlags.backend !== undefined) {
-        return true;
-    }
-
     let frontEndInFlags = userFlags.frontend;
 
     if (frontEndInFlags !== undefined) {

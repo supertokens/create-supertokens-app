@@ -1,0 +1,23 @@
+{
+    "scripts": {
+        "start": "npx ts-node-dev --project ./tsconfig.json ./main.ts"
+    },
+    "dependencies": {
+        "koa": "^2.15.3",
+        "@koa/cors": "^5.0.0",
+        "morgan": "^1.10.0",
+        "helmet": "^5.1.0",
+        "koa-router": "^12.0.0",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^4.7.2",
+        "supertokens-node": "latest"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.12",
+        "@types/koa__cors": "^4.0.0",
+        "@types/koa-router": "^7.4.4",
+        "@types/morgan": "^1.9.3",
+        "@types/node": "^16.11.38",
+        "nodemon": "^2.0.16"
+    }
+}
