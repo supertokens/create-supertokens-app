@@ -6,10 +6,9 @@
     "description": "",
     "main": "dist/index.js",
     "scripts": {
-        "start": "node dist/index.js",
+        "start": "npx vite-node ./index.ts",
         "lint": "eslint .",
-        "build": "tsc",
-        "dev": "npx vite-node ./index.ts"
+        "build": "tsc"
     },
     "dependencies": {
         "cors": "^2.8.5",
