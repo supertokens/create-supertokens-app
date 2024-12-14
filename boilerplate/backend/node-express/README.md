@@ -28,7 +28,7 @@ When using SuperTokens, the front-end never calls directly to the SuperTokens Co
 
 The back-end has two main files:
 
-1. **Entry Point (`index.tsx`)**
+1. **Entry Point (`index.ts`)**
 
     - Initializes SuperTokens
     - Adds CORS headers for sessions with the front-end
