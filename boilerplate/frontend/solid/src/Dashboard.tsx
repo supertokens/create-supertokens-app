@@ -6,8 +6,6 @@ import { getApiDomain } from "./config";
 const Dashboard: Component = () => {
     const navigate = useNavigate();
     const [userId, setUserId] = createSignal<string | null>(null);
-    const [showAPIResponse, setShowAPIResponse] = createSignal(false);
-    const [apiResponse, setApiResponse] = createSignal<string>("");
 
     onMount(async () => {
         try {
@@ -18,45 +16,44 @@ const Dashboard: Component = () => {
         }
     });
 
-    const handleSignOut = async () => {
-        await Session.signOut();
-        navigate("/");
-    };
-
-    const callExampleAPI = async () => {
+    async function callAPIClicked() {
         try {
             const response = await fetch(getApiDomain() + "/sessioninfo");
-            const json = await response.json();
-            setApiResponse(JSON.stringify(json, null, 2));
-            setShowAPIResponse(true);
+            const data = await response.json();
+            window.alert("Session Information:\n" + JSON.stringify(data, null, 2));
         } catch (err) {
-            if (err.status === 401) {
-                navigate("/auth");
-            }
+            window.alert("Error calling API: " + err.message);
         }
-    };
+    }
+
+    async function logoutClicked() {
+        await Session.signOut();
+        navigate("/");
+    }
 
     return (
-        <div class="fill">
-            <div class="content">
-                <div class="top-content">
-                    <h1>Dashboard</h1>
-                    <div class="user-info">
-                        <p>User ID: {userId()}</p>
-                        <button onClick={handleSignOut}>Sign Out</button>
+        <>
+            <div class="main-container">
+                <div class="top-band success-title bold-500">
+                    <img src="/assets/images/celebrate-icon.svg" alt="Login successful" class="success-icon" />
+                    Login successful
+                </div>
+                <div class="inner-content">
+                    <div>Your userID is:</div>
+                    <div class="truncate" id="user-id">
+                        {userId()}
                     </div>
-                    <div class="api-section">
-                        <button onClick={callExampleAPI}>Call example API</button>
-                        {showAPIResponse() && (
-                            <div class="api-response">
-                                <p>API Response:</p>
-                                <pre>{apiResponse()}</pre>
-                            </div>
-                        )}
+                    <div class="buttons">
+                        <button onClick={callAPIClicked} class="dashboard-button">
+                            Call API
+                        </button>
+                        <button onClick={logoutClicked} class="dashboard-button">
+                            Logout
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

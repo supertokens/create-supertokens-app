@@ -1,25 +1,30 @@
 import { Component } from "solid-js";
-import { useNavigate } from "@solidjs/router";
+import { A } from "@solidjs/router";
 
 const Home: Component = () => {
-    const navigate = useNavigate();
-
     return (
-        <div class="fill">
-            <div class="content">
-                <div class="top-content">
-                    <h1>Welcome to SuperTokens 👋</h1>
-                    <div class="button-container">
-                        <button class="login-button" onClick={() => navigate("/auth")}>
-                            Login
-                        </button>
-                        <button class="dashboard-button" onClick={() => navigate("/dashboard")}>
-                            View Dashboard
-                        </button>
-                    </div>
+        <>
+            <section class="logos">
+                <img src="/ST.svg" alt="SuperTokens" />
+                <span>x</span>
+                <img src="/Solid.svg" alt="Solid" />
+            </section>
+            <section class="main-container">
+                <div class="inner-content">
+                    <h1>
+                        <strong>SuperTokens</strong> x <strong>Solid</strong> <br /> example project
+                    </h1>
+                    <nav class="buttons">
+                        <A href="/auth" class="dashboard-button">
+                            Sign-up / Login
+                        </A>
+                        <A href="/dashboard" class="dashboard-button">
+                            Dashboard
+                        </A>
+                    </nav>
                 </div>
-            </div>
-        </div>
+            </section>
+        </>
     );
 };
 

@@ -1,5 +1,5 @@
 import { Component, onMount } from "solid-js";
-import { Router, Routes, Route, useNavigate } from "@solidjs/router";
+import { Router, Routes, Route, useNavigate, A } from "@solidjs/router";
 import { SuperTokensConfig, ComponentWrapper, initSuperTokensWebJS } from "./config";
 import Home from "./Home";
 import Dashboard from "./Dashboard";
@@ -23,36 +23,54 @@ const ProtectedRoute: Component<{ component: Component }> = (props) => {
 
 const App: Component = () => {
     return (
-        <>
-            <header>
-                <div class="header-container">
-                    <a href="/">
-                        <img src="/ST.svg" alt="SuperTokens" />
-                    </a>
-                </div>
-                <div class="header-container-right">
-                    <a href="https://supertokens.com/docs/guides/getting-started/react" target="_blank">
-                        Docs
-                    </a>
-                    <a href="https://github.com/supertokens/create-supertokens-app" target="_blank">
-                        CLI Repo
-                    </a>
-                </div>
-            </header>
-            <ComponentWrapper>
-                <div class="App app-container">
-                    <Router>
-                        <div class="fill">
-                            <Routes>
-                                <Route path="/" component={Home} />
-                                <Route path="/auth/*" component={Auth} />
-                                <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
-                            </Routes>
-                        </div>
-                    </Router>
-                </div>
-            </ComponentWrapper>
-        </>
+        <ComponentWrapper>
+            <Router>
+                <main class="App app-container">
+                    <header>
+                        <nav class="header-container">
+                            <A href="/">
+                                <img src="/ST.svg" alt="SuperTokens" />
+                            </A>
+                            <ul class="header-container-right">
+                                <li>
+                                    <a
+                                        href="https://supertokens.com/docs/guides/getting-started/react"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Docs
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="https://github.com/supertokens/create-supertokens-app"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        CLI Repo
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </header>
+                    <div class="fill" id="home-container">
+                        <Routes>
+                            <Route path="/" component={Home} />
+                            <Route path="/auth/*" component={Auth} />
+                            <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
+                        </Routes>
+                        <footer>
+                            Built with ❤️ by the folks at{" "}
+                            <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
+                                supertokens.com
+                            </a>
+                            .
+                        </footer>
+                        <img class="separator-line" src="/assets/images/separator-line.svg" alt="separator" />
+                    </div>
+                </main>
+            </Router>
+        </ComponentWrapper>
     );
 };
 
