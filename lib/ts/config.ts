@@ -232,7 +232,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "angular",
             displayName: "Angular",
             location: {
-                main: "frontend/angular-prebuilt",
+                main: "frontend/angular",
                 config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {

@@ -1,0 +1,29 @@
+<div class="fill" id="home-container">
+    <div class="main-container">
+        <div class="top-band success-title bold-500">
+            <img src="/assets/images/celebrate-icon.svg" alt="Login successful" class="success-icon" /> Login successful
+        </div>
+        <div class="inner-content">
+            <div>Your userID is:</div>
+            <div class="truncate" id="user-id">
+                {{ userId }}
+            </div>
+            <div (click)="callApiClicked()" class="sessionButton">Call API</div>
+        </div>
+    </div>
+    <div class="bottom-links-container">
+        <div class="link">
+            <img class="link-icon" src="/assets/images/blogs-icon.svg" alt="blog" />
+            <div role="button" (click)="newWindow('blog')">Blog</div>
+        </div>
+        <div class="link">
+            <img class="link-icon" src="/assets/images/guide-icon.svg" alt="documentation" />
+            <div role="button" (click)="newWindow('docs')">Documentation</div>
+        </div>
+        <div class="link">
+            <img class="link-icon" src="/assets/images/sign-out-icon.svg" alt="sign out" />
+            <div role="button" (click)="onLogout()">Sign out</div>
+        </div>
+    </div>
+    <img class="separator-line" src="/assets/images/separator-line.svg" alt="separator" />
+</div>
