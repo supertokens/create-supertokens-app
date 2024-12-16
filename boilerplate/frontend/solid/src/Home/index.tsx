@@ -1,5 +1,4 @@
 import { Component } from "solid-js";
-import { A } from "@solidjs/router";
 
 const Home: Component = () => {
     return (
@@ -7,7 +6,7 @@ const Home: Component = () => {
             <section class="logos">
                 <img src="/ST.svg" alt="SuperTokens" />
                 <span>x</span>
-                <img src="/Solid.svg" alt="Solid" />
+                <img src="/solid.svg" alt="Solid" />
             </section>
             <section class="main-container">
                 <div class="inner-content">
@@ -15,12 +14,12 @@ const Home: Component = () => {
                         <strong>SuperTokens</strong> x <strong>Solid</strong> <br /> example project
                     </h1>
                     <nav class="buttons">
-                        <A href="/auth" class="dashboard-button">
+                        <a href="/auth" class="dashboard-button">
                             Sign-up / Login
-                        </A>
-                        <A href="/dashboard" class="dashboard-button">
+                        </a>
+                        <a href="/dashboard" class="dashboard-button">
                             Dashboard
-                        </A>
+                        </a>
                     </nav>
                 </div>
             </section>
