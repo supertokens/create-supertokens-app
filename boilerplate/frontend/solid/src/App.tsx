@@ -1,10 +1,9 @@
 import { Component, onMount } from "solid-js";
 import { Router, Routes, Route, useNavigate } from "@solidjs/router";
-import { SuperTokensConfig, ComponentWrapper } from "../config/emailpassword";
+import { SuperTokensConfig, ComponentWrapper, initSuperTokensWebJS } from "./config";
 import Home from "./Home";
 import Dashboard from "./Dashboard";
 import { Auth } from "./Auth";
-import { initSuperTokensWebJS } from "../config/emailpassword";
 import * as Session from "supertokens-web-js/recipe/session";
 
 // Initialize SuperTokens

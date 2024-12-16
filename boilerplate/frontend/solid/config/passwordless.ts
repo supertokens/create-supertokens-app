@@ -3,14 +3,14 @@ import Session from "supertokens-web-js/recipe/session";
 import { JSX } from "solid-js";
 
 export function getApiDomain() {
-    const apiPort = process.env.VITE_API_PORT || 3001;
-    const apiUrl = process.env.VITE_API_URL || `http://localhost:${apiPort}`;
+    const apiPort = import.meta.env.VITE_API_PORT || 3001;
+    const apiUrl = import.meta.env.VITE_API_URL || `http://localhost:${apiPort}`;
     return apiUrl;
 }
 
 export function getWebsiteDomain() {
-    const websitePort = process.env.VITE_WEBSITE_PORT || 3000;
-    const websiteUrl = process.env.VITE_WEBSITE_URL || `http://localhost:${websitePort}`;
+    const websitePort = import.meta.env.VITE_WEBSITE_PORT || 3000;
+    const websiteUrl = import.meta.env.VITE_WEBSITE_URL || `http://localhost:${websitePort}`;
     return websiteUrl;
 }
 
