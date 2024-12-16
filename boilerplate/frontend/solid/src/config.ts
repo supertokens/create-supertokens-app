@@ -23,7 +23,3 @@ export const SuperTokensConfig = {
 export const recipeDetails = {
     docsLink: "",
 };
-
-export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
-    return props.children;
-};

@@ -1,6 +1,7 @@
 import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";
-import { JSX } from "solid-js";
+import EmailVerification from "supertokens-web-js/recipe/emailverification";
+import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";
 
 export function getApiDomain() {
     const apiPort = import.meta.env.VITE_API_PORT || 3001;
@@ -22,7 +23,7 @@ export const SuperTokensConfig = {
         apiBasePath: "/auth",
         websiteBasePath: "/auth",
     },
-    recipeList: [Session.init()],
+    recipeList: [Session.init(), EmailVerification.init(), MultiFactorAuth.init()],
     getRedirectionURL: async (context) => {
         if (context.action === "SUCCESS" && context.newSessionCreated) {
             return "/dashboard";
@@ -34,14 +35,24 @@ export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/mfa/introduction",
 };
 
-export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
-    return props.children;
-};
-
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         ...SuperTokensConfig,
-        recipeList: [(window as any).supertokensUIMultiFactorAuth.init(), (window as any).supertokensUISession.init()],
+        recipeList: [
+            (window as any).supertokensUIEmailPassword.init(),
+            (window as any).supertokensUIThirdParty.init({
+                signInAndUpFeature: {
+                    providers: [
+                        (window as any).supertokensUIThirdParty.Github.init(),
+                        (window as any).supertokensUIThirdParty.Google.init(),
+                        (window as any).supertokensUIThirdParty.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Twitter.init(),
+                    ],
+                },
+            }),
+            (window as any).supertokensUIPasswordless.init({ contactMethod: "EMAIL_OR_PHONE" }),
+            (window as any).supertokensUISession.init(),
+        ],
     });
 }
 

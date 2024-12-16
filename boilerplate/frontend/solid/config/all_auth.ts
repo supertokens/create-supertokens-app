@@ -1,6 +1,5 @@
 import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";
-import { JSX } from "solid-js";
 
 export function getApiDomain() {
     const apiPort = import.meta.env.VITE_API_PORT || 3001;
@@ -23,14 +22,15 @@ export const SuperTokensConfig = {
         websiteBasePath: "/auth",
     },
     recipeList: [Session.init()],
+    getRedirectionURL: async (context) => {
+        if (context.action === "SUCCESS" && context.newSessionCreated) {
+            return "/dashboard";
+        }
+    },
 };
 
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/guides",
-};
-
-export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
-    return props.children;
 };
 
 export function initSuperTokensUI() {
@@ -53,11 +53,6 @@ export function initSuperTokensUI() {
             }),
             (window as any).supertokensUISession.init(),
         ],
-        getRedirectionURL: async (context) => {
-            if (context.action === "SUCCESS" && context.newSessionCreated) {
-                return "/dashboard";
-            }
-        },
     });
 }
 

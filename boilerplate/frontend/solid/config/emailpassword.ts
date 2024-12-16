@@ -1,6 +1,5 @@
 import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";
-import { JSX } from "solid-js";
 
 export function getApiDomain() {
     const apiPort = import.meta.env.VITE_API_PORT || 3001;
@@ -32,10 +31,6 @@ export const SuperTokensConfig = {
 
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/emailpassword/introduction",
-};
-
-export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
-    return props.children;
 };
 
 export function initSuperTokensUI() {

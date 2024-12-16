@@ -1,6 +1,5 @@
 import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";
-import { JSX } from "solid-js";
 
 export function getApiDomain() {
     const apiPort = import.meta.env.VITE_API_PORT || 3001;
@@ -34,15 +33,21 @@ export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/thirdpartyemailpassword/introduction",
 };
 
-export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
-    return props.children;
-};
-
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         ...SuperTokensConfig,
         recipeList: [
-            (window as any).supertokensUIThirdPartyEmailPassword.init(),
+            (window as any).supertokensUIEmailPassword.init(),
+            (window as any).supertokensUIThirdParty.init({
+                signInAndUpFeature: {
+                    providers: [
+                        (window as any).supertokensUIThirdParty.Github.init(),
+                        (window as any).supertokensUIThirdParty.Google.init(),
+                        (window as any).supertokensUIThirdParty.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Twitter.init(),
+                    ],
+                },
+            }),
             (window as any).supertokensUISession.init(),
         ],
     });
