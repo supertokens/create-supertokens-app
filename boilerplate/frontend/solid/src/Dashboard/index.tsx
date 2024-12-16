@@ -1,7 +1,7 @@
 import { Component, createSignal, onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import * as Session from "supertokens-web-js/recipe/session";
-import { getApiDomain } from "./config";
+import { getApiDomain } from "../config";
 
 const Dashboard: Component = () => {
     const navigate = useNavigate();
