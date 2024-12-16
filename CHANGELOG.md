@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.59] - 2024-12-16
+
+-   Upgrade Nuxt boilerplate 
+
 ## [0.0.58] - 2024-12-16
 
 -   Adds a vite-based vue implementation
