@@ -257,7 +257,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "solid",
             displayName: "SolidJS",
             location: {
-                main: "frontend/solid-prebuilt",
+                main: "frontend/solid",
                 config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {

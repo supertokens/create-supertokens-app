@@ -1,13 +1,41 @@
 import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";
+import { JSX } from "solid-js";
+
+export function getApiDomain() {
+    const apiPort = process.env.VITE_API_PORT || 3001;
+    const apiUrl = process.env.VITE_API_URL || `http://localhost:${apiPort}`;
+    return apiUrl;
+}
+
+export function getWebsiteDomain() {
+    const websitePort = process.env.VITE_WEBSITE_PORT || 3000;
+    const websiteUrl = process.env.VITE_WEBSITE_URL || `http://localhost:${websitePort}`;
+    return websiteUrl;
+}
+
+export const SuperTokensConfig = {
+    appInfo: {
+        appName: "SuperTokens Demo App",
+        apiDomain: getApiDomain(),
+        websiteDomain: getWebsiteDomain(),
+        apiBasePath: "/auth",
+        websiteBasePath: "/auth",
+    },
+    recipeList: [Session.init()],
+};
+
+export const recipeDetails = {
+    docsLink: "https://supertokens.com/docs/guides",
+};
+
+export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
+    return props.children;
+};
 
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
-        appInfo: {
-            websiteDomain: "http://localhost:3000",
-            apiDomain: "http://localhost:3001",
-            appName: "SuperTokens Demo App",
-        },
+        ...SuperTokensConfig,
         recipeList: [
             (window as any).supertokensUIEmailPassword.init(),
             (window as any).supertokensUIThirdParty.init({
@@ -29,11 +57,5 @@ export function initSuperTokensUI() {
 }
 
 export function initSuperTokensWebJS() {
-    SuperTokens.init({
-        appInfo: {
-            appName: "SuperTokens Demo App",
-            apiDomain: "http://localhost:3001",
-        },
-        recipeList: [Session.init()],
-    });
+    SuperTokens.init(SuperTokensConfig);
 }
