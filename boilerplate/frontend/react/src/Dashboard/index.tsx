@@ -1,18 +1,12 @@
 import { useSessionContext, signOut } from "supertokens-auth-react/recipe/session";
-import { useNavigate } from "react-router-dom";
 import { getApiDomain } from "../config";
-
+import { useNavigate } from "react-router-dom";
 export default function Dashboard() {
-    const sessionContext = useSessionContext();
     const navigate = useNavigate();
+    const sessionContext = useSessionContext();
 
     if (sessionContext.loading === true) {
         return null;
-    }
-
-    async function logoutClicked() {
-        await signOut();
-        navigate("/auth");
     }
 
     async function callAPIClicked() {
@@ -25,11 +19,16 @@ export default function Dashboard() {
         }
     }
 
+    async function logoutClicked() {
+        await signOut();
+        navigate("/");
+    }
+
     return (
-        <div className="fill" id="home-container">
+        <>
             <div className="main-container">
                 <div className="top-band success-title bold-500">
-                    <img src="/celebrate-icon.svg" alt="Login successful" className="success-icon" />
+                    <img src="/assets/images/celebrate-icon.svg" alt="Login successful" className="success-icon" />
                     Login successful
                 </div>
                 <div className="inner-content">
@@ -37,31 +36,16 @@ export default function Dashboard() {
                     <div className="truncate" id="user-id">
                         {sessionContext.userId}
                     </div>
-                    <button onClick={callAPIClicked} className="sessionButton">
-                        Call API
-                    </button>
+                    <div className="buttons">
+                        <button onClick={callAPIClicked} className="dashboard-button">
+                            Call API
+                        </button>
+                        <button onClick={logoutClicked} className="dashboard-button">
+                            Logout
+                        </button>
+                    </div>
                 </div>
             </div>
-            <nav className="bottom-links-container">
-                <a href="https://supertokens.com/blog" target="_blank" rel="noopener noreferrer" className="link">
-                    <img src="/blogs-icon.svg" alt="Blogs" className="link-icon" />
-                    <span>Blogs</span>
-                </a>
-                <a
-                    href="https://supertokens.com/docs/guides"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="link"
-                >
-                    <img src="/guide-icon.svg" alt="Documentation" className="link-icon" />
-                    <span>Documentation</span>
-                </a>
-                <button onClick={logoutClicked} className="link">
-                    <img src="/signout-icon.svg" alt="Sign Out" className="link-icon" />
-                    <span>Sign Out</span>
-                </button>
-            </nav>
-            <img className="separator-line" src="/separator-line.svg" alt="separator" />
-        </div>
+        </>
     );
 }

@@ -1,6 +1,6 @@
 import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
 import { getSuperTokensRoutesForReactRouterDom } from "supertokens-auth-react/ui";
-import { SessionAuth } from "supertokens-auth-react/recipe/session";
+import { SessionAuth, signOut, doesSessionExist } from "supertokens-auth-react/recipe/session";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import * as ReactRouter from "react-router-dom";
 import Dashboard from "./Dashboard";
@@ -42,25 +42,35 @@ function App() {
                             </ul>
                         </nav>
                     </header>
-                    <ComponentWrapper>
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            {/* This shows the login UI on "/auth" route */}
-                            {getSuperTokensRoutesForReactRouterDom(ReactRouter, PreBuiltUIList)}
+                    <div className="fill" id="home-container">
+                        <ComponentWrapper>
+                            <Routes>
+                                <Route path="/" element={<Home />} />
+                                {/* This shows the login UI on "/auth" route */}
+                                {getSuperTokensRoutesForReactRouterDom(ReactRouter, PreBuiltUIList)}
 
-                            {/* This protects the "/dashboard" route so that it shows
-                            <Dashboard /> only if the user is logged in.
-                            Else it redirects the user to "/auth" */}
-                            <Route
-                                path="/dashboard"
-                                element={
-                                    <SessionAuth>
-                                        <Dashboard />
-                                    </SessionAuth>
-                                }
-                            />
-                        </Routes>
-                    </ComponentWrapper>
+                                {/* This protects the "/dashboard" route so that it shows
+                                <Dashboard /> only if the user is logged in.
+                                Else it redirects the user to "/auth" */}
+                                <Route
+                                    path="/dashboard"
+                                    element={
+                                        <SessionAuth>
+                                            <Dashboard />
+                                        </SessionAuth>
+                                    }
+                                />
+                            </Routes>
+                        </ComponentWrapper>
+                        <footer>
+                            Built with ❤️ by the folks at{" "}
+                            <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
+                                supertokens.com
+                            </a>
+                            .
+                        </footer>
+                        <img className="separator-line" src="/assets/images/separator-line.svg" alt="separator" />
+                    </div>
                 </main>
             </BrowserRouter>
         </SuperTokensWrapper>
