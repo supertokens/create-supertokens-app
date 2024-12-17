@@ -2,22 +2,27 @@ import { signOut } from "supertokens-auth-react/recipe/session";
 import { getApiDomain } from "../config/frontend";
 import { useEffect, useState } from "react";
 
+const fetchSessionInfo = async () => {
+    const response = await fetch(getApiDomain() + "/api/sessioninfo");
+    const data = await response.json();
+    return data;
+};
+
 export default function Dashboard() {
     const [userId, setUserId] = useState("");
 
     useEffect(() => {
-        const fetchSessionInfo = async () => {
-            const response = await fetch(getApiDomain() + "/sessioninfo");
-            const data = await response.json();
+        const fetchUserId = async () => {
+            const data = await fetchSessionInfo();
+            console.log(data);
             setUserId(data.userId);
         };
-        fetchSessionInfo();
+        fetchUserId();
     }, []);
 
     async function callAPIClicked() {
         try {
-            const response = await fetch(getApiDomain() + "/sessioninfo");
-            const data = await response.json();
+            const data = await fetchSessionInfo();
             window.alert("Session Information:\n" + JSON.stringify(data, null, 2));
         } catch (err) {
             window.alert("Error calling API: " + err.message);
