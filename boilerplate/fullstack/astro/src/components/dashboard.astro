@@ -1,0 +1,55 @@
+---
+import { getApiDomain } from "../config/frontend";
+
+// Server-side fetch
+const response = await fetch(getApiDomain() + "/api/sessioninfo");
+const data = await response.json();
+const userId = data.userId;
+---
+
+<div class="main-container">
+    <div class="top-band success-title bold-500">
+        <img src="/assets/images/celebrate-icon.svg" alt="Login successful" class="success-icon" />
+        Login successful
+    </div>
+    <div class="inner-content">
+        <div>Your userID is:</div>
+        <div class="truncate" id="user-id">
+            {userId}
+        </div>
+        <div class="buttons">
+            <button id="callApi" class="dashboard-button">
+                Call API
+            </button>
+            <button id="logout" class="dashboard-button">
+                Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    import { signOut } from "supertokens-auth-react/recipe/session";
+    import { getApiDomain } from "../config/frontend";
+
+    const fetchSessionInfo = async () => {
+        const response = await fetch(getApiDomain() + "/api/sessioninfo");
+        const data = await response.json();
+        return data;
+    };
+
+    // Add click handlers
+    document.getElementById('callApi')?.addEventListener('click', async () => {
+        try {
+            const data = await fetchSessionInfo();
+            window.alert("Session Information:\n" + JSON.stringify(data, null, 2));
+        } catch (err: any) {
+            window.alert("Error calling API: " + err.message);
+        }
+    });
+
+    document.getElementById('logout')?.addEventListener('click', async () => {
+        await signOut();
+        window.location.href = "/";
+    });
+</script>

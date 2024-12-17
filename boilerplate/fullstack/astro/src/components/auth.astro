@@ -1,0 +1,20 @@
+<script>
+  import { initSuperTokensUI } from "../config/frontend";
+
+  const loadScript = (src: string) => {
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = src;
+      script.id = "supertokens-script";
+      script.onload = () => {
+          initSuperTokensUI();
+      };
+      document.body.appendChild(script);
+  };
+
+  loadScript("${jsdeliveryprebuiltuiurl}");
+
+  document.addEventListener("astro:page-load", () => {
+      initSuperTokensUI();
+  });
+</script>

@@ -87,6 +87,7 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
             frontEndInFlags.startsWith("next") ||
             frontEndInFlags === "capacitor" ||
             frontEndInFlags === "remix" ||
+            frontEndInFlags === "astro" ||
             frontEndInFlags === "astro-react" ||
             frontEndInFlags === "sveltekit" ||
             frontEndInFlags === "nuxtjs"
@@ -97,6 +98,7 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
         (answers.frontend !== undefined && answers.frontend.startsWith("next")) ||
         answers.frontend === "capacitor" ||
         answers.frontend === "remix" ||
+        answers.frontend === "astro" ||
         answers.frontend === "astro-react" ||
         answers.frontend === "sveltekit" ||
         answers.frontend === "nuxtjs"
