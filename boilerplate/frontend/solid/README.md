@@ -94,7 +94,7 @@ If you want to customize the default auth UI, you have two options:
 
 ## Additional resources
 
--   Custom UI Example: https://github.com/supertokens/supertokens-web-js/tree/master/examples/react/with-thirdpartyemailpassword
+-   Custom UI Example: https://github.com/supertokens/supertokens-web-js/tree/master/examples/solidjs/with-thirdpartyemailpassword
 -   Custom UI Blog post: https://supertokens.medium.com/adding-social-login-to-your-website-with-supertokens-custom-ui-only-5fa4d7ab6402
 -   Awesome SuperTokens: https://github.com/kohasummons/awesome-supertokens
 
