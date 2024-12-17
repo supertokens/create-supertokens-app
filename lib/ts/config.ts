@@ -152,10 +152,10 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
         },
         {
             isFullStack: true,
-            value: "astro",
-            displayName: "Astro",
+            value: "astro-react",
+            displayName: "Astro (using React)",
             location: {
-                main: "fullstack/astro",
+                main: "fullstack/astro-react",
                 config: {
                     frontend: [
                         {
