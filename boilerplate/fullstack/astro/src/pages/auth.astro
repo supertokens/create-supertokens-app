@@ -1,8 +1,16 @@
 ---
 import Base from "../layouts/Base.astro";
-import AuthComponent from "../components/Auth";
+import AuthContent from "../components/AuthContent";
+
+// Session info is available from middleware
+const { session } = Astro.locals;
 ---
 
 <Base>
-  <AuthComponent client:only="react" />
+    <AuthContent
+        client:only="react"
+        accessTokenPayload={session.accessTokenPayload}
+        hasToken={session.hasToken}
+        error={session.error}
+    />
 </Base>

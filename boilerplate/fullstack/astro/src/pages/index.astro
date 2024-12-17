@@ -1,22 +1,30 @@
 ---
 import Base from "../layouts/Base.astro";
-import Home from "../components/Home";
-import { getSessionForSSR } from "supertokens-node/custom";
+import { Image } from "astro:assets";
 
-const { accessTokenPayload, hasToken, error } = await getSessionForSSR(Astro.request);
-
-const SSRData = {
-    accessTokenPayload,
-    hasToken,
-    error,
-};
+// Session info is available from middleware
+const { session } = Astro.locals;
 ---
 
 <Base>
-    <Home
-        client:only="react"
-        accessTokenPayload={SSRData.accessTokenPayload}
-        hasToken={SSRData.hasToken}
-        error={SSRData.error}
-    />
+    <section class="logos">
+        <Image src="/ST.svg" alt="SuperTokens" width={240} height={240} />
+        <span>x</span>
+        <Image src="/Astro.svg" alt="Astro" width={240} height={240} />
+    </section>
+    <section class="main-container">
+        <div class="inner-content">
+            <h1>
+                <strong>SuperTokens</strong> x <strong>Astro</strong> <br /> example project
+            </h1>
+            <nav class="buttons">
+                <a href="/auth" class="dashboard-button">
+                    Sign-up / Login
+                </a>
+                <a href="/dashboard" class="dashboard-button">
+                    Dashboard
+                </a>
+            </nav>
+        </div>
+    </section>
 </Base>
