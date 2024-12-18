@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Session from "supertokens-auth-react/recipe/session";
 
 export default function Home() {
@@ -33,13 +32,13 @@ export default function Home() {
                     </div>
                     <nav className="buttons">
                         {sessionExists ? (
-                            <Link to="/dashboard" className="dashboard-button">
+                            <a href="/dashboard" className="dashboard-button">
                                 Dashboard
-                            </Link>
+                            </a>
                         ) : (
-                            <Link to="/auth" className="dashboard-button">
+                            <a href="/auth" className="dashboard-button">
                                 Sign-up / Login
-                            </Link>
+                            </a>
                         )}
                     </nav>
                 </div>
