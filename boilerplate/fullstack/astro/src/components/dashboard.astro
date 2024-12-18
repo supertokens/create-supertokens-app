@@ -1,10 +1,4 @@
 ---
-import { getApiDomain } from "../config/frontend";
-
-// Server-side fetch
-const response = await fetch(getApiDomain() + "/api/sessioninfo");
-const data = await response.json();
-const userId = data.userId;
 ---
 
 <div class="main-container">
@@ -15,7 +9,7 @@ const userId = data.userId;
     <div class="inner-content">
         <div>Your userID is:</div>
         <div class="truncate" id="user-id">
-            {userId}
+            <!-- {userId} -->
         </div>
         <div class="buttons">
             <button id="callApi" class="dashboard-button">
@@ -29,27 +23,47 @@ const userId = data.userId;
 </div>
 
 <script>
-    import { signOut } from "supertokens-auth-react/recipe/session";
+    import { signOut, doesSessionExist } from "supertokens-web-js/recipe/session";
     import { getApiDomain } from "../config/frontend";
 
-    const fetchSessionInfo = async () => {
-        const response = await fetch(getApiDomain() + "/api/sessioninfo");
-        const data = await response.json();
-        return data;
-    };
-
-    // Add click handlers
-    document.getElementById('callApi')?.addEventListener('click', async () => {
+    document.addEventListener("DOMContentLoaded", async () => {
         try {
-            const data = await fetchSessionInfo();
-            window.alert("Session Information:\n" + JSON.stringify(data, null, 2));
-        } catch (err: any) {
-            window.alert("Error calling API: " + err.message);
+            const sessionExists = await doesSessionExist();
+            if (!sessionExists) {
+                window.location.href = "/";
+            }
+        } catch (error) {
+            window.location.href = "/";
         }
-    });
 
-    document.getElementById('logout')?.addEventListener('click', async () => {
-        await signOut();
-        window.location.href = "/";
+        const fetchSessionInfo = async () => {
+            const response = await fetch(getApiDomain() + "/api/sessioninfo");
+            const data = await response.json();
+            return data;
+        };
+    
+        const fetchUserId = async () => {
+            const data = await fetchSessionInfo();
+            const idElement = document.getElementById("user-id");
+            if (idElement) {
+                idElement.textContent = data.userId;
+            }
+        };
+    
+        fetchUserId();
+    
+        document.getElementById('callApi')?.addEventListener('click', async () => {
+            try {
+                const data = await fetchSessionInfo();
+                window.alert("Session Information:\n" + JSON.stringify(data, null, 2));
+            } catch (err: any) {
+                window.alert("Error calling API: " + err.message);
+            }
+        });
+    
+        document.getElementById('logout')?.addEventListener('click', async () => {
+            await signOut();
+            window.location.href = "/";
+        });
     });
 </script>

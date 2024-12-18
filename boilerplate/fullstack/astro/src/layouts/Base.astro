@@ -1,8 +1,8 @@
 ---
 import "../styles/app.css";
-import { ensureSuperTokens } from "supertokens-auth-react/recipe/session";
+import { ensureSuperTokensInit } from "../config/backend";
 
-ensureSuperTokens();
+ensureSuperTokensInit();
 ---
 
 <html>
@@ -52,6 +52,10 @@ ensureSuperTokens();
             </footer>
             <img class="separator-line" src="/assets/images/separator-line.svg" alt="separator" />
         </div>
+        <script>
+            import { initSuperTokensWebJS } from "../config/frontend";
+            initSuperTokensWebJS();
+        </script>
     </main>
   </body>
 </html>
