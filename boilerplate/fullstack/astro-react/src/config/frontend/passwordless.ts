@@ -21,9 +21,7 @@ export const frontendConfig = () => {
             Session.init(),
         ],
         getRedirectionURL: async (context) => {
-            if (context.action === "SUCCESS" && context.newSessionCreated) {
-                return "/dashboard";
-            }
+            return "/dashboard";
         },
     };
 };

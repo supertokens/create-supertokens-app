@@ -24,9 +24,7 @@ export const SuperTokensConfig = {
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [EmailPassword.init(), Session.init()],
     getRedirectionURL: async (context) => {
-        if (context.action === "SUCCESS" && context.newSessionCreated) {
-            return "/dashboard";
-        }
+        return "/dashboard";
     },
 };
 
