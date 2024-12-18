@@ -2,33 +2,48 @@ import Koa from "koa";
 import cors from "@koa/cors";
 import supertokens from "supertokens-node";
 import { middleware } from "supertokens-node/framework/koa";
-import { SuperTokensConfig } from "./config";
-import { appInfo } from "./appInfo";
+import { getWebsiteDomain, SuperTokensConfig } from "./config";
 import KoaRouter from "koa-router";
 import { verifySession } from "supertokens-node/recipe/session/framework/koa";
 import { SessionContext } from "supertokens-node/framework/koa";
+import Multitenancy from "supertokens-node/recipe/multitenancy";
 
 supertokens.init(SuperTokensConfig);
 
-let app = new Koa();
+const app = new Koa();
 
-let router = new KoaRouter();
+const router = new KoaRouter();
 
 app.use(
     cors({
-        origin: appInfo.websiteDomain,
+        origin: getWebsiteDomain(),
         allowHeaders: ["content-type", ...supertokens.getAllCORSHeaders()],
         credentials: true,
     })
 );
 
+// This exposes all the APIs from SuperTokens to the client.
 app.use(middleware());
 
-router.get("/sessioninfo", verifySession(), (ctx: SessionContext, next) => {
-    let userId = ctx.session!.getUserId();
-    let sessionHandle = ctx.session!.getHandle();
-    let accessTokenPayload = ctx.session?.getAccessTokenPayload();
+// This endpoint can be accessed regardless of
+// having a session with SuperTokens
+router.get("/hello", (ctx: SessionContext) => {
+    ctx.body = "hello";
+});
+
+// An example API that requires session verification
+router.get("/sessioninfo", verifySession(), (ctx: SessionContext) => {
+    const userId = ctx.session!.getUserId();
+    const sessionHandle = ctx.session!.getHandle();
+    const accessTokenPayload = ctx.session?.getAccessTokenPayload();
     ctx.body = JSON.stringify({ userId, sessionHandle, accessTokenPayload }, null, 4);
+});
+
+// This API is used by the frontend to create the tenants drop down when the app loads.
+// Depending on your UX, you can remove this API.
+router.get("/tenants", async (ctx: SessionContext) => {
+    const tenants = await Multitenancy.listAllTenants();
+    ctx.body = JSON.stringify({ tenants }, null, 4);
 });
 
 app.use(router.routes());
