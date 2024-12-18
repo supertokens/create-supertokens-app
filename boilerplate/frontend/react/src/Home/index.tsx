@@ -22,7 +22,7 @@ export default function Home() {
                     <h1>
                         <strong>SuperTokens</strong> x <strong>React</strong> <br /> example project
                     </h1>
-                    <div className="user-id">
+                    <div>
                         {sessionExists ? (
                             <p>
                                 You're signed in already, <br /> check out the Dashboard! 👇
