@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getApiDomain } from "./config";
+import { getApiDomain } from "../config";
 
 type Props = {
     setTenantId: React.Dispatch<React.SetStateAction<string | null>>;

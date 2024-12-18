@@ -1,10 +1,11 @@
 import { AuthRecipeComponentsOverrideContextProvider, AuthPage } from "supertokens-auth-react/ui";
-import { PreBuiltUIList } from "./config";
-import { TenantSelector } from "./TenantSelector";
+import { PreBuiltUIList } from "../config.tsx";
+import { TenantSelector } from "./TenantSelector.tsx";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { Navigate } from "react-router-dom";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "./Auth.css";
 
 type ChangeTenantsButtonProps = {
     setShowTenantSelector: React.Dispatch<React.SetStateAction<boolean>>;
@@ -54,7 +55,7 @@ export const Auth = () => {
     }
 
     if (session.doesSessionExist) {
-        return <Navigate to="/" />;
+        return <Navigate to="/dashboard" />;
     }
 
     if (showTenantSelector) {

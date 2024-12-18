@@ -8,14 +8,14 @@ import Session from "supertokens-auth-react/recipe/session";
 import Multitenancy from "supertokens-auth-react/recipe/multitenancy";
 
 export function getApiDomain() {
-    const apiPort = process.env.REACT_APP_API_PORT || 3001;
-    const apiUrl = process.env.REACT_APP_API_URL || `http://localhost:${apiPort}`;
+    const apiPort = import.meta.env.VITE_APP_API_PORT || 3001;
+    const apiUrl = import.meta.env.VITE_APP_API_URL || `http://localhost:${apiPort}`;
     return apiUrl;
 }
 
 export function getWebsiteDomain() {
-    const websitePort = process.env.REACT_APP_WEBSITE_PORT || 3000;
-    const websiteUrl = process.env.REACT_APP_WEBSITE_URL || `http://localhost:${websitePort}`;
+    const websitePort = import.meta.env.VITE_APP_WEBSITE_PORT || 3000;
+    const websiteUrl = import.meta.env.VITE_APP_WEBSITE_URL || `http://localhost:${websitePort}`;
     return websiteUrl;
 }
 
@@ -32,15 +32,13 @@ export const SuperTokensConfig = {
         websiteDomain: getWebsiteDomain(),
     },
     usesDynamicLoginMethods: true,
+    style: styleOverride,
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
-    style: styleOverride,
     recipeList: [
         EmailPassword.init(),
         ThirdParty.init(),
-        Passwordless.init({
-            contactMethod: "EMAIL",
-        }),
+        Passwordless.init({ contactMethod: "EMAIL" }),
         Session.init(),
         Multitenancy.init({
             override: {
