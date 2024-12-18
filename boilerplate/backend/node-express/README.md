@@ -43,7 +43,7 @@ The back-end has two main files:
         - `supertokens`:
             - `connectionURI`: Sets the URL that your SuperTokens core is located. By default, it connects to the playground core. In production, you can [host your own core](https://supertokens.com/docs/thirdpartyemailpassword/pre-built-ui/setup/core/with-docker) or create an account to [enable managed hosting](https://supertokens.com/dashboard-saas)
         - `appInfo`: Holds informaiton like your project name
-            - `apiDomain`: Sets the domain your back-end API is on. SuperTokens automatically listens to create requests at `${apiDomain}/auth`
+            - `apiDomain`: Sets the domain your back-end API is on. SuperTokens automatically listens to requests at `${apiDomain}/auth`
             - `websiteDomain`: Sets the domain your front-end website is on
         - `recipeList`: An array of recipes for adding supertokens features
 
