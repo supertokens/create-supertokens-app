@@ -50,10 +50,7 @@ This project aims to demonstrate how to integrate SuperTokens into an Astro appl
 
 #### Astro
 
-The project is a standard Astro application with the following configuration:
-
--   React integration for interactive components
--   Port 4321 for development server
+The project is a standard Astro application with the Astro React integration for interactive components.
 
 You can customize the Astro configuration in `astro.config.mjs`. Refer to the [Astro configuration docs](https://docs.astro.build/en/reference/configuration-reference/) for more options.
 

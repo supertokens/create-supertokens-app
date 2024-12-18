@@ -1,10 +1,10 @@
-# SuperTokens + Astro (React)
+# SuperTokens + Astro
 
-A demo implementation of [SuperTokens](https://supertokens.com/) with [Astro](https://astro.build/) (using the React Adapter). Built with Astro's [React integration](https://docs.astro.build/en/guides/integrations-guide/react/).
+A demo implementation of [SuperTokens](https://supertokens.com/) with [Astro](https://astro.build/), using SuperTokens' prebuilt UI.
 
 ## General Info
 
-This project aims to demonstrate how to integrate SuperTokens into an Astro application using React components for interactive auth UI. Its primary purpose is to serve as an educational tool, but it can also be used as a starting point for your own project.
+This project aims to demonstrate how to integrate SuperTokens into an Astro application using our prebuilt UI. Its primary purpose is to serve as an educational tool, but it can also be used as a starting point for your own project.
 
 ## Repo Structure
 
@@ -13,10 +13,8 @@ This project aims to demonstrate how to integrate SuperTokens into an Astro appl
 ```
 📦src
 ┣ 📂components
-┃ ┣ 📜Auth.tsx  --> React component for auth UI
-┃ ┣ 📜Dashboard.tsx  --> React component for dashboard functionality
-┃ ┗ 📜Home.tsx  --> React component for home page content
-┃ ┗ 📜Root.tsx  --> Root React component for auth state
+┃ ┣ 📜auth.astro  --> Astro component for auth UI
+┃ ┗ 📜dashboard.astro  --> Astro component for dashboard functionality
 ┣ 📂config
 ┃ ┣ 📜appInfo.ts  --> App info / config, reused across both frontend and backend
 ┃ ┗ 📜frontend.ts  --> Frontend config
@@ -50,10 +48,7 @@ This project aims to demonstrate how to integrate SuperTokens into an Astro appl
 
 #### Astro
 
-The project is a standard Astro application with the following configuration:
-
--   React integration for interactive components
--   Port 4321 for development server
+The project is a standard Astro application.
 
 You can customize the Astro configuration in `astro.config.mjs`. Refer to the [Astro configuration docs](https://docs.astro.build/en/reference/configuration-reference/) for more options.
 
@@ -106,7 +101,7 @@ If you want to customize the default auth UI, you have two options:
 
 ## Additional Resources
 
--   Custom UI Example: https://github.com/supertokens/supertokens-web-js/tree/master/examples/react/with-thirdpartyemailpassword
+-   Custom UI Astro Example: https://github.com/supertokens/supertokens-web-js/tree/master/examples/astro/with-thirdpartyemailpassword
 -   Custom UI Blog post: https://supertokens.medium.com/adding-social-login-to-your-website-with-supertokens-custom-ui-only-5fa4d7ab6402
 -   Awesome SuperTokens: https://github.com/kohasummons/awesome-supertokens
 
