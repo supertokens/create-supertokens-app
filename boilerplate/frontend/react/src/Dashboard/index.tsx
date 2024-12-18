@@ -1,13 +1,10 @@
 import { useSessionContext, signOut } from "supertokens-auth-react/recipe/session";
 import { getApiDomain } from "../config";
 import { useNavigate } from "react-router-dom";
+
 export default function Dashboard() {
     const navigate = useNavigate();
     const sessionContext = useSessionContext();
-
-    if (sessionContext.loading === true) {
-        return null;
-    }
 
     async function callAPIClicked() {
         try {

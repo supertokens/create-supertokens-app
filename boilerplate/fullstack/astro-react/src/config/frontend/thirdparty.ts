@@ -27,7 +27,10 @@ export const frontendConfig = () => {
             Session.init(),
         ],
         getRedirectionURL: async (context) => {
-            return "/dashboard";
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
         },
     };
 };

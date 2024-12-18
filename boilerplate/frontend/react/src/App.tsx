@@ -1,6 +1,6 @@
 import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
 import { getSuperTokensRoutesForReactRouterDom } from "supertokens-auth-react/ui";
-import { SessionAuth, signOut, doesSessionExist } from "supertokens-auth-react/recipe/session";
+import { SessionAuth } from "supertokens-auth-react/recipe/session";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import * as ReactRouter from "react-router-dom";
 import Dashboard from "./Dashboard";

@@ -25,7 +25,10 @@ export const SuperTokensConfig = {
     },
     recipeList: [Session.init(), EmailVerification.init(), MultiFactorAuth.init()],
     getRedirectionURL: async (context) => {
-        return "/dashboard";
+        if (context.action === "SUCCESS") {
+            return "/dashboard";
+        }
+        return undefined;
     },
 };
 

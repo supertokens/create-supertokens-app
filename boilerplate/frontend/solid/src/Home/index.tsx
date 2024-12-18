@@ -1,6 +1,13 @@
-import { Component } from "solid-js";
+import { Component, onMount, Show } from "solid-js";
+import Session from "supertokens-web-js/recipe/session";
 
 const Home: Component = () => {
+    const [sessionExists, setSessionExists] = createSignal(false);
+
+    onMount(async () => {
+        setSessionExists(await Session.doesSessionExist());
+    });
+
     return (
         <>
             <section class="logos">

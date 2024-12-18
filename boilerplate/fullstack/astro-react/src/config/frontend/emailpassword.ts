@@ -16,7 +16,10 @@ export const frontendConfig = () => {
         appInfo,
         recipeList: [EmailPasswordReact.init(), Session.init()],
         getRedirectionURL: async (context) => {
-            return "/dashboard";
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
         },
     };
 };

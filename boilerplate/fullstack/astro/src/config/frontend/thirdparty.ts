@@ -27,7 +27,10 @@ export function initSuperTokensUI() {
             (window as any).supertokensUISession.init(),
         ],
         getRedirectionURL: async (context) => {
-            return "/dashboard";
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
         },
     });
 }
