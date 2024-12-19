@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Session from 'supertokens-web-js/recipe/session';
+	import Session from 'supertokens-web-js/recipe/session';
 	import { onMount } from 'svelte';
 	import { initSuperTokensWebJS } from '../config/frontend';
 
@@ -9,98 +9,48 @@
 	async function getUserInfo() {
 		session = await Session.doesSessionExist();
 		if (session) {
-			userId = await Session.getUserId();
+			return true;
 		}
+
+		return false;
 	}
 
 	onMount(() => {
 		initSuperTokensWebJS();
 		getUserInfo();
 	});
-
-	function redirectToLogin() {
-		window.location.href = '/auth';
-	}
-
-	async function onLogout() {
-		await Session.signOut();
-		window.location.reload();
-	}
 </script>
 
-<main>
-	<div class="body">
-		<h1>Hello</h1>
-
-		{#if session}
-			<div>
-				<span>UserId:</span>
-				<h3>{userId}</h3>
-
-				<button on:click={onLogout}>Sign Out</button>
+<section class="logos">
+	<img src="/ST.svg" alt="SuperTokens" />
+	<span>x</span>
+	<img src="/svelte_logo.png" alt="SvelteKit" />
+</section>
+<section class="main-container">
+			<div class="inner-content">
+					<h1>
+							<strong>SuperTokens</strong> x <strong>SvelteKit</strong> <br /> example project
+					</h1>
+					<div>
+				{#if session}
+					<p class="session-exists">
+						You're signed in already, <br /> check out the Dashboard! 👇
+					</p>
+				{:else}
+					<p class="no-session">Sign-in to continue</p>
+				{/if}
 			</div>
-		{:else}
-			<div>
-				<p>
-					Visit the
-					<a href="https://supertokens.com">SuperTokens tutorial</a> to learn how to build Auth under
-					a day.
-				</p>
-				<button on:click={redirectToLogin}>Sign in</button>
-			</div>
-		{/if}
-	</div>
-</main>
+			<nav class="buttons">
+				{#if session}
+				<a href="/dashboard" class="dashboard-button session-exists">
+					Dashboard
+				</a>
+				{:else}
+				<a href="/auth" class="dashboard-button no-session">
+					Sign-up / Login
+				</a>
+				{/if}
+			</nav>
+		</div>
+</section>
 
-<style scoped>
-	.body {
-		text-align: center;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		height: 100vh;
-	}
-
-	.user {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: baseline;
-		padding: 0.1rem;
-	}
-
-	span {
-		margin-right: 0.3rem;
-		font-size: large;
-	}
-
-	h3 {
-		color: #ff3e00;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	button {
-		cursor: pointer;
-		background-color: #ffb399;
-		border: none;
-		color: rgb(82, 82, 82);
-		padding: 0.75rem;
-		margin: 2rem;
-		transition: all 0.5s ease-in-out;
-		border-radius: 2rem;
-		font-size: large;
-	}
-
-	button:hover {
-		transform: scale(1.1);
-		background-color: #ff3e00;
-		color: white;
-	}
-</style>

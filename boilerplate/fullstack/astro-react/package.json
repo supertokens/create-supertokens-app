@@ -1,0 +1,30 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "astro dev",
+        "start": "astro dev",
+        "build": "astro check && astro build",
+        "preview": "astro preview",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@astrojs/check": "latest",
+        "@astrojs/node": "latest",
+        "@astrojs/react": "latest",
+        "@types/react": "latest",
+        "@types/react-dom": "latest",
+        "astro": "latest",
+        "cookie": "^0.6.0",
+        "jose": "^5.9.3",
+        "jwks-rsa": "^3.1.0",
+        "react": "latest",
+        "react-dom": "latest",
+        "supertokens-auth-react": "latest",
+        "supertokens-node": "latest",
+        "supertokens-web-js": "latest"
+    },
+    "devDependencies": {
+        "typescript": "latest",
+        "@types/cookie": "^0.6.0"
+    }
+}

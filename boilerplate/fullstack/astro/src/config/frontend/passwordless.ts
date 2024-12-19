@@ -1,22 +1,36 @@
-import PasswordlessReact from "supertokens-auth-react/recipe/passwordless/index.js";
-import Session from "supertokens-auth-react/recipe/session/index.js";
+import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
 import { appInfo } from "./appInfo";
-import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui.js";
 
-export const frontendConfig = () => {
-    return {
+export const getApiDomain = () => {
+    return appInfo.apiDomain;
+};
+
+export const getWebsiteDomain = () => {
+    return appInfo.websiteDomain;
+};
+
+export function initSuperTokensUI() {
+    (window as any).supertokensUIInit("supertokensui", {
         appInfo,
         recipeList: [
-            PasswordlessReact.init({
+            (window as any).supertokensUIPasswordless.init({
                 contactMethod: "EMAIL_OR_PHONE",
             }),
-            Session.init(),
+            (window as any).supertokensUISession.init(),
         ],
-    };
-};
+        getRedirectionURL: async (context) => {
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
+        },
+    });
+}
 
-export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/passwordless/introduction",
-};
-
-export const PreBuiltUIList = [PasswordlessPreBuiltUI];
+export function initSuperTokensWebJS() {
+    SuperTokens.init({
+        appInfo,
+        recipeList: [Session.init()],
+    });
+}
