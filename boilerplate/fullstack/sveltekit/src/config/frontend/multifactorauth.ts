@@ -4,6 +4,14 @@ import EmailVerification from "supertokens-web-js/recipe/emailverification";
 import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";
 import { appInfo } from "./appInfo";
 
+export const getApiDomain = () => {
+    return appInfo.apiDomain;
+};
+
+export const getWebsiteDomain = () => {
+    return appInfo.websiteDomain;
+};
+
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         appInfo,
@@ -31,6 +39,12 @@ export function initSuperTokensUI() {
             (window as any).supertokensUITOTP.init(),
             (window as any).supertokensUISession.init(),
         ],
+        getRedirectionURL: async (context) => {
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
+        },
     });
 }
 
