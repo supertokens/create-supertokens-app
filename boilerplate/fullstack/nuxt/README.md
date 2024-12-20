@@ -8,6 +8,65 @@ This project aims to demonstrate how to integrate SuperTokens into a Nuxt applic
 
 ## Repo Structure
 
+```
+.
+├── app.vue
+├── assets
+│   ├── main.css
+│   └── ...
+├── components
+│   ├── Footer.vue
+│   └── SessionInfo.vue
+├── config
+│   ├── appInfo.ts
+│   ├── frontend
+│   │   ├── all_auth.ts
+│   │   ├── emailpassword.ts
+│   │   ├── multifactorauth.ts
+│   │   ├── passwordless.ts
+│   │   ├── thirdparty.ts
+│   │   ├── thirdpartyemailpassword.ts
+│   │   └── thirdpartypasswordless.ts
+│   └── frontend.ts
+├── layouts
+│   └── default.vue
+├── nuxt.config.ts
+├── package.json
+├── pages
+│   ├── auth
+│   │   └── [...slug].vue
+│   ├── dashboard
+│   │   └── index.vue
+│   └── index.vue
+├── plugins
+│   └── supertokens.client.ts
+├── public
+│   ├── ST.svg
+│   ├── favicon.ico
+│   ├── nuxt.svg
+│   └── robots.txt
+├── server
+│   ├── api
+│   │   ├── auth
+│   │   │   └── [...param].ts
+│   │   └── auth.ts
+│   ├── backend
+│   │   ├── all_auth.ts
+│   │   ├── emailpassword.ts
+│   │   ├── multifactorauth.ts
+│   │   ├── passwordless.ts
+│   │   ├── thirdparty.ts
+│   │   ├── thirdpartyemailpassword.ts
+│   │   └── thirdpartypasswordless.ts
+│   ├── backend.ts
+│   ├── routes
+│   │   └── sessioninfo.ts
+│   ├── tsconfig.json
+│   └── utils
+│       └── convertToRequest.ts
+└── tsconfig.json
+```
+
 ### Source
 
 ### Config

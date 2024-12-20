@@ -5,5 +5,6 @@ export default defineNuxtConfig({
     typescript: {
         typeCheck: true,
     },
+    plugins: ["~/plugins/supertokens.client.ts"],
     css: ["~/assets/main.css"],
 });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as Session from "supertokens-web-js/recipe/session";
+import Session from "supertokens-web-js/recipe/session";
 import Footer from "~/components/Footer.vue";
 import SessionInfo from "~/components/SessionInfo.vue";
 
@@ -15,7 +15,7 @@ const userId = ref<string | null>(null);
 definePageMeta({
     middleware: [
         async function (to, from) {
-            if (!(await Session.doesSessionExist())) {
+            if (import.meta.client && !(await Session.doesSessionExist())) {
                 return navigateTo("/auth");
             }
         },

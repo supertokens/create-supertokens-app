@@ -18,5 +18,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div id="supertokensui" />
+    <div id="home-container" class="fill">
+        <div id="supertokensui" />
+    </div>
 </template>
