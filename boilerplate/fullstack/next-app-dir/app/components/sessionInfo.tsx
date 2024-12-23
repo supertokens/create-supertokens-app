@@ -1,17 +1,14 @@
 "use client";
 
-import styles from "../page.module.css";
-
-export const CallAPIButton = () => {
+export default function SessionInfo() {
     const fetchUserData = async () => {
         const userInfoResponse = await fetch("http://localhost:3000/api/user");
-
         alert(JSON.stringify(await userInfoResponse.json()));
     };
 
     return (
-        <div onClick={fetchUserData} className={styles.sessionButton}>
+        <div onClick={() => fetchUserData()} className="sessionButton">
             Call API
         </div>
     );
-};
+}

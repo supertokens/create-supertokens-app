@@ -17,7 +17,11 @@ export default function Auth() {
     }, []);
 
     if (loaded) {
-        return SuperTokens.getRoutingComponent(PreBuiltUIList);
+        return (
+            <div id="home-container" className="fill">
+                {SuperTokens.getRoutingComponent(PreBuiltUIList)}
+            </div>
+        );
     }
 
     return null;
