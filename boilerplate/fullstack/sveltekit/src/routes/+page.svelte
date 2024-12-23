@@ -26,6 +26,26 @@
 		await Session.signOut();
 		window.location.reload();
 	}
+
+  async function callApi() {
+    try {
+        const response = await fetch("/sessioninfo", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        alert(JSON.stringify(data, null, 2));
+      } catch (error) {
+        alert(`Failed to fetch session info: ${error}`);
+      }
+  }
 </script>
 
 <main>
@@ -37,7 +57,10 @@
 				<span>UserId:</span>
 				<h3>{userId}</h3>
 
-				<button on:click={onLogout}>Sign Out</button>
+        <div class="session__btn">
+            <button class="btn" on:click={callApi}>Call API</button>
+            <button class="btn" on:click={onLogout}>Sign Out</button>
+        </div>
 			</div>
 		{:else}
 			<div>
@@ -46,61 +69,62 @@
 					<a href="https://supertokens.com">SuperTokens tutorial</a> to learn how to build Auth under
 					a day.
 				</p>
-				<button on:click={redirectToLogin}>Sign in</button>
+        <button class="btn" on:click={redirectToLogin}>Sign in</button>
 			</div>
 		{/if}
 	</div>
 </main>
 
 <style scoped>
-	.body {
-		text-align: center;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		height: 100vh;
-	}
+.body {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-	.user {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: baseline;
-		padding: 0.1rem;
-	}
+.user {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.1rem;
+}
 
-	span {
-		margin-right: 0.3rem;
-		font-size: large;
-	}
+span {
+    margin-right: 0.3rem;
+    font-size: large;
+}
 
-	h3 {
-		color: #ff3e00;
-	}
+h3 {
+    color: #ff7547;
+}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
+h1 {
+    color: #ff7547;
+    text-transform: uppercase;
+    font-size: 4em;
+    font-weight: 100;
+}
 
-	button {
-		cursor: pointer;
-		background-color: #ffb399;
-		border: none;
-		color: rgb(82, 82, 82);
-		padding: 0.75rem;
-		margin: 2rem;
-		transition: all 0.5s ease-in-out;
-		border-radius: 2rem;
-		font-size: large;
-	}
-
-	button:hover {
-		transform: scale(1.1);
-		background-color: #ff3e00;
-		color: white;
-	}
+.btn {
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #fff;
+    transition: all 0.2s ease-in;
+    background-color: #ff7547;
+    font-size: large;
+    margin-left: 20px;
+}
+.btn:hover {
+    box-shadow: 0 8px 25px -8px #ffb399;
+}
+.session__btn {
+    display: flex;
+    justify-content: space-around;
+}
 </style>
