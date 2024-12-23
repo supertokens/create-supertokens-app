@@ -21,11 +21,21 @@ func main() {
 		supertokens.Middleware(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 			// Handle your APIs..
 
+			// A public endpoint unprotected by SuperTokens
+			if r.URL.Path == "/hello" && r.Method == "GET" {
+				hello(rw, r)
+				return
+			}
+
+			// A SuperTokens protected endpoint that returns
+			// session information
 			if r.URL.Path == "/sessioninfo" {
 				session.VerifySession(nil, sessioninfo).ServeHTTP(rw, r)
 				return
 			}
 
+			// An endpoint that returns tenant lists in a
+			// multitenant configuration
 			if r.URL.Path == "/tenants" && r.Method == "GET" {
 				tenants(rw, r)
 				return
@@ -47,6 +57,10 @@ func corsMiddleware(next http.Handler) http.Handler {
 			next.ServeHTTP(response, r)
 		}
 	})
+}
+
+func hello(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("hello"))
 }
 
 func sessioninfo(w http.ResponseWriter, r *http.Request) {
@@ -98,7 +112,7 @@ func tenants(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("content-type", "application/json")
 
 	bytes, err := json.Marshal(map[string]interface{}{
-		"status": "OK",
+		"status":  "OK",
 		"tenants": tenantsList.OK.Tenants,
 	})
 
