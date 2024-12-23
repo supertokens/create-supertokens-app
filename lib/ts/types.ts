@@ -35,6 +35,7 @@ export type SupportedFrontends =
     | "next-app-directory-multitenancy"
     | "remix"
     | "astro"
+    | "astro-react"
     | "sveltekit"
     | "nuxtjs"
     | "angular"
@@ -61,6 +62,9 @@ export const allFrontends: {
     },
     {
         id: "astro",
+    },
+    {
+        id: "astro-react",
     },
     {
         id: "remix",

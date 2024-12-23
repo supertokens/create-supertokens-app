@@ -1,22 +1,59 @@
 ---
 import Base from "../layouts/Base.astro";
-import Home from "../components/Home";
-import { getSessionForSSR } from "supertokens-node/custom";
-
-const { accessTokenPayload, hasToken, error } = await getSessionForSSR(Astro.request);
-
-const SSRData = {
-    accessTokenPayload,
-    hasToken,
-    error,
-};
+import { Image } from "astro:assets";
 ---
 
 <Base>
-    <Home
-        client:only="react"
-        accessTokenPayload={SSRData.accessTokenPayload}
-        hasToken={SSRData.hasToken}
-        error={SSRData.error}
-    />
+    <section class="logos">
+        <Image src="/ST.svg" alt="SuperTokens" width={240} height={240} />
+        <span>x</span>
+        <Image src="/astro-icon-dark.svg" alt="Astro" width={240} height={240} />
+    </section>
+    <section class="main-container">
+        
+            <div class="inner-content">
+                <h1>
+                    <strong>SuperTokens</strong> x <strong>Astro</strong> <br /> example project
+                </h1>
+                <div>
+                    <p class="no-session">Sign-in to continue</p>
+                    <p class="session-exists">
+                        You're signed in already, <br /> check out the Dashboard! 👇
+                    </p>
+                </div>
+                <nav class="buttons">
+                    <a href="/auth" class="dashboard-button no-session">
+                        Sign-up / Login
+                    </a>
+                    <a href="/dashboard" class="dashboard-button session-exists">
+                        Dashboard
+                    </a>
+                </nav>
+            </div>
+
+    </section>
+
+    <script>
+        import Session from "supertokens-web-js/recipe/session";
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const sessionExists = await Session.doesSessionExist();
+            const dashboardButton = document.querySelector(".dashboard-button.session-exists");
+            const authButton = document.querySelector(".dashboard-button.no-session");
+            const noSessionText = document.querySelector(".no-session");
+            const sessionExistsText = document.querySelector(".session-exists");
+
+            if (sessionExists) {
+                dashboardButton.style.display = "block";
+                authButton.style.display = "none";
+                noSessionText.style.display = "none";
+                sessionExistsText.style.display = "block";
+            } else {
+                dashboardButton.style.display = "none";
+                authButton.style.display = "block";
+                noSessionText.style.display = "block";
+                sessionExistsText.style.display = "none";
+            }
+        });
+    </script>
 </Base>
