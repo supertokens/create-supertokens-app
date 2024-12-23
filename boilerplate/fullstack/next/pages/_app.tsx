@@ -28,9 +28,30 @@ function MyApp({ Component, pageProps }): JSX.Element {
     }
 
     return (
-        <SuperTokensWrapper>
-            <Component {...pageProps} />
-        </SuperTokensWrapper>
+        <div className={`app-wrapper`}>
+            <SuperTokensWrapper>
+                <header>
+                    <div className="header-container">
+                        <a href="/">
+                            <img src="/ST.svg" alt="SuperTokens" />
+                        </a>
+                    </div>
+                    <div className="header-container-right">
+                        <a href="https://supertokens.com/docs/emailpassword/nextjs/about" target="_blank">
+                            Docs
+                        </a>
+                        <a href="https://github.com/supertokens/create-supertokens-app" target="_blank">
+                            CLI Repo
+                        </a>
+                    </div>
+                </header>
+                <div className="App app-container">
+                    <div className="fill">
+                        <Component {...pageProps} />
+                    </div>
+                </div>
+            </SuperTokensWrapper>
+        </div>
     );
 }
 

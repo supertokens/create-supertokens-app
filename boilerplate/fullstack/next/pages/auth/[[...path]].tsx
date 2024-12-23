@@ -1,6 +1,5 @@
 import Head from "next/head";
 import React, { useEffect } from "react";
-import styles from "../../styles/Home.module.css";
 import dynamic from "next/dynamic";
 import SuperTokens from "supertokens-auth-react";
 import { canHandleRoute, getRoutingComponent } from "supertokens-auth-react/ui";
@@ -20,9 +19,9 @@ export default function Auth(): JSX.Element {
     }, []);
 
     return (
-        <div className={styles.container}>
+        <div id="home-container" className="fill">
             <Head>
-                <title>SuperTokens 💫</title>
+                <title>SuperTokens + Nextjs</title>
                 <link
                     href="//fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap"
                     rel="stylesheet"
@@ -31,7 +30,7 @@ export default function Auth(): JSX.Element {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main className={styles.main}>
+            <main>
                 <SuperTokensComponentNoSSR />
             </main>
         </div>
