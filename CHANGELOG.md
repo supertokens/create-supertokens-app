@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-## [0.0.56] - 2024-12-12
-
--   Adds changes to the express boilerplate to work as project scaffolding
-
 ## [0.0.55] - 2024-12-12
 
 -   Adds a Vite-based React implementation. To be used as reference implementation for front-end options.
