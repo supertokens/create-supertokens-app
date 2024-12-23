@@ -1,15 +1,27 @@
-import EmailPassword from "supertokens-node/recipe/emailpassword";
-import Session from "supertokens-node/recipe/session";
-import Dashboard from "supertokens-node/recipe/dashboard";
-import UserRoles from "supertokens-node/recipe/userroles";
-import { appInfo } from "./appInfo";
 import { TypeInput } from "supertokens-node/types";
-import SuperTokens from "supertokens-node";
+
+export function getApiDomain() {
+    return "";
+}
+
+export function getWebsiteDomain() {
+    return "";
+}
 
 export const SuperTokensConfig: TypeInput = {
-    appInfo,
     supertokens: {
-        connectionURI: "https://try.supertokens.io",
+        // this is the location of the SuperTokens core.
+        connectionURI: "",
     },
+    appInfo: {
+        // learn more about this on https://supertokens.com/docs/thirdpartyemailpassword/appinfo
+        appName: "",
+        apiDomain: "",
+        websiteDomain: "",
+    },
+    // recipeList contains all the modules that you want to
+    // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [],
 };
+
+export const recipeList = [];
