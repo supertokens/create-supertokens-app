@@ -1,16 +1,12 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Session from "supertokens-auth-react/recipe/session";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 
 export default function Home() {
     const session = useSessionContext();
-    // const [sessionExists, setSessionExists] = useState(false);
-    // useEffect(() => {
-    //     Session.doesSessionExist().then((exists) => {
-    //         setSessionExists(exists);
-    //     });
-    // }, []);
+
+    if (session.loading) {
+        return null;
+    }
 
     return (
         <>
@@ -25,7 +21,7 @@ export default function Home() {
                         <strong>SuperTokens</strong> x <strong>React</strong> <br /> example project
                     </h1>
                     <div>
-                        {sessionExists ? (
+                        {session.doesSessionExist ? (
                             <p>
                                 You're signed in already, <br /> check out the Dashboard! 👇
                             </p>
@@ -34,7 +30,7 @@ export default function Home() {
                         )}
                     </div>
                     <nav className="buttons">
-                        {sessionExists ? (
+                        {session.doesSessionExist ? (
                             <Link to="/dashboard" className="dashboard-button">
                                 Dashboard
                             </Link>
