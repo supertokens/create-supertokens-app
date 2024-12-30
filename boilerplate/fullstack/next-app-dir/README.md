@@ -6,6 +6,52 @@ A demo implementation of [SuperTokens](https://supertokens.com/) with [Next.js](
 
 This project aims to demonstrate how to integrate SuperTokens into a Nexjs application. Its primary purpose is to serve as an educational tool, but it can also be used as a starting point for your own project.
 
+## Repo Structure
+
+### Source
+
+```
+📦
+┣ 📂app
+┃ ┣ 📂api
+┃ ┃ ┣ 📂auth
+┃ ┃ ┃ ┗ 📂[...path]
+┃ ┃ ┃   ┗ 📜route.ts
+┃ ┃ ┗ 📂user
+┃ ┃   ┗ 📜route.ts
+┃ ┣ 📂auth
+┃ ┃ ┗ 📂[[...path]]
+┃ ┃   ┗ 📜page.tsx
+┃ ┣ 📂components
+┃ ┃ ┣ 📜dashboard.tsx
+┃ ┃ ┣ 📜footer.tsx
+┃ ┃ ┣ 📜home.tsx
+┃ ┃ ┣ 📜sessionAuthForNextJS.tsx
+┃ ┃ ┣ 📜sessionInfo.tsx
+┃ ┃ ┣ 📜supertokensProvider.tsx
+┃ ┃ ┗ 📜tryRefreshClientComponent.tsx
+┃ ┣ 📂config
+┃ ┃ ┣ 📜appInfo.ts
+┃ ┃ ┣ 📜backend.ts
+┃ ┃ ┗ 📜frontend.tsx
+┃ ┣ 📂dashboard
+┃ ┃ ┗ 📜page.tsx
+┃ ┣ 📜favicon.ico
+┃ ┣ 📜globals.css
+┃ ┣ 📜layout.tsx
+┃ ┣ 📜page.tsx
+┃ ┗ 📜util.ts
+┣ 📂assets
+┣ 📜middleware.ts
+┣ 📜next-env.d.ts
+┣ 📜next.config.js
+┣ 📜package-lock.json
+┣ 📜package.json
+┣ 📜README.md
+┣ 📂public
+┗ 📜tsconfig.json
+```
+
 ### Config
 
 #### SuperTokens
@@ -15,8 +61,6 @@ The full configuration needed for SuperTokens (the frontend part) to work is in 
 If you choose to use this as a starting point for your own project, you can further customize the options and config in the `src/config.tsx` file. Refer to our [docs](https://supertokens.com/docs) (and make sure to choose the correct recipe) for more details.
 
 ## Application Flow
-
-The application consists of four main parts:
 
 1. **Root Component (`layout.tsx`)**
 
