@@ -10,12 +10,14 @@ interface ILink {
     icon: string;
 }
 
-export default function SuccessView(props: { userId: string; tenantId?: string }) {
-    let userId = props.userId;
+export default function SuccessView(props: { userId: string }) {
+    const userId = props.userId;
+
+    const navigate = useNavigate();
 
     async function logoutClicked() {
         await signOut();
-        window.location.reload();
+        navigate("/auth");
     }
 
     function openLink(url: string) {
@@ -50,11 +52,6 @@ export default function SuccessView(props: { userId: string; tenantId?: string }
                     <div>Your userID is:</div>
                     <div className="truncate" id="user-id">
                         {userId}
-                    </div>
-
-                    <div>Your tenantID is:</div>
-                    <div className="truncate" id="tenant-id">
-                        {props.tenantId}
                     </div>
                     <CallAPIView />
                 </div>

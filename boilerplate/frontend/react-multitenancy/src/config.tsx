@@ -1,3 +1,4 @@
+// This is a temporary file, if you see this comment in this file report this as an issue for create-supertokens-app
 export function getApiDomain() {
     return "";
 }
@@ -5,12 +6,6 @@ export function getApiDomain() {
 export function getWebsiteDomain() {
     return "";
 }
-
-export const styleOverride = `
-[data-supertokens~=tenants-link] {
-    margin-top: 8px;
-}
-`;
 
 export const SuperTokensConfig = {
     appInfo: {
@@ -29,3 +24,7 @@ export const recipeDetails = {
 };
 
 export const PreBuiltUIList = [];
+
+export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
+    return <></>;
+};

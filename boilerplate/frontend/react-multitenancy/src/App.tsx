@@ -6,7 +6,7 @@ import * as ReactRouter from "react-router-dom";
 import Dashboard from "./Dashboard";
 import { PreBuiltUIList, SuperTokensConfig, ComponentWrapper } from "./config";
 import Home from "./Home";
-import { Auth } from "./Auth";
+import Auth from "./Auth";
 
 // Initialize SuperTokens - ideally in the global
 SuperTokens.init(SuperTokensConfig);
@@ -35,7 +35,6 @@ function App() {
                         <div className="fill">
                             <Routes>
                                 <Route path="/" element={<Home />} />
-
                                 {/* This shows the login UI on "/auth" route */}
                                 <Route path="/auth" element={<Auth />} />
                                 {getSuperTokensRoutesForReactRouterDom(ReactRouter, PreBuiltUIList)}

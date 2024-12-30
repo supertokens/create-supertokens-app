@@ -22,7 +22,7 @@ export default function Dashboard() {
 
     async function logoutClicked() {
         await signOut();
-        navigate("/");
+        navigate("/auth");
     }
 
     function openLink(url: string) {

@@ -1,21 +1,26 @@
-import SuccessView from "./SuccessView";
-import { useSessionContext } from "supertokens-auth-react/recipe/session";
-import "./Home.css";
-
 export default function Home() {
-    const sessionContext = useSessionContext();
-
-    if (sessionContext.loading === true) {
-        return null;
-    }
-
-    console.log(sessionContext);
     return (
         <div className="fill" id="home-container">
-            <SuccessView
-                userId={sessionContext.userId}
-                tenantId={sessionContext.accessTokenPayload["tId"] || undefined}
-            />
+            <div className="logos">
+                <img src="/ST.svg" alt="SuperTokens" />
+                <span>x</span>
+                <img src="/React.svg" alt="React" />
+            </div>
+            <div className="main-container">
+                <div className="inner-content">
+                    <p>
+                        <strong>SuperTokens</strong> x <strong>React</strong> <br /> example project
+                    </p>
+                    <div className="buttons">
+                        <a href="/auth" className="sessionButton">
+                            Sign-up / Login
+                        </a>
+                        <a href="/dashboard" className="sessionButton">
+                            Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

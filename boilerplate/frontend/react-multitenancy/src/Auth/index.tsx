@@ -44,10 +44,10 @@ const LoginWithSSOButton = ({
     );
 };
 
-export const Auth = () => {
+export default function Auth() {
     const [tenantId, setTenantId] = React.useState(localStorage.getItem("tenantId"));
     const session = useSessionContext();
-    const [showTenantSelector, setShowTenantSelector] = React.useState(false);
+    const [showTenantSelector, setShowTenantSelector] = React.useState(true);
     const navigate = useNavigate();
 
     if (session.loading) {
@@ -109,4 +109,4 @@ export const Auth = () => {
             </div>
         </AuthRecipeComponentsOverrideContextProvider>
     );
-};
+}
