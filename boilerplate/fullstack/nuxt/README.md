@@ -8,63 +8,45 @@ This project aims to demonstrate how to integrate SuperTokens into a Nuxt applic
 
 ## Repo Structure
 
+### Source
+
 ```
-.
-├── app.vue
-├── assets
-│   ├── main.css
-│   └── ...
-├── components
-│   ├── Footer.vue
-│   └── SessionInfo.vue
-├── config
-│   ├── appInfo.ts
-│   ├── frontend
-│   │   ├── all_auth.ts
-│   │   ├── emailpassword.ts
-│   │   ├── multifactorauth.ts
-│   │   ├── passwordless.ts
-│   │   ├── thirdparty.ts
-│   │   ├── thirdpartyemailpassword.ts
-│   │   └── thirdpartypasswordless.ts
-│   └── frontend.ts
-├── layouts
-│   └── default.vue
-├── nuxt.config.ts
-├── package.json
-├── pages
-│   ├── auth
-│   │   └── [...slug].vue
-│   ├── dashboard
-│   │   └── index.vue
-│   └── index.vue
-├── plugins
-│   └── supertokens.client.ts
-├── public
-│   ├── ST.svg
-│   ├── favicon.ico
-│   ├── nuxt.svg
-│   └── robots.txt
-├── server
-│   ├── api
-│   │   ├── auth
-│   │   │   └── [...param].ts
-│   │   └── auth.ts
-│   ├── backend
-│   │   ├── all_auth.ts
-│   │   ├── emailpassword.ts
-│   │   ├── multifactorauth.ts
-│   │   ├── passwordless.ts
-│   │   ├── thirdparty.ts
-│   │   ├── thirdpartyemailpassword.ts
-│   │   └── thirdpartypasswordless.ts
-│   ├── backend.ts
-│   ├── routes
-│   │   └── sessioninfo.ts
-│   ├── tsconfig.json
-│   └── utils
-│       └── convertToRequest.ts
-└── tsconfig.json
+📦
+┣ 📜README.md
+┣ 📜app.vue
+┣ 📂assets
+┣ 📂components
+┃ ┣ 📜Footer.vue
+┃ ┗ 📜SessionInfo.vue
+┣ 📂config
+┃ ┣ 📜appInfo.ts  --> SuperTokens configuration
+┃ ┗ 📜frontend.ts
+┣ 📂layouts
+┃ ┗ 📜default.vue
+┣ 📜nuxt.config.ts
+┣ 📜package-lock.json
+┣ 📜package.json
+┣ 📂pages
+┃ ┣ 📂auth
+┃ ┃ ┗ 📜[...slug].vue  --> "Auth" view, accessible regardless of the logged-in state of the app
+┃ ┣ 📂dashboard
+┃ ┃ ┗ 📜index.vue  --> "Dashboard" view, accessible only via the logged-in state of the app
+┃ ┗ 📜index.vue  --> "Home" view, accessible regardless of the logged-in state of the app
+┣ 📂plugins
+┃ ┗ 📜supertokens.client.ts
+┣ 📂public
+┣ 📂server
+┃ ┣ 📂api
+┃ ┃ ┣ 📂auth
+┃ ┃ ┃ ┗ 📜[...param].ts  --> API routes for authentication
+┃ ┃ ┗ 📜auth.ts
+┃ ┣ 📜backend.ts  --> SuperTokens backend configuration
+┃ ┣ 📂routes
+┃ ┃ ┗ 📜sessioninfo.ts  --> API routes
+┃ ┣ 📜tsconfig.json
+┃ ┗ 📂utils
+┃   ┗ 📜convertToRequest.ts
+┗ 📜tsconfig.json
 ```
 
 ### Source
@@ -79,31 +61,24 @@ If you choose to use this as a starting point for your own project, you can furt
 
 ## Application Flow
 
-The application uses [Vue Router](https://router.vuejs.org/) for routing and consists of four main parts:
+1. **Entry Point (`app.vue`)**
 
-1. **Entry Point (`main.ts`)**
-
-    - Initializes the Nuxt application using `createApp`
-
-2. **Root Component (`router/index.ts`)**
-
-    - Sets up the routing structure using `vue-router`
-    - Defines three main routes:
+    - Root component of the app
         - `/`: Public landing page - accessible regardless of auth state
         - `/auth`: Renders SuperTokens' pre-built auth UI - accessible regardless of auth state
         - `/dashboard`: Protected route requiring authentication
 
-3. **Home (`/` route, `/pages/index.vue` component)**
+2. **Home View (`/` route, `/pages/index.vue` component)**
 
     - Public landing page accessible to all users
     - Provides navigation to authentication and dashboard
     - Displays basic application information and links
 
-4. **Auth (`/auth` route, `/pages/auth/[...slug].vue` component)**
+3. **Auth View (`/auth` route, `/pages/auth/[...slug].vue` component)**
 
     - Renders SuperTokens' pre-built auth UI
 
-5. **Dashboard Component (`/dashboard` route, `/pages/dashboard/index.vue` component)**
+4. **Dashboard View (`/dashboard` route, `/pages/dashboard/index.vue` component)**
     - Protected route only accessible to authenticated users
     - Protected by middleware
     - Displays user information and session details
