@@ -14,7 +14,7 @@ const loadScript = (src: string) => {
 
 export const Auth = () => {
     onMount(() => {
-        loadScript("https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.48.0/build/static/js/main.81589a39.js");
+        loadScript("${jsdeliveryprebuiltuiurl}");
     });
 
     return <div id="supertokensui" />;

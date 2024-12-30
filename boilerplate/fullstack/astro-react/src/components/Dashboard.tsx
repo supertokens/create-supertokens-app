@@ -14,7 +14,6 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchUserId = async () => {
             const data = await fetchSessionInfo();
-            console.log(data);
             setUserId(data.userId);
         };
         fetchUserId();

@@ -5,7 +5,6 @@ import type { APIRoute } from "astro";
 const handleCall = handleAuthAPIRequest();
 
 export const ALL: APIRoute = async ({ request }) => {
-    console.log("api auth");
     ensureSuperTokensInit();
 
     try {

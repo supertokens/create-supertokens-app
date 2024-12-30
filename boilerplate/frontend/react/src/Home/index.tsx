@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Session from "supertokens-auth-react/recipe/session";
+import { useSessionContext } from "supertokens-auth-react/recipe/session";
 
 export default function Home() {
-    const [sessionExists, setSessionExists] = useState(false);
-    useEffect(() => {
-        Session.doesSessionExist().then((exists) => {
-            setSessionExists(exists);
-        });
-    }, []);
+    const session = useSessionContext();
+    // const [sessionExists, setSessionExists] = useState(false);
+    // useEffect(() => {
+    //     Session.doesSessionExist().then((exists) => {
+    //         setSessionExists(exists);
+    //     });
+    // }, []);
 
     return (
         <>
