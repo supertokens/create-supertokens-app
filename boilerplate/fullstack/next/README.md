@@ -6,6 +6,40 @@ A demo implementation of [SuperTokens](https://supertokens.com/) with [Next.js](
 
 This project aims to demonstrate how to integrate SuperTokens into a Nexjs application. Its primary purpose is to serve as an educational tool, but it can also be used as a starting point for your own project.
 
+## Repo Structure
+
+### Source
+
+```
+📦
+┣ 📂assets
+┣ 📂config
+┃ ┣ 📜appInfo.ts
+┃ ┣ 📜backendConfig.ts
+┃ ┗ 📜frontendConfig.tsx
+┣ 📜next-env.d.ts
+┣ 📜next.config.js
+┣ 📜package-lock.json
+┣ 📜package.json
+┣ 📂pages
+┃ ┣ 📜_app.tsx
+┃ ┣ 📂api
+┃ ┃ ┣ 📂auth
+┃ ┃ ┃ ┗ 📜[[...path]].ts
+┃ ┃ ┗ 📜user.ts
+┃ ┣ 📂auth
+┃ ┃ ┗ 📜[[...path]].tsx
+┃ ┣ 📂dashboard
+┃ ┃ ┗ 📜index.tsx
+┃ ┗ 📜index.tsx
+┣ 📂public
+┣ 📂styles
+┃ ┣ 📜ProtectedHome.module.css
+┃ ┗ 📜globals.css
+┣ 📜README.md
+┗ 📜tsconfig.json
+```
+
 ### Config
 
 #### SuperTokens
