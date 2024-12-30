@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SeparatorLine from "../assets/separator-line.svg";
+import SeparatorLine from "../assets/images/separator-line.svg";
 
 interface Link {
     name: string;

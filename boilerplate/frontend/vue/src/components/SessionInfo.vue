@@ -16,19 +16,3 @@ async function callAPIClicked() {
 <template>
     <div @click="callAPIClicked" class="sessionButton">Call API</div>
 </template>
-
-<style scoped>
-.sessionButton {
-    cursor: pointer;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    text-align: center;
-    user-select: none;
-}
-
-.sessionButton:hover {
-    background-color: #e0e0e0;
-}
-</style>

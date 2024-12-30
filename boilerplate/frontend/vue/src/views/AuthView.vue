@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from "vue";
 import { initSuperTokensUI } from "../config";
+import BaseLayout from "../layouts/BaseLayout.vue";
 
 // Load the SuperTokens script dynamically
 const loadScript = (src: string) => {
@@ -16,7 +17,7 @@ const loadScript = (src: string) => {
 
 // Load script when component is mounted
 onMounted(() => {
-    loadScript("${jsdeliveryprebuiltuiurl}");
+    loadScript("https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.48.0/build/static/js/main.81589a39.js");
 });
 
 // remove script when component is unmounted
@@ -29,5 +30,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div id="supertokensui" />
+    <BaseLayout>
+        <div id="home-container" class="fill">
+            <div id="supertokensui" />
+        </div>
+    </BaseLayout>
 </template>

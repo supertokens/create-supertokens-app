@@ -10,6 +10,45 @@ This project aims to demonstrate how to integrate SuperTokens into a Vue applica
 
 ### Source
 
+```
+📦backend
+┣ 📜config.ts
+┣ 📜index.ts
+┣ 📜package-lock.json
+┣ 📜package.json
+┗ 📜tsconfig.json
+
+📦frontend
+┣ 📜README.md
+┣ 📜index.html
+┣ 📜package-lock.json
+┣ 📜package.json
+┣ 📂public
+┃ ┣ 📜ST.svg
+┃ ┣ 📜vite.svg
+┃ ┗ 📜vue.svg
+┣ 📂src
+┃ ┣ 📂assets
+┃ ┃ ┗ 📂images
+┃ ┣ 📂components
+┃ ┃ ┣ 📜Footer.vue
+┃ ┃ ┗ 📜SessionInfo.vue
+┃ ┣ 📂layouts
+┃ ┃ ┗ 📜BaseLayout.vue
+┃ ┣ 📂router
+┃ ┃ ┗ 📜index.ts
+┃ ┣ 📂views
+┃ ┃ ┣ 📜AuthView.vue
+┃ ┃ ┣ 📜DashboardView.vue
+┃ ┃ ┗ 📜HomeView.vue
+┃ ┣ 📜App.vue --> Root component of the app
+┃ ┣ 📜config.ts
+┃ ┣ 📜main.ts --> Entry point of the app
+┃ ┣ 📜style.css
+┃ ┗ 📜vite-env.d.ts
+┗ 📜vite.config.ts
+```
+
 ### Config
 
 #### Vite
@@ -46,7 +85,7 @@ The application uses [Vue Router](https://router.vuejs.org/) for routing and con
 
 4. **Dashboard Component (`/dashboard` route, `/Views/DashboardView.vue` component)**
     - Protected route only accessible to authenticated users
-    - Protected by `SessionAuth` component
+    - Protected by route guard in `router/index.ts`
     - Displays user information and session details
     - Provides functionality to:
         - View user ID
