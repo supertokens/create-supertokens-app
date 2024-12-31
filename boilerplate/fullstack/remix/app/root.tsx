@@ -12,7 +12,7 @@ if (typeof window !== "undefined") {
 
 export default function App() {
     const location = useLocation();
-    const isUnprotectedRoute = location.pathname.startsWith("/auth");
+    const isUnprotectedRoute = location.pathname.startsWith("/") || location.pathname.startsWith("/auth");
 
     return (
         <html lang="en">
@@ -22,16 +22,35 @@ export default function App() {
             </head>
             <body className="app-wrapper">
                 <SuperTokensWrapper>
-                    {isUnprotectedRoute ? (
-                        <Outlet />
-                    ) : (
-                        <SessionAuth>
-                            <Outlet />
-                        </SessionAuth>
-                    )}
+                    <header>
+                        <div className="header-container">
+                            <a href="/">
+                                <img src="/ST.svg" alt="SuperTokens" />
+                            </a>
+                        </div>
+                        <div className="header-container-right">
+                            <a href="https://supertokens.com/docs/guides/getting-started/react" target="_blank">
+                                Docs
+                            </a>
+                            <a href="https://github.com/supertokens/create-supertokens-app" target="_blank">
+                                CLI Repo
+                            </a>
+                        </div>
+                    </header>
+                    <div className="App app-container">
+                        <div className="fill">
+                            {isUnprotectedRoute ? (
+                                <Outlet />
+                            ) : (
+                                <SessionAuth>
+                                    <Outlet />
+                                </SessionAuth>
+                            )}
 
-                    <ScrollRestoration />
-                    <Scripts />
+                            <ScrollRestoration />
+                            <Scripts />
+                        </div>
+                    </div>
                 </SuperTokensWrapper>
             </body>
         </html>

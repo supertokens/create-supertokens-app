@@ -19,6 +19,11 @@ export const frontendConfig = (): SuperTokensConfig => {
             }),
             Session.init(),
         ],
+        getRedirectionURL: async (context) => {
+            if (context.action === "SUCCESS" && context.newSessionCreated) {
+                return "/dashboard";
+            }
+        },
     };
 };
 
