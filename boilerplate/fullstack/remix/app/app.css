@@ -1,52 +1,139 @@
-html {
-    height: 100%;
+@font-face {
+    font-family: Menlo;
+    src: url("../assets/fonts/MenloRegular.ttf");
 }
 
-.main {
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+        "Droid Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.logos {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 80px;
+}
+
+.logos span {
+    font-size: 8rem;
+    font-weight: bold;
+}
+
+.logos img {
+    width: 240px;
+}
+
+.logos img[alt="Remix"] {
+    width: 350px;
+}
+
+.App {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    width: 100%;
+    height: 100%;
+    font-family: Rubik;
 }
 
-.appContainer {
+.fill {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+
+.buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.sessionButton {
+    padding-left: 13px;
+    padding-right: 13px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: black;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    font-size: 17px;
+    text-decoration: none;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.header-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.header-container-right {
+    display: flex;
+    gap: 12px;
+}
+
+.header-container-right a {
+    color: #ff8a15;
+    font-weight: 600;
+
+    &:hover {
+        color: #ff9933;
+    }
+}
+
+.header-container img {
+    width: 40px;
+}
+
+.app-container {
     font-family: Rubik, sans-serif;
 }
 
-.appContainer * {
+.app-container * {
     box-sizing: border-box;
 }
 
-.bold400 {
+.bold-400 {
     font-variation-settings: "wght" 400;
 }
 
-.bold500 {
+.bold-500 {
     font-variation-settings: "wght" 500;
 }
 
-.bold600 {
+.bold-600 {
     font-variation-settings: "wght" 600;
 }
 
-.homeContainer {
-    min-height: 100vh;
-    min-width: 100vw;
+#home-container {
+    align-items: center;
+    min-height: calc(100vh - 58px);
     background: url("../assets/images/background.png");
     background-size: cover;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
-.bold700 {
+.bold-700 {
     font-variation-settings: "wght" 700;
 }
 
-.mainContainer {
+.app-container .main-container {
     box-shadow: 0px 0px 60px 0px rgba(0, 0, 0, 0.16);
     width: min(635px, calc(100% - 24px));
     border-radius: 16px;
@@ -54,7 +141,7 @@ html {
     background-color: #ffffff;
 }
 
-.successTitle {
+.main-container .success-title {
     line-height: 1;
     padding-block: 26px;
     background-color: #e7ffed;
@@ -66,11 +153,11 @@ html {
     font-size: 20px;
 }
 
-.successIcon {
+.success-title img.success-icon {
     margin-right: 8px;
 }
 
-.innerContent {
+.main-container .inner-content {
     padding-block: 48px;
     text-align: center;
     display: flex;
@@ -78,7 +165,7 @@ html {
     align-items: center;
 }
 
-.userId {
+.inner-content #user-id {
     position: relative;
     padding: 14px 17px;
     border-image-slice: 1;
@@ -91,44 +178,34 @@ html {
     cursor: text;
 }
 
-.userId:before {
+.inner-content #user-id:before {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: 9px;
     padding: 2px;
     background: linear-gradient(90.31deg, #ff9933 0.11%, #ff3f33 99.82%);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
     mask-composite: exclude;
+    -webkit-mask-composite: xor;
 }
 
-.topBand,
-.bottomBand {
+.main-container > .top-band,
+.main-container > .bottom-band {
     border-radius: inherit;
 }
 
-.topBand {
+.main-container .top-band {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.bottomBand {
+.main-container .bottom-band {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
 
-.sessionButton {
-    padding-left: 13px;
-    padding-right: 13px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
-    font-size: 17px;
-
+.main-container .sessionButton {
     box-sizing: border-box;
     background: #ff9933;
     border: 1px solid #ff8a15;
@@ -137,40 +214,34 @@ html {
     font-size: 16px;
 }
 
-.bottomCTAContainer {
+.bottom-cta-container {
     display: flex;
     justify-content: flex-end;
     padding-inline: 21px;
     background-color: #212d4f;
 }
 
-.viewCode {
+.bottom-cta-container .view-code {
     padding-block: 11px;
     color: #bac9f5;
     cursor: pointer;
     font-size: 14px;
 }
 
-.bottomLinksContainer {
+.bottom-links-container {
     display: grid;
     grid-template-columns: repeat(4, auto);
     margin-bottom: 22px;
 }
 
-.linksContainerLink {
+.bottom-links-container .link {
     display: flex;
     align-items: center;
     margin-inline-end: 68px;
     cursor: pointer;
-    text-decoration: none;
-    color: #000000;
 }
 
-.signOutLink {
-    border: 0;
-}
-
-.linksContainerLink:last-child {
+.bottom-links-container .link:last-child {
     margin-right: 0;
 }
 
@@ -180,38 +251,38 @@ html {
     white-space: nowrap;
 }
 
-.separatorLine {
+.separator-line {
     max-width: 100%;
 }
 
-.linkIcon {
+.link .link-icon {
     width: 15px;
     margin-right: 5px;
 }
 
 @media screen and (max-width: 768px) {
-    .bottomLinksContainer {
+    .bottom-links-container {
         grid-template-columns: repeat(2, 1fr);
         column-gap: 64px;
         row-gap: 34px;
     }
 
-    .linksContainerLink {
+    .bottom-links-container .link {
         margin-inline-end: 0;
     }
 
-    .separatorLine {
+    .separator-line {
         max-width: 200px;
     }
 }
 
 @media screen and (max-width: 480px) {
-    .homeContainer {
+    #home-container {
         justify-content: start;
         padding-block-start: 25px;
     }
 
-    .mainContainer {
+    .app-container .main-container {
         margin-block-end: 90px;
     }
 }
