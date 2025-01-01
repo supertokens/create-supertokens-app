@@ -1,7 +1,7 @@
 import { afterviewinit, component } from "@angular/core";
 import { httpclient } from "@angular/common/http";
 
-import * as session from "supertokens-web-js/recipe/session";
+import Session from "supertokens-web-js/recipe/session";
 
 @component({
     selector: "app-home",
