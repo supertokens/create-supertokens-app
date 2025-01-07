@@ -48,7 +48,7 @@ export const SuperTokensConfig = {
         }),
     ],
     getRedirectionURL: async (context) => {
-        if (context.action === "SUCCESS" && context.newSessionCreated) {
+        if (context.action === "SUCCESS") {
             return "/dashboard";
         }
     },
