@@ -8,7 +8,7 @@ export function getApiDomain() {
     const apiUrl = import.meta.env.VITE_APP_API_URL || `http://localhost:${apiPort}`;
     return apiUrl;
 }
-s;
+
 export function getWebsiteDomain() {
     const websitePort = import.meta.env.VITE_APP_WEBSITE_PORT || 3000;
     const websiteUrl = import.meta.env.VITE_APP_WEBSITE_URL || `http://localhost:${websitePort}`;
