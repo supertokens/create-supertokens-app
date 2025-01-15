@@ -5,7 +5,6 @@ import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { Navigate } from "react-router-dom";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./Auth.css";
 
 type ChangeTenantsButtonProps = {
     setShowTenantSelector: React.Dispatch<React.SetStateAction<boolean>>;
