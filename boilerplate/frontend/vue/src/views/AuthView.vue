@@ -17,7 +17,7 @@ const loadScript = (src: string) => {
 
 // Load script when component is mounted
 onMounted(() => {
-    loadScript("https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.48.0/build/static/js/main.81589a39.js");
+    loadScript("${jsdeliveryprebuiltuiurl}");
 });
 
 // remove script when component is unmounted
@@ -31,8 +31,6 @@ onUnmounted(() => {
 
 <template>
     <BaseLayout>
-        <div id="home-container" class="fill">
-            <div id="supertokensui" />
-        </div>
+        <div id="supertokensui" />
     </BaseLayout>
 </template>

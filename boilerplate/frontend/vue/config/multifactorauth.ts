@@ -35,9 +35,10 @@ export function initSuperTokensUI() {
             (window as any).supertokensUISession.init(),
         ],
         getRedirectionURL: async (context) => {
-            if (context.action === "SUCCESS" && context.newSessionCreated) {
+            if (context.action === "SUCCESS") {
                 return "/dashboard";
             }
+            return undefined;
         },
     });
 }

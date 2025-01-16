@@ -4,44 +4,42 @@ import * as Session from "supertokens-web-js/recipe/session";
 import BaseLayout from "../layouts/BaseLayout.vue";
 
 // Define reactive variables
-const session = ref(false);
-const userId = ref("");
+const doesSessionExist = ref(false);
 
-// Get user information
-const getUserInfo = async () => {
-    session.value = await Session.doesSessionExist();
-    if (session.value) {
-        userId.value = await Session.getUserId();
-    }
-};
-
-// Fetch user info on component mount
-onMounted(() => {
-    getUserInfo();
+onMounted(async () => {
+    doesSessionExist.value = await Session.doesSessionExist();
 });
 </script>
 
 <template>
     <BaseLayout>
-        <div class="fill" id="home-container">
-            <div class="logos">
-                <img src="/ST.svg" alt="SuperTokens" />
-                <span>x</span>
-                <img src="/vue.svg" alt="React" />
-            </div>
+        <section class="logos">
+            <img src="/ST.svg" alt="SuperTokens" />
+            <span>x</span>
+            <img src="/vue.svg" alt="React" />
+        </section>
 
-            <div class="main-container">
-                <div class="inner-content">
-                    <p>
-                        <strong>SuperTokens</strong> x <strong>Vue</strong> <br />
-                        example project
+        <section class="main-container">
+            <div class="inner-content">
+                <h1>
+                    <strong>SuperTokens</strong> x <strong>Vue</strong> <br />
+                    example project
+                </h1>
+                <div>
+                    <p v-if="doesSessionExist">
+                        You're signed in already, <br />
+                        check out the Dashboard! 👇
                     </p>
-                    <div class="buttons">
-                        <a href="/auth" class="sessionButton"> Sign-up / Login </a>
-                        <a href="/dashboard" class="sessionButton"> Dashboard </a>
-                    </div>
+                    <p v-else>Sign-in to continue</p>
+
+                    <nav class="buttons">
+                        <router-link v-if="doesSessionExist" to="/dashboard" class="dashboard-button">
+                            Dashboard
+                        </router-link>
+                        <router-link v-else to="/auth" class="dashboard-button"> Sign-up / Login </router-link>
+                    </nav>
                 </div>
             </div>
-        </div>
+        </section>
     </BaseLayout>
 </template>

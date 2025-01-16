@@ -1,20 +1,38 @@
 <template>
     <header>
-        <div class="header-container">
-            <a href="/">
+        <nav className="header-container">
+            <router-link to="/">
                 <img src="/ST.svg" alt="SuperTokens" />
-            </a>
-        </div>
-        <div class="header-container-right">
-            <a href="https://supertokens.com/docs/thirdpartyemailpassword/quickstart/frontend-setup" target="_blank">
-                Docs
-            </a>
-            <a href="https://github.com/supertokens/create-supertokens-app" target="_blank"> CLI Repo </a>
-        </div>
+            </router-link>
+            <ul className="header-container-right">
+                <li>
+                    <a
+                        href="https://supertokens.com/docs/guides/getting-started/react"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Docs
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="https://github.com/supertokens/create-supertokens-app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        CLI Repo
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </header>
-    <div class="App app-container">
-        <div class="fill">
-            <slot />
-        </div>
+    <div class="fill" id="home-container">
+        <slot />
+        <footer>
+            Built with ❤️ by the folks at
+            <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer"> supertokens.com </a>
+            .
+        </footer>
+        <img className="separator-line" src="../../src/assets/images/separator-line.svg" alt="separator" />
     </div>
 </template>
