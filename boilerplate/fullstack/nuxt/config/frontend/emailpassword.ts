@@ -6,10 +6,11 @@ export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         appInfo,
         recipeList: [(window as any).supertokensUIEmailPassword.init(), (window as any).supertokensUISession.init()],
-        getRedirectionURL: async (context) => {
-            if (context.action === "SUCCESS" && context.newSessionCreated) {
+        getRedirectionURL: async (context: any) => {
+            if (context.action === "SUCCESS") {
                 return "/dashboard";
             }
+            return undefined;
         },
     });
 }

@@ -13,12 +13,10 @@ onMounted(() => {
         document.body.appendChild(script);
     };
 
-    loadScript("${jsdeliveryprebuiltuiurl}");
+    loadScript("https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.48.0/build/static/js/main.81589a39.js");
 });
 </script>
 
 <template>
-    <div id="home-container" class="fill">
-        <div id="supertokensui" />
-    </div>
+    <div id="supertokensui" />
 </template>
