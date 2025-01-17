@@ -13,10 +13,11 @@ export const frontendConfig = (): SuperTokensConfig => {
             }),
             Session.init(),
         ],
-        getRedirectionURL: async (context) => {
-            if (context.action === "SUCCESS" && context.newSessionCreated) {
+        getRedirectionURL: async (context: any) => {
+            if (context.action === "SUCCESS") {
                 return "/dashboard";
             }
+            return undefined;
         },
     };
 };

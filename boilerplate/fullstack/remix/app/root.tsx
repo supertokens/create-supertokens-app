@@ -1,4 +1,4 @@
-import { Meta, Links, Scripts, Outlet, ScrollRestoration, useLocation } from "@remix-run/react";
+import { Meta, Links, Scripts, Outlet, ScrollRestoration, useLocation, Link } from "@remix-run/react";
 import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
 import { frontendConfig } from "./config/frontend";
 import { SessionAuth } from "supertokens-auth-react/recipe/session/index.js";
@@ -20,25 +20,37 @@ export default function App() {
                 <Meta />
                 <Links />
             </head>
-            <body className="app-wrapper">
+            <body>
                 <SuperTokensWrapper>
-                    <header>
-                        <div className="header-container">
-                            <a href="/">
-                                <img src="/ST.svg" alt="SuperTokens" />
-                            </a>
-                        </div>
-                        <div className="header-container-right">
-                            <a href="https://supertokens.com/docs/guides/getting-started/react" target="_blank">
-                                Docs
-                            </a>
-                            <a href="https://github.com/supertokens/create-supertokens-app" target="_blank">
-                                CLI Repo
-                            </a>
-                        </div>
-                    </header>
                     <div className="App app-container">
-                        <div className="fill">
+                        <header>
+                            <nav className="header-container">
+                                <Link to="/">
+                                    <img src="/ST.svg" alt="SuperTokens" />
+                                </Link>
+                                <ul className="header-container-right">
+                                    <li>
+                                        <a
+                                            href="https://supertokens.com/docs/guides/getting-started/react"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Docs
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="https://github.com/supertokens/create-supertokens-app"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            CLI Repo
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </header>
+                        <div className="fill" id="home-container">
                             {isUnprotectedRoute ? (
                                 <Outlet />
                             ) : (
@@ -49,6 +61,14 @@ export default function App() {
 
                             <ScrollRestoration />
                             <Scripts />
+                            <footer>
+                                Built with ❤️ by the folks at{" "}
+                                <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
+                                    supertokens.com
+                                </a>
+                                .
+                            </footer>
+                            <img className="separator-line" src="../assets/images/separator-line.svg" alt="separator" />
                         </div>
                     </div>
                 </SuperTokensWrapper>

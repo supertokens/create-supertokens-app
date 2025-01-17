@@ -1,7 +1,5 @@
-import { CelebrateIcon, BlogsIcon, GuideIcon, SignOutIcon } from "../../assets/images";
 import { useEffect } from "react";
 import type { JWTPayload } from "jose";
-import { recipeDetails } from "../config/frontend";
 import SuperTokens from "supertokens-auth-react";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
@@ -9,8 +7,6 @@ import SessionReact from "supertokens-auth-react/recipe/session/index.js";
 import { getSessionForSSR } from "supertokens-node/custom";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
-import SessionInfo from "../components/sessionInfo";
-import Footer from "../components/Footer";
 
 export async function loader({ request }: LoaderFunctionArgs): Promise<{
     accessTokenPayload: JWTPayload | undefined;
@@ -20,7 +16,7 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<{
     return getSessionForSSR(request);
 }
 
-export default function Home() {
+export default function Dashboard() {
     const navigate = useNavigate();
 
     const { accessTokenPayload, hasToken, error } = useLoaderData<{
@@ -38,10 +34,6 @@ export default function Home() {
     async function logoutClicked() {
         await SessionReact.signOut();
         SuperTokens.redirectToAuth();
-    }
-
-    function openLink(url: string) {
-        window.open(url, "_blank");
     }
 
     if (error) {
@@ -66,29 +58,10 @@ export default function Home() {
         return <TryRefreshComponent key={Date.now()} />;
     }
 
-    const fetchUserData = async () => {
+    const callAPIClicked = async () => {
         const userInfoResponse = await fetch("http://localhost:3000/sessioninfo");
-
         alert(JSON.stringify(await userInfoResponse.json()));
     };
-
-    const links = [
-        {
-            name: "Blogs",
-            onClick: () => openLink("https://supertokens.com/blog"),
-            icon: BlogsIcon,
-        },
-        {
-            name: "Documentation",
-            onClick: () => openLink(recipeDetails.docsLink),
-            icon: GuideIcon,
-        },
-        {
-            name: "Sign Out",
-            onClick: logoutClicked,
-            icon: SignOutIcon,
-        },
-    ];
 
     /**
      * SessionAuthForRemix will handle proper redirection for the user based on the different session states.
@@ -96,20 +69,25 @@ export default function Home() {
      */
     return (
         <SessionAuthForRemix>
-            <div className="fill" id="home-container">
-                <div className="main-container">
-                    <div className="top-band success-title bold-500">
-                        <img src={CelebrateIcon} alt="Login successful" className="success-icon" /> Login successful
+            <div className="main-container">
+                <div className="top-band success-title bold-500">
+                    <img src="../assets/images/celebrate-icon.svg" alt="Login successful" className="success-icon" />
+                    Login successful
+                </div>
+                <div className="inner-content">
+                    <div>Your userID is:</div>
+                    <div className="truncate" id="user-id">
+                        {accessTokenPayload.sub}
                     </div>
-                    <div className="inner-content">
-                        <div>Your userID is:</div>
-                        <div className="truncate" id="user-id">
-                            {accessTokenPayload.sub}
-                        </div>
-                        <SessionInfo />
+                    <div className="buttons">
+                        <button onClick={callAPIClicked} className="dashboard-button">
+                            Call API
+                        </button>
+                        <button onClick={logoutClicked} className="dashboard-button">
+                            Logout
+                        </button>
                     </div>
                 </div>
-                <Footer links={links} />
             </div>
         </SessionAuthForRemix>
     );
