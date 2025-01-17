@@ -5,9 +5,7 @@ import { CelebrateIcon } from "../../assets/images";
 import Image from "next/image";
 import { SessionAuthForNextJS } from "./sessionAuthForNextJS";
 import { getSessionForSSR } from "../util";
-
-import SessionInfo from "./sessionInfo";
-import Footer from "./footer";
+import DashboardButtons from "./dashboardButtons";
 
 export async function DashboardPage() {
     const cookiesFromReq = await cookies();
@@ -48,20 +46,17 @@ export async function DashboardPage() {
      */
     return (
         <SessionAuthForNextJS>
-            <div className="fill" id="home-container">
-                <div className="main-container">
-                    <div className="top-band success-title bold-500">
-                        <Image src={CelebrateIcon} alt="Login successful" className="success-icon" /> Login successful
-                    </div>
-                    <div className="inner-content">
-                        <div>Your userID is:</div>
-                        <div className="truncate" id="user-id">
-                            {accessTokenPayload.sub}
-                        </div>
-                        <SessionInfo />
-                    </div>
+            <div className="main-container">
+                <div className="top-band success-title bold-500">
+                    <Image src={CelebrateIcon} alt="Login successful" className="success-icon" /> Login successful
                 </div>
-                <Footer />
+                <div className="inner-content">
+                    <div>Your userID is:</div>
+                    <div className="truncate" id="user-id">
+                        {accessTokenPayload.sub}
+                    </div>
+                    <DashboardButtons />
+                </div>
             </div>
         </SessionAuthForNextJS>
     );
