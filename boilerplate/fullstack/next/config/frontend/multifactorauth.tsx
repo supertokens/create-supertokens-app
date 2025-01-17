@@ -38,6 +38,12 @@ export let frontendConfig = () => {
             TOTP.init(),
             SessionReact.init(),
         ],
+        getRedirectionURL: async (context) => {
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
+        },
         // this is so that the SDK uses the next router for navigation
         windowHandler: (oI) => {
             return {

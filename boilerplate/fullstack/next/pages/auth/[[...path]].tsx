@@ -1,4 +1,3 @@
-import Head from "next/head";
 import React, { useEffect } from "react";
 import dynamic from "next/dynamic";
 import SuperTokens from "supertokens-auth-react";
@@ -18,21 +17,5 @@ export default function Auth(): JSX.Element {
         }
     }, []);
 
-    return (
-        <div id="home-container" className="fill">
-            <Head>
-                <title>SuperTokens + Nextjs</title>
-                <link
-                    href="//fonts.googleapis.com/css2?family=Rubik:wght@400&display=swap"
-                    rel="stylesheet"
-                    type="text/css"
-                />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-
-            <main>
-                <SuperTokensComponentNoSSR />
-            </main>
-        </div>
-    );
+    return <SuperTokensComponentNoSSR />;
 }
