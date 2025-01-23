@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import { SuperTokensWrapper } from "supertokens-auth-react";
 import SuperTokensReact from "supertokens-auth-react";

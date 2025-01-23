@@ -2,19 +2,63 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SuperTokensProvider } from "./components/supertokensProvider";
+import { SeparatorLine } from "../assets/images";
+import Link from "next/link";
+import Image from "next/image";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "SuperTokens 💫",
+    title: "SuperTokens + Nextjs",
     description: "SuperTokens demo app",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={inter.className}>
-                <SuperTokensProvider>{children}</SuperTokensProvider>
+            <body className={`${inter.className} app-wrapper`}>
+                <SuperTokensProvider>
+                    <div className="App app-container">
+                        <header>
+                            <nav className="header-container">
+                                <Link href="/">
+                                    <img src="/ST.svg" alt="SuperTokens" />
+                                </Link>
+                                <ul className="header-container-right">
+                                    <li>
+                                        <a
+                                            href="https://supertokens.com/docs/guides/getting-started/react"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Docs
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="https://github.com/supertokens/create-supertokens-app"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            CLI Repo
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </header>
+                        <div className="fill" id="home-container">
+                            {children}
+                            <footer>
+                                Built with ❤️ by the folks at{" "}
+                                <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
+                                    supertokens.com
+                                </a>
+                                .
+                            </footer>
+                            <Image className="separator-line" src={SeparatorLine} alt="separator" />
+                        </div>
+                    </div>
+                </SuperTokensProvider>
             </body>
         </html>
     );
