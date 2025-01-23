@@ -8,6 +8,12 @@ export const frontendConfig = (): SuperTokensConfig => {
     return {
         appInfo,
         recipeList: [EmailPasswordReact.init(), Session.init()],
+        getRedirectionURL: async (context: any) => {
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
+        },
     };
 };
 
