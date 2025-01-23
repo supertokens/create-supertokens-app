@@ -14,9 +14,7 @@
 			document.body.appendChild(script);
 		};
 
-		loadScript(
-			"${jsdeliveryprebuiltuiurl}"
-		);
+		loadScript("${jsdeliveryprebuiltuiurl}")
 	});
 </script>
 

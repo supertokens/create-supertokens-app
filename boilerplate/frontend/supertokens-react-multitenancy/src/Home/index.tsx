@@ -9,7 +9,6 @@ export default function Home() {
         return null;
     }
 
-    console.log(sessionContext);
     return (
         <div className="fill" id="home-container">
             <SuccessView

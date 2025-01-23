@@ -1,52 +1,56 @@
-import ThirdPartyReact from "supertokens-auth-react/recipe/thirdparty/index.js";
-import EmailPasswordReact from "supertokens-auth-react/recipe/emailpassword/index.js";
-import MultiFactorAuthReact from "supertokens-auth-react/recipe/multifactorauth/index.js";
-import EmailVerification from "supertokens-auth-react/recipe/emailverification/index.js";
-import PasswordlessReact from "supertokens-auth-react/recipe/passwordless/index.js";
-import TOTPReact from "supertokens-auth-react/recipe/totp/index.js";
-import Session from "supertokens-auth-react/recipe/session/index.js";
+import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
+import EmailVerification from "supertokens-web-js/recipe/emailverification";
+import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";
 import { appInfo } from "./appInfo";
-import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui.js";
-import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui.js";
-import { MultiFactorAuthPreBuiltUI } from "supertokens-auth-react/recipe/multifactorauth/prebuiltui.js";
-import { EmailVerificationPreBuiltUI } from "supertokens-auth-react/recipe/emailverification/prebuiltui.js";
-import { TOTPPreBuiltUI } from "supertokens-auth-react/recipe/totp/prebuiltui.js";
-import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui.js";
 
-export const frontendConfig = () => {
-    return {
+export const getApiDomain = () => {
+    return appInfo.apiDomain;
+};
+
+export const getWebsiteDomain = () => {
+    return appInfo.websiteDomain;
+};
+
+export function initSuperTokensUI() {
+    (window as any).supertokensUIInit("supertokensui", {
         appInfo,
         recipeList: [
-            EmailPasswordReact.init(),
-            ThirdPartyReact.init({
+            (window as any).supertokensUIEmailPassword.init(),
+            (window as any).supertokensUIThirdParty.init({
                 signInAndUpFeature: {
                     providers: [
-                        ThirdPartyReact.Google.init(),
-                        ThirdPartyReact.Github.init(),
-                        ThirdPartyReact.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Github.init(),
+                        (window as any).supertokensUIThirdParty.Google.init(),
+                        (window as any).supertokensUIThirdParty.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Twitter.init(),
                     ],
                 },
             }),
-            PasswordlessReact.init({
+            (window as any).supertokensUIPasswordless.init({
                 contactMethod: "EMAIL_OR_PHONE",
             }),
-            EmailVerification.init({ mode: "REQUIRED" }),
-            MultiFactorAuthReact.init({ firstFactors: ["thirdparty", "emailpassword"] }),
-            TOTPReact.init(),
-            Session.init(),
+            (window as any).supertokensUIEmailVerification.init({
+                mode: "REQUIRED",
+            }),
+            (window as any).supertokensUIMultiFactorAuth.init({
+                firstFactors: ["thirdparty", "emailpassword"],
+            }),
+            (window as any).supertokensUITOTP.init(),
+            (window as any).supertokensUISession.init(),
         ],
-    };
-};
+        getRedirectionURL: async (context) => {
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
+        },
+    });
+}
 
-export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/mfa/introduction",
-};
-
-export const PreBuiltUIList = [
-    ThirdPartyPreBuiltUI,
-    EmailPasswordPreBuiltUI,
-    PasswordlessPreBuiltUI,
-    MultiFactorAuthPreBuiltUI,
-    EmailVerificationPreBuiltUI,
-    TOTPPreBuiltUI,
-];
+export function initSuperTokensWebJS() {
+    SuperTokens.init({
+        appInfo,
+        recipeList: [Session.init(), EmailVerification.init(), MultiFactorAuth.init()],
+    });
+}

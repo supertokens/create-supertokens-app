@@ -178,6 +178,32 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
         },
         {
             isFullStack: true,
+            value: "astro-react",
+            displayName: "Astro (using React)",
+            location: {
+                main: "fullstack/astro-react",
+                config: {
+                    frontend: [
+                        {
+                            configFiles: "/src/config/frontend",
+                            finalConfig: "/src/config/frontend.ts",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/src/config/backend",
+                            finalConfig: "/src/config/backend.ts",
+                        },
+                    ],
+                },
+            },
+            script: {
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
+            },
+        },
+        {
+            isFullStack: true,
             value: "sveltekit",
             displayName: "SvelteKit",
             location: {
@@ -257,7 +283,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "solid",
             displayName: "SolidJS",
             location: {
-                main: "frontend/solid-prebuilt",
+                main: "frontend/solid",
                 config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
