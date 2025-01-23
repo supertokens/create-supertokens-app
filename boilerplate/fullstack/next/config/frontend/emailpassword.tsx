@@ -11,6 +11,12 @@ export let frontendConfig = (): SuperTokensConfig => {
         // recipeList contains all the modules that you want to
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
         recipeList: [EmailPasswordReact.init(), SessionReact.init()],
+        getRedirectionURL: async (context) => {
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
+        },
         // this is so that the SDK uses the next router for navigation
         windowHandler: (oI) => {
             return {
