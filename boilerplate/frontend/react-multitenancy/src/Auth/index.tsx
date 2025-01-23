@@ -1,6 +1,6 @@
 import { AuthRecipeComponentsOverrideContextProvider, AuthPage } from "supertokens-auth-react/ui";
-import { PreBuiltUIList } from "./config";
-import { TenantSelector } from "./TenantSelector";
+import { PreBuiltUIList } from "../config.tsx";
+import { TenantSelector } from "./TenantSelector.tsx";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { Navigate } from "react-router-dom";
 import React from "react";
@@ -43,10 +43,10 @@ const LoginWithSSOButton = ({
     );
 };
 
-export const Auth = () => {
+export default function Auth() {
     const [tenantId, setTenantId] = React.useState(localStorage.getItem("tenantId"));
     const session = useSessionContext();
-    const [showTenantSelector, setShowTenantSelector] = React.useState(false);
+    const [showTenantSelector, setShowTenantSelector] = React.useState(true);
     const navigate = useNavigate();
 
     if (session.loading) {
@@ -54,7 +54,7 @@ export const Auth = () => {
     }
 
     if (session.doesSessionExist) {
-        return <Navigate to="/" />;
+        return <Navigate to="/dashboard" />;
     }
 
     if (showTenantSelector) {
@@ -108,4 +108,4 @@ export const Auth = () => {
             </div>
         </AuthRecipeComponentsOverrideContextProvider>
     );
-};
+}

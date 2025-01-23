@@ -35,7 +35,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "react-multitenancy",
             displayName: "React",
             location: {
-                main: "frontend/supertokens-react-multitenancy",
+                main: "frontend/react-multitenancy",
                 config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
             },
             script: {
