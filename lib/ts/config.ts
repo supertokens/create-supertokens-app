@@ -270,7 +270,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "vue",
             displayName: "Vue.js",
             location: {
-                main: "frontend/vue-prebuilt",
+                main: "frontend/vue",
                 config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
