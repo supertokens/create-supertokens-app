@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { initSuperTokensUI } from "../../config/frontend";
+import { initSuperTokensUI } from "~/config/frontend";
 
 onMounted(() => {
     const loadScript = (src: string) => {
@@ -13,7 +13,7 @@ onMounted(() => {
         document.body.appendChild(script);
     };
 
-    loadScript("${jsdeliveryprebuiltuiurl}");
+    loadScript("https://cdn.jsdelivr.net/gh/supertokens/prebuiltui@v0.48.0/build/static/js/main.81589a39.js");
 });
 </script>
 

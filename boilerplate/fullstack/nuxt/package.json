@@ -1,5 +1,5 @@
 {
-    "name": "nuxt-app",
+    "name": "nuxt",
     "private": true,
     "type": "module",
     "scripts": {
@@ -10,16 +10,14 @@
         "postinstall": "nuxt prepare"
     },
     "dependencies": {
-        "jwks-rsa": "^3.1.0",
-        "nuxt": "^3.13.0",
-        "supertokens-node": "latest",
-        "supertokens-web-js": "latest",
+        "nuxt": "^3.14.1592",
+        "supertokens-node": "^21.1.0",
+        "supertokens-web-js": "^0.14.0",
         "vue": "latest",
         "vue-router": "latest"
     },
     "devDependencies": {
-        "@types/cookie": "^0.6.0",
-        "typescript": "^5.6.3",
-        "vue-tsc": "^2.1.6"
+        "typescript": "^5.7.2",
+        "vue-tsc": "^2.1.10"
     }
 }
