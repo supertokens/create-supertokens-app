@@ -2,19 +2,20 @@ from supertokens_python import init, InputAppInfo, SupertokensConfig
 from supertokens_python.recipe import emailpassword, thirdparty, passwordless, session, dashboard
 from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig
 from supertokens_python.recipe.thirdparty.provider import ProviderInput, ProviderConfig, ProviderClientConfig
-from supertokens_python import (
-    InputAppInfo,
-    SupertokensConfig,
+from ...shared.config.base import (
+    default_app_info,
+    default_supertokens_config,
+    default_oauth_providers
 )
 
 # this is the location of the SuperTokens core.
 supertokens_config = SupertokensConfig(
-    connection_uri="https://try.supertokens.com")
+    connection_uri=default_supertokens_config["connection_uri"])
 
 app_info = InputAppInfo(
-    app_name="Supertokens",
-    api_domain="http://localhost:3001",
-    website_domain="http://localhost:3000",
+    app_name=default_app_info["app_name"],
+    api_domain=default_app_info["api_domain"],
+    website_domain=default_app_info["website_domain"],
 )
 
 framework = "fastapi"
@@ -35,8 +36,8 @@ recipe_list = [
                     third_party_id="google",
                     clients=[
                         ProviderClientConfig(
-                            client_id='1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com',
-                            client_secret='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'
+                            client_id=default_oauth_providers["google"]["client_id"],
+                            client_secret=default_oauth_providers["google"]["client_secret"]
                         ),
                     ],
                 ),
@@ -46,8 +47,8 @@ recipe_list = [
                     third_party_id="github",
                     clients=[
                         ProviderClientConfig(
-                            client_id='467101b197249757c71f',
-                            client_secret='e97051221f4b6426e8fe8d51486396703012f5bd'
+                            client_id=default_oauth_providers["github"]["client_id"],
+                            client_secret=default_oauth_providers["github"]["client_secret"]
                         ),
                     ],
                 ),
@@ -57,12 +58,8 @@ recipe_list = [
                     third_party_id="apple",
                     clients=[
                         ProviderClientConfig(
-                            client_id="4398792-io.supertokens.example.service",
-                            additional_config={
-                                "keyId": "7M48Y4RYDL",
-                                "privateKey": "-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgu8gXs+XYkqXD6Ala9Sf/iJXzhbwcoG5dMh1OonpdJUmgCgYIKoZIzj0DAQehRANCAASfrvlFbFCYqn3I2zeknYXLwtH30JuOKestDbSfZYxZNMqhF/OzdZFTV0zc5u5s3eN+oCWbnvl0hM+9IW0UlkdA\n-----END PRIVATE KEY-----",
-                                "teamId": "YWQCXGJRJL",
-                            },
+                            client_id=default_oauth_providers["apple"]["client_id"],
+                            additional_config=default_oauth_providers["apple"]["additional_config"]
                         ),
                     ],
                 ),
@@ -72,8 +69,8 @@ recipe_list = [
                     third_party_id="twitter",
                     clients=[
                         ProviderClientConfig(
-                            client_id='4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ',
-                            client_secret='BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC'
+                            client_id=default_oauth_providers["twitter"]["client_id"],
+                            client_secret=default_oauth_providers["twitter"]["client_secret"]
                         ),
                     ],
                 ),

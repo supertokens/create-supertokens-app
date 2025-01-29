@@ -9,16 +9,17 @@ import (
 	"github.com/supertokens/supertokens-golang/recipe/passwordless"
 	"github.com/supertokens/supertokens-golang/recipe/passwordless/plessmodels"
 	"github.com/supertokens/supertokens-golang/supertokens"
+	sharedConfig "../../../shared/config"
 )
 
 var SuperTokensConfig = supertokens.TypeInput{
 	Supertokens: &supertokens.ConnectionInfo{
-		ConnectionURI: "https://try.supertokens.com",
+		ConnectionURI: sharedConfig.DefaultSupertokensConfig["connectionURI"],
 	},
 	AppInfo: supertokens.AppInfo{
-		AppName:       "SuperTokens Demo App",
-		APIDomain:     "http://localhost:3001",
-		WebsiteDomain: "http://localhost:3000",
+		AppName:       sharedConfig.DefaultAppInfo["appName"],
+		APIDomain:     sharedConfig.DefaultAppInfo["apiDomain"],
+		WebsiteDomain: sharedConfig.DefaultAppInfo["websiteDomain"],
 	},
 	RecipeList: []supertokens.Recipe{
 		emailpassword.Init(nil),
@@ -30,14 +31,14 @@ var SuperTokensConfig = supertokens.TypeInput{
 		}),
 		thirdparty.Init(&tpmodels.TypeInput{
 			SignInAndUpFeature: tpmodels.TypeInputSignInAndUp{
-				Providers: []tpmodels.ProviderInput{
+				Providers: []tpmodels.TypeProvider{
 					{
 						Config: tpmodels.ProviderConfig{
 							ThirdPartyId: "google",
-							Clients: []tpmodels.ProviderClientConfig{
+							Clients: []tpmodels.ProviderClient{
 								{
-									ClientID:     "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
-									ClientSecret: "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",
+									ClientID:     sharedConfig.DefaultOAuthProviders["google"].ClientID,
+									ClientSecret: sharedConfig.DefaultOAuthProviders["google"].ClientSecret,
 								},
 							},
 						},
@@ -45,21 +46,10 @@ var SuperTokensConfig = supertokens.TypeInput{
 					{
 						Config: tpmodels.ProviderConfig{
 							ThirdPartyId: "github",
-							Clients: []tpmodels.ProviderClientConfig{
+							Clients: []tpmodels.ProviderClient{
 								{
-									ClientID:     "467101b197249757c71f",
-									ClientSecret: "e97051221f4b6426e8fe8d51486396703012f5bd",
-								},
-							},
-						},
-					},
-					{
-						Config: tpmodels.ProviderConfig{
-							ThirdPartyId: "twitter",
-							Clients: []tpmodels.ProviderClientConfig{
-								{
-									ClientID:     "4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ",
-									ClientSecret: "BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC",
+									ClientID:     sharedConfig.DefaultOAuthProviders["github"].ClientID,
+									ClientSecret: sharedConfig.DefaultOAuthProviders["github"].ClientSecret,
 								},
 							},
 						},
@@ -67,14 +57,21 @@ var SuperTokensConfig = supertokens.TypeInput{
 					{
 						Config: tpmodels.ProviderConfig{
 							ThirdPartyId: "apple",
-							Clients: []tpmodels.ProviderClientConfig{
+							Clients: []tpmodels.ProviderClient{
 								{
-									ClientID: "4398792-io.supertokens.example.service",
-									AdditionalConfig: map[string]interface{}{
-										"keyId":      "7M48Y4RYDL",
-										"privateKey": "-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgu8gXs+XYkqXD6Ala9Sf/iJXzhbwcoG5dMh1OonpdJUmgCgYIKoZIzj0DAQehRANCAASfrvlFbFCYqn3I2zeknYXLwtH30JuOKestDbSfZYxZNMqhF/OzdZFTV0zc5u5s3eN+oCWbnvl0hM+9IW0UlkdA\n-----END PRIVATE KEY-----",
-										"teamId":     "YWQCXGJRJL",
-									},
+									ClientID:         sharedConfig.DefaultOAuthProviders["apple"].ClientID,
+									AdditionalConfig: sharedConfig.DefaultOAuthProviders["apple"].Additional,
+								},
+							},
+						},
+					},
+					{
+						Config: tpmodels.ProviderConfig{
+							ThirdPartyId: "twitter",
+							Clients: []tpmodels.ProviderClient{
+								{
+									ClientID:     sharedConfig.DefaultOAuthProviders["twitter"].ClientID,
+									ClientSecret: sharedConfig.DefaultOAuthProviders["twitter"].ClientSecret,
 								},
 							},
 						},
