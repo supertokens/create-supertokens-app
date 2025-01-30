@@ -4,24 +4,22 @@ from dataclasses import dataclass
 
 @dataclass
 class BaseConfig:
-    api_port: Optional[int] = None
+    api_port: Optional[str] = None
     api_url: Optional[str] = None
-    website_port: Optional[int] = None
+    website_port: Optional[str] = None
     website_url: Optional[str] = None
     app_name: Optional[str] = None
 
 def get_api_domain(config: Optional[BaseConfig] = None) -> str:
-    api_port = os.environ.get("VITE_APP_API_PORT") or getattr(config, "api_port", None) or 3001
-    api_url = os.environ.get("VITE_APP_API_URL") or getattr(config, "api_url", None) or f"http://localhost:{api_port}"
-    return api_url
+    api_port = os.environ.get("VITE_APP_API_PORT") or getattr(config, "api_port", "3001")
+    return os.environ.get("VITE_APP_API_URL") or getattr(config, "api_url", None) or f"http://localhost:{api_port}"
 
 def get_website_domain(config: Optional[BaseConfig] = None) -> str:
-    website_port = os.environ.get("VITE_APP_WEBSITE_PORT") or getattr(config, "website_port", None) or 3000
-    website_url = os.environ.get("VITE_APP_WEBSITE_URL") or getattr(config, "website_url", None) or f"http://localhost:{website_port}"
-    return website_url
+    website_port = os.environ.get("VITE_APP_WEBSITE_PORT") or getattr(config, "website_port", "3000")
+    return os.environ.get("VITE_APP_WEBSITE_URL") or getattr(config, "website_url", None) or f"http://localhost:{website_port}"
 
 default_app_info = {
-    "app_name": "Supertokens",
+    "app_name": "SuperTokens Demo App",
     "api_domain": get_api_domain(),
     "website_domain": get_website_domain(),
 }

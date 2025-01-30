@@ -25,15 +25,13 @@ func GetApiDomain(config *BaseConfig) string {
 		}
 	}
 
-	apiUrl := os.Getenv("VITE_APP_API_URL")
-	if apiUrl == "" {
-		if config != nil && config.ApiUrl != "" {
-			apiUrl = config.ApiUrl
-		} else {
-			apiUrl = fmt.Sprintf("http://localhost:%s", apiPort)
-		}
+	if apiUrl := os.Getenv("VITE_APP_API_URL"); apiUrl != "" {
+		return apiUrl
 	}
-	return apiUrl
+	if config != nil && config.ApiUrl != "" {
+		return config.ApiUrl
+	}
+	return fmt.Sprintf("http://localhost:%s", apiPort)
 }
 
 // GetWebsiteDomain returns the website domain based on config or environment variables
@@ -47,15 +45,13 @@ func GetWebsiteDomain(config *BaseConfig) string {
 		}
 	}
 
-	websiteUrl := os.Getenv("VITE_APP_WEBSITE_URL")
-	if websiteUrl == "" {
-		if config != nil && config.WebsiteUrl != "" {
-			websiteUrl = config.WebsiteUrl
-		} else {
-			websiteUrl = fmt.Sprintf("http://localhost:%s", websitePort)
-		}
+	if websiteUrl := os.Getenv("VITE_APP_WEBSITE_URL"); websiteUrl != "" {
+		return websiteUrl
 	}
-	return websiteUrl
+	if config != nil && config.WebsiteUrl != "" {
+		return config.WebsiteUrl
+	}
+	return fmt.Sprintf("http://localhost:%s", websitePort)
 }
 
 // GetStringPointer returns a pointer to the given string

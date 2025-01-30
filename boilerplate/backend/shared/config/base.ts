@@ -1,34 +1,32 @@
 import { TypeInput } from "supertokens-node/types";
 
 export interface BaseConfig {
-    apiPort?: number | string;
+    apiPort?: string;
     apiUrl?: string;
-    websitePort?: number | string;
+    websitePort?: string;
     websiteUrl?: string;
     appName?: string;
 }
 
-export function getApiDomain(config?: BaseConfig) {
-    const apiPort = process.env.VITE_APP_API_PORT || config?.apiPort || 3001;
-    const apiUrl = process.env.VITE_APP_API_URL || config?.apiUrl || `http://localhost:${apiPort}`;
-    return apiUrl;
+export function getApiDomain(config?: BaseConfig): string {
+    const apiPort = process.env.VITE_APP_API_PORT ?? config?.apiPort ?? "3001";
+    return process.env.VITE_APP_API_URL ?? config?.apiUrl ?? `http://localhost:${apiPort}`;
 }
 
-export function getWebsiteDomain(config?: BaseConfig) {
-    const websitePort = process.env.VITE_APP_WEBSITE_PORT || config?.websitePort || 3000;
-    const websiteUrl = process.env.VITE_APP_WEBSITE_URL || config?.websiteUrl || `http://localhost:${websitePort}`;
-    return websiteUrl;
+export function getWebsiteDomain(config?: BaseConfig): string {
+    const websitePort = process.env.VITE_APP_WEBSITE_PORT ?? config?.websitePort ?? "3000";
+    return process.env.VITE_APP_WEBSITE_URL ?? config?.websiteUrl ?? `http://localhost:${websitePort}`;
 }
 
 export const defaultAppInfo = {
     appName: "SuperTokens Demo App",
     apiDomain: getApiDomain(),
     websiteDomain: getWebsiteDomain(),
-};
+} as const;
 
 export const defaultSupertokensConfig = {
     connectionURI: "https://try.supertokens.com",
-};
+} as const;
 
 export const defaultOAuthProviders = {
     google: {
