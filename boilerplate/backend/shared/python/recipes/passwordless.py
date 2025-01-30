@@ -1,4 +1,4 @@
-from supertokens_python import init
+from supertokens_python import init, InputAppInfo, SupertokensConfig
 from supertokens_python.recipe import passwordless, session, dashboard, userroles
 from supertokens_python.recipe.passwordless import ContactConfig, ContactEmailOnlyConfig
 import os
@@ -13,35 +13,46 @@ def get_website_domain() -> str:
     website_url = os.environ.get("VITE_APP_WEBSITE_URL", f"http://localhost:{website_port}")
     return website_url
 
+# SuperTokens core configuration
+supertokens_config = SupertokensConfig(
+    connection_uri="https://try.supertokens.com"
+)
+
+# App configuration
+app_info = InputAppInfo(
+    app_name="SuperTokens Demo App",
+    api_domain=get_api_domain(),
+    website_domain=get_website_domain(),
+    api_base_path="/auth",
+    website_base_path="/auth"
+)
+
+# Framework configuration
+framework = "fastapi"  # or "flask"
+
+# Recipe list configuration
+recipe_list = [
+    passwordless.init(
+        contact_config=ContactConfig(
+            contact_method="EMAIL",
+        ),
+        flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
+    ),
+    session.init(
+        cookie_same_site="lax",
+        cookie_secure=False,
+        anti_csrf="NONE"
+    ),
+    dashboard.init(api_key=os.environ.get("DASHBOARD_API_KEY")),
+    userroles.init()
+]
+
 # Initialize SuperTokens with Passwordless recipe
 init(
-    supertokens_config={"connection_uri": "https://try.supertokens.com"},
-    app_info={
-        "app_name": "SuperTokens Demo App",
-        "api_domain": get_api_domain(),
-        "website_domain": get_website_domain(),
-        "api_base_path": "/auth",
-        "website_base_path": "/auth"
-    },
-    framework="fastapi",  # or "flask"
-    recipe_list=[
-        passwordless.init(
-            contact_config=ContactConfig(
-                contact_method="EMAIL",
-                email_delivery=ContactEmailOnlyConfig(
-                    service=None  # Use default email service
-                ),
-            ),
-            flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
-        ),
-        session.init(
-            cookie_same_site="lax",
-            cookie_secure=False,
-            anti_csrf="NONE"
-        ),
-        dashboard.init(api_key=os.environ.get("DASHBOARD_API_KEY")),
-        userroles.init()
-    ],
+    supertokens_config=supertokens_config,
+    app_info=app_info,
+    framework=framework,  # or "flask"
+    recipe_list=recipe_list,
     mode="asgi",  # or "wsgi"
     telemetry=False
 ) 

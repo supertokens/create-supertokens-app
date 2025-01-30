@@ -1,4 +1,4 @@
-from supertokens_python import init
+from supertokens_python import init, InputAppInfo, SupertokensConfig
 from supertokens_python.recipe import thirdparty, session, dashboard, userroles
 from supertokens_python.recipe.thirdparty import (
     ProviderInput,
@@ -29,54 +29,68 @@ default_oauth_providers = {
     }
 }
 
+# SuperTokens core configuration
+supertokens_config = SupertokensConfig(
+    connection_uri="https://try.supertokens.com"
+)
+
+# App configuration
+app_info = InputAppInfo(
+    app_name="SuperTokens Demo App",
+    api_domain=get_api_domain(),
+    website_domain=get_website_domain(),
+    api_base_path="/auth",
+    website_base_path="/auth"
+)
+
+# Framework configuration
+framework = "fastapi"  # or "flask"
+
+# Recipe list configuration
+recipe_list = [
+    thirdparty.init(
+        sign_in_and_up_feature=thirdparty.SignInAndUpFeature(
+            providers=[
+                ProviderInput(
+                    config=ProviderConfig(
+                        third_party_id="google",
+                        clients=[
+                            ProviderClientConfig(
+                                client_id=default_oauth_providers["google"]["client_id"],
+                                client_secret=default_oauth_providers["google"]["client_secret"],
+                            ),
+                        ],
+                    ),
+                ),
+                ProviderInput(
+                    config=ProviderConfig(
+                        third_party_id="github",
+                        clients=[
+                            ProviderClientConfig(
+                                client_id=default_oauth_providers["github"]["client_id"],
+                                client_secret=default_oauth_providers["github"]["client_secret"],
+                            ),
+                        ],
+                    ),
+                ),
+            ]
+        ),
+    ),
+    session.init(
+        cookie_same_site="lax",
+        cookie_secure=False,
+        anti_csrf="NONE"
+    ),
+    dashboard.init(api_key=os.environ.get("DASHBOARD_API_KEY")),
+    userroles.init()
+]
+
 # Initialize SuperTokens with ThirdParty recipe
 init(
-    supertokens_config={"connection_uri": "https://try.supertokens.com"},
-    app_info={
-        "app_name": "SuperTokens Demo App",
-        "api_domain": get_api_domain(),
-        "website_domain": get_website_domain(),
-        "api_base_path": "/auth",
-        "website_base_path": "/auth"
-    },
-    framework="fastapi",  # or "flask"
-    recipe_list=[
-        thirdparty.init(
-            sign_in_and_up_feature=thirdparty.SignInAndUpFeature(
-                providers=[
-                    ProviderInput(
-                        config=ProviderConfig(
-                            third_party_id="google",
-                            clients=[
-                                ProviderClientConfig(
-                                    client_id=default_oauth_providers["google"]["client_id"],
-                                    client_secret=default_oauth_providers["google"]["client_secret"],
-                                ),
-                            ],
-                        ),
-                    ),
-                    ProviderInput(
-                        config=ProviderConfig(
-                            third_party_id="github",
-                            clients=[
-                                ProviderClientConfig(
-                                    client_id=default_oauth_providers["github"]["client_id"],
-                                    client_secret=default_oauth_providers["github"]["client_secret"],
-                                ),
-                            ],
-                        ),
-                    ),
-                ]
-            ),
-        ),
-        session.init(
-            cookie_same_site="lax",
-            cookie_secure=False,
-            anti_csrf="NONE"
-        ),
-        dashboard.init(api_key=os.environ.get("DASHBOARD_API_KEY")),
-        userroles.init()
-    ],
+    supertokens_config=supertokens_config,
+    app_info=app_info,
+    framework=framework,
+    recipe_list=recipe_list,
     mode="asgi",  # or "wsgi"
     telemetry=False
 ) 
