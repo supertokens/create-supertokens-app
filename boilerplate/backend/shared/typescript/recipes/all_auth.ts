@@ -1,5 +1,5 @@
-import EmailPassword from "supertokens-node/recipe/emailpassword";
 import ThirdParty from "supertokens-node/recipe/thirdparty";
+import EmailPassword from "supertokens-node/recipe/emailpassword";
 import Passwordless from "supertokens-node/recipe/passwordless";
 import Session from "supertokens-node/recipe/session";
 import { TypeInput } from "supertokens-node/types";
@@ -27,14 +27,29 @@ export const SuperTokensConfig: TypeInput = {
         appName: "SuperTokens Demo App",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
+        apiBasePath: "/auth",
+        websiteBasePath: "/auth",
     },
     // recipeList contains all the modules that you want to
     // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
     recipeList: [
-        EmailPassword.init(),
+        EmailPassword.init({
+            signUpFeature: {
+                formFields: [
+                    {
+                        id: "email",
+                    },
+                    {
+                        id: "password",
+                    },
+                ],
+            },
+        }),
         ThirdParty.init({
             signInAndUpFeature: {
                 providers: [
+                    // We have provided you with development keys which you can use for testing.
+                    // IMPORTANT: Please replace them with your own OAuth keys for production use.
                     {
                         config: {
                             thirdPartyId: "google",
@@ -58,41 +73,21 @@ export const SuperTokensConfig: TypeInput = {
                             ],
                         },
                     },
-                    {
-                        config: {
-                            thirdPartyId: "apple",
-                            clients: [
-                                {
-                                    clientId: "4398792-io.supertokens.example.service",
-                                    additionalConfig: {
-                                        keyId: "7M48Y4RYDL",
-                                        privateKey:
-                                            "-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgu8gXs+XYkqXD6Ala9Sf/iJXzhbwcoG5dMh1OonpdJUmgCgYIKoZIzj0DAQehRANCAASfrvlFbFCYqn3I2zeknYXLwtH30JuOKestDbSfZYxZNMqhF/OzdZFTV0zc5u5s3eN+oCWbnvl0hM+9IW0UlkdA\n-----END PRIVATE KEY-----",
-                                        teamId: "YWQCXGJRJL",
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                    {
-                        config: {
-                            thirdPartyId: "twitter",
-                            clients: [
-                                {
-                                    clientId: "4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ",
-                                    clientSecret: "BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC",
-                                },
-                            ],
-                        },
-                    },
                 ],
             },
         }),
         Passwordless.init({
-            contactMethod: "EMAIL_OR_PHONE",
+            contactMethod: "EMAIL",
             flowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
+            emailDelivery: {
+                service: undefined, // Use default email service
+            },
         }),
-        Session.init(),
+        Session.init({
+            cookieSameSite: "lax",
+            cookieSecure: false,
+            antiCsrf: "NONE",
+        }),
         Dashboard.init(),
         UserRoles.init(),
     ],

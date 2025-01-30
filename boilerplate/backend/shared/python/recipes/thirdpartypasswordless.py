@@ -1,13 +1,7 @@
 from supertokens_python import init
-from supertokens_python.recipe import thirdparty, emailpassword, session, dashboard, userroles
-from supertokens_python.recipe.thirdparty import (
-    ProviderInput,
-    ProviderConfig,
-    ProviderClientConfig,
-)
-from supertokens_python.recipe.emailpassword import (
-    InputFormField,
-)
+from supertokens_python.recipe import thirdparty, passwordless, session, dashboard, userroles
+from supertokens_python.recipe.thirdparty import ProviderInput, ProviderConfig, ProviderClientConfig
+from supertokens_python.recipe.passwordless import ContactConfig, ContactEmailOnlyConfig
 import os
 
 def get_api_domain() -> str:
@@ -20,19 +14,7 @@ def get_website_domain() -> str:
     website_url = os.environ.get("VITE_APP_WEBSITE_URL", f"http://localhost:{website_port}")
     return website_url
 
-# Default OAuth provider credentials (for demo purposes)
-default_oauth_providers = {
-    "google": {
-        "client_id": "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
-        "client_secret": "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",
-    },
-    "github": {
-        "client_id": "467101b197249757c71f",
-        "client_secret": "e97051221f4b6426e8fe8d51486396703012f5bd",
-    }
-}
-
-# Initialize SuperTokens with ThirdParty and EmailPassword recipes
+# Initialize SuperTokens with ThirdParty and Passwordless recipes
 init(
     supertokens_config={"connection_uri": "https://try.supertokens.com"},
     app_info={
@@ -53,8 +35,8 @@ init(
                             third_party_id="google",
                             clients=[
                                 ProviderClientConfig(
-                                    client_id=default_oauth_providers["google"]["client_id"],
-                                    client_secret=default_oauth_providers["google"]["client_secret"],
+                                    client_id="1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
+                                    client_secret="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",
                                 ),
                             ],
                         ),
@@ -64,8 +46,8 @@ init(
                             third_party_id="github",
                             clients=[
                                 ProviderClientConfig(
-                                    client_id=default_oauth_providers["github"]["client_id"],
-                                    client_secret=default_oauth_providers["github"]["client_secret"],
+                                    client_id="467101b197249757c71f",
+                                    client_secret="e97051221f4b6426e8fe8d51486396703012f5bd",
                                 ),
                             ],
                         ),
@@ -73,14 +55,15 @@ init(
                 ]
             ),
         ),
-        # Initialize EmailPassword recipe
-        emailpassword.init(
-            sign_up_feature=emailpassword.InputSignUpFeature(
-                form_fields=[
-                    InputFormField(id="email"),
-                    InputFormField(id="password"),
-                ]
+        # Initialize Passwordless recipe
+        passwordless.init(
+            contact_config=ContactConfig(
+                contact_method="EMAIL",
+                email_delivery=ContactEmailOnlyConfig(
+                    service=None  # Use default email service
+                ),
             ),
+            flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
         ),
         session.init(
             cookie_same_site="lax",

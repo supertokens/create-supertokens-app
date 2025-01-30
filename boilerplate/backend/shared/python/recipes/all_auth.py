@@ -1,13 +1,24 @@
-from supertokens_python import init, InputAppInfo, SupertokensConfig
+from supertokens_python import init
 from supertokens_python.recipe import (
-    thirdpartyemailpassword,
-    thirdpartypasswordless,
+    thirdparty,
+    emailpassword,
+    passwordless,
     session,
     dashboard,
-    userroles
+    userroles,
 )
-from supertokens_python.recipe.thirdparty.provider import GoogleProvider, GithubProvider, AppleProvider
-from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig
+from supertokens_python.recipe.thirdparty import (
+    ProviderInput,
+    ProviderConfig,
+    ProviderClientConfig,
+)
+from supertokens_python.recipe.emailpassword import (
+    InputFormField,
+)
+from supertokens_python.recipe.passwordless import (
+    ContactEmailOnlyConfig,
+    ContactConfig,
+)
 import os
 
 def get_api_domain() -> str:
@@ -20,59 +31,86 @@ def get_website_domain() -> str:
     website_url = os.environ.get("VITE_APP_WEBSITE_URL", f"http://localhost:{website_port}")
     return website_url
 
-# Configuration for SuperTokens core and application
-supertokens_config = SupertokensConfig(
-    connection_uri="https://try.supertokens.com"
-)
+# Default OAuth provider credentials (for demo purposes)
+default_oauth_providers = {
+    "google": {
+        "client_id": "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
+        "client_secret": "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",
+    },
+    "github": {
+        "client_id": "467101b197249757c71f",
+        "client_secret": "e97051221f4b6426e8fe8d51486396703012f5bd",
+    }
+}
 
-app_info = InputAppInfo(
-    app_name="SuperTokens Demo App",
-    api_domain=get_api_domain(),
-    website_domain=get_website_domain()
-)
-
-framework = None
-
-recipe_list = [
-    thirdpartyemailpassword.init(
-        providers=[
-            GoogleProvider(
-                client_id=os.environ.get("GOOGLE_CLIENT_ID", "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com"),
-                client_secret=os.environ.get("GOOGLE_CLIENT_SECRET", "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")
+# Initialize SuperTokens with all recipes
+init(
+    supertokens_config={"connection_uri": "https://try.supertokens.com"},
+    app_info={
+        "app_name": "SuperTokens Demo App",
+        "api_domain": get_api_domain(),
+        "website_domain": get_website_domain(),
+        "api_base_path": "/auth",
+        "website_base_path": "/auth"
+    },
+    framework="fastapi",  # or "flask"
+    recipe_list=[
+        # Initialize ThirdParty recipe
+        thirdparty.init(
+            sign_in_and_up_feature=thirdparty.SignInAndUpFeature(
+                providers=[
+                    ProviderInput(
+                        config=ProviderConfig(
+                            third_party_id="google",
+                            clients=[
+                                ProviderClientConfig(
+                                    client_id=default_oauth_providers["google"]["client_id"],
+                                    client_secret=default_oauth_providers["google"]["client_secret"],
+                                ),
+                            ],
+                        ),
+                    ),
+                    ProviderInput(
+                        config=ProviderConfig(
+                            third_party_id="github",
+                            clients=[
+                                ProviderClientConfig(
+                                    client_id=default_oauth_providers["github"]["client_id"],
+                                    client_secret=default_oauth_providers["github"]["client_secret"],
+                                ),
+                            ],
+                        ),
+                    ),
+                ]
             ),
-            GithubProvider(
-                client_id=os.environ.get("GITHUB_CLIENT_ID", "467101b197249757c71f"),
-                client_secret=os.environ.get("GITHUB_CLIENT_SECRET", "e97051221f4b6426e8fe8d51486396703012f5bd")
+        ),
+        # Initialize EmailPassword recipe
+        emailpassword.init(
+            sign_up_feature=emailpassword.InputSignUpFeature(
+                form_fields=[
+                    InputFormField(id="email"),
+                    InputFormField(id="password"),
+                ]
             ),
-            AppleProvider(
-                client_id=os.environ.get("APPLE_CLIENT_ID", "4398792-io.supertokens.example.service"),
-                key_id=os.environ.get("APPLE_KEY_ID", "7M48Y4RYDL"),
-                private_key=os.environ.get("APPLE_PRIVATE_KEY", "-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgu8gXs+XYkqXD6Ala9Sf/iJXzhbwcoG5dMh1OonpdJUmgCgYIKoZIzj0DAQehRANCAASfrvlFbFCYqn3I2zeknYXLwtH30JuOKestDbSfZYxZNMqhF/OzdZFTV0zc5u5s3eN+oCWbnvl0hM+9IW0UlkdA\n-----END PRIVATE KEY-----").replace("\\n", "\n"),
-                team_id=os.environ.get("APPLE_TEAM_ID", "YWQCXGJRJL")
-            )
-        ]
-    ),
-    thirdpartypasswordless.init(
-        flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
-        contact_config=ContactEmailOrPhoneConfig(),
-        providers=[
-            GoogleProvider(
-                client_id=os.environ.get("GOOGLE_CLIENT_ID", "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com"),
-                client_secret=os.environ.get("GOOGLE_CLIENT_SECRET", "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")
+        ),
+        # Initialize Passwordless recipe
+        passwordless.init(
+            contact_config=ContactConfig(
+                contact_method="EMAIL",
+                email_delivery=ContactEmailOnlyConfig(
+                    service=None  # Use default email service
+                ),
             ),
-            GithubProvider(
-                client_id=os.environ.get("GITHUB_CLIENT_ID", "467101b197249757c71f"),
-                client_secret=os.environ.get("GITHUB_CLIENT_SECRET", "e97051221f4b6426e8fe8d51486396703012f5bd")
-            ),
-            AppleProvider(
-                client_id=os.environ.get("APPLE_CLIENT_ID", "4398792-io.supertokens.example.service"),
-                key_id=os.environ.get("APPLE_KEY_ID", "7M48Y4RYDL"),
-                private_key=os.environ.get("APPLE_PRIVATE_KEY", "-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgu8gXs+XYkqXD6Ala9Sf/iJXzhbwcoG5dMh1OonpdJUmgCgYIKoZIzj0DAQehRANCAASfrvlFbFCYqn3I2zeknYXLwtH30JuOKestDbSfZYxZNMqhF/OzdZFTV0zc5u5s3eN+oCWbnvl0hM+9IW0UlkdA\n-----END PRIVATE KEY-----").replace("\\n", "\n"),
-                team_id=os.environ.get("APPLE_TEAM_ID", "YWQCXGJRJL")
-            )
-        ]
-    ),
-    session.init(),
-    dashboard.init(),
-    userroles.init()
-] 
+            flow_type="USER_INPUT_CODE_AND_MAGIC_LINK",
+        ),
+        session.init(
+            cookie_same_site="lax",
+            cookie_secure=False,
+            anti_csrf="NONE"
+        ),
+        dashboard.init(api_key=os.environ.get("DASHBOARD_API_KEY")),
+        userroles.init()
+    ],
+    mode="asgi",  # or "wsgi"
+    telemetry=False
+) 
