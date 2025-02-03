@@ -1,19 +1,24 @@
-<div class="fill" id="home-container">
-    <div class="logos">
-        <img src="/ST.svg" alt="SuperTokens" />
-        <span>x</span>
-        <img src="/Angular.svg" alt="Angular" />
-    </div>
-    <div class="main-container">
-        <div class="inner-content">
-            <p>
-                <strong>SuperTokens</strong> x <strong>Angular</strong> <br />
-                example project
+<section className="logos">
+    <img src="/ST.svg" alt="SuperTokens" />
+    <span>x</span>
+    <img src="/React.svg" alt="React" />
+</section>
+<section className="main-container">
+    <div className="inner-content">
+        <h1>
+            <strong>SuperTokens</strong> x <strong>Angular</strong> <br />
+            example project
+        </h1>
+        <div>
+            <p *ngIf="session">
+                You're signed in already, <br />
+                check out the Dashboard! 👇
             </p>
-            <div class="buttons">
-                <a href="/auth" class="sessionButton"> Sign-up / Login </a>
-                <a href="/dashboard" class="sessionButton"> Dashboard </a>
-            </div>
+            <p *ngIf="!session">Sign-in to continue</p>
         </div>
+        <nav className="buttons">
+            <a href="/dashboard" className="dashboard-button" *ngIf="session"> Dashboard </a>
+            <a href="/auth" className="dashboard-button" *ngIf="!session"> Sign-up / Login </a>
+        </nav>
     </div>
-</div>
+</section>
