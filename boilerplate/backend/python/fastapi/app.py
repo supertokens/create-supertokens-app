@@ -20,18 +20,26 @@ init(
 )
 
 
-app = FastAPI(title="SuperTokens example")
+app = FastAPI(
+    title="SuperTokens example",
+    # Disable automatic trailing slash redirection
+    redirect_slashes=False
+)
 app.add_middleware(get_middleware())
 
-@app.get("/sessioninfo")    
-async def secure_api(s: SessionContainer = Depends(verify_session())):
+async def get_session_info(s: SessionContainer = Depends(verify_session())):
     return {
         "sessionHandle": s.get_handle(),
         "userId": s.get_user_id(),
         "accessTokenPayload": s.get_access_token_payload(),
     }
 
+# Add routes for both with and without trailing slash
+app.get("/sessioninfo")(get_session_info)
+app.get("/sessioninfo/")(get_session_info)
+
 @app.get("/tenants")
+@app.get("/tenants/")
 async def get_tenants():
     tenantReponse = await list_all_tenants()
 

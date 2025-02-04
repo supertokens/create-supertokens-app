@@ -5,7 +5,8 @@ import { appInfo } from "../config/appInfo";
 import { oAuthProviders } from "../config/oAuthProviders";
 
 export const pyRecipeImports = {
-    emailPassword: "from supertokens_python.recipe import emailpassword",
+    emailPassword:
+        "from supertokens_python.recipe import emailpassword\nfrom supertokens_python.recipe.emailpassword import InputFormField",
     thirdParty:
         "from supertokens_python.recipe import thirdparty\nfrom supertokens_python.recipe.thirdparty import ProviderInput, ProviderConfig, ProviderClientConfig",
     passwordless:
@@ -51,7 +52,8 @@ def get_framework_config():
         return {
             "framework": "fastapi",
             "mode": "asgi"
-        }`;
+        }
+`;
 
 export const pyRecipeInits = {
     emailPassword: () => `emailpassword.init(
@@ -117,6 +119,7 @@ export const generatePythonTemplate = (configType: ConfigType): string => {
 
     // Add configuration
     template += `
+
 # SuperTokens core configuration
 supertokens_config = SupertokensConfig(
     connection_uri="${config.connectionURI}"
@@ -127,12 +130,16 @@ app_info = InputAppInfo(
     app_name="${appInfo.appName}",
     api_domain=get_api_domain(),
     website_domain=get_website_domain(),
-    api_base_path="${appInfo.apiBasePath}",
-    website_base_path="${appInfo.websiteBasePath}"
+    api_base_path="/auth",
+    website_base_path="/auth"
 )
 
 # Get framework-specific configuration
 framework_config = get_framework_config()
+
+# Export framework configuration
+framework = framework_config["framework"]
+mode = framework_config["mode"]
 
 # Recipe list configuration
 recipe_list = [
@@ -150,9 +157,9 @@ recipe_list = [
 init(
     supertokens_config=supertokens_config,
     app_info=app_info,
-    framework=framework_config["framework"],
+    framework=framework,
     recipe_list=recipe_list,
-    mode=framework_config["mode"],
+    mode=mode,
     telemetry=False
 )`;
 

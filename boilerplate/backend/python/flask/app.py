@@ -19,6 +19,9 @@ init(
 )
 
 app = Flask(__name__)
+# Make Flask handle trailing slashes consistently
+app.url_map.strict_slashes = False
+
 # TODO: should middlware be after or before cors?
 Middleware(app)
 CORS(
