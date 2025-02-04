@@ -5,34 +5,22 @@ import { appInfo } from "../config/appInfo";
 import { oAuthProviders } from "../config/oAuthProviders";
 
 export const goRecipeImports = {
-    emailPassword: 'import "github.com/supertokens/supertokens-golang/recipe/emailpassword"',
-    thirdParty: `import (
-    "github.com/supertokens/supertokens-golang/recipe/thirdparty"
-    "github.com/supertokens/supertokens-golang/recipe/thirdparty/tpmodels"
-)`,
-    passwordless: `import (
-    "github.com/supertokens/supertokens-golang/recipe/passwordless"
-    "github.com/supertokens/supertokens-golang/recipe/passwordless/plessmodels"
-)`,
-    session: 'import "github.com/supertokens/supertokens-golang/recipe/session"',
-    dashboard: 'import "github.com/supertokens/supertokens-golang/recipe/dashboard"',
-    userRoles: 'import "github.com/supertokens/supertokens-golang/recipe/userroles"',
-    multiFactorAuth: `import (
-    "github.com/supertokens/supertokens-golang/recipe/multifactorauth"
-    "github.com/supertokens/supertokens-golang/recipe/multifactorauth/mfamodels"
-)`,
-    accountLinking: `import (
-    "github.com/supertokens/supertokens-golang/recipe/accountlinking"
-    "github.com/supertokens/supertokens-golang/recipe/accountlinking/almodels"
-)`,
-    emailVerification: `import (
-    "github.com/supertokens/supertokens-golang/recipe/emailverification"
-    "github.com/supertokens/supertokens-golang/recipe/emailverification/evmodels"
-)`,
-    totp: `import (
-    "github.com/supertokens/supertokens-golang/recipe/totp"
-    "github.com/supertokens/supertokens-golang/recipe/totp/totpmodels"
-)`,
+    emailPassword: `"github.com/supertokens/supertokens-golang/recipe/emailpassword"`,
+    thirdParty: `"github.com/supertokens/supertokens-golang/recipe/thirdparty"
+    "github.com/supertokens/supertokens-golang/recipe/thirdparty/tpmodels"`,
+    passwordless: `"github.com/supertokens/supertokens-golang/recipe/passwordless"
+    "github.com/supertokens/supertokens-golang/recipe/passwordless/plessmodels"`,
+    session: `"github.com/supertokens/supertokens-golang/recipe/session"`,
+    dashboard: `"github.com/supertokens/supertokens-golang/recipe/dashboard"`,
+    userRoles: `"github.com/supertokens/supertokens-golang/recipe/userroles"`,
+    multiFactorAuth: `"github.com/supertokens/supertokens-golang/recipe/multifactorauth"
+    "github.com/supertokens/supertokens-golang/recipe/multifactorauth/mfamodels"`,
+    accountLinking: `"github.com/supertokens/supertokens-golang/recipe/accountlinking"
+    "github.com/supertokens/supertokens-golang/recipe/accountlinking/almodels"`,
+    emailVerification: `"github.com/supertokens/supertokens-golang/recipe/emailverification"
+    "github.com/supertokens/supertokens-golang/recipe/emailverification/evmodels"`,
+    totp: `"github.com/supertokens/supertokens-golang/recipe/totp"
+    "github.com/supertokens/supertokens-golang/recipe/totp/totpmodels"`,
 };
 
 export const goBaseTemplate = `
@@ -91,7 +79,7 @@ export const goRecipeInits = {
                 },
             }`
                 )
-                .join(",\n            ")}
+                .join(",\n            ")},
         },
     },
 })`,
@@ -112,25 +100,59 @@ export const goRecipeInits = {
         return true, true
     },
 })`,
-    emailVerification: () => `emailverification.Init(evmodels.TypeInput{
+    emailVerification: () => `emailverification.Init(&evmodels.TypeInput{
     Mode: evmodels.ModeRequired,
 })`,
     totp: () => `totp.Init(&totpmodels.TypeInput{})`,
 };
 
 export const generateGoTemplate = (configType: ConfigType): string => {
-    let template = goBaseTemplate;
+    let template = "";
     const recipes = configToRecipes[configType];
 
     // Add recipe-specific imports
     const imports = recipes
         .map((recipe) => goRecipeImports[recipe])
         .filter(Boolean)
-        .join("\n");
-    template = imports + "\n" + template;
+        .join("\n    ");
 
-    // Add configuration
-    template += `
+    // Add package declaration and imports
+    template = `package main
+
+import (
+    "fmt"
+    "os"
+    "github.com/supertokens/supertokens-golang/supertokens"
+    ${imports}
+)
+
+func getStringPointer(s string) *string {
+    return &s
+}
+
+func getApiDomain() string {
+    apiPort := os.Getenv("VITE_APP_API_PORT")
+    if apiPort == "" {
+        apiPort = "3001"
+    }
+    apiUrl := os.Getenv("VITE_APP_API_URL")
+    if apiUrl == "" {
+        apiUrl = fmt.Sprintf("http://localhost:%s", apiPort)
+    }
+    return apiUrl
+}
+
+func getWebsiteDomain() string {
+    websitePort := os.Getenv("VITE_APP_WEBSITE_PORT")
+    if websitePort == "" {
+        websitePort = "3000"
+    }
+    websiteUrl := os.Getenv("VITE_APP_WEBSITE_URL")
+    if websiteUrl == "" {
+        websiteUrl = fmt.Sprintf("http://localhost:%s", websitePort)
+    }
+    return websiteUrl
+}
 
 // SuperTokensConfig is the configuration for SuperTokens core with all auth methods
 var SuperTokensConfig = supertokens.TypeInput{
@@ -144,17 +166,142 @@ var SuperTokensConfig = supertokens.TypeInput{
         APIBasePath:     getStringPointer("${appInfo.apiBasePath}"),
         WebsiteBasePath: getStringPointer("${appInfo.websiteBasePath}"),
     },
-    RecipeList: []supertokens.Recipe{
-        ${recipes
-            .map((recipe) => {
-                if (recipe === "thirdParty") {
-                    return goRecipeInits[recipe](oAuthProviders);
-                }
-                return goRecipeInits[recipe]();
-            })
-            .join(",\n        ")}
-    },
+    RecipeList: []supertokens.Recipe{${recipes
+        .map((recipe) => {
+            if (recipe === "thirdParty") {
+                return goRecipeInits[recipe](oAuthProviders);
+            }
+            return goRecipeInits[recipe]();
+        })
+        .join(",")}},
 }`;
 
     return template;
 };
+
+export const goMainTemplate = `package main
+
+import (
+    "encoding/json"
+    "net/http"
+    "strings"
+
+    "github.com/supertokens/supertokens-golang/recipe/multitenancy"
+    "github.com/supertokens/supertokens-golang/recipe/session"
+    "github.com/supertokens/supertokens-golang/supertokens"
+)
+
+func main() {
+    err := supertokens.Init(SuperTokensConfig)
+
+    if err != nil {
+        panic(err.Error())
+    }
+
+    http.ListenAndServe(":3001", corsMiddleware(
+        supertokens.Middleware(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+            // Handle your APIs..
+            path := strings.TrimSuffix(r.URL.Path, "/")
+
+            // A public endpoint unprotected by SuperTokens
+            if path == "/hello" && r.Method == "GET" {
+                hello(rw, r)
+                return
+            }
+
+            // A SuperTokens protected endpoint that returns
+            // session information
+            if path == "/sessioninfo" {
+                session.VerifySession(nil, sessioninfo).ServeHTTP(rw, r)
+                return
+            }
+
+            // An endpoint that returns tenant lists in a
+            // multitenant configuration
+            if path == "/tenants" && r.Method == "GET" {
+                tenants(rw, r)
+                return
+            }
+
+            rw.WriteHeader(404)
+        }))))
+}
+
+func corsMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(response http.ResponseWriter, r *http.Request) {
+        response.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+        response.Header().Set("Access-Control-Allow-Credentials", "true")
+        if r.Method == "OPTIONS" {
+            response.Header().Set("Access-Control-Allow-Headers", strings.Join(append([]string{"Content-Type"}, supertokens.GetAllCORSHeaders()...), ","))
+            response.Header().Set("Access-Control-Allow-Methods", "*")
+            response.Write([]byte(""))
+        } else {
+            next.ServeHTTP(response, r)
+        }
+    })
+}
+
+func hello(w http.ResponseWriter, r *http.Request) {
+    w.Write([]byte("hello"))
+}
+
+func sessioninfo(w http.ResponseWriter, r *http.Request) {
+    sessionContainer := session.GetSessionFromRequestContext(r.Context())
+
+    if sessionContainer == nil {
+        w.WriteHeader(500)
+        w.Write([]byte("no session found"))
+        return
+    }
+    sessionData, err := sessionContainer.GetSessionDataInDatabase()
+    if err != nil {
+        err = supertokens.ErrorHandler(err, r, w)
+        if err != nil {
+            w.WriteHeader(500)
+            w.Write([]byte(err.Error()))
+        }
+        return
+    }
+    w.WriteHeader(200)
+    w.Header().Add("content-type", "application/json")
+    bytes, err := json.Marshal(map[string]interface{}{
+        "sessionHandle":      sessionContainer.GetHandle(),
+        "userId":            sessionContainer.GetUserID(),
+        "accessTokenPayload": sessionContainer.GetAccessTokenPayload(),
+        "sessionData":       sessionData,
+    })
+    if err != nil {
+        w.WriteHeader(500)
+        w.Write([]byte("error in converting to json"))
+    } else {
+        w.Write(bytes)
+    }
+}
+
+func tenants(w http.ResponseWriter, r *http.Request) {
+    tenantsList, err := multitenancy.ListAllTenants()
+
+    if err != nil {
+        err = supertokens.ErrorHandler(err, r, w)
+        if err != nil {
+            w.WriteHeader(500)
+            w.Write([]byte(err.Error()))
+        }
+        return
+    }
+
+    w.WriteHeader(200)
+    w.Header().Add("content-type", "application/json")
+
+    bytes, err := json.Marshal(map[string]interface{}{
+        "status": "OK",
+        "tenants": tenantsList.OK.Tenants,
+    })
+
+    if err != nil {
+        w.WriteHeader(500)
+        w.Write([]byte("error in converting to json"))
+    } else {
+        w.Write(bytes)
+    }
+}`;
