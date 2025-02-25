@@ -1,14 +1,23 @@
-import { ConfigType, Language } from "./types";
+import { ConfigType, FrontendFramework, Language } from "./types";
 import { generateTypeScriptTemplate } from "../../../boilerplate/backend/shared/typescript/ts";
 import { generatePythonTemplate } from "../../../boilerplate/backend/shared/python/py";
 import { generateGoTemplate } from "../../../boilerplate/backend/shared/go/go";
+import { generateReactTemplate } from "../../../boilerplate/frontend/shared/react/template";
+import { generateWebJSTemplate } from "../../../boilerplate/frontend/shared/web-js/template";
 
-interface CompilerOptions {
+interface BackendCompilerOptions {
     language: Language;
     configType: ConfigType;
 }
 
-export const compile = ({ language, configType }: CompilerOptions): string => {
+interface FrontendCompilerOptions {
+    framework: FrontendFramework;
+    configType: ConfigType;
+}
+
+// Flag for first-factors
+
+export const compileBackend = ({ language, configType }: BackendCompilerOptions): string => {
     switch (language) {
         case "ts":
             return generateTypeScriptTemplate(configType);
@@ -20,3 +29,14 @@ export const compile = ({ language, configType }: CompilerOptions): string => {
             throw new Error(`Unsupported language: ${language}`);
     }
 };
+
+export const compileFrontend = ({ framework, configType }: FrontendCompilerOptions): string => {
+    if (framework === "react") {
+        return generateReactTemplate(configType);
+    }
+    // All other frameworks (vue, angular, solid) use the web-js template
+    return generateWebJSTemplate(configType, framework);
+};
+
+// If special treatment required
+// export const compileFullStack

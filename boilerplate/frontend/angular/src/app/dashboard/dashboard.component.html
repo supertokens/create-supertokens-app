@@ -1,0 +1,16 @@
+<div class="main-container">
+    <div class="top-band success-title bold-500">
+        <img src="assets/images/celebrate-icon.svg" alt="Login successful" class="success-icon" />
+        Login successful
+    </div>
+    <div class="inner-content">
+        <div>Your userID is:</div>
+        <div class="truncate" id="user-id">
+            {{ userId }}
+        </div>
+        <div class="buttons">
+            <button (click)="getSessionInfo()" class="dashboard-button">Call API</button>
+            <button (click)="onLogout()" class="dashboard-button">Logout</button>
+        </div>
+    </div>
+</div>

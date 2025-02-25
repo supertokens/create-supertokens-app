@@ -14,8 +14,9 @@ import chalk from "chalk";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 import { addPackageCommand } from "./packageManager.js";
-import { compile } from "./templateBuilder/compiler";
-import { ConfigType } from "./templateBuilder/types";
+import { compileBackend } from "./templateBuilder/compiler";
+import { ConfigType, FrontendFramework } from "./templateBuilder/types";
+import { compileFrontend } from "./templateBuilder/compiler";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -333,24 +334,26 @@ async function setupFrontendBackendApp(
 
     // Handle frontend config
     for (const config of selectedFrontend.location.config) {
-        // Move the recipe config file for the frontend folder to the correct place
-        const frontendFiles = fs.readdirSync(`./${folderName}/frontend/${normaliseLocationPath(config.configFiles)}`);
-        const frontendRecipeConfig = frontendFiles.filter((i) => i.includes(answers.recipe));
-
-        if (frontendRecipeConfig.length === 0) {
-            throw new Error("Should never come here");
-        }
-
-        fs.copyFileSync(
-            `${folderName}/frontend/${normaliseLocationPath(config.configFiles)}/${frontendRecipeConfig[0]}`,
-            `${folderName}/frontend/${normaliseLocationPath(config.finalConfig)}`
-        );
-
-        // Remove the configs folder
-        fs.rmSync(`${folderName}/frontend/${normaliseLocationPath(config.configFiles)}`, {
-            recursive: true,
-            force: true,
+        // Use the compiler for all frameworks
+        const generatedConfig = compileFrontend({
+            framework: selectedFrontend.value as FrontendFramework,
+            configType: answers.recipe as ConfigType,
         });
+
+        // Write the generated configuration
+        const configPath = `${folderName}/frontend/${normaliseLocationPath(config.finalConfig)}`;
+        if (process.env.DEBUG === "true") {
+            console.log("Writing config to:", configPath);
+        }
+        fs.writeFileSync(configPath, generatedConfig);
+
+        // Remove the original configs folder if it exists
+        if (fs.existsSync(`${folderName}/frontend/${normaliseLocationPath(config.configFiles)}`)) {
+            fs.rmSync(`${folderName}/frontend/${normaliseLocationPath(config.configFiles)}`, {
+                recursive: true,
+                force: true,
+            });
+        }
     }
 
     if (selectedBackend.location === undefined) {
@@ -366,7 +369,7 @@ async function setupFrontendBackendApp(
 
     for (const config of selectedBackend.location.config) {
         // Generate the configuration using the compiler
-        const generatedConfig = compile({
+        const generatedConfig = compileBackend({
             language: backendLang,
             configType: answers.recipe as ConfigType,
         });
@@ -579,7 +582,7 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
 
     for (const config of selectedFullStack.location.config.backend) {
         // Generate the configuration using the compiler
-        const generatedConfig = compile({
+        const generatedConfig = compileBackend({
             language: backendLang,
             configType: answers.recipe as ConfigType,
         });

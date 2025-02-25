@@ -20,6 +20,8 @@ export type IndividualRecipe =
     | "emailVerification"
     | "totp";
 
+export type FrontendFramework = "react" | "vue" | "angular" | "solid";
+
 export type Language = "ts" | "py" | "go";
 
 export type AppInfo = {

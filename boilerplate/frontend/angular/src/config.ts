@@ -1,3 +1,6 @@
-export function initSuperTokensUI() {}
+import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
 
-export function initSuperTokensWebJS() {}
+export function getApiDomain() {}
+
+export function getWebsiteDomain() {}

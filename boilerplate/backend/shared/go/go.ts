@@ -1,7 +1,7 @@
 import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
-import { config } from "../config/base";
-import { appInfo } from "../config/appInfo";
+import { config } from "../../../shared/config/base";
+import { appInfo } from "../../../shared/config/appInfo";
 import { oAuthProviders } from "../config/oAuthProviders";
 
 export const goRecipeImports = {

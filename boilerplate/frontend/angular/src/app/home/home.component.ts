@@ -5,7 +5,6 @@ import * as Session from "supertokens-web-js/recipe/session";
 @Component({
     selector: "app-home",
     templateUrl: "./home.component.html",
-    styleUrls: ["./home.component.css"],
 })
 export class HomeComponent implements AfterViewInit {
     title = "angularapp";
