@@ -1,5 +1,5 @@
 import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
-import { frontendConfig } from "../config/frontend";
+import { frontendConfig } from "../config/frontendConfigUtils";
 import { SessionAuth } from "supertokens-auth-react/recipe/session/index.js";
 
 SuperTokens.init(frontendConfig());

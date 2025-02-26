@@ -1,6 +1,6 @@
 import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
-import { appInfo } from "../../../shared/config/appInfo";
+import { getAppInfo } from "../../../shared/config/appInfo";
 import { oAuthProviders } from "../../../backend/shared/config/oAuthProviders";
 
 // Only include recipes that have frontend components
@@ -39,26 +39,7 @@ export const reactRecipeInits = {
     signInAndUpFeature: {
         providers: [
             ${(providers || [])
-                .map(
-                    (p) => `{
-                id: "${p.id}",
-                get: (redirectURI) => {
-                    return {
-                        redirectURI,
-                        clientId: "${p.clientId}",
-                        scope: ${
-                            p.id === "google"
-                                ? '["https://www.googleapis.com/auth/userinfo.email"]'
-                                : p.id === "github"
-                                ? '["read:user", "user:email"]'
-                                : p.id === "apple"
-                                ? '["name", "email"]'
-                                : "[]"
-                        }
-                    };
-                },
-            }`
-                )
+                .map((p) => `ThirdParty.${p.id.charAt(0).toUpperCase() + p.id.slice(1)}.init()`)
                 .join(",\n            ")}
         ]
     }
@@ -88,11 +69,13 @@ export const reactRecipeInits = {
 })`,
 } as const;
 
-export const generateReactTemplate = (configType: ConfigType): string => {
+export const generateReactTemplate = (configType: ConfigType, framework?: string, isFullStack = false): string => {
     // Filter recipes to only include those that have frontend components
     const recipes = configToRecipes[configType].filter((recipe) =>
         frontendRecipes.includes(recipe as typeof frontendRecipes[number])
     );
+
+    const appInfo = getAppInfo(isFullStack);
 
     // Add recipe-specific imports
     const recipeImports = recipes
@@ -116,31 +99,44 @@ export const generateReactTemplate = (configType: ConfigType): string => {
         recipeInits.push(reactRecipeInits.multitenancy());
     }
 
+    // Determine environment variable syntax based on framework
+    const isNextJS = framework?.includes("next");
+    const envPrefix = isNextJS ? "process.env.NEXT_PUBLIC_" : "import.meta.env.VITE_APP_";
+
     return `${finalImports}
 
 export function getApiDomain() {
-    const apiPort = import.meta.env.VITE_APP_API_PORT || 3001;
-    const apiUrl = import.meta.env.VITE_APP_API_URL || \`http://localhost:\${apiPort}\`;
+    const apiPort = ${envPrefix}API_PORT || ${appInfo.defaultApiPort};
+    const apiUrl = ${envPrefix}API_URL || \`http://localhost:\${apiPort}\`;
     return apiUrl;
 }
 
 export function getWebsiteDomain() {
-    const websitePort = import.meta.env.VITE_APP_WEBSITE_PORT || 3000;
-    const websiteUrl = import.meta.env.VITE_APP_WEBSITE_URL || \`http://localhost:\${websitePort}\`;
+    const websitePort = ${envPrefix}WEBSITE_PORT || ${appInfo.defaultWebsitePort};
+    const websiteUrl = ${envPrefix}WEBSITE_URL || \`http://localhost:\${websitePort}\`;
     return websiteUrl;
 }
 
+export const appInfo = {
+    appName: "${appInfo.appName}",
+    apiDomain: getApiDomain(),
+    websiteDomain: getWebsiteDomain(),
+    apiBasePath: "${appInfo.apiBasePath}",
+    websiteBasePath: "${appInfo.websiteBasePath}"
+};
+
 export const SuperTokensConfig = {
-    appInfo: {
-        appName: "${appInfo.appName}",
-        apiDomain: getApiDomain(),
-        websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}",
-        websiteBasePath: "${appInfo.websiteBasePath}"
-    },
+    appInfo,
     ${isMultitenancy ? "usesDynamicLoginMethods: true,\n    " : ""}recipeList: [
         ${recipeInits.join(",\n        ")}
     ],
+    getRedirectionURL: async (context: any) => {
+        if (context.action === "SUCCESS") {
+            return "/dashboard";
+        }
+        return undefined;
+    },
+    
 };
 
 export const recipeDetails = {

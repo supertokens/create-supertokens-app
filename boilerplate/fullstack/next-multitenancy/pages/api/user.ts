@@ -1,9 +1,9 @@
 import { superTokensNextWrapper } from "supertokens-node/nextjs";
 import { verifySession } from "supertokens-node/recipe/session/framework/express";
 import supertokens from "supertokens-node";
-import { backendConfig } from "../../config/backendConfig";
+import { SuperTokensConfig } from "../../config/backendConfig";
 
-supertokens.init(backendConfig());
+supertokens.init(SuperTokensConfig);
 
 export default async function user(req, res) {
     await superTokensNextWrapper(

@@ -1,7 +1,7 @@
 import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
 import { config } from "../../../shared/config/base";
-import { appInfo } from "../../../shared/config/appInfo";
+import { getAppInfo } from "../../../shared/config/appInfo";
 import { oAuthProviders } from "../config/oAuthProviders";
 
 export const tsRecipeImports = {
@@ -17,19 +17,7 @@ export const tsRecipeImports = {
     totp: 'import TOTP from "supertokens-node/recipe/totp";',
 };
 
-export const tsBaseTemplate = `import { TypeInput } from "supertokens-node/types";
-
-export function getApiDomain() {
-    const apiPort = process.env.VITE_APP_API_PORT || 3001;
-    const apiUrl = process.env.VITE_APP_API_URL || \`http://localhost:\${apiPort}\`;
-    return apiUrl;
-}
-
-export function getWebsiteDomain() {
-    const websitePort = process.env.VITE_APP_WEBSITE_PORT || 3000;
-    const websiteUrl = process.env.VITE_APP_WEBSITE_URL || \`http://localhost:\${websitePort}\`;
-    return websiteUrl;
-}`;
+export const tsBaseTemplate = ``;
 
 export const tsRecipeInits = {
     emailPassword: () => `EmailPassword.init()`,
@@ -80,16 +68,36 @@ export const tsRecipeInits = {
     totp: () => `TOTP.init()`,
 };
 
-export const generateTypeScriptTemplate = (configType: ConfigType): string => {
+export const generateTypeScriptTemplate = (configType: ConfigType, framework?: string, isFullStack = false): string => {
     let template = "";
     const recipes = configToRecipes[configType];
 
+    const isNextJS = framework?.includes("next");
+    const envPrefix = isNextJS ? "process.env.NEXT_PUBLIC_" : "import.meta.env.VITE_APP_";
+
+    const appInfo = getAppInfo(isFullStack);
     // Add recipe-specific imports
     const imports = recipes
         .map((recipe) => tsRecipeImports[recipe])
         .filter(Boolean)
         .join("\n");
-    template = imports + "\n" + tsBaseTemplate + "\n";
+    template =
+        imports +
+        "\n" +
+        `import { type TypeInput } from "supertokens-node/types";
+
+export function getApiDomain() {
+    const apiPort = ${envPrefix}API_PORT || ${appInfo.defaultApiPort};
+    const apiUrl = ${envPrefix}API_URL || \`http://localhost:\${apiPort}\`;
+    return apiUrl;
+}
+
+export function getWebsiteDomain() {
+    const websitePort = ${envPrefix}WEBSITE_PORT || ${appInfo.defaultWebsitePort};
+    const websiteUrl = ${envPrefix}WEBSITE_URL || \`http://localhost:\${websitePort}\`;
+    return websiteUrl;
+}` +
+        "\n";
 
     // Add configuration
     template += `\nexport const SuperTokensConfig = {

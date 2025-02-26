@@ -1,7 +1,7 @@
 import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
 import { config } from "../../../shared/config/base";
-import { appInfo } from "../../../shared/config/appInfo";
+import { getAppInfo } from "../../../shared/config/appInfo";
 import { oAuthProviders } from "../config/oAuthProviders";
 
 export const pyRecipeImports = {
@@ -110,6 +110,7 @@ export const generatePythonTemplate = (configType: ConfigType): string => {
     let template = pyBaseTemplate;
     const recipes = configToRecipes[configType];
 
+    const appInfo = getAppInfo();
     // Add recipe-specific imports
     const imports = recipes
         .map((recipe) => pyRecipeImports[recipe])

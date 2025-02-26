@@ -1,6 +1,6 @@
 import { type ConfigType } from "../../../../lib/ts/templateBuilder/types";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
-import { appInfo } from "../../../shared/config/appInfo";
+import { getAppInfo } from "../../../shared/config/appInfo";
 
 // Only include recipes that have frontend components
 export const frontendRecipes = [
@@ -96,11 +96,13 @@ export function getEnvPrefix(framework: string): string {
     return "VITE_APP_";
 }
 
-export const generateWebJSTemplate = (configType: ConfigType, framework: string): string => {
+export const generateWebJSTemplate = (configType: ConfigType, framework: string, isFullStack = false): string => {
     // Filter recipes to only include those that have frontend components
     const recipes = configToRecipes[configType].filter((recipe) =>
         frontendRecipes.includes(recipe as typeof frontendRecipes[number])
     );
+
+    const appInfo = getAppInfo(isFullStack);
 
     // Add recipe-specific imports
     const mainRecipe = recipes[0];
@@ -137,13 +139,13 @@ export const generateWebJSTemplate = (configType: ConfigType, framework: string)
     return `${finalImports}
 
 export function getApiDomain() {
-    const apiPort = import.meta.env["${getEnvPrefix(framework)}API_PORT"] || 3001;
+    const apiPort = import.meta.env["${getEnvPrefix(framework)}API_PORT"] || ${appInfo.defaultApiPort};
     const apiUrl = import.meta.env["${getEnvPrefix(framework)}API_URL"] || \`http://localhost:\${apiPort}\`;
     return apiUrl;
 }
 
 export function getWebsiteDomain() {
-    const websitePort = import.meta.env["${getEnvPrefix(framework)}WEBSITE_PORT"] || 3000;
+    const websitePort = import.meta.env["${getEnvPrefix(framework)}WEBSITE_PORT"] || ${appInfo.defaultWebsitePort};
     const websiteUrl = import.meta.env["${getEnvPrefix(framework)}WEBSITE_URL"] || \`http://localhost:\${websitePort}\`;
     return websiteUrl;
 }

@@ -1,7 +1,7 @@
 import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
 import { config } from "../../../shared/config/base";
-import { appInfo } from "../../../shared/config/appInfo";
+import { getAppInfo } from "../../../shared/config/appInfo";
 import { oAuthProviders } from "../config/oAuthProviders";
 
 export const goRecipeImports = {
@@ -109,6 +109,7 @@ export const goRecipeInits = {
 export const generateGoTemplate = (configType: ConfigType): string => {
     let template = "";
     const recipes = configToRecipes[configType];
+    const appInfo = getAppInfo();
 
     // Add recipe-specific imports
     const imports = recipes
@@ -133,7 +134,7 @@ func getStringPointer(s string) *string {
 func getApiDomain() string {
     apiPort := os.Getenv("VITE_APP_API_PORT")
     if apiPort == "" {
-        apiPort = "3001"
+        apiPort = "${appInfo.defaultApiPort}"
     }
     apiUrl := os.Getenv("VITE_APP_API_URL")
     if apiUrl == "" {
@@ -145,7 +146,7 @@ func getApiDomain() string {
 func getWebsiteDomain() string {
     websitePort := os.Getenv("VITE_APP_WEBSITE_PORT")
     if websitePort == "" {
-        websitePort = "3000"
+        websitePort = "${appInfo.defaultWebsitePort}"
     }
     websiteUrl := os.Getenv("VITE_APP_WEBSITE_URL")
     if websiteUrl == "" {

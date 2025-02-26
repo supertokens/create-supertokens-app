@@ -1,10 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { NextApiRequest, NextApiResponse } from "next";
 import { superTokensNextWrapper } from "supertokens-node/nextjs";
 import supertokens from "supertokens-node";
 import { middleware } from "supertokens-node/framework/express";
-import { backendConfig } from "../../../config/backendConfig";
+import { SuperTokensConfig } from "../../../config/backendConfig";
 
-supertokens.init(backendConfig());
+supertokens.init(SuperTokensConfig);
 
 export default async function superTokens(req, res) {
     await superTokensNextWrapper(

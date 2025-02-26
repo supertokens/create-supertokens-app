@@ -7,4 +7,7 @@ export default defineConfig({
     adapter: node({
         mode: "standalone",
     }),
+    server: {
+        port: 3000,
+    },
 });

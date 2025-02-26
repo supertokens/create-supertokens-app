@@ -17,6 +17,7 @@ import { addPackageCommand } from "./packageManager.js";
 import { compileBackend } from "./templateBuilder/compiler";
 import { ConfigType, FrontendFramework } from "./templateBuilder/types";
 import { compileFrontend } from "./templateBuilder/compiler";
+import { compileFullstack } from "./templateBuilder/compiler";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -552,39 +553,34 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
 
     spinner.text = "Configuring files";
 
-    // Handle frontend config
+    // Handle frontend config using the compiler
     for (const config of selectedFullStack.location.config.frontend) {
-        const frontendFiles = fs.readdirSync(`./${folderName}/${normaliseLocationPath(config.configFiles)}`);
-        const frontendRecipeConfig = frontendFiles.filter((i) => i.includes(answers.recipe));
-
-        if (frontendRecipeConfig.length === 0) {
-            throw new Error("Should never come here");
-        }
-
-        fs.copyFileSync(
-            `${folderName}/${normaliseLocationPath(config.configFiles)}/${frontendRecipeConfig[0]}`,
-            `${folderName}/${normaliseLocationPath(config.finalConfig)}`
-        );
-
-        // Remove the configs folder
-        fs.rmSync(`${folderName}/${normaliseLocationPath(config.configFiles)}`, {
-            recursive: true,
-            force: true,
+        // Generate the frontend configuration using the compiler
+        const generatedConfig = compileFullstack({
+            framework: selectedFullStack.value,
+            configType: answers.recipe as ConfigType,
+            component: "frontend",
         });
+
+        // Write the generated configuration
+        const configPath = `${folderName}/${normaliseLocationPath(config.finalConfig)}`;
+        fs.writeFileSync(configPath, generatedConfig);
+
+        // Remove the original configs folder if it exists
+        if (fs.existsSync(`${folderName}/${normaliseLocationPath(config.configFiles)}`)) {
+            fs.rmSync(`${folderName}/${normaliseLocationPath(config.configFiles)}`, {
+                recursive: true,
+                force: true,
+            });
+        }
     }
 
-    // Handle backend config using the compiler
-    const backendLang = selectedFullStack.value.includes("python")
-        ? "py"
-        : selectedFullStack.value.includes("go")
-        ? "go"
-        : "ts";
-
     for (const config of selectedFullStack.location.config.backend) {
-        // Generate the configuration using the compiler
-        const generatedConfig = compileBackend({
-            language: backendLang,
+        // Generate the configuration using the fullstack compiler for backend
+        const generatedConfig = compileFullstack({
+            framework: selectedFullStack.value,
             configType: answers.recipe as ConfigType,
+            component: "backend",
         });
 
         // Write the generated configuration

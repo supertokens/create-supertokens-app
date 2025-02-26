@@ -2,11 +2,14 @@ import "../styles/globals.css";
 import React from "react";
 import { useEffect } from "react";
 import SuperTokensReact, { SuperTokensWrapper } from "supertokens-auth-react";
-import * as SuperTokensConfig from "../config/frontendConfig";
+import { SuperTokensConfig } from "../config/frontendConfig";
 import Session from "supertokens-auth-react/recipe/session";
+import Link from "next/link";
+import Image from "next/image";
+import { SeparatorLine } from "../assets/images";
 
 if (typeof window !== "undefined") {
-    SuperTokensReact.init(SuperTokensConfig.frontendConfig());
+    SuperTokensReact.init(SuperTokensConfig);
 }
 
 function MyApp({ Component, pageProps }): JSX.Element {

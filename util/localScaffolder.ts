@@ -157,6 +157,7 @@ export async function setupProjectLocally(
 
     // Then use the normal setup process from utils.ts
     // This handles all the dependency installation, config setup, etc.
+    // The utils.setupProject function will now use compileFullstack for fullstack templates
     await setupProject(locations, folderName, answers, userArguments, spinner);
 }
 

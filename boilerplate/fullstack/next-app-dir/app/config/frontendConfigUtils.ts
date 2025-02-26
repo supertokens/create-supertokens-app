@@ -1,9 +1,6 @@
-import EmailPasswordReact from "supertokens-auth-react/recipe/emailpassword";
-import Session from "supertokens-auth-react/recipe/session";
-import { appInfo } from "./appInfo";
 import { useRouter } from "next/navigation";
 import { SuperTokensConfig } from "supertokens-auth-react/lib/build/types";
-import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
+import { SuperTokensConfig as STConfig, PreBuiltUIList as STPreBuiltUIList } from "./frontend";
 
 const routerInfo: { router?: ReturnType<typeof useRouter>; pathName?: string } = {};
 
@@ -14,14 +11,7 @@ export function setRouter(router: ReturnType<typeof useRouter>, pathName: string
 
 export const frontendConfig = (): SuperTokensConfig => {
     return {
-        appInfo,
-        recipeList: [EmailPasswordReact.init(), Session.init()],
-        getRedirectionURL: async (context: any) => {
-            if (context.action === "SUCCESS") {
-                return "/dashboard";
-            }
-            return undefined;
-        },
+        ...STConfig,
         windowHandler: (orig) => {
             return {
                 ...orig,
@@ -37,7 +27,7 @@ export const frontendConfig = (): SuperTokensConfig => {
 };
 
 export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/emailpassword/introduction",
+    docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
 };
 
-export const PreBuiltUIList = [EmailPasswordPreBuiltUI];
+export const PreBuiltUIList = STPreBuiltUIList;

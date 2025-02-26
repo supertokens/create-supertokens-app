@@ -1,4 +1,4 @@
-import { ensureSuperTokensInit } from "../../../../config/backend";
+import { ensureSuperTokensInit } from "../../../../config/backendConfigUtils";
 import { handleAuthAPIRequest } from "supertokens-node/custom";
 import type { APIRoute } from "astro";
 
