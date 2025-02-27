@@ -1,4 +1,4 @@
-import { RecipeListFunction, TypeInput } from "supertokens-node/types";
+import { type RecipeListFunction, type TypeInput } from "supertokens-node/types";
 import SuperTokens from "supertokens-node";
 import { SuperTokensConfig as STConfig } from "./backend";
 

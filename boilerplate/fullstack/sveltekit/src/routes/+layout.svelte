@@ -1,6 +1,6 @@
 <script lang="ts">
   import "../styles/app.css";
-  import { ensureSuperTokensInit } from "../config/backend";
+  import { ensureSuperTokensInit } from "../config/backendConfigUtils";
 
   ensureSuperTokensInit();
 </script>
