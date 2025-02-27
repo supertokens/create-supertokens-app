@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import SuperTokensUI, { canHandleRoute } from "supertokens-auth-react/ui/index.js";
-import { PreBuiltUIList } from "../../app/config/frontend";
+import { PreBuiltUIList } from "../../app/config/frontendConfigUtils";
 import SuperTokens from "supertokens-auth-react/index.js";
 
 export default function Auth() {

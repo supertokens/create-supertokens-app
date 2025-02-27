@@ -1,6 +1,6 @@
 import { Meta, Links, Scripts, Outlet, ScrollRestoration, useLocation, Link } from "@remix-run/react";
 import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
-import { frontendConfig } from "./config/frontend";
+import { frontendConfig } from "./config/frontendConfigUtils";
 import { SessionAuth } from "supertokens-auth-react/recipe/session/index.js";
 import type { LinksFunction } from "@remix-run/node";
 import appStylesHref from "./app.css?url";
