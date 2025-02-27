@@ -1,5 +1,5 @@
 import { handleAuthAPIRequest } from "supertokens-node/custom";
-import { ensureSuperTokensInit } from "~/server/backend";
+import { ensureSuperTokensInit } from "../../backendConfigUtils";
 
 ensureSuperTokensInit();
 

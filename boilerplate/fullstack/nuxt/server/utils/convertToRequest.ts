@@ -1,5 +1,7 @@
 import { H3Event } from "h3";
-import { appInfo } from "~/config/appInfo";
+import { backendConfig } from "../backendConfigUtils";
+
+const appInfo = backendConfig().appInfo;
 
 interface ExtendedRequestInit extends RequestInit {
     duplex?: string;
