@@ -247,7 +247,11 @@ export const generateTypeScriptTemplate = (
         .map((recipe) => {
             switch (recipe) {
                 case "thirdParty":
-                    return tsRecipeInits.thirdParty(thirdPartyLoginProviders);
+                    // Filter providers if the user specified them via CLI flag
+                    const providersToUse = userArguments?.providers
+                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers!.includes(p.id))
+                        : thirdPartyLoginProviders;
+                    return tsRecipeInits.thirdParty(providersToUse);
                 case "multiFactorAuth":
                     return tsRecipeInits.multiFactorAuth(userArguments?.firstfactors, userArguments?.secondfactors);
                 case "accountLinking":

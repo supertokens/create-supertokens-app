@@ -237,6 +237,8 @@ export type UserFlagsRaw = {
     firstfactors?: ("emailpassword" | "thirdparty" | "otp-phone" | "otp-email" | "link-phone" | "link-email")[];
     secondfactors?: ("otp-phone" | "otp-email" | "link-phone" | "link-email" | "totp")[];
     pwcontactmethod?: "email" | "phone" | "email_or_phone";
+    providers?: string[]; // Added for selecting specific third-party providers
+    skipInstall?: boolean; // Added to skip package installation step
 };
 
 // Multi tenancy

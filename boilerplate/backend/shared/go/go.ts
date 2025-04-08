@@ -223,7 +223,11 @@ var SuperTokensConfig = supertokens.TypeInput{
         ${recipes // Use recipes directly here
             .map((recipe) => {
                 if (recipe === "thirdParty") {
-                    return goRecipeInits[recipe](thirdPartyLoginProviders);
+                    // Filter providers if the user specified them via CLI flag
+                    const providersToUse = userArguments?.providers
+                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers!.includes(p.id))
+                        : thirdPartyLoginProviders;
+                    return goRecipeInits[recipe](providersToUse);
                 }
                 if (recipe === "passwordless") {
                     return goRecipeInits[recipe](userArguments);

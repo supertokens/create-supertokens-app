@@ -215,6 +215,11 @@ async function performAdditionalSetupForFrontendIfNeeded(
 
         let result = await new Promise<ExecOutput>((res) => {
             let stderr: string[] = [];
+            // Skip if --skip-install is passed
+            if (userArguments.skipInstall === true) {
+                res({ code: 0, error: undefined });
+                return;
+            }
             const additionalSetup = exec(`cd ${sourceFolder} && ${installPrefix} supertokens-web-js`);
 
             additionalSetup.on("exit", (code) => {
@@ -435,6 +440,11 @@ async function setupFrontendBackendApp(
 
         const setupString = selectedFrontend.script.setup.join(" && ");
 
+        // Skip if --skip-install is passed
+        if (userArguments.skipInstall === true) {
+            res({ code: 0, error: undefined });
+            return;
+        }
         const setup = exec(`cd ${folderName}/frontend && ${setupString}`);
 
         setup.on("exit", (code) => {
@@ -487,6 +497,11 @@ async function setupFrontendBackendApp(
 
         const setupString = selectedBackend.script.setup.join(" && ");
 
+        // Skip if --skip-install is passed
+        if (userArguments.skipInstall === true) {
+            res({ code: 0, error: undefined });
+            return;
+        }
         const setup = exec(`cd ${folderName}/backend && ${setupString}`);
 
         setup.on("exit", (code) => {
@@ -663,6 +678,11 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
         const setupString = selectedFullStack.script.setup.join(" && ");
 
         // For full stack the folder doesn't have frontend and backend folders so we directly run the setup on the root
+        // Skip if --skip-install is passed
+        if (userArguments.skipInstall === true) {
+            res({ code: 0, error: undefined });
+            return;
+        }
         const setup = exec(`cd ${folderName}/ && ${setupString}`);
 
         setup.on("exit", (code) => {

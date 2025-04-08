@@ -1,6 +1,7 @@
 import { UserFlags } from "../../../../lib/ts/types";
-import { type ConfigType } from "../../../../lib/ts/templateBuilder/types";
+import { type ConfigType, type OAuthProvider } from "../../../../lib/ts/templateBuilder/types"; // Added OAuthProvider
 import { getAppInfo } from "../../../shared/config/appInfo";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders"; // Import default providers
 
 interface ReactTemplate {
     configType: ConfigType;
@@ -28,16 +29,29 @@ export const reactRecipeImports = {
 
 export const reactRecipeInits = {
     emailPassword: () => `EmailPassword.init()`,
-    thirdParty: () => `ThirdParty.init({
+    thirdParty: (providers: OAuthProvider[]) => {
+        // Map provider IDs to their corresponding React init calls
+        const providerInitMap: Record<string, string> = {
+            google: "Google.init()",
+            github: "Github.init()",
+            apple: "Apple.init()",
+            twitter: "Twitter.init()",
+            // Add other potential providers here if needed in the future
+        };
+
+        const providerInits = providers
+            .map((p) => providerInitMap[p.id])
+            .filter(Boolean) // Filter out any undefined entries if a provider ID isn't mapped
+            .join(",\n                    ");
+
+        return `ThirdParty.init({
             signInAndUpFeature: {
                 providers: [
-                    Github.init(),
-                    Google.init(),
-                    Apple.init(),
-                    Twitter.init(),
+                    ${providerInits}
                 ],
             },
-        })`,
+        })`;
+    },
     passwordless: (userArguments?: UserFlags) => {
         // Determine contact method based on user arguments
         let contactMethod = "EMAIL";
@@ -300,18 +314,29 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
                 case "emailVerification": // Handle EV separately
                     return reactRecipeInits.emailVerification(hasMFA ?? false);
                 // Add cases for other recipes that might need specific arguments in the future
-                case "emailPassword":
-                case "thirdParty":
+                case "emailPassword": {
+                    // emailPassword init takes no arguments
+                    const initFunc = reactRecipeInits[recipe];
+                    return initFunc();
+                }
+                case "thirdParty": {
+                    // Filter providers based on user arguments or use defaults
+                    const providersToUse = userArguments?.providers
+                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers!.includes(p.id))
+                        : thirdPartyLoginProviders; // Use all defaults if --providers flag is not used
+                    return reactRecipeInits.thirdParty(providersToUse);
+                }
                 // Removed dashboard and userRoles cases as they don't have initializers
                 case "totp":
                 case "multitenancy":
+                    // These recipes take no arguments
                     // Call recipes that don't require arguments
                     const initFunc = reactRecipeInits[recipe];
                     if (typeof initFunc === "function") {
-                        return (initFunc as any)();
+                        return initFunc(); // Call directly
                     }
                     console.warn(`No initializer function found for recipe: ${recipe}`);
-                    return null;
+                    return null; // Closing brace removed from line 312
                 default:
                     console.warn(`Unknown recipe encountered: ${recipe}`);
                     return null;

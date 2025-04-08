@@ -14,7 +14,7 @@ import {
 } from "./types.js";
 import validateProjectName from "validate-npm-package-name";
 import path from "path";
-
+import { thirdPartyLoginProviders } from "../../boilerplate/backend/shared/config/oAuthProviders.js";
 export function validateNpmName(name: string): {
     valid: boolean;
     problems?: string[];
@@ -116,6 +116,23 @@ export function validateUserArguments(userArguments: UserFlagsRaw | UserFlags) {
                 )}. Valid values are: ${validSecondFactors.join(", ")}`
             );
         }
+    }
+
+    if (userArguments.providers !== undefined) {
+        validateProviders(userArguments.providers);
+    }
+}
+
+function validateProviders(providers: string[]) {
+    const validProviderIds = thirdPartyLoginProviders.map((p) => p.id);
+    const invalidProviders = providers.filter((provider) => !validProviderIds.includes(provider));
+
+    if (invalidProviders.length > 0) {
+        throw new Error(
+            `Invalid providers provided: ${invalidProviders.join(", ")}. Valid values are: ${validProviderIds.join(
+                ", "
+            )}`
+        );
     }
 }
 

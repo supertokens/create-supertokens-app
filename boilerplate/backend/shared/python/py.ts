@@ -375,7 +375,11 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
         .map((recipe) => {
             switch (recipe) {
                 case "thirdParty":
-                    return pyRecipeInits.thirdParty(thirdPartyLoginProviders);
+                    // Filter providers if the user specified them via CLI flag
+                    const providersToUse = userArguments?.providers
+                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers!.includes(p.id))
+                        : thirdPartyLoginProviders;
+                    return pyRecipeInits.thirdParty(providersToUse);
                 case "multiFactorAuth":
                     return pyRecipeInits.multiFactorAuth(userArguments?.firstfactors, userArguments?.secondfactors);
                 case "passwordless":

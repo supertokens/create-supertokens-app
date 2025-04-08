@@ -107,6 +107,15 @@ async function run() {
             --autostart: Whether the CLI should start the project after setting up
         */
         const userArgumentsRaw = (await yargs(hideBin(process.argv))
+            .option("providers", {
+                type: "array",
+                string: true,
+                description: "Specify third-party providers (e.g., --providers google github)",
+            })
+            .option("skip-install", {
+                type: "boolean",
+                description: "Skip the package installation step",
+            })
             .array("firstfactors")
             .array("secondfactors")
             .coerce("firstfactors", (val) => {
