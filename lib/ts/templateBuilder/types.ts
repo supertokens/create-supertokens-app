@@ -5,6 +5,7 @@ export type ConfigType =
     | "multifactorauth"
     | "multitenancy"
     | "passwordless"
+    | "thirdparty" // Added for thirdparty-only config
     | "thirdpartyemailpassword"
     | "thirdpartypasswordless";
 
@@ -18,7 +19,8 @@ export type IndividualRecipe =
     | "multiFactorAuth"
     | "accountLinking"
     | "emailVerification"
-    | "totp";
+    | "totp"
+    | "multitenancy";
 
 export type FrontendFramework = "react" | "vue" | "angular" | "solid";
 

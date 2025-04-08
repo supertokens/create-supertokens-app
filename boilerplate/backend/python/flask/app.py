@@ -11,12 +11,7 @@ from supertokens_python.recipe.session.framework.flask import verify_session
 from supertokens_python.recipe.multitenancy.syncio import list_all_tenants
 import config
 
-init(
-    supertokens_config=config.supertokens_config,
-    app_info=config.app_info,
-    framework=config.framework,
-    recipe_list=config.recipe_list,
-)
+# SuperTokens init should happen in config.py
 
 app = Flask(__name__)
 # Make Flask handle trailing slashes consistently

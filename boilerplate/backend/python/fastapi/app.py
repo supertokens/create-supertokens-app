@@ -11,13 +11,7 @@ from supertokens_python.recipe.multitenancy.asyncio import list_all_tenants
 
 import config
 
-init(
-    supertokens_config=config.supertokens_config,
-    app_info=config.app_info,
-    framework=config.framework,
-    recipe_list=config.recipe_list,
-    mode="asgi",
-)
+# SuperTokens init should happen in config.py
 
 
 app = FastAPI(

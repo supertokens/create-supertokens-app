@@ -21,6 +21,7 @@ import figlet from "figlet";
 import { package_version } from "./version.js";
 import { modifyAnswersForPythonFrameworks, modifyAnswersForNodeJSFrameworks } from "./questionUtils.js";
 import { inferredPackageManager } from "./packageManager.js";
+import { checkMfaCompatibility } from "./utils.js";
 
 async function printInformation(): Promise<void> {
     const font: figlet.Fonts = "Doom";
@@ -105,10 +106,38 @@ async function run() {
             --manager: Which package manager to use
             --autostart: Whether the CLI should start the project after setting up
         */
-        const userArgumentsRaw = (await yargs(hideBin(process.argv)).argv) as UserFlagsRaw;
+        const userArgumentsRaw = (await yargs(hideBin(process.argv))
+            .array("firstfactors")
+            .array("secondfactors")
+            .coerce("firstfactors", (val) => {
+                console.log("Raw firstfactors:", val);
+                if (Array.isArray(val)) {
+                    // If it's an array with a single string containing commas, split it
+                    if (val.length === 1 && typeof val[0] === "string" && val[0].includes(",")) {
+                        return val[0].split(",").map((f: string) => f.trim());
+                    }
+                    return val;
+                }
+                // If it's a string, split it
+                return val.split(",").map((f: string) => f.trim());
+            })
+            .coerce("secondfactors", (val) => {
+                console.log("Raw secondfactors:", val);
+                if (Array.isArray(val)) {
+                    // If it's an array with a single string containing commas, split it
+                    if (val.length === 1 && typeof val[0] === "string" && val[0].includes(",")) {
+                        return val[0].split(",").map((f: string) => f.trim());
+                    }
+                    return val;
+                }
+                // If it's a string, split it
+                return val.split(",").map((f: string) => f.trim());
+            }).argv) as UserFlagsRaw;
+        console.log("Final userArgumentsRaw:", userArgumentsRaw);
         validateUserArguments(userArgumentsRaw);
         const userArguments: UserFlags = {
             ...userArgumentsRaw,
+            // appname is spread from userArgumentsRaw
             manager: userArgumentsRaw.manager ?? inferredPackageManager() ?? "npm",
         };
 
@@ -170,6 +199,9 @@ async function run() {
             spinner: "dots10",
             text: "Downloading files",
         }).start();
+
+        // Check for MFA compatibility with backend
+        checkMfaCompatibility(answers, userArguments);
 
         const folderLocations = await getDownloadLocationFromAnswers(answers, userArguments);
 

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import supertokens from 'supertokens-node';
 import { ConfigInjectionToken, AuthModuleConfig } from '../config.interface';
-import * as SuperTokensConfig from '../../config';
+import { SuperTokensConfig } from '../../config'; // Changed import style
 
 @Injectable()
 export class SupertokensService {

@@ -1,0 +1,222 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WebJS Template Generation > should generate correct config for EmailPassword + OTP Phone/Email (Angular) 1`] = `
+"import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
+
+export function getApiDomain() {
+    const apiPort = 3001;
+    const apiUrl = \`http://localhost:\${apiPort}\`;
+    return apiUrl;
+}
+
+export function getWebsiteDomain() {
+    const websitePort = 3000;
+    const websiteUrl = \`http://localhost:\${websitePort}\`;
+    return websiteUrl;
+}
+
+export function initSuperTokensUI() {
+    (window as any).supertokensUIInit("supertokensui", {
+        appInfo: {
+            // Call generated helper functions
+            websiteDomain: getWebsiteDomain(),
+            apiDomain: getApiDomain(),
+            appName: "SuperTokens Demo App", // Keep using direct value for appName
+        },
+        recipeList: [
+            (window as any).supertokensUISession.init(),
+            (window as any).supertokensUIEmailPassword.init(),
+            (window as any).supertokensUIPasswordless.init({
+                contactMethod: "EMAIL_OR_PHONE",
+                flowType: "USER_INPUT_CODE"
+            })
+        ],
+    });
+}
+
+export function initSuperTokensWebJS() {
+    SuperTokens.init({
+        appInfo: {
+            appName: "SuperTokens Demo App", // Use dynamic appName
+            apiDomain: getApiDomain(), // Call helper function
+        },
+        recipeList: [Session.init()]
+    });
+}"
+`;
+
+exports[`WebJS Template Generation > should generate correct config for EmailPassword + ThirdParty + OTP Email MFA (Solid) 1`] = `
+"import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
+import EmailVerification from "supertokens-web-js/recipe/emailverification";
+import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";
+
+export function getApiDomain() {
+    const apiPort = 3001;
+    const apiUrl = \`http://localhost:\${apiPort}\`;
+    return apiUrl;
+}
+
+export function getWebsiteDomain() {
+    const websitePort = 3000;
+    const websiteUrl = \`http://localhost:\${websitePort}\`;
+    return websiteUrl;
+}
+
+export function initSuperTokensUI() {
+    (window as any).supertokensUIInit("supertokensui", {
+        appInfo: {
+            // Call generated helper functions
+            websiteDomain: getWebsiteDomain(),
+            apiDomain: getApiDomain(),
+            appName: "SuperTokens Demo App", // Keep using direct value for appName
+        },
+        recipeList: [
+            (window as any).supertokensUISession.init(),
+            (window as any).supertokensUIEmailPassword.init(),
+            (window as any).supertokensUIThirdParty.init({
+                signInAndUpFeature: {
+                    providers: [
+                        (window as any).supertokensUIThirdParty.Github.init(),
+                        (window as any).supertokensUIThirdParty.Google.init(),
+                        (window as any).supertokensUIThirdParty.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Twitter.init(),
+                    ],
+                },
+            }),
+            (window as any).supertokensUIPasswordless.init({
+                contactMethod: "EMAIL",
+                flowType: "USER_INPUT_CODE"
+            }),
+            (window as any).supertokensUIMultiFactorAuth.init({
+        firstFactors: ["emailpassword", "thirdparty"],
+        override: {
+            functions: (originalImplementation) => ({
+                ...originalImplementation,
+                getMFARequirementsForAuth: () => [
+                    {
+                        oneOf: [
+                            (window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL
+                        ],
+                    },
+                ],
+                // Override the getRequiredSecondaryFactorsForUser function to ensure
+                // the user is required to set up the second factors
+                getRequiredSecondaryFactorsForUser: async () => {
+                    return [(window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL];
+                },
+            }),
+        }
+    }),
+            (window as any).supertokensUIEmailVerification.init({
+        mode: "REQUIRED",
+    })
+        ],
+    });
+}
+
+export function initSuperTokensWebJS() {
+    SuperTokens.init({
+        appInfo: {
+            appName: "SuperTokens Demo App", // Use dynamic appName
+            apiDomain: getApiDomain(), // Call helper function
+        },
+        // Core SDK init only needs Session, EmailVerification, and MultiFactorAuth for MFA
+        recipeList: [Session.init(), EmailVerification.init(), MultiFactorAuth.init()]
+    });
+}"
+`;
+
+exports[`WebJS Template Generation > should generate correct config for EmailPassword only (Angular) 1`] = `
+"import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
+
+export function getApiDomain() {
+    const apiPort = 3001;
+    const apiUrl = \`http://localhost:\${apiPort}\`;
+    return apiUrl;
+}
+
+export function getWebsiteDomain() {
+    const websitePort = 3000;
+    const websiteUrl = \`http://localhost:\${websitePort}\`;
+    return websiteUrl;
+}
+
+export function initSuperTokensUI() {
+    (window as any).supertokensUIInit("supertokensui", {
+        appInfo: {
+            // Call generated helper functions
+            websiteDomain: getWebsiteDomain(),
+            apiDomain: getApiDomain(),
+            appName: "SuperTokens Demo App", // Keep using direct value for appName
+        },
+        recipeList: [
+            (window as any).supertokensUISession.init(),
+            (window as any).supertokensUIEmailPassword.init()
+        ],
+    });
+}
+
+export function initSuperTokensWebJS() {
+    SuperTokens.init({
+        appInfo: {
+            appName: "SuperTokens Demo App", // Use dynamic appName
+            apiDomain: getApiDomain(), // Call helper function
+        },
+        recipeList: [Session.init()]
+    });
+}"
+`;
+
+exports[`WebJS Template Generation > should generate correct config for ThirdParty only (Vue) 1`] = `
+"import SuperTokens from "supertokens-web-js";
+import Session from "supertokens-web-js/recipe/session";
+
+export function getApiDomain() {
+    const apiPort = 3001;
+    const apiUrl = \`http://localhost:\${apiPort}\`;
+    return apiUrl;
+}
+
+export function getWebsiteDomain() {
+    const websitePort = 3000;
+    const websiteUrl = \`http://localhost:\${websitePort}\`;
+    return websiteUrl;
+}
+
+export function initSuperTokensUI() {
+    (window as any).supertokensUIInit("supertokensui", {
+        appInfo: {
+            // Call generated helper functions
+            websiteDomain: getWebsiteDomain(),
+            apiDomain: getApiDomain(),
+            appName: "SuperTokens Demo App", // Keep using direct value for appName
+        },
+        recipeList: [
+            (window as any).supertokensUISession.init(),
+            (window as any).supertokensUIThirdParty.init({
+                signInAndUpFeature: {
+                    providers: [
+                        (window as any).supertokensUIThirdParty.Github.init(),
+                        (window as any).supertokensUIThirdParty.Google.init(),
+                        (window as any).supertokensUIThirdParty.Apple.init(),
+                        (window as any).supertokensUIThirdParty.Twitter.init(),
+                    ],
+                },
+            })
+        ],
+    });
+}
+
+export function initSuperTokensWebJS() {
+    SuperTokens.init({
+        appInfo: {
+            appName: "SuperTokens Demo App", // Use dynamic appName
+            apiDomain: getApiDomain(), // Call helper function
+        },
+        recipeList: [Session.init()]
+    });
+}"
+`;

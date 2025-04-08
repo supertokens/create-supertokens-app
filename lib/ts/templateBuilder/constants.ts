@@ -7,12 +7,28 @@ export const configToRecipes: Record<ConfigType, IndividualRecipe[]> = {
         "emailPassword",
         "thirdParty",
         "passwordless",
+        "session",
         "multiFactorAuth",
-        "accountLinking",
         "emailVerification",
         "totp",
+        "accountLinking",
+        "dashboard",
+        "userRoles",
     ],
-    multitenancy: ["thirdParty", "emailPassword", "passwordless", "session", "dashboard", "userRoles"],
+    thirdparty: ["thirdParty", "session", "dashboard", "userRoles"], // Added entry for thirdparty-only
+    // Include MFA-related recipes when Multitenancy is selected
+    multitenancy: [
+        "emailPassword",
+        "thirdParty",
+        "passwordless",
+        "session",
+        "dashboard",
+        "userRoles",
+        "multitenancy",
+        "multiFactorAuth", // Added
+        "accountLinking", // Added
+        "emailVerification", // Added
+    ],
     passwordless: ["passwordless", "session", "dashboard", "userRoles"],
     thirdpartyemailpassword: ["emailPassword", "thirdParty", "session", "dashboard", "userRoles"],
     thirdpartypasswordless: ["thirdParty", "passwordless", "session", "dashboard", "userRoles"],

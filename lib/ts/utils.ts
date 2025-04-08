@@ -2,7 +2,7 @@ import { getBackendOptionForProcessing, getFrontendOptionsForProcessing } from "
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
-import { Answers, DownloadLocations, ExecOutput, QuestionOption, UserFlags } from "./types";
+import { Answers, DownloadLocations, ExecOutput, QuestionOption, UserFlags, getRecipesFromFactors } from "./types";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
@@ -286,6 +286,26 @@ async function performAdditionalSetupForFrontendIfNeeded(
     }
 }
 
+export function checkMfaCompatibility(answers: Answers, userArguments: UserFlags): void {
+    // Check if we're using MFA
+    const hasMFA =
+        answers.recipe === "multifactorauth" || (userArguments.secondfactors && userArguments.secondfactors.length > 0);
+
+    // Check if backend is Go (handle undefined for fullstack)
+    const isGoBackend =
+        answers.backend !== undefined && (answers.backend.includes("go") || answers.backend === "go-http");
+
+    // Warn if using MFA with Go
+    if (hasMFA && isGoBackend) {
+        console.warn(
+            "\x1b[33m%s\x1b[0m",
+            "⚠️  Warning: Multi-factor authentication is not fully supported in the Go SDK yet. " +
+                "The generated app may not have full MFA functionality. " +
+                "Consider using a Node.js/Express backend for complete MFA support."
+        );
+    }
+}
+
 async function setupFrontendBackendApp(
     answers: Answers,
     folderName: string,
@@ -333,12 +353,24 @@ async function setupFrontendBackendApp(
 
     spinner.text = "Configuring files";
 
+    // Convert factors to recipes if they are provided
+    let configType = answers.recipe as ConfigType;
+    if (userArguments.firstfactors || userArguments.secondfactors) {
+        const factorConfig = {
+            firstFactors: userArguments.firstfactors || [],
+            secondFactors: userArguments.secondfactors || undefined,
+        };
+        const recipes = getRecipesFromFactors(factorConfig);
+        configType = recipes[0] as ConfigType;
+    }
+
     // Handle frontend config
     for (const config of selectedFrontend.location.config) {
         // Use the compiler for all frameworks
         const generatedConfig = compileFrontend({
             framework: selectedFrontend.value as FrontendFramework,
-            configType: answers.recipe as ConfigType,
+            configType,
+            userArguments,
         });
 
         // Write the generated configuration
@@ -372,7 +404,8 @@ async function setupFrontendBackendApp(
         // Generate the configuration using the compiler
         const generatedConfig = compileBackend({
             language: backendLang,
-            configType: answers.recipe as ConfigType,
+            configType,
+            userArguments,
         });
 
         // Write the generated configuration
@@ -553,13 +586,25 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
 
     spinner.text = "Configuring files";
 
+    // Convert factors to recipes if they are provided
+    let configType = answers.recipe as ConfigType;
+    if (userArguments.firstfactors || userArguments.secondfactors) {
+        const factorConfig = {
+            firstFactors: userArguments.firstfactors || [],
+            secondFactors: userArguments.secondfactors || undefined,
+        };
+        const recipes = getRecipesFromFactors(factorConfig);
+        configType = recipes[0] as ConfigType;
+    }
+
     // Handle frontend config using the compiler
     for (const config of selectedFullStack.location.config.frontend) {
         // Generate the frontend configuration using the compiler
         const generatedConfig = compileFullstack({
             framework: selectedFullStack.value,
-            configType: answers.recipe as ConfigType,
+            configType,
             component: "frontend",
+            userArguments,
         });
 
         // Write the generated configuration
@@ -579,8 +624,9 @@ async function setupFullstack(answers: Answers, folderName: string, userArgument
         // Generate the configuration using the fullstack compiler for backend
         const generatedConfig = compileFullstack({
             framework: selectedFullStack.value,
-            configType: answers.recipe as ConfigType,
+            configType,
             component: "backend",
+            userArguments,
         });
 
         // Write the generated configuration

@@ -37,7 +37,7 @@ export function validateFolderName(name: string): {
     return validateNpmName(path.basename(path.resolve(name)));
 }
 
-export function validateUserArguments(userArguments: UserFlagsRaw) {
+export function validateUserArguments(userArguments: UserFlagsRaw | UserFlags) {
     if (userArguments.dashboardDemo !== undefined) {
         if (userArguments.dashboardDemo !== "true") {
             throw new Error("When using --dashboardDemo, please always set the value to true");
@@ -67,16 +67,54 @@ export function validateUserArguments(userArguments: UserFlagsRaw) {
     }
 
     if (userArguments.backend !== undefined) {
-        if (!isValidBackend(userArguments.backend)) {
+        // Map framework-specific names to their full names
+        const backendMapping: Record<string, SupportedBackends> = {
+            fastapi: "python-fastapi",
+            flask: "python-flask",
+            drf: "python-drf",
+            koa: "koa",
+            express: "express",
+            nest: "nest",
+        };
+
+        const mappedBackend = backendMapping[userArguments.backend] || userArguments.backend;
+        if (!isValidBackend(mappedBackend)) {
             const avaiableBackends = allBackends.map((e) => `    - ${e.id}`).join("\n");
             throw new Error("Invalid backend provided, valid values:\n" + avaiableBackends);
         }
+        userArguments.backend = mappedBackend;
     }
 
     if (userArguments.manager !== undefined) {
         if (!isValidPackageManager(userArguments.manager)) {
             const availableManagers: string = allPackageManagers.map((e) => `    - ${e}`).join("\n");
             throw new Error("Invalid package manager provided, valid values:\n" + availableManagers);
+        }
+    }
+
+    if (userArguments.firstfactors !== undefined) {
+        console.log("Validating firstfactors:", userArguments.firstfactors);
+        const validFirstFactors = ["emailpassword", "thirdparty", "otp-phone", "otp-email", "link-phone", "link-email"];
+        const invalidFactors = userArguments.firstfactors.filter((factor) => !validFirstFactors.includes(factor));
+        console.log("Invalid factors:", invalidFactors);
+        if (invalidFactors.length > 0) {
+            throw new Error(
+                `Invalid first factors provided: ${invalidFactors.join(
+                    ", "
+                )}. Valid values are: ${validFirstFactors.join(", ")}`
+            );
+        }
+    }
+
+    if (userArguments.secondfactors !== undefined) {
+        const validSecondFactors = ["otp-phone", "otp-email", "link-phone", "link-email", "totp"];
+        const invalidFactors = userArguments.secondfactors.filter((factor) => !validSecondFactors.includes(factor));
+        if (invalidFactors.length > 0) {
+            throw new Error(
+                `Invalid second factors provided: ${invalidFactors.join(
+                    ", "
+                )}. Valid values are: ${validSecondFactors.join(", ")}`
+            );
         }
     }
 }
@@ -112,6 +150,38 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
 
     if (userArguments.recipe !== undefined) {
         _answers.recipe = userArguments.recipe;
+    } else if (userArguments.firstfactors !== undefined || userArguments.secondfactors !== undefined) {
+        // Convert factors to recipe
+        if (
+            userArguments.firstfactors?.includes("emailpassword") &&
+            userArguments.firstfactors?.includes("thirdparty")
+        ) {
+            _answers.recipe = "thirdpartyemailpassword";
+        } else if (userArguments.firstfactors?.includes("emailpassword")) {
+            _answers.recipe = "emailpassword";
+        } else if (userArguments.firstfactors?.includes("thirdparty")) {
+            _answers.recipe = "thirdparty";
+        } else if (
+            userArguments.firstfactors?.includes("link-email") &&
+            userArguments.firstfactors?.includes("link-phone")
+        ) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.firstfactors?.includes("link-email")) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.firstfactors?.includes("link-phone")) {
+            _answers.recipe = "passwordless";
+        } else if (
+            userArguments.firstfactors?.includes("otp-email") &&
+            userArguments.firstfactors?.includes("otp-phone")
+        ) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.firstfactors?.includes("otp-email")) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.firstfactors?.includes("otp-phone")) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.secondfactors !== undefined) {
+            _answers.recipe = "multifactorauth";
+        }
     }
 
     if (userArguments.frontend !== undefined) {

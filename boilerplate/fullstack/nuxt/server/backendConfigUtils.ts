@@ -6,7 +6,7 @@ export let backendConfig = (): TypeInput => {
     return {
         supertokens: {
             // this is the location of the SuperTokens core.
-            connectionURI: STConfig.supertokens.connectionURI,
+            connectionURI: (STConfig.supertokens as { connectionURI: string }).connectionURI,
         },
         appInfo: STConfig.appInfo,
         // recipeList contains all the modules that you want to

@@ -1,0 +1,167 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`React Template Generation > should generate correct config for EmailPassword + ThirdParty with Link Email MFA 1`] = `
+"import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
+import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
+import ThirdParty, { Google, Github, Apple, Twitter } from "supertokens-auth-react/recipe/thirdparty";
+import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
+import Passwordless, { PasswordlessComponentsOverrideProvider } from "supertokens-auth-react/recipe/passwordless";
+import { PasswordlessPreBuiltUI } from "supertokens-auth-react/recipe/passwordless/prebuiltui";
+import MultiFactorAuth from "supertokens-auth-react/recipe/multifactorauth";
+import { MultiFactorAuthPreBuiltUI } from "supertokens-auth-react/recipe/multifactorauth/prebuiltui";
+import EmailVerification from "supertokens-auth-react/recipe/emailverification";
+import { EmailVerificationPreBuiltUI } from "supertokens-auth-react/recipe/emailverification/prebuiltui";
+import Session from "supertokens-auth-react/recipe/session";
+
+export function getApiDomain() {
+    // Use only appInfo defaults
+    const apiPort = 3001;
+    const apiUrl = \`http://localhost:\${apiPort}\`;
+    return apiUrl;
+}
+
+export function getWebsiteDomain() {
+    // Use only appInfo defaults
+    const websitePort = 3000;
+    const websiteUrl = \`http://localhost:\${websitePort}\`;
+    return websiteUrl;
+}
+
+
+
+export const SuperTokensConfig = {
+    appInfo: {
+        appName: "SuperTokens Demo App",
+        apiDomain: getApiDomain(),
+        websiteDomain: getWebsiteDomain(),
+    },
+    // recipeList contains all the modules that you want to
+    // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
+    recipeList: [
+        EmailPassword.init(),
+        ThirdParty.init({
+            signInAndUpFeature: {
+                providers: [
+                    Github.init(),
+                    Google.init(),
+                    Apple.init(),
+                    Twitter.init(),
+                ],
+            },
+        }),
+        Passwordless.init({
+            contactMethod: "EMAIL"
+        }),
+        MultiFactorAuth.init({
+        firstFactors: ["emailpassword", "thirdparty"],
+        override: {
+            functions: (originalImplementation) => ({
+                ...originalImplementation,
+                getMFARequirementsForAuth: () => [
+                    {
+                        oneOf: [
+                            MultiFactorAuth.FactorIds.LINK_EMAIL
+                        ],
+                    },
+                ],
+                // Override the getRequiredSecondaryFactorsForUser function to ensure
+                // the user is required to set up the second factors
+                getRequiredSecondaryFactorsForUser: async () => {
+                    return [MultiFactorAuth.FactorIds.LINK_EMAIL];
+                },
+            }),
+        }
+    }),
+        EmailVerification.init({
+        mode: "REQUIRED"
+    }),
+        Session.init({
+            override: {
+                functions: (original) => {
+                    return {
+                        ...original,
+                        getGlobalClaimValidators: (input) => {
+                            const emailVerificationClaimValidator = input.claimValidatorsAddedByOtherRecipes.find(
+                                v => v.id === EmailVerification.EmailVerificationClaim.id
+                            );
+                            if (emailVerificationClaimValidator) {
+                                // We filter out the email verification validator and add it at the end
+                                // This ensures MFA validator gets priority
+                                const filteredValidators = input.claimValidatorsAddedByOtherRecipes.filter(
+                                    v => v.id !== EmailVerification.EmailVerificationClaim.id
+                                );
+                                return [...filteredValidators, emailVerificationClaimValidator];
+                            }
+                            return input.claimValidatorsAddedByOtherRecipes;
+                        }
+                    };
+                }
+            }
+        })
+    ],
+    getRedirectionURL: async (context: {action: string; newSessionCreated: boolean}) => {
+        if (context.action === "SUCCESS" && context.newSessionCreated) {
+            return "/dashboard";
+        }
+    },
+};
+
+export const recipeDetails = {
+    docsLink: "https://supertokens.com/docs/thirdparty/introduction",
+};
+
+export const PreBuiltUIList = [EmailPasswordPreBuiltUI, ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI, MultiFactorAuthPreBuiltUI, EmailVerificationPreBuiltUI];
+
+export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
+    return (
+        <PasswordlessComponentsOverrideProvider
+            components={{
+                PasswordlessUserInputCodeFormFooter_Override: ({ DefaultComponent, ...props }) => {
+                    const loginAttemptInfo = props.loginAttemptInfo;
+                    let showQuotaMessage = false;
+
+                    if (loginAttemptInfo.contactMethod === "PHONE") {
+                        showQuotaMessage = true;
+                    }
+
+                    return (
+                        <div
+                            style={{
+                                width: "100%",
+                            }}
+                        >
+                            <DefaultComponent {...props} />
+                            {showQuotaMessage && (
+                                <div
+                                    style={{
+                                        width: "100%",
+                                        paddingLeft: 12,
+                                        paddingRight: 12,
+                                        paddingTop: 6,
+                                        paddingBottom: 6,
+                                        borderRadius: 4,
+                                        backgroundColor: "#EF9A9A",
+                                        margin: 0,
+                                        boxSizing: "border-box",
+                                        MozBoxSizing: "border-box",
+                                        WebkitBoxSizing: "border-box",
+                                        fontSize: 12,
+                                        textAlign: "start",
+                                        fontWeight: "bold",
+                                        lineHeight: "18px",
+                                    }}
+                                >
+                                    There is a daily quota for the free SMS service, if you do not receive the SMS
+                                    please try again tomorrow.
+                                </div>
+                            )}
+                        </div>
+                    );
+                },
+            }}
+        >
+            {props.children}
+        </PasswordlessComponentsOverrideProvider>
+    );
+};"
+`;

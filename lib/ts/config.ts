@@ -564,7 +564,7 @@ export async function getQuestions(flags: UserFlags) {
             type: "input",
             message: "What is your app called?",
             default: "my-app",
-            when: flags.appname === undefined,
+            when: flags.appname === undefined, // Reverted to simple condition
             validate: function (input: any) {
                 const validations = validateFolderName(input);
 
@@ -655,6 +655,11 @@ export async function getQuestions(flags: UserFlags) {
             when: (answers: Answers) => {
                 // For capacitor we don't ask this question because it has its own way of swapping between recipes
                 if (answers.frontend === "capacitor") {
+                    return false;
+                }
+
+                // Skip recipe selection if firstfactors or secondfactors are provided
+                if (flags.firstfactors || flags.secondfactors) {
                     return false;
                 }
 

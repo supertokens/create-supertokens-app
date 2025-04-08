@@ -2,7 +2,8 @@ import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/template
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
 import { config } from "../../../shared/config/base";
 import { getAppInfo } from "../../../shared/config/appInfo";
-import { oAuthProviders } from "../config/oAuthProviders";
+import { oAuthProviders } from "../../../backend/shared/config/oAuthProviders";
+import { UserFlags } from "../../../../lib/ts/types";
 
 export const goRecipeImports = {
     emailPassword: `"github.com/supertokens/supertokens-golang/recipe/emailpassword"`,
@@ -13,14 +14,12 @@ export const goRecipeImports = {
     session: `"github.com/supertokens/supertokens-golang/recipe/session"`,
     dashboard: `"github.com/supertokens/supertokens-golang/recipe/dashboard"`,
     userRoles: `"github.com/supertokens/supertokens-golang/recipe/userroles"`,
-    multiFactorAuth: `"github.com/supertokens/supertokens-golang/recipe/multifactorauth"
-    "github.com/supertokens/supertokens-golang/recipe/multifactorauth/mfamodels"`,
     accountLinking: `"github.com/supertokens/supertokens-golang/recipe/accountlinking"
     "github.com/supertokens/supertokens-golang/recipe/accountlinking/almodels"`,
     emailVerification: `"github.com/supertokens/supertokens-golang/recipe/emailverification"
     "github.com/supertokens/supertokens-golang/recipe/emailverification/evmodels"`,
-    totp: `"github.com/supertokens/supertokens-golang/recipe/totp"
-    "github.com/supertokens/supertokens-golang/recipe/totp/totpmodels"`,
+    multitenancy: `"github.com/supertokens/supertokens-golang/recipe/multitenancy"
+    "github.com/supertokens/supertokens-golang/recipe/multitenancy/mtmodels"`,
 };
 
 export const goBaseTemplate = `
@@ -37,11 +36,11 @@ func getStringPointer(s string) *string {
 }
 
 func getApiDomain() string {
-    apiPort := os.Getenv("VITE_APP_API_PORT")
+    apiPort := os.Getenv("API_PORT") // Use generic env var name
     if apiPort == "" {
-        apiPort = "3001"
+        apiPort = "%DEFAULT_API_PORT%" // Placeholder for default port
     }
-    apiUrl := os.Getenv("VITE_APP_API_URL")
+    apiUrl := os.Getenv("API_URL") // Use generic env var name
     if apiUrl == "" {
         apiUrl = fmt.Sprintf("http://localhost:%s", apiPort)
     }
@@ -49,11 +48,11 @@ func getApiDomain() string {
 }
 
 func getWebsiteDomain() string {
-    websitePort := os.Getenv("VITE_APP_WEBSITE_PORT")
+    websitePort := os.Getenv("WEBSITE_PORT") // Use generic env var name
     if websitePort == "" {
-        websitePort = "3000"
+        websitePort = "%DEFAULT_WEBSITE_PORT%" // Placeholder for default port
     }
-    websiteUrl := os.Getenv("VITE_APP_WEBSITE_URL")
+    websiteUrl := os.Getenv("WEBSITE_URL") // Use generic env var name
     if websiteUrl == "" {
         websiteUrl = fmt.Sprintf("http://localhost:%s", websitePort)
     }
@@ -62,18 +61,37 @@ func getWebsiteDomain() string {
 
 export const goRecipeInits = {
     emailPassword: () => `emailpassword.Init(nil)`,
-    thirdParty: (providers?: OAuthProvider[]) => `thirdparty.Init(&tpmodels.TypeInput{
+    thirdParty: (providers?: OAuthProvider[]) => {
+        if (!providers || providers.length === 0) {
+            return `thirdparty.Init(nil)`;
+        }
+        return `thirdparty.Init(&tpmodels.TypeInput{
     SignInAndUpFeature: tpmodels.TypeInputSignInAndUp{
         Providers: []tpmodels.ProviderInput{
-            ${(providers || [])
+            ${providers
                 .map(
                     (p) => `{
                 Config: tpmodels.ProviderConfig{
                     ThirdPartyId: "${p.id}",
                     Clients: []tpmodels.ProviderClientConfig{
                         {
-                            ClientID: "${p.clientId}",
-                            ClientSecret: "${p.clientSecret}",
+                            ClientID:     "${p.clientId}",
+                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
+                            ClientSecret: "${p.clientSecret}",${
+                        p.additionalConfig
+                            ? `
+                            AdditionalConfig: map[string]interface{}{
+                                ${Object.entries(p.additionalConfig)
+                                    .map(([key, value]) => {
+                                        // Escape newlines in the value if it's a string
+                                        const escapedValue =
+                                            typeof value === "string" ? value.replace(/\n/g, "\\n") : value;
+                                        return `"${key}":     "${escapedValue}",`;
+                                    })
+                                    .join("\n                                ")}
+                            },`
+                            : ""
+                    }
                         },
                     },
                 },
@@ -82,19 +100,45 @@ export const goRecipeInits = {
                 .join(",\n            ")},
         },
     },
-})`,
-    passwordless: () => `passwordless.Init(plessmodels.TypeInput{
-    FlowType: "USER_INPUT_CODE_AND_MAGIC_LINK",
+})`;
+    },
+    passwordless: (userArguments?: UserFlags) => {
+        // Determine flow type based on user arguments
+        let flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
+
+        const hasLinkEmail =
+            userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
+        const hasLinkPhone =
+            userArguments?.firstfactors?.includes("link-phone") || userArguments?.secondfactors?.includes("link-phone");
+        const hasOtpEmail =
+            userArguments?.firstfactors?.includes("otp-email") || userArguments?.secondfactors?.includes("otp-email");
+        const hasOtpPhone =
+            userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
+
+        // Determine flow type
+        // Note: According to the documentation, if both OTP and magic link factors are present,
+        // the flowType should be "USER_INPUT_CODE_AND_MAGIC_LINK"
+        const hasLinkFactors = hasLinkEmail || hasLinkPhone;
+        const hasOtpFactors = hasOtpEmail || hasOtpPhone;
+
+        if (hasLinkFactors && hasOtpFactors) {
+            flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
+        } else if (hasLinkFactors) {
+            flowType = "MAGIC_LINK";
+        } else if (hasOtpFactors) {
+            flowType = "USER_INPUT_CODE";
+        }
+
+        return `passwordless.Init(plessmodels.TypeInput{
+    FlowType: "${flowType}",
     ContactMethodEmailOrPhone: plessmodels.ContactMethodEmailOrPhoneConfig{
         Enabled: true,
     },
-})`,
+})`;
+    },
     session: () => `session.Init(nil)`,
     dashboard: () => `dashboard.Init(nil)`,
     userRoles: () => `userroles.Init(nil)`,
-    multiFactorAuth: () => `multifactorauth.Init(&mfamodels.TypeInput{
-    FirstFactors: []string{"thirdparty", "emailpassword"},
-})`,
     accountLinking: () => `accountlinking.Init(&almodels.TypeInput{
     ShouldDoAutomaticAccountLinking: func() (bool, bool) {
         return true, true
@@ -103,17 +147,37 @@ export const goRecipeInits = {
     emailVerification: () => `emailverification.Init(&evmodels.TypeInput{
     Mode: evmodels.ModeRequired,
 })`,
-    totp: () => `totp.Init(&totpmodels.TypeInput{})`,
+    multitenancy: () => `multitenancy.Init(nil)`,
 };
 
-export const generateGoTemplate = (configType: ConfigType): string => {
+export const generateGoTemplate = ({
+    configType,
+    userArguments,
+}: {
+    configType: ConfigType;
+    userArguments?: UserFlags;
+}): string => {
     let template = "";
-    const recipes = configToRecipes[configType];
+    // Note: The Go SDK doesn't support MFA, so we filter out MFA-related recipes
+    const recipes = configToRecipes[configType].filter((recipe) => recipe !== "multiFactorAuth" && recipe !== "totp");
+
+    // Go SDK doesn't support MFA, so we'll skip that
+
+    // If we're using link-email or email OTP as a second factor, we need email verification
+    const needsEmailVerification = false; // No MFA support in Go
+
+    // Add email verification if needed and not already included
+    if (needsEmailVerification && !recipes.includes("emailVerification")) {
+        recipes.push("emailVerification");
+    }
+
     const appInfo = getAppInfo();
+
+    // recipes array is already filtered on line 162, no need for supportedRecipes
 
     // Add recipe-specific imports
     const imports = recipes
-        .map((recipe) => goRecipeImports[recipe])
+        .map((recipe) => goRecipeImports[recipe as keyof typeof goRecipeImports]) // Use recipes directly, keep assertion
         .filter(Boolean)
         .join("\n    ");
 
@@ -132,26 +196,14 @@ func getStringPointer(s string) *string {
 }
 
 func getApiDomain() string {
-    apiPort := os.Getenv("VITE_APP_API_PORT")
-    if apiPort == "" {
-        apiPort = "${appInfo.defaultApiPort}"
-    }
-    apiUrl := os.Getenv("VITE_APP_API_URL")
-    if apiUrl == "" {
-        apiUrl = fmt.Sprintf("http://localhost:%s", apiPort)
-    }
+    apiPort := "${appInfo.defaultApiPort}" // Use appInfo default directly
+    apiUrl := fmt.Sprintf("http://localhost:%s", apiPort)
     return apiUrl
 }
 
 func getWebsiteDomain() string {
-    websitePort := os.Getenv("VITE_APP_WEBSITE_PORT")
-    if websitePort == "" {
-        websitePort = "${appInfo.defaultWebsitePort}"
-    }
-    websiteUrl := os.Getenv("VITE_APP_WEBSITE_URL")
-    if websiteUrl == "" {
-        websiteUrl = fmt.Sprintf("http://localhost:%s", websitePort)
-    }
+    websitePort := "${appInfo.defaultWebsitePort}" // Use appInfo default directly
+    websiteUrl := fmt.Sprintf("http://localhost:%s", websitePort)
     return websiteUrl
 }
 
@@ -167,14 +219,20 @@ var SuperTokensConfig = supertokens.TypeInput{
         APIBasePath:     getStringPointer("${appInfo.apiBasePath}"),
         WebsiteBasePath: getStringPointer("${appInfo.websiteBasePath}"),
     },
-    RecipeList: []supertokens.Recipe{${recipes
-        .map((recipe) => {
-            if (recipe === "thirdParty") {
-                return goRecipeInits[recipe](oAuthProviders);
-            }
-            return goRecipeInits[recipe]();
-        })
-        .join(",")}},
+    RecipeList: []supertokens.Recipe{
+        ${recipes // Use recipes directly here
+            .map((recipe) => {
+                if (recipe === "thirdParty") {
+                    return goRecipeInits[recipe](oAuthProviders);
+                }
+                if (recipe === "passwordless") {
+                    return goRecipeInits[recipe](userArguments);
+                }
+                // We know recipe is a valid key here because recipes is filtered on line 162
+                return goRecipeInits[recipe as keyof typeof goRecipeInits]();
+            })
+            .join(",\n        ")},
+    },
 }`;
 
     return template;

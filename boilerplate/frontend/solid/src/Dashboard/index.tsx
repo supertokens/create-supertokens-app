@@ -1,7 +1,7 @@
 import { Component, createSignal, onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import * as Session from "supertokens-web-js/recipe/session";
-import { getApiDomain } from "../config";
+// Removed incorrect import: import { getApiDomain } from "../config";
 
 const Dashboard: Component = () => {
     const navigate = useNavigate();
@@ -18,7 +18,10 @@ const Dashboard: Component = () => {
 
     async function callAPIClicked() {
         try {
-            const response = await fetch(getApiDomain() + "/sessioninfo");
+            // Construct API domain from environment variables
+            const apiPort = import.meta.env.VITE_APP_API_PORT || 3001;
+            const apiUrl = import.meta.env.VITE_APP_API_URL || `http://localhost:${apiPort}`;
+            const response = await fetch(apiUrl + "/sessioninfo");
             const data = await response.json();
             window.alert("Session Information:\n" + JSON.stringify(data, null, 2));
         } catch (err) {
