@@ -2,7 +2,7 @@ import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/template
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
 import { config } from "../../../shared/config/base";
 import { getAppInfo } from "../../../shared/config/appInfo";
-import { oAuthProviders } from "../../../backend/shared/config/oAuthProviders";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
 import { UserFlags } from "../../../../lib/ts/types";
 
 interface PythonTemplate {
@@ -375,7 +375,7 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
         .map((recipe) => {
             switch (recipe) {
                 case "thirdParty":
-                    return pyRecipeInits.thirdParty(oAuthProviders);
+                    return pyRecipeInits.thirdParty(thirdPartyLoginProviders);
                 case "multiFactorAuth":
                     return pyRecipeInits.multiFactorAuth(userArguments?.firstfactors, userArguments?.secondfactors);
                 case "passwordless":

@@ -2,7 +2,7 @@ import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/template
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
 import { config } from "../../../shared/config/base";
 import { getAppInfo } from "../../../shared/config/appInfo";
-import { oAuthProviders } from "../../../backend/shared/config/oAuthProviders";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
 import { UserFlags } from "../../../../lib/ts/types";
 
 interface TypeScriptTemplateOptions {
@@ -247,7 +247,7 @@ export const generateTypeScriptTemplate = (
         .map((recipe) => {
             switch (recipe) {
                 case "thirdParty":
-                    return tsRecipeInits.thirdParty(oAuthProviders);
+                    return tsRecipeInits.thirdParty(thirdPartyLoginProviders);
                 case "multiFactorAuth":
                     return tsRecipeInits.multiFactorAuth(userArguments?.firstfactors, userArguments?.secondfactors);
                 case "accountLinking":

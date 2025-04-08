@@ -11,8 +11,8 @@
     },
     "dependencies": {
         "nuxt": "^3.14.1592",
-        "supertokens-node": "^21.1.0",
-        "supertokens-web-js": "^0.14.0",
+        "supertokens-node": "latest",
+        "supertokens-web-js": "latest",
         "vue": "latest",
         "vue-router": "latest"
     },

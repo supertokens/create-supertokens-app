@@ -2,7 +2,7 @@ import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/template
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
 import { config } from "../../../shared/config/base";
 import { getAppInfo } from "../../../shared/config/appInfo";
-import { oAuthProviders } from "../../../backend/shared/config/oAuthProviders";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
 import { UserFlags } from "../../../../lib/ts/types";
 
 export const goRecipeImports = {
@@ -223,7 +223,7 @@ var SuperTokensConfig = supertokens.TypeInput{
         ${recipes // Use recipes directly here
             .map((recipe) => {
                 if (recipe === "thirdParty") {
-                    return goRecipeInits[recipe](oAuthProviders);
+                    return goRecipeInits[recipe](thirdPartyLoginProviders);
                 }
                 if (recipe === "passwordless") {
                     return goRecipeInits[recipe](userArguments);
@@ -288,7 +288,7 @@ func main() {
 
 func corsMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(response http.ResponseWriter, r *http.Request) {
-        response.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+        response.Header().Set("Access-Control-Allow-Origin", getWebsiteDomain())
         response.Header().Set("Access-Control-Allow-Credentials", "true")
         if r.Method == "OPTIONS" {
             response.Header().Set("Access-Control-Allow-Headers", strings.Join(append([]string{"Content-Type"}, supertokens.GetAllCORSHeaders()...), ","))

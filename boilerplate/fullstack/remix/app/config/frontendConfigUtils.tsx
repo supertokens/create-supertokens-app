@@ -7,8 +7,5 @@ export const frontendConfig = (): SuperTokensConfig => {
     };
 };
 
-export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/thirdpartypasswordless/introduction",
-};
-
+// Removed unused recipeDetails export
 export const PreBuiltUIList = STPreBuiltUIList;
