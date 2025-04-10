@@ -36,11 +36,11 @@ func getStringPointer(s string) *string {
 }
 
 func getApiDomain() string {
-    apiPort := os.Getenv("API_PORT") // Use generic env var name
+    apiPort := os.Getenv("API_PORT")
     if apiPort == "" {
-        apiPort = "%DEFAULT_API_PORT%" // Placeholder for default port
+        apiPort = "%DEFAULT_API_PORT%"
     }
-    apiUrl := os.Getenv("API_URL") // Use generic env var name
+    apiUrl := os.Getenv("API_URL")
     if apiUrl == "" {
         apiUrl = fmt.Sprintf("http://localhost:%s", apiPort)
     }
@@ -48,11 +48,11 @@ func getApiDomain() string {
 }
 
 func getWebsiteDomain() string {
-    websitePort := os.Getenv("WEBSITE_PORT") // Use generic env var name
+    websitePort := os.Getenv("WEBSITE_PORT")
     if websitePort == "" {
-        websitePort = "%DEFAULT_WEBSITE_PORT%" // Placeholder for default port
+        websitePort = "%DEFAULT_WEBSITE_PORT%"
     }
-    websiteUrl := os.Getenv("WEBSITE_URL") // Use generic env var name
+    websiteUrl := os.Getenv("WEBSITE_URL")
     if websiteUrl == "" {
         websiteUrl = fmt.Sprintf("http://localhost:%s", websitePort)
     }
@@ -76,14 +76,12 @@ export const goRecipeInits = {
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "${p.clientId}",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "${p.clientSecret}",${
                         p.additionalConfig
                             ? `
                             AdditionalConfig: map[string]interface{}{
                                 ${Object.entries(p.additionalConfig)
                                     .map(([key, value]) => {
-                                        // Escape newlines in the value if it's a string
                                         const escapedValue =
                                             typeof value === "string" ? value.replace(/\n/g, "\\n") : value;
                                         return `"${key}":     "${escapedValue}",`;
@@ -103,7 +101,6 @@ export const goRecipeInits = {
 })`;
     },
     passwordless: (userArguments?: UserFlags) => {
-        // Determine flow type based on user arguments
         let flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
 
         const hasLinkEmail =
@@ -115,9 +112,6 @@ export const goRecipeInits = {
         const hasOtpPhone =
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
 
-        // Determine flow type
-        // Note: According to the documentation, if both OTP and magic link factors are present,
-        // the flowType should be "USER_INPUT_CODE_AND_MAGIC_LINK"
         const hasLinkFactors = hasLinkEmail || hasLinkPhone;
         const hasOtpFactors = hasOtpEmail || hasOtpPhone;
 
@@ -158,30 +152,21 @@ export const generateGoTemplate = ({
     userArguments?: UserFlags;
 }): string => {
     let template = "";
-    // Note: The Go SDK doesn't support MFA, so we filter out MFA-related recipes
     const recipes = configToRecipes[configType].filter((recipe) => recipe !== "multiFactorAuth" && recipe !== "totp");
 
-    // Go SDK doesn't support MFA, so we'll skip that
+    const needsEmailVerification = false;
 
-    // If we're using link-email or email OTP as a second factor, we need email verification
-    const needsEmailVerification = false; // No MFA support in Go
-
-    // Add email verification if needed and not already included
     if (needsEmailVerification && !recipes.includes("emailVerification")) {
         recipes.push("emailVerification");
     }
 
     const appInfo = getAppInfo();
 
-    // recipes array is already filtered on line 162, no need for supportedRecipes
-
-    // Add recipe-specific imports
     const imports = recipes
-        .map((recipe) => goRecipeImports[recipe as keyof typeof goRecipeImports]) // Use recipes directly, keep assertion
+        .map((recipe) => goRecipeImports[recipe as keyof typeof goRecipeImports])
         .filter(Boolean)
         .join("\n    ");
 
-    // Add package declaration and imports
     template = `package main
 
 import (
@@ -196,18 +181,17 @@ func getStringPointer(s string) *string {
 }
 
 func getApiDomain() string {
-    apiPort := "${appInfo.defaultApiPort}" // Use appInfo default directly
+    apiPort := "${appInfo.defaultApiPort}"
     apiUrl := fmt.Sprintf("http://localhost:%s", apiPort)
     return apiUrl
 }
 
 func getWebsiteDomain() string {
-    websitePort := "${appInfo.defaultWebsitePort}" // Use appInfo default directly
+    websitePort := "${appInfo.defaultWebsitePort}"
     websiteUrl := fmt.Sprintf("http://localhost:%s", websitePort)
     return websiteUrl
 }
 
-// SuperTokensConfig is the configuration for SuperTokens core with all auth methods
 var SuperTokensConfig = supertokens.TypeInput{
     Supertokens: &supertokens.ConnectionInfo{
         ConnectionURI: "${config.connectionURI}",
@@ -220,10 +204,9 @@ var SuperTokensConfig = supertokens.TypeInput{
         WebsiteBasePath: getStringPointer("${appInfo.websiteBasePath}"),
     },
     RecipeList: []supertokens.Recipe{
-        ${recipes // Use recipes directly here
+        ${recipes
             .map((recipe) => {
                 if (recipe === "thirdParty") {
-                    // Filter providers if the user specified them via CLI flag
                     const providersToUse = userArguments?.providers
                         ? thirdPartyLoginProviders.filter((p) => userArguments.providers!.includes(p.id))
                         : thirdPartyLoginProviders;
@@ -232,7 +215,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                 if (recipe === "passwordless") {
                     return goRecipeInits[recipe](userArguments);
                 }
-                // We know recipe is a valid key here because recipes is filtered on line 162
                 return goRecipeInits[recipe as keyof typeof goRecipeInits]();
             })
             .join(",\n        ")},
@@ -263,24 +245,18 @@ func main() {
 
     http.ListenAndServe(":3001", corsMiddleware(
         supertokens.Middleware(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-            // Handle your APIs..
             path := strings.TrimSuffix(r.URL.Path, "/")
 
-            // A public endpoint unprotected by SuperTokens
             if path == "/hello" && r.Method == "GET" {
                 hello(rw, r)
                 return
             }
 
-            // A SuperTokens protected endpoint that returns
-            // session information
             if path == "/sessioninfo" {
                 session.VerifySession(nil, sessioninfo).ServeHTTP(rw, r)
                 return
             }
 
-            // An endpoint that returns tenant lists in a
-            // multitenant configuration
             if path == "/tenants" && r.Method == "GET" {
                 tenants(rw, r)
                 return

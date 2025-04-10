@@ -552,8 +552,15 @@ async function setupFrontendBackendApp(
     );
 
     const rootSetup = new Promise<ExecOutput>((res) => {
-        const rootInstall = exec(`cd ${folderName}/ && ${userArguments.manager} install`);
         let stderr: string[] = [];
+
+        // Skip if --skip-install is passed
+        if (userArguments.skipInstall === true) {
+            res({ code: 0, error: undefined });
+            return;
+        }
+
+        const rootInstall = exec(`cd ${folderName}/ && ${userArguments.manager} install`);
 
         rootInstall.on("exit", (code) => {
             const errorString = stderr.join("\n");

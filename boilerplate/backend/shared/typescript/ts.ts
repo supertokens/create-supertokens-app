@@ -8,13 +8,13 @@ import { UserFlags } from "../../../../lib/ts/types";
 interface TypeScriptTemplateOptions {
     configType: ConfigType;
     userArguments?: UserFlags;
-    isFullStack?: boolean; // Added isFullStack flag
+    isFullStack?: boolean;
 }
 
 export const tsRecipeImports = {
     emailPassword: 'import EmailPassword from "supertokens-node/recipe/emailpassword";',
     thirdParty:
-        'import ThirdParty from "supertokens-node/recipe/thirdparty";\nimport type { ProviderInput } from "supertokens-node/recipe/thirdparty/types";', // Use import type
+        'import ThirdParty from "supertokens-node/recipe/thirdparty";\nimport type { ProviderInput } from "supertokens-node/recipe/thirdparty/types";',
     passwordless: 'import Passwordless from "supertokens-node/recipe/passwordless";',
     session: 'import Session from "supertokens-node/recipe/session";',
     dashboard: 'import Dashboard from "supertokens-node/recipe/dashboard";',
@@ -55,9 +55,8 @@ export const tsRecipeInits = {
             },
         })`,
     passwordless: (userArguments?: UserFlags) => {
-        // Determine contact method and flow type based on user arguments
         let contactMethod = "EMAIL";
-        let flowType; // To handle OTP and magic link combined flows
+        let flowType;
 
         const hasLinkEmail =
             userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
@@ -68,7 +67,6 @@ export const tsRecipeInits = {
         const hasOtpPhone =
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
 
-        // Determine contact method
         if ((hasLinkEmail || hasOtpEmail) && (hasLinkPhone || hasOtpPhone)) {
             contactMethod = "EMAIL_OR_PHONE";
         } else if (hasLinkPhone || hasOtpPhone) {
@@ -77,7 +75,6 @@ export const tsRecipeInits = {
             contactMethod = "EMAIL";
         }
 
-        // Determine flow type
         const hasLinkFactor = hasLinkEmail || hasLinkPhone;
         const hasOtpFactor = hasOtpEmail || hasOtpPhone;
 
@@ -136,10 +133,6 @@ export const tsRecipeInits = {
                     ],
                 },
             ],
-            // NOTE: Removing getRequiredSecondaryFactorsForUser override based on user feedback
-            // getRequiredSecondaryFactorsForUser: async () => {
-            //     return [${factorIds.join(", ")}];
-            // },
         }),
     }`;
             }
@@ -150,19 +143,16 @@ export const tsRecipeInits = {
         return init;
     },
     accountLinking: (hasMFA: boolean) => {
-        // Reverting to returning plain object to avoid constructor/reference errors at runtime,
-        // even though SDK might expect class instance. Underlying "not allowed to" error likely needs SDK fix.
         const shouldRequireVerification = hasMFA;
         return `AccountLinking.init({
             shouldDoAutomaticAccountLinking: async (
-                newAccountInfo: AccountInfoWithRecipeId, // Corrected type
-                user: User | undefined, // Use undefined directly instead of Optional<User>
-                session: any, // Use any for session as SessionContainer import was removed
+                newAccountInfo: AccountInfoWithRecipeId,
+                user: User | undefined,
+                session: any,
                 tenantId: string,
-                userContext: any // Use any for userContext instead of Dict<string, Any>
+                userContext: any
             ) => {
-                // TODO: Add custom logic here based on your requirements
-                return { // Return plain object
+                return {
                     shouldAutomaticallyLink: true,
                     shouldRequireVerification: ${shouldRequireVerification}
                 };
@@ -170,7 +160,7 @@ export const tsRecipeInits = {
         })`;
     },
     emailVerification: () => `EmailVerification.init({
-        mode: "REQUIRED" // Revert back to REQUIRED
+        mode: "REQUIRED"
     })`,
     totp: () => `TOTP.init()`,
     multitenancy: () => `Multitenancy.init({
@@ -178,7 +168,6 @@ export const tsRecipeInits = {
             functions: (oI) => {
                 return {
                     ...oI,
-                    // Add any necessary overrides for Multitenancy + MFA interaction here
                 };
             },
         },
@@ -186,18 +175,13 @@ export const tsRecipeInits = {
 } as const;
 
 export const generateTypeScriptTemplate = (
-    {
-        configType,
-        userArguments,
-        isFullStack = false, // Default to false
-    }: TypeScriptTemplateOptions,
-    _framework?: string // Keep framework for potential future use or logging
+    { configType, userArguments, isFullStack = false }: TypeScriptTemplateOptions,
+    _framework?: string
 ): string => {
     const recipes = configToRecipes[configType];
     const hasMFA =
         configType === "multifactorauth" || (userArguments?.secondfactors && userArguments.secondfactors.length > 0);
 
-    // Add MFA recipes if needed
     if (hasMFA && !recipes.includes("multiFactorAuth")) {
         recipes.push("multiFactorAuth");
     }
@@ -211,7 +195,6 @@ export const generateTypeScriptTemplate = (
         recipes.push("accountLinking");
     }
 
-    // Add Passwordless recipe if any OTP/Link factors are used (first or second)
     const hasPasswordlessFactor =
         userArguments?.firstfactors?.some((f) => f.startsWith("otp-") || f.startsWith("link-")) ||
         userArguments?.secondfactors?.some((f) => f.startsWith("otp-") || f.startsWith("link-"));
@@ -220,34 +203,25 @@ export const generateTypeScriptTemplate = (
         recipes.push("passwordless");
     }
 
-    // Get the correct appInfo based on fullstack context
     const appInfo = getAppInfo(isFullStack);
 
-    // Generate imports
     let imports = recipes
         .map((recipe) => tsRecipeImports[recipe as keyof typeof tsRecipeImports])
         .filter(Boolean)
         .join("\n");
 
-    // Add imports for types used in overrides
     if (recipes.includes("accountLinking")) {
-        // Correct type name and remove problematic SessionContainer import path
-        imports += `\nimport type { AccountInfoWithRecipeId } from "supertokens-node/recipe/accountlinking/types";`; // Corrected type name
+        imports += `\nimport type { AccountInfoWithRecipeId } from "supertokens-node/recipe/accountlinking/types";`;
         imports += `\nimport type { User } from "supertokens-node/types";`;
     }
 
-    // Removed incorrect import from "typing"
-
-    // Generate recipe initializations using a switch for clarity and type safety
-    // Ensure Session is handled last
     const initRecipes = recipes.filter((r) => r !== "session");
-    const sessionInitFunc = tsRecipeInits.session; // Assuming session init takes no args
+    const sessionInitFunc = tsRecipeInits.session;
 
     const recipeInits = initRecipes
         .map((recipe) => {
             switch (recipe) {
                 case "thirdParty":
-                    // Filter providers if the user specified them via CLI flag
                     const providersToUse = userArguments?.providers
                         ? thirdPartyLoginProviders.filter((p) => userArguments.providers!.includes(p.id))
                         : thirdPartyLoginProviders;
@@ -255,24 +229,19 @@ export const generateTypeScriptTemplate = (
                 case "multiFactorAuth":
                     return tsRecipeInits.multiFactorAuth(userArguments?.firstfactors, userArguments?.secondfactors);
                 case "accountLinking":
-                    return tsRecipeInits.accountLinking(hasMFA ?? false); // Pass hasMFA, default to false if undefined
+                    return tsRecipeInits.accountLinking(hasMFA ?? false);
                 case "passwordless":
                 case "passwordless":
                     return tsRecipeInits.passwordless(userArguments);
-                case "emailVerification": // Reverted: EV init takes no args now
+                case "emailVerification":
                     return tsRecipeInits.emailVerification();
-                // Add cases for other recipes that might need specific arguments in the future
                 case "emailPassword":
                 case "dashboard":
                 case "userRoles":
-                // case "emailVerification": // Handled separately below
                 case "totp":
                 case "multitenancy":
-                    // Call recipes that don't require arguments (excluding EV)
                     const initFunc = tsRecipeInits[recipe];
                     if (typeof initFunc === "function") {
-                        // We check if it's a function before calling
-                        // Need to cast to any because TS struggles with indexed access signature inference here
                         return (initFunc as any)();
                     }
                     console.warn(`No initializer function found for recipe: ${recipe}`);
@@ -282,18 +251,13 @@ export const generateTypeScriptTemplate = (
                     return null;
             }
         })
-        .filter(Boolean); // Get array of init strings
+        .filter(Boolean);
 
-    // Add Session.init() at the end
     recipeInits.push(sessionInitFunc());
 
-    // Removed unused recipeInitsString variable
-
-    // Construct the final template string
     let template =
         imports +
         "\n" +
-        // Reverting to value import for TypeInput based on user's working config
         `import type { TypeInput } from "supertokens-node/types";
 
 export function getApiDomain() {
@@ -309,7 +273,6 @@ export function getWebsiteDomain() {
 }` +
         "\n";
 
-    // Add configuration
     template += `\nexport const SuperTokensConfig: TypeInput = {
     supertokens: {
         connectionURI: "${config.connectionURI}",

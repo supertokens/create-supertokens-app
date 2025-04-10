@@ -2,17 +2,15 @@ import { type ConfigType } from "../../../../lib/ts/templateBuilder/types";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
 import { getAppInfo } from "../../../shared/config/appInfo";
 import { UserFlags } from "../../../../lib/ts/types";
-import { type OAuthProvider } from "../../../../lib/ts/templateBuilder/types"; // Added OAuthProvider
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders"; // Import default providers
+import { type OAuthProvider } from "../../../../lib/ts/templateBuilder/types";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
 
 interface WebJSTemplate {
     configType: ConfigType;
     userArguments?: UserFlags;
     isFullStack?: boolean;
-    // Removed unused _framework parameter
 }
 
-// Only include recipes that have frontend components
 export const frontendRecipes = [
     "emailPassword",
     "thirdParty",
@@ -48,22 +46,19 @@ import Session from "supertokens-web-js/recipe/session";
 import Multitenancy from "supertokens-web-js/recipe/multitenancy";`,
 } as const;
 
-// Removed unused webJsRecipeInits object
 export const uiRecipeInits = {
     emailPassword: () => `(window as any).supertokensUIEmailPassword.init()`,
     thirdParty: (providers: OAuthProvider[]) => {
-        // Map provider IDs to their corresponding WebJS UI init calls
         const providerInitMap: Record<string, string> = {
             google: "(window as any).supertokensUIThirdParty.Google.init()",
             github: "(window as any).supertokensUIThirdParty.Github.init()",
             apple: "(window as any).supertokensUIThirdParty.Apple.init()",
             twitter: "(window as any).supertokensUIThirdParty.Twitter.init()",
-            // Add other potential providers here if needed in the future
         };
 
         const providerInits = providers
             .map((p) => providerInitMap[p.id])
-            .filter(Boolean) // Filter out any undefined entries if a provider ID isn't mapped
+            .filter(Boolean)
             .join(",\n                        ");
 
         return `(window as any).supertokensUIThirdParty.init({
@@ -75,9 +70,8 @@ export const uiRecipeInits = {
             })`;
     },
     passwordless: (userArguments?: UserFlags) => {
-        // Determine contact method based on user arguments
         let contactMethod = "EMAIL";
-        let flowType; // To handle OTP and magic link combined flows
+        let flowType;
 
         const hasLinkEmail =
             userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
@@ -88,8 +82,6 @@ export const uiRecipeInits = {
         const hasOtpPhone =
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
 
-        // Determine contact method based on factors
-        // Note: The documentation in web-js.mdc incorrectly states "EMAIL_OR_PASSWORD" but it should be "EMAIL_OR_PHONE"
         if ((hasLinkEmail || hasOtpEmail) && (hasLinkPhone || hasOtpPhone)) {
             contactMethod = "EMAIL_OR_PHONE";
         } else if (hasLinkPhone || hasOtpPhone) {
@@ -121,14 +113,11 @@ export const uiRecipeInits = {
     },
     session: () => `(window as any).supertokensUISession.init()`,
     multiFactorAuth: (firstFactors?: string[], secondFactors?: string[]) => {
-        // For the UI init, we use a simplified first factors setting
         const firstFactorsStr = firstFactors
             ? firstFactors.map((f) => `"${f}"`).join(", ")
             : `"thirdparty", "emailpassword"`;
 
-        // If we have second factors, we need to include the override function
         if (secondFactors && secondFactors.length > 0) {
-            // Map the second factors to the correct FactorIds
             const factorMapping: Record<string, string> = {
                 totp: "(window as any).supertokensUIMultiFactorAuth.FactorIds.TOTP",
                 "otp-email": "(window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL",
@@ -152,8 +141,6 @@ export const uiRecipeInits = {
                         ],
                     },
                 ],
-                // Override the getRequiredSecondaryFactorsForUser function to ensure
-                // the user is required to set up the second factors
                 getRequiredSecondaryFactorsForUser: async () => {
                     return [${factorIds.join(", ")}];
                 },
@@ -163,12 +150,10 @@ export const uiRecipeInits = {
             }
         }
 
-        // Simple initialization for MFA if no second factors are specified
         return `(window as any).supertokensUIMultiFactorAuth.init({
         firstFactors: [${firstFactorsStr}]
     })`;
     },
-    // Set mode based on MFA status
     emailVerification: (hasMFA?: boolean) => `(window as any).supertokensUIEmailVerification.init({
         mode: ${hasMFA ? '"OPTIONAL"' : '"REQUIRED"'}
     })`,
@@ -195,11 +180,8 @@ export function getEnvPrefix(framework: string): string {
     return "VITE_APP_";
 }
 
-// Removed incorrect import for frontendRecipes, it's defined locally above
-
 export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }: WebJSTemplate): string => {
-    // Determine recipes based on userArguments first, then fall back to configType if no factors provided
-    const recipesSet = new Set<string>(["session"]); // Start with session
+    const recipesSet = new Set<string>(["session"]);
 
     if (userArguments?.firstfactors || userArguments?.secondfactors) {
         const factors = [...(userArguments.firstfactors || []), ...(userArguments.secondfactors || [])];

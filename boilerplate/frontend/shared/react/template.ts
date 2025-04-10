@@ -1,13 +1,12 @@
 import { UserFlags } from "../../../../lib/ts/types";
-import { type ConfigType, type OAuthProvider } from "../../../../lib/ts/templateBuilder/types"; // Added OAuthProvider
+import { type ConfigType, type OAuthProvider } from "../../../../lib/ts/templateBuilder/types";
 import { getAppInfo } from "../../../shared/config/appInfo";
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders"; // Import default providers
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
 
 interface ReactTemplate {
     configType: ConfigType;
     userArguments?: UserFlags;
     isFullStack?: boolean;
-    // Removed unused _framework parameter
 }
 
 export const reactRecipeImports = {
@@ -24,24 +23,21 @@ export const reactRecipeImports = {
         'import EmailVerification from "supertokens-auth-react/recipe/emailverification";\nimport { EmailVerificationPreBuiltUI } from "supertokens-auth-react/recipe/emailverification/prebuiltui";',
     totp: 'import TOTP from "supertokens-auth-react/recipe/totp";\nimport { TOTPPreBuiltUI } from "supertokens-auth-react/recipe/totp/prebuiltui";',
     multitenancy: 'import Multitenancy from "supertokens-auth-react/recipe/multitenancy";',
-    // Removed Dashboard and UserRoles imports as they don't exist in supertokens-auth-react
 };
 
 export const reactRecipeInits = {
     emailPassword: () => `EmailPassword.init()`,
     thirdParty: (providers: OAuthProvider[]) => {
-        // Map provider IDs to their corresponding React init calls
         const providerInitMap: Record<string, string> = {
             google: "Google.init()",
             github: "Github.init()",
             apple: "Apple.init()",
             twitter: "Twitter.init()",
-            // Add other potential providers here if needed in the future
         };
 
         const providerInits = providers
             .map((p) => providerInitMap[p.id])
-            .filter(Boolean) // Filter out any undefined entries if a provider ID isn't mapped
+            .filter(Boolean)
             .join(",\n                    ");
 
         return `ThirdParty.init({
@@ -53,9 +49,7 @@ export const reactRecipeInits = {
         })`;
     },
     passwordless: (userArguments?: UserFlags) => {
-        // Determine contact method based on user arguments
         let contactMethod = "EMAIL";
-        // Removed flowType again as it's not used in the return string
 
         const hasLinkEmail =
             userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
@@ -66,7 +60,6 @@ export const reactRecipeInits = {
         const hasOtpPhone =
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
 
-        // Determine contact method based on factors
         if ((hasLinkEmail || hasOtpEmail) && (hasLinkPhone || hasOtpPhone)) {
             contactMethod = "EMAIL_OR_PHONE";
         } else if (hasLinkPhone || hasOtpPhone) {
@@ -75,20 +68,6 @@ export const reactRecipeInits = {
             contactMethod = "EMAIL";
         }
 
-        // Determine flow type based on factors
-        // Note: The documentation states that if both otp_email and otp_phone are present,
-        // the flowType becomes "USER_INPUT_CODE_AND_MAGIC_LINK"
-        // Removed assignments to flowType as it's not used in the init string below
-        // if ((hasOtpEmail || hasOtpPhone) && (hasLinkEmail || hasLinkPhone)) {
-        //     // flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
-        // } else if (hasLinkEmail || hasLinkPhone) {
-        //     // flowType = "MAGIC_LINK";
-        // } else if (hasOtpEmail || hasOtpPhone) {
-        //     // flowType = "USER_INPUT_CODE";
-        // }
-
-        // The flowType seems to be inferred by SuperTokens or might cause type errors,
-        // so we only explicitly set the contactMethod.
         const initObj = [`contactMethod: "${contactMethod}"`];
 
         return `Passwordless.init({
@@ -100,7 +79,6 @@ export const reactRecipeInits = {
             return `Session.init()`;
         }
 
-        // When using MFA, we need to adjust the order of claim validators to prioritize MFA
         return `Session.init({
             override: {
                 functions: (original) => {
@@ -111,8 +89,6 @@ export const reactRecipeInits = {
                                 v => v.id === EmailVerification.EmailVerificationClaim.id
                             );
                             if (emailVerificationClaimValidator) {
-                                // We filter out the email verification validator and add it at the end
-                                // This ensures MFA validator gets priority
                                 const filteredValidators = input.claimValidatorsAddedByOtherRecipes.filter(
                                     v => v.id !== EmailVerification.EmailVerificationClaim.id
                                 );
@@ -126,7 +102,6 @@ export const reactRecipeInits = {
         })`;
     },
     multiFactorAuth: (firstFactors?: string[], secondFactors?: string[]) => {
-        // For React, determine the appropriate firstFactors based on user configuration
         const availableFirstFactors: string[] = [];
 
         if (firstFactors) {
@@ -136,19 +111,15 @@ export const reactRecipeInits = {
             if (firstFactors.includes("thirdparty")) {
                 availableFirstFactors.push("thirdparty");
             }
-            // Check for passwordless first factors
             const hasPasswordless = firstFactors.some((f) => f.startsWith("link-") || f.startsWith("otp-"));
             if (hasPasswordless) {
                 availableFirstFactors.push("passwordless");
             }
         } else {
-            // Default values if no first factors are specified
             availableFirstFactors.push("thirdparty", "emailpassword");
         }
 
-        // If we have second factors, we need to include the override function
         if (secondFactors && secondFactors.length > 0) {
-            // Map the second factors to the correct FactorIds
             const factorMapping: Record<string, string> = {
                 totp: "MultiFactorAuth.FactorIds.TOTP",
                 "otp-email": "MultiFactorAuth.FactorIds.OTP_EMAIL",
@@ -172,8 +143,6 @@ export const reactRecipeInits = {
                         ],
                     },
                 ],
-                // Override the getRequiredSecondaryFactorsForUser function to ensure
-                // the user is required to set up the second factors
                 getRequiredSecondaryFactorsForUser: async () => {
                     return [${factorIds.join(", ")}];
                 },
@@ -183,12 +152,10 @@ export const reactRecipeInits = {
             }
         }
 
-        // Simple initialization for MFA if no second factors are specified
         return `MultiFactorAuth.init({
         firstFactors: [${availableFirstFactors.map((f) => `"${f}"`).join(", ")}]
     })`;
     },
-    // Set mode based on MFA status
     emailVerification: (hasMFA?: boolean) => `EmailVerification.init({
         mode: ${hasMFA ? '"OPTIONAL"' : '"REQUIRED"'}
     })`,
@@ -206,7 +173,6 @@ export const reactRecipeInits = {
                 },
             },
         })`,
-    // Removed Dashboard and UserRoles initializers
 };
 
 export const reactPreBuiltUIs = {
@@ -216,38 +182,28 @@ export const reactPreBuiltUIs = {
     multiFactorAuth: "MultiFactorAuthPreBuiltUI",
     emailVerification: "EmailVerificationPreBuiltUI",
     totp: "TOTPPreBuiltUI",
-    // Removed Dashboard and UserRoles PreBuiltUI names
 };
 
 export const generateReactTemplate = ({ configType, userArguments, isFullStack }: ReactTemplate): string => {
     const appInfo = getAppInfo(isFullStack);
     const hasMFA = userArguments?.secondfactors && userArguments.secondfactors.length > 0;
-    // Removed unused hasEmailFactors and hasPhoneFactors
     const hasTOTP = userArguments?.secondfactors?.includes("totp");
 
-    // According to the tables, if both link_email and link_phone are present, contactMethod becomes "EMAIL_OR_PHONE"
-    // Note: The documentation in react.mdc incorrectly states "EMAIL_OR_PASSWORD" but it should be "EMAIL_OR_PHONE"
-    // Removed unused contactMethod variable
-
-    // Build the list of recipes needed
     const recipes: string[] = [];
     const prebuiltUIs: string[] = [];
 
-    // Add recipes based on config type or if they're used as first factors in MFA
     const hasEmailPasswordFirstFactor = userArguments?.firstfactors?.includes("emailpassword") || false;
     if (configType === "emailpassword" || configType === "all_auth" || hasEmailPasswordFirstFactor) {
         recipes.push("emailPassword");
         prebuiltUIs.push(reactPreBuiltUIs.emailPassword);
     }
 
-    // ThirdParty recipe
     const hasThirdPartyFirstFactor = userArguments?.firstfactors?.includes("thirdparty") || false;
     if (configType.includes("thirdparty") || configType === "all_auth" || hasThirdPartyFirstFactor) {
         recipes.push("thirdParty");
         prebuiltUIs.push(reactPreBuiltUIs.thirdParty);
     }
 
-    // Passwordless recipe - must come before any MFA config
     const hasPasswordlessSecondFactors =
         userArguments?.secondfactors?.some(
             (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
@@ -267,41 +223,29 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
         prebuiltUIs.push(reactPreBuiltUIs.passwordless);
     }
 
-    // Multi-factor auth - must come after the auth recipes
     if (hasMFA) {
         recipes.push("multiFactorAuth");
         prebuiltUIs.push(reactPreBuiltUIs.multiFactorAuth);
 
-        // Add EmailVerification for MFA as per documentation
         recipes.push("emailVerification");
         prebuiltUIs.push(reactPreBuiltUIs.emailVerification);
 
-        // Add TOTP if needed
         if (hasTOTP) {
             recipes.push("totp");
             prebuiltUIs.push(reactPreBuiltUIs.totp);
         }
     }
 
-    // Add Multitenancy if needed
     if (configType === "multitenancy") {
         recipes.push("multitenancy");
-        // Note: Multitenancy doesn't have a PreBuiltUI export
     }
 
-    // Removed unconditional addition of Dashboard and UserRoles
-
-    // Always include Session - must be last in recipe list for init, but UI can be anywhere
     recipes.push("session");
-    // Session does not have a PreBuiltUI component
-
-    // Generate imports
     const imports = recipes
         .map((recipe) => reactRecipeImports[recipe as keyof typeof reactRecipeImports])
         .filter(Boolean)
         .join("\n");
 
-    // Generate initializations using a switch for clarity
     const recipeInits = recipes
         .map((recipe) => {
             switch (recipe) {
@@ -311,32 +255,26 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
                     return reactRecipeInits.multiFactorAuth(userArguments?.firstfactors, userArguments?.secondfactors);
                 case "session":
                     return reactRecipeInits.session(hasMFA);
-                case "emailVerification": // Handle EV separately
+                case "emailVerification":
                     return reactRecipeInits.emailVerification(hasMFA ?? false);
-                // Add cases for other recipes that might need specific arguments in the future
                 case "emailPassword": {
-                    // emailPassword init takes no arguments
                     const initFunc = reactRecipeInits[recipe];
                     return initFunc();
                 }
                 case "thirdParty": {
-                    // Filter providers based on user arguments or use defaults
                     const providersToUse = userArguments?.providers
                         ? thirdPartyLoginProviders.filter((p) => userArguments.providers!.includes(p.id))
-                        : thirdPartyLoginProviders; // Use all defaults if --providers flag is not used
+                        : thirdPartyLoginProviders;
                     return reactRecipeInits.thirdParty(providersToUse);
                 }
-                // Removed dashboard and userRoles cases as they don't have initializers
                 case "totp":
                 case "multitenancy":
-                    // These recipes take no arguments
-                    // Call recipes that don't require arguments
                     const initFunc = reactRecipeInits[recipe];
                     if (typeof initFunc === "function") {
-                        return initFunc(); // Call directly
+                        return initFunc();
                     }
                     console.warn(`No initializer function found for recipe: ${recipe}`);
-                    return null; // Closing brace removed from line 312
+                    return null;
                 default:
                     console.warn(`Unknown recipe encountered: ${recipe}`);
                     return null;
@@ -344,18 +282,15 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
         })
         .filter(Boolean);
 
-    // Generate the template following the pattern in final-shape-tables.mdc
     const template = `${imports}
 
 export function getApiDomain() {
-    // Use only appInfo defaults
     const apiPort = ${appInfo.defaultApiPort};
     const apiUrl = \`http://localhost:\${apiPort}\`;
     return apiUrl;
 }
 
 export function getWebsiteDomain() {
-    // Use only appInfo defaults
     const websitePort = ${appInfo.defaultWebsitePort};
     const websiteUrl = \`http://localhost:\${websitePort}\`;
     return websiteUrl;
@@ -399,8 +334,8 @@ export const SuperTokensConfig = {
         appName: "${appInfo.appName}",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}", // Add apiBasePath
-        websiteBasePath: "${appInfo.websiteBasePath}", // Add websiteBasePath
+        apiBasePath: "${appInfo.apiBasePath}", 
+        websiteBasePath: "${appInfo.websiteBasePath}", 
     },
     ${configType === "multitenancy" ? "usesDynamicLoginMethods: true,\n    " : ""}${
         configType === "passwordless" ||
@@ -409,8 +344,7 @@ export const SuperTokensConfig = {
         configType === "multitenancy"
             ? "style: styleOverride,\n    "
             : ""
-    }// recipeList contains all the modules that you want to
-    // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
+    }
     recipeList: [
         ${recipeInits.join(",\n        ")}
     ],
@@ -423,7 +357,6 @@ export const SuperTokensConfig = {
 
 export const recipeDetails = {
     docsLink: "https://supertokens.com/docs/${(() => {
-        // Handle docs link based on configuration
         if (configType === "thirdpartypasswordless") return "thirdpartypasswordless";
         if (configType === "emailpassword") return "emailpassword";
         if (configType === "passwordless") return "passwordless";
