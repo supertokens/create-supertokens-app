@@ -142,7 +142,7 @@ async function run() {
                 // If it's a string, split it
                 return val.split(",").map((f: string) => f.trim());
             }).argv) as UserFlagsRaw;
-        validateUserArguments(userArgumentsRaw);
+        validateUserArguments(userArgumentsRaw); // Remove await here
         const userArguments: UserFlags = {
             ...userArgumentsRaw,
             manager: userArgumentsRaw.manager ?? inferredPackageManager() ?? "npm",
@@ -170,6 +170,17 @@ async function run() {
             frontend: answers.frontend,
             backend: answers.backend,
         });
+
+        // Default factors for interactive MFA selection if flags weren't used
+        if (
+            answers.recipe === "multifactorauth" &&
+            userArguments.firstfactors === undefined &&
+            userArguments.secondfactors === undefined
+        ) {
+            userArguments.firstfactors = ["emailpassword", "thirdparty"];
+            userArguments.secondfactors = ["otp-email", "totp"];
+            answers.recipe = "multifactorauth";
+        }
 
         if (answers.recipe === "multitenancy" || answers.recipe === "multifactorauth") {
             let recipePlaceholder = answers.recipe === "multitenancy" ? "Multitenancy" : "Multi-factor Auth";
@@ -206,7 +217,6 @@ async function run() {
             text: "Downloading files",
         }).start();
 
-        // Check for MFA compatibility with backend
         checkMfaCompatibility(answers, userArguments);
 
         const folderLocations = await getDownloadLocationFromAnswers(answers, userArguments);

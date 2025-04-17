@@ -595,10 +595,12 @@ export async function getQuestions(flags: UserFlags) {
             message: "Choose how you want to organise your Next.js routes:",
             choices: mapOptionsToChoices(await getNextJSOptions(flags)),
             when: (answers: Answers) => {
-                if (flags.frontend !== undefined && flags.frontend === "next") {
-                    return true;
+                // If frontend is specified via flags as next OR next-app-directory, DO NOT prompt.
+                if (flags.frontend === "next" || flags.frontend === "next-app-directory") {
+                    return false;
                 }
 
+                // Otherwise, prompt only if the user selected "Next.js" in the previous step.
                 return answers.frontend === "next";
             },
         },

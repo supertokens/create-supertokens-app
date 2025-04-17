@@ -9,11 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const BOILERPLATE_DIR = path.join(__dirname, "..", "boilerplate");
 
-/**
- * Recursively copy a directory
- */
 function copyDir(src: string, dest: string, filter?: (path: string) => boolean) {
-    // Create the destination directory if it doesn't exist
     if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest, { recursive: true });
     }
@@ -24,7 +20,6 @@ function copyDir(src: string, dest: string, filter?: (path: string) => boolean) 
         const srcPath = path.join(src, entry.name);
         const destPath = path.join(dest, entry.name);
 
-        // If filter is provided, check if this path should be included
         if (filter && !filter(srcPath)) {
             continue;
         }
@@ -37,13 +32,9 @@ function copyDir(src: string, dest: string, filter?: (path: string) => boolean) 
     }
 }
 
-/**
- * Get the temporary directory name that utils.ts expects
- */
 function getTempDirName(location: string): string {
     const parts = location.split("/");
 
-    // Handle backend paths
     if (location.includes("backend/")) {
         const [_, framework, name] = parts;
         if (framework === "typescript") {
@@ -58,25 +49,15 @@ function getTempDirName(location: string): string {
         return name;
     }
 
-    // For frontend, just use the last part
     return parts[parts.length - 1];
 }
 
-/**
- * Get the correct local template path based on framework selection
- */
 function getLocalTemplatePath(location: string): string {
-    // Remove any leading slashes
     const normalizedPath = location.replace(/^\//, "");
 
-    // Join with the boilerplate directory
     return path.join(BOILERPLATE_DIR, normalizedPath);
 }
 
-/**
- * Local alternative to downloadApp from utils.ts
- * This copies files from local boilerplate directory instead of downloading from GitHub
- */
 export async function downloadAppLocally(locations: DownloadLocations, folderName: string): Promise<void> {
     if (process.env.DEBUG === "true") {
         console.log("\nDebug: Input locations");
@@ -86,29 +67,39 @@ export async function downloadAppLocally(locations: DownloadLocations, folderNam
 
     const projectDir = path.resolve(folderName);
 
-    // If the folder already exists, throw error
     if (fs.existsSync(projectDir)) {
         throw new Error(`A folder with name "${folderName}" already exists`);
     }
 
-    // Create the project directory
     fs.mkdirSync(projectDir);
 
     const isFullStack = locations.frontend === locations.backend;
 
     if (isFullStack) {
-        // For fullstack, copy the entire template directory
+        if (locations.frontend.startsWith("http://") || locations.frontend.startsWith("https://")) {
+            throw new Error(
+                `Cannot use local scaffolding for external template URL: ${locations.frontend}. Please run without USE_LOCAL_TEMPLATES=true.`
+            );
+        }
         const templatePath = getLocalTemplatePath(locations.frontend);
         copyDir(templatePath, projectDir);
 
-        // Log paths in debug mode
         if (process.env.DEBUG === "true") {
             console.log("\nDebug: Template paths (fullstack)");
             console.log("Template source:", templatePath);
             console.log("Project directory:", projectDir);
         }
     } else {
-        // For separate frontend/backend, copy respective directories
+        if (locations.frontend.startsWith("http://") || locations.frontend.startsWith("https://")) {
+            throw new Error(
+                `Cannot use local scaffolding for external template URL: ${locations.frontend}. Please run without USE_LOCAL_TEMPLATES=true.`
+            );
+        }
+        if (locations.backend.startsWith("http://") || locations.backend.startsWith("https://")) {
+            throw new Error(
+                `Cannot use local scaffolding for external template URL: ${locations.backend}. Please run without USE_LOCAL_TEMPLATES=true.`
+            );
+        }
         const frontendSrc = getLocalTemplatePath(locations.frontend);
         const backendSrc = getLocalTemplatePath(locations.backend);
 
@@ -118,18 +109,15 @@ export async function downloadAppLocally(locations: DownloadLocations, folderNam
             console.log("Backend source:", backendSrc);
         }
 
-        // Create temporary directories with the expected names
         const frontendTempName = getTempDirName(locations.frontend);
         const backendTempName = getTempDirName(locations.backend);
 
         const frontendTempDir = path.join(projectDir, frontendTempName);
         const backendTempDir = path.join(projectDir, backendTempName);
 
-        // Copy files to temporary directories
         copyDir(frontendSrc, frontendTempDir);
         copyDir(backendSrc, backendTempDir);
 
-        // Log paths in debug mode
         if (process.env.DEBUG === "true") {
             console.log("\nDebug: Final paths");
             console.log("Project directory:", projectDir);
@@ -141,10 +129,6 @@ export async function downloadAppLocally(locations: DownloadLocations, folderNam
     }
 }
 
-/**
- * Main entry point for local project setup
- * This handles the local file copying and then uses utils.setupProject for the rest
- */
 export async function setupProjectLocally(
     locations: DownloadLocations,
     folderName: string,
@@ -152,26 +136,15 @@ export async function setupProjectLocally(
     userArguments: UserFlags,
     spinner: Ora
 ): Promise<void> {
-    // First copy files locally instead of downloading
     await downloadAppLocally(locations, folderName);
 
-    // Then use the normal setup process from utils.ts
-    // This handles all the dependency installation, config setup, etc.
-    // The utils.setupProject function will now use compileFullstack for fullstack templates
     await setupProject(locations, folderName, answers, userArguments, spinner);
 }
 
-/**
- * Check if we should use local templates instead of network
- * This allows developers to switch between local and network modes easily
- */
 export function shouldUseLocalTemplates(): boolean {
     return process.env.USE_LOCAL_TEMPLATES === "true";
 }
 
-/**
- * Get the prebuilt UI bundle URL for local development
- */
 export function getLocalPrebuiltUIBundleUrl(): string | undefined {
     const localBundlePath = process.env.LOCAL_PREBUILT_UI_PATH;
     if (localBundlePath && fs.existsSync(localBundlePath)) {
@@ -180,18 +153,10 @@ export function getLocalPrebuiltUIBundleUrl(): string | undefined {
     return undefined;
 }
 
-/**
- * Alternative to downloadAppFromGithub that uses local templates
- */
 export async function downloadAppFromLocal(folderLocations: DownloadLocations, appname: string): Promise<void> {
     try {
         await downloadAppLocally(folderLocations, appname);
     } catch (e) {
-        /**
-         * If the project download failed we want to clear the generated app,
-         * otherwise the retrying logic would fail because there would already be
-         * a folder with the app name
-         */
         fs.rmSync(`${appname}/`, {
             recursive: true,
             force: true,

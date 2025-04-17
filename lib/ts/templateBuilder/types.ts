@@ -5,7 +5,7 @@ export type ConfigType =
     | "multifactorauth"
     | "multitenancy"
     | "passwordless"
-    | "thirdparty" // Added for thirdparty-only config
+    | "thirdparty"
     | "thirdpartyemailpassword"
     | "thirdpartypasswordless";
 
