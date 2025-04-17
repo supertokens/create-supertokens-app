@@ -1,10 +1,7 @@
-import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js"; // Added .js
-import { config } from "../../../shared/config/base.js"; // Added .js
-import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
-import { UserFlags } from "../../../../lib/ts/types.js"; // Added .js
-
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
+import { config } from "../../../shared/config/base";
+import { getAppInfo } from "../../../shared/config/appInfo";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
 export const goRecipeImports = {
     emailPassword: `"github.com/supertokens/supertokens-golang/recipe/emailpassword"`,
     thirdParty: `"github.com/supertokens/supertokens-golang/recipe/thirdparty"
@@ -21,7 +18,6 @@ export const goRecipeImports = {
     multitenancy: `"github.com/supertokens/supertokens-golang/recipe/multitenancy"
     "github.com/supertokens/supertokens-golang/recipe/multitenancy/mtmodels"`,
 };
-
 export const goBaseTemplate = `
 package main
 
@@ -58,10 +54,9 @@ func getWebsiteDomain() string {
     }
     return websiteUrl
 }`;
-
 export const goRecipeInits = {
     emailPassword: () => `emailpassword.Init(nil)`,
-    thirdParty: (providers?: OAuthProvider[]) => {
+    thirdParty: (providers) => {
         if (!providers || providers.length === 0) {
             return `thirdparty.Init(nil)`;
         }
@@ -100,9 +95,8 @@ export const goRecipeInits = {
     },
 })`;
     },
-    passwordless: (userArguments?: UserFlags) => {
+    passwordless: (userArguments) => {
         let flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
-
         const hasLinkEmail =
             userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
         const hasLinkPhone =
@@ -111,10 +105,8 @@ export const goRecipeInits = {
             userArguments?.firstfactors?.includes("otp-email") || userArguments?.secondfactors?.includes("otp-email");
         const hasOtpPhone =
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
-
         const hasLinkFactors = hasLinkEmail || hasLinkPhone;
         const hasOtpFactors = hasOtpEmail || hasOtpPhone;
-
         if (hasLinkFactors && hasOtpFactors) {
             flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
         } else if (hasLinkFactors) {
@@ -122,7 +114,6 @@ export const goRecipeInits = {
         } else if (hasOtpFactors) {
             flowType = "USER_INPUT_CODE";
         }
-
         return `passwordless.Init(plessmodels.TypeInput{
     FlowType: "${flowType}",
     ContactMethodEmailOrPhone: plessmodels.ContactMethodEmailOrPhoneConfig{
@@ -143,32 +134,18 @@ export const goRecipeInits = {
 })`,
     multitenancy: () => `multitenancy.Init(nil)`,
 };
-
-export const generateGoTemplate = ({
-    configType,
-    userArguments,
-}: {
-    configType: ConfigType;
-    userArguments?: UserFlags;
-}): string => {
+export const generateGoTemplate = ({ configType, userArguments }) => {
     let template = "";
-    const recipes = configToRecipes[configType].filter(
-        (recipe: string) => recipe !== "multiFactorAuth" && recipe !== "totp"
-    ); // Added type
-
+    const recipes = configToRecipes[configType].filter((recipe) => recipe !== "multiFactorAuth" && recipe !== "totp");
     const needsEmailVerification = false;
-
     if (needsEmailVerification && !recipes.includes("emailVerification")) {
         recipes.push("emailVerification");
     }
-
     const appInfo = getAppInfo();
-
     const imports = recipes
-        .map((recipe: string) => goRecipeImports[recipe as keyof typeof goRecipeImports]) // Added type
+        .map((recipe) => goRecipeImports[recipe])
         .filter(Boolean)
         .join("\n    ");
-
     template = `package main
 
 import (
@@ -207,26 +184,23 @@ var SuperTokensConfig = supertokens.TypeInput{
     },
     RecipeList: []supertokens.Recipe{
         ${recipes
-            .map((recipe: string) => {
-                // Added type
+            .map((recipe) => {
                 if (recipe === "thirdParty") {
                     const providersToUse = userArguments?.providers
-                        ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id)) // Added type
+                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers.includes(p.id))
                         : thirdPartyLoginProviders;
                     return goRecipeInits[recipe](providersToUse);
                 }
                 if (recipe === "passwordless") {
                     return goRecipeInits[recipe](userArguments);
                 }
-                return goRecipeInits[recipe as keyof typeof goRecipeInits]();
+                return goRecipeInits[recipe]();
             })
             .join(",\n        ")},
     },
 }`;
-
     return template;
 };
-
 export const goMainTemplate = `package main
 
 import (

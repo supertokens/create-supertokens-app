@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "target": "ES2020",
-        "moduleResolution": "node",
-        "module": "ES2020",
+        "target": "ES2020", // Keep target ES2020 for compatibility
+        "moduleResolution": "NodeNext", // <-- Change module resolution
+        "module": "NodeNext", // <-- Change module system
         "strict": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,

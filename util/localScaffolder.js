@@ -1,30 +1,21 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { Answers, DownloadLocations, UserFlags } from "../lib/ts/types.js"; // Added .js
-import { setupProject } from "../lib/ts/utils.js"; // Added .js
-import { Ora } from "ora";
-
+import { setupProject } from "../lib/ts/utils";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// Go up 3 levels from util/ (or lib/build/util/) to project root, then down to boilerplate
-const BOILERPLATE_DIR = path.join(__dirname, "..", "..", "..", "boilerplate");
-
-function copyDir(src: string, dest: string, filter?: (path: string) => boolean) {
+const BOILERPLATE_DIR = path.join(__dirname, "..", "boilerplate");
+function copyDir(src, dest, filter) {
     if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest, { recursive: true });
     }
-
     const entries = fs.readdirSync(src, { withFileTypes: true });
-
     for (const entry of entries) {
         const srcPath = path.join(src, entry.name);
         const destPath = path.join(dest, entry.name);
-
         if (filter && !filter(srcPath)) {
             continue;
         }
-
         if (entry.isDirectory()) {
             copyDir(srcPath, destPath, filter);
         } else {
@@ -32,10 +23,8 @@ function copyDir(src: string, dest: string, filter?: (path: string) => boolean) 
         }
     }
 }
-
-function getTempDirName(location: string): string {
+function getTempDirName(location) {
     const parts = location.split("/");
-
     if (location.includes("backend/")) {
         const [_, framework, name] = parts;
         if (framework === "typescript") {
@@ -49,33 +38,24 @@ function getTempDirName(location: string): string {
         }
         return name;
     }
-
     return parts[parts.length - 1];
 }
-
-function getLocalTemplatePath(location: string): string {
+function getLocalTemplatePath(location) {
     const normalizedPath = location.replace(/^\//, "");
-
     return path.join(BOILERPLATE_DIR, normalizedPath);
 }
-
-export async function downloadAppLocally(locations: DownloadLocations, folderName: string): Promise<void> {
+export async function downloadAppLocally(locations, folderName) {
     if (process.env.DEBUG === "true") {
         console.log("\nDebug: Input locations");
         console.log("Frontend location:", locations.frontend);
         console.log("Backend location:", locations.backend);
     }
-
     const projectDir = path.resolve(folderName);
-
     if (fs.existsSync(projectDir)) {
         throw new Error(`A folder with name "${folderName}" already exists`);
     }
-
     fs.mkdirSync(projectDir);
-
     const isFullStack = locations.frontend === locations.backend;
-
     if (isFullStack) {
         if (locations.frontend.startsWith("http://") || locations.frontend.startsWith("https://")) {
             throw new Error(
@@ -84,7 +64,6 @@ export async function downloadAppLocally(locations: DownloadLocations, folderNam
         }
         const templatePath = getLocalTemplatePath(locations.frontend);
         copyDir(templatePath, projectDir);
-
         if (process.env.DEBUG === "true") {
             console.log("\nDebug: Template paths (fullstack)");
             console.log("Template source:", templatePath);
@@ -103,22 +82,17 @@ export async function downloadAppLocally(locations: DownloadLocations, folderNam
         }
         const frontendSrc = getLocalTemplatePath(locations.frontend);
         const backendSrc = getLocalTemplatePath(locations.backend);
-
         if (process.env.DEBUG === "true") {
             console.log("\nDebug: Template paths");
             console.log("Frontend source:", frontendSrc);
             console.log("Backend source:", backendSrc);
         }
-
         const frontendTempName = getTempDirName(locations.frontend);
         const backendTempName = getTempDirName(locations.backend);
-
         const frontendTempDir = path.join(projectDir, frontendTempName);
         const backendTempDir = path.join(projectDir, backendTempName);
-
         copyDir(frontendSrc, frontendTempDir);
         copyDir(backendSrc, backendTempDir);
-
         if (process.env.DEBUG === "true") {
             console.log("\nDebug: Final paths");
             console.log("Project directory:", projectDir);
@@ -129,32 +103,21 @@ export async function downloadAppLocally(locations: DownloadLocations, folderNam
         }
     }
 }
-
-export async function setupProjectLocally(
-    locations: DownloadLocations,
-    folderName: string,
-    answers: Answers,
-    userArguments: UserFlags,
-    spinner: Ora
-): Promise<void> {
+export async function setupProjectLocally(locations, folderName, answers, userArguments, spinner) {
     await downloadAppLocally(locations, folderName);
-
     await setupProject(locations, folderName, answers, userArguments, spinner);
 }
-
-export function shouldUseLocalTemplates(): boolean {
+export function shouldUseLocalTemplates() {
     return process.env.USE_LOCAL_TEMPLATES === "true";
 }
-
-export function getLocalPrebuiltUIBundleUrl(): string | undefined {
+export function getLocalPrebuiltUIBundleUrl() {
     const localBundlePath = process.env.LOCAL_PREBUILT_UI_PATH;
     if (localBundlePath && fs.existsSync(localBundlePath)) {
         return `file://${localBundlePath}`;
     }
     return undefined;
 }
-
-export async function downloadAppFromLocal(folderLocations: DownloadLocations, appname: string): Promise<void> {
+export async function downloadAppFromLocal(folderLocations, appname) {
     try {
         await downloadAppLocally(folderLocations, appname);
     } catch (e) {

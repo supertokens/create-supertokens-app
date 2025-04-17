@@ -1,4 +1,4 @@
-import { type IndividualRecipe, type ConfigType } from "./types";
+import { type IndividualRecipe, type ConfigType } from "./types.js"; // Added .js
 
 export const configToRecipes: Record<ConfigType, IndividualRecipe[]> = {
     all_auth: ["emailPassword", "thirdParty", "passwordless", "session", "dashboard", "userRoles"],

@@ -39,11 +39,7 @@ function MyApp({ Component, pageProps }): JSX.Element {
                         </Link>
                         <ul className="header-container-right">
                             <li>
-                                <a
-                                    href="https://supertokens.com/docs/guides/getting-started/react"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
+                                <a href="https://supertokens.com/docs//" target="_blank" rel="noopener noreferrer">
                                     Docs
                                 </a>
                             </li>

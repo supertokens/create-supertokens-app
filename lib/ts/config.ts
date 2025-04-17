@@ -5,7 +5,7 @@ import {
     getPythonRunScripts,
     mapOptionsToChoices,
     shouldSkipBackendQuestion,
-} from "./questionUtils.js";
+} from "./questionUtils.js"; // Added .js
 import path from "path";
 import fs from "fs";
 import chalk from "chalk";

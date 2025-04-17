@@ -1,5 +1,5 @@
-import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
+import { getAppInfo } from "../../../shared/config/appInfo";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
 export const reactRecipeImports = {
     emailPassword:
         'import EmailPassword from "supertokens-auth-react/recipe/emailpassword";\nimport { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";',
@@ -93,7 +93,7 @@ export const reactRecipeInits = {
             if (firstFactors.includes("thirdparty")) {
                 availableFirstFactors.push("thirdparty");
             }
-            const hasPasswordless = firstFactors.some((f) => f.startsWith("link-") || f.startsWith("otp-")); // Added type
+            const hasPasswordless = firstFactors.some((f) => f.startsWith("link-") || f.startsWith("otp-"));
             if (hasPasswordless) {
                 availableFirstFactors.push("passwordless");
             }
@@ -178,10 +178,10 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
     }
     const hasPasswordlessSecondFactors =
         userArguments?.secondfactors?.some(
-            (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link") // Added type
+            (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
         ) || false;
     const hasPasswordlessFirstFactors =
-        userArguments?.firstfactors?.some((factor) => factor.includes("link-") || factor.includes("otp-")) || false; // Added type
+        userArguments?.firstfactors?.some((factor) => factor.includes("link-") || factor.includes("otp-")) || false;
     if (
         configType === "passwordless" ||
         configType === "thirdpartypasswordless" ||
@@ -215,7 +215,6 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
             "totp",
         ];
         allPossibleUIRecipes.forEach((recipeName) => {
-            // Added type
             if (!recipes.includes(recipeName)) {
                 recipes.push(recipeName);
             }
@@ -230,12 +229,11 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
         recipes.push("session");
     }
     const imports = recipes
-        .map((recipe) => reactRecipeImports[recipe]) // Added type
+        .map((recipe) => reactRecipeImports[recipe])
         .filter(Boolean)
         .join("\n");
     const recipeInits = recipes
         .map((recipe) => {
-            // Added type
             switch (recipe) {
                 case "passwordless":
                     return reactRecipeInits.passwordless(userArguments);
@@ -251,7 +249,7 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
                 }
                 case "thirdParty": {
                     const providersToUse = userArguments?.providers
-                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers.includes(p.id)) // Added type
+                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers.includes(p.id))
                         : thirdPartyLoginProviders;
                     return reactRecipeInits.thirdParty(providersToUse);
                 }
@@ -354,7 +352,7 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
         configType === "thirdpartypasswordless" ||
         configType === "all_auth" ||
         userArguments?.secondfactors?.some(
-            (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link") // Added type
+            (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
         )
             ? `return (
         <PasswordlessComponentsOverrideProvider

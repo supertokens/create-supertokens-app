@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                 <ul className="header-container-right">
                                     <li>
                                         <a
-                                            href="https://supertokens.com/docs/guides/getting-started/react"
+                                            href="https://supertokens.com/docs//"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >

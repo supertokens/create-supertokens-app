@@ -1,16 +1,6 @@
-import { type ConfigType } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js"; // Added .js
-import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
-import { UserFlags } from "../../../../lib/ts/types.js"; // Added .js
-import { type OAuthProvider } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
-
-interface WebJSTemplate {
-    configType: ConfigType;
-    userArguments?: UserFlags;
-    isFullStack?: boolean;
-}
-
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
+import { getAppInfo } from "../../../shared/config/appInfo";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
 export const frontendRecipes = [
     "emailPassword",
     "thirdParty",
@@ -20,8 +10,7 @@ export const frontendRecipes = [
     "emailVerification",
     "totp",
     "multitenancy",
-] as const;
-
+];
 export const webJsRecipeImports = {
     emailPassword: `import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";`,
@@ -44,23 +33,20 @@ import TOTP from "supertokens-web-js/recipe/totp";`,
     multitenancy: `import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";
 import Multitenancy from "supertokens-web-js/recipe/multitenancy";`,
-} as const;
-
+};
 export const uiRecipeInits = {
     emailPassword: () => `(window as any).supertokensUIEmailPassword.init()`,
-    thirdParty: (providers: OAuthProvider[]) => {
-        const providerInitMap: Record<string, string> = {
+    thirdParty: (providers) => {
+        const providerInitMap = {
             google: "(window as any).supertokensUIThirdParty.Google.init()",
             github: "(window as any).supertokensUIThirdParty.Github.init()",
             apple: "(window as any).supertokensUIThirdParty.Apple.init()",
             twitter: "(window as any).supertokensUIThirdParty.Twitter.init()",
         };
-
         const providerInits = providers
             .map((p) => providerInitMap[p.id])
             .filter(Boolean)
             .join(",\n                        ");
-
         return `(window as any).supertokensUIThirdParty.init({
                 signInAndUpFeature: {
                     providers: [
@@ -69,10 +55,9 @@ export const uiRecipeInits = {
                 },
             })`;
     },
-    passwordless: (userArguments?: UserFlags) => {
+    passwordless: (userArguments) => {
         let contactMethod = "EMAIL";
         let flowType;
-
         const hasLinkEmail =
             userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
         const hasLinkPhone =
@@ -81,7 +66,6 @@ export const uiRecipeInits = {
             userArguments?.firstfactors?.includes("otp-email") || userArguments?.secondfactors?.includes("otp-email");
         const hasOtpPhone =
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
-
         if ((hasLinkEmail || hasOtpEmail) && (hasLinkPhone || hasOtpPhone)) {
             contactMethod = "EMAIL_OR_PHONE";
         } else if (hasLinkPhone || hasOtpPhone) {
@@ -89,7 +73,6 @@ export const uiRecipeInits = {
         } else {
             contactMethod = "EMAIL";
         }
-
         // Check if we need both OTP and magic link flow
         // Determine flow type based on factors
         // Note: The documentation states that if both otp_email and otp_phone are present,
@@ -101,33 +84,28 @@ export const uiRecipeInits = {
         } else if (hasOtpEmail || hasOtpPhone) {
             flowType = "USER_INPUT_CODE";
         }
-
         const initObj = [`contactMethod: "${contactMethod}"`];
         if (flowType) {
             initObj.push(`flowType: "${flowType}"`);
         }
-
         return `(window as any).supertokensUIPasswordless.init({
                 ${initObj.join(",\n                ")}
             })`;
     },
     session: () => `(window as any).supertokensUISession.init()`,
-    multiFactorAuth: (firstFactors?: string[], secondFactors?: string[]) => {
+    multiFactorAuth: (firstFactors, secondFactors) => {
         const firstFactorsStr = firstFactors
             ? firstFactors.map((f) => `"${f}"`).join(", ")
             : `"thirdparty", "emailpassword"`;
-
         if (secondFactors && secondFactors.length > 0) {
-            const factorMapping: Record<string, string> = {
+            const factorMapping = {
                 totp: "(window as any).supertokensUIMultiFactorAuth.FactorIds.TOTP",
                 "otp-email": "(window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL",
                 "otp-phone": "(window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_PHONE",
                 "link-email": "(window as any).supertokensUIMultiFactorAuth.FactorIds.LINK_EMAIL",
                 "link-phone": "(window as any).supertokensUIMultiFactorAuth.FactorIds.LINK_PHONE",
             };
-
             const factorIds = secondFactors.map((factor) => factorMapping[factor] || `"${factor}"`).filter(Boolean);
-
             if (factorIds.length > 0) {
                 return `(window as any).supertokensUIMultiFactorAuth.init({
         firstFactors: [${firstFactorsStr}],
@@ -149,12 +127,11 @@ export const uiRecipeInits = {
     })`;
             }
         }
-
         return `(window as any).supertokensUIMultiFactorAuth.init({
         firstFactors: [${firstFactorsStr}]
     })`;
     },
-    emailVerification: (hasMFA?: boolean) => `(window as any).supertokensUIEmailVerification.init({
+    emailVerification: (hasMFA) => `(window as any).supertokensUIEmailVerification.init({
         mode: ${hasMFA ? '"OPTIONAL"' : '"REQUIRED"'}
     })`,
     totp: () => `(window as any).supertokensUITOTP.init()`,
@@ -171,70 +148,55 @@ export const uiRecipeInits = {
             },
         },
     })`,
-} as const;
-
-export function getEnvPrefix(framework: string): string {
+};
+export function getEnvPrefix(framework) {
     if (framework === "angular") {
         return "NG_APP_";
     }
     return "VITE_APP_";
 }
-
-export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }: WebJSTemplate): string => {
-    const recipesSet = new Set<string>(["session"]);
-
+export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }) => {
+    const recipesSet = new Set(["session"]);
     if (userArguments?.firstfactors || userArguments?.secondfactors) {
         const factors = [...(userArguments.firstfactors || []), ...(userArguments.secondfactors || [])];
         if (factors.includes("emailpassword")) recipesSet.add("emailPassword");
         if (factors.includes("thirdparty")) recipesSet.add("thirdParty");
-        if (factors.some((f: string) => f.startsWith("otp-") || f.startsWith("link-"))) recipesSet.add("passwordless"); // Added type
+        if (factors.some((f) => f.startsWith("otp-") || f.startsWith("link-"))) recipesSet.add("passwordless");
         if (userArguments.secondfactors && userArguments.secondfactors.length > 0) recipesSet.add("multiFactorAuth");
         if (userArguments.secondfactors?.includes("totp")) recipesSet.add("totp");
-        if (userArguments.secondfactors?.some((f: string) => f.includes("email"))) recipesSet.add("emailVerification"); // Added type
+        if (userArguments.secondfactors?.some((f) => f.includes("email"))) recipesSet.add("emailVerification");
         // Add multitenancy if configType is multitenancy (factors don't determine this)
         if (configType === "multitenancy") recipesSet.add("multitenancy");
     } else {
         // Fallback to configType if no factors provided
-        configToRecipes[configType]?.forEach((recipe: string) => recipesSet.add(recipe)); // Added type, Add null check for safety
+        configToRecipes[configType]?.forEach((recipe) => recipesSet.add(recipe)); // Add null check for safety
     }
-
     // Filter for recipes that actually have frontend components
-    const recipes = [...recipesSet].filter((recipe) =>
-        frontendRecipes.includes(recipe as typeof frontendRecipes[number])
-    );
-
+    const recipes = [...recipesSet].filter((recipe) => frontendRecipes.includes(recipe));
     // Check if MFA is needed (based on second factors OR if multifactorauth recipe is present in the final list)
     const hasMFA =
         (userArguments?.secondfactors && userArguments.secondfactors.length > 0) || recipes.includes("multiFactorAuth");
-
     // If MFA is needed but not included, add it
     if (hasMFA && !recipes.includes("multiFactorAuth")) {
         recipes.push("multiFactorAuth");
     }
-
     // Add TOTP if it's used as a second factor
     const needsTOTP = hasMFA && userArguments?.secondfactors?.includes("totp") && !recipes.includes("totp");
-
     if (needsTOTP) {
         recipes.push("totp");
     }
-
     // Add email verification if needed for email-based second factors
     const needsEmailVerification =
         hasMFA &&
-        userArguments?.secondfactors?.some((factor: string) => factor.includes("email")) && // Added type
+        userArguments?.secondfactors?.some((factor) => factor.includes("email")) &&
         !recipes.includes("emailVerification");
-
     if (needsEmailVerification) {
         recipes.push("emailVerification");
     }
-
     const appInfo = getAppInfo(isFullStack);
-
     // Keep imports simple - just the basic ones needed
     let imports = `import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";`;
-
     // If MFA is needed, add the necessary imports
     if (hasMFA) {
         imports = `import SuperTokens from "supertokens-web-js";
@@ -242,7 +204,6 @@ import Session from "supertokens-web-js/recipe/session";
 import EmailVerification from "supertokens-web-js/recipe/emailverification";
 import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
     }
-
     // For the web-js initialization function
     let initSuperTokensWebJSCode = `SuperTokens.init({
         appInfo: {
@@ -254,7 +215,6 @@ import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
         },
         recipeList: [Session.init()]
     });`;
-
     // If MFA is needed, update the webJS initialization to include core MFA recipes
     if (hasMFA) {
         initSuperTokensWebJSCode = `SuperTokens.init({
@@ -270,7 +230,6 @@ import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
     });`;
     }
     // Otherwise, the default initSuperTokensWebJSCode (with only Session.init()) is used
-
     // Define helper functions to be included in the generated config
     const getApiDomainFunc = `
 export function getApiDomain() {
@@ -284,12 +243,10 @@ export function getWebsiteDomain() {
     const websiteUrl = \`http://localhost:\${websitePort}\`;
     return websiteUrl;
 }`;
-
     // For the UI initialization function
     // Initialize recipes for the UI
     const uiInitStrings = recipes
-        .map((recipe: string) => {
-            // Added type
+        .map((recipe) => {
             if (recipe === "multiFactorAuth") {
                 return uiRecipeInits.multiFactorAuth(userArguments?.firstfactors, userArguments?.secondfactors);
             }
@@ -304,16 +261,15 @@ export function getWebsiteDomain() {
             // Handle ThirdParty separately to pass filtered providers
             if (recipe === "thirdParty") {
                 const providersToUse = userArguments?.providers
-                    ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id)) // Added type
+                    ? thirdPartyLoginProviders.filter((p) => userArguments.providers.includes(p.id))
                     : thirdPartyLoginProviders; // Use all defaults if --providers flag is not used
                 return uiRecipeInits.thirdParty(providersToUse);
             }
-
-            const initFunc = uiRecipeInits[recipe as keyof typeof uiRecipeInits];
+            const initFunc = uiRecipeInits[recipe];
             if (typeof initFunc === "function") {
                 // Need to check if function expects args, currently only passwordless/mfa/ev do
                 if (recipe !== "passwordless" && recipe !== "multiFactorAuth" && recipe !== "thirdParty") {
-                    return (initFunc as any)();
+                    return initFunc();
                 }
             }
             // Return null or handle error if initFunc is not callable or needs args we didn't provide
@@ -321,7 +277,6 @@ export function getWebsiteDomain() {
             return null;
         })
         .filter(Boolean);
-
     // Add additional required UI inits (ensure EV isn't added twice)
     if (hasMFA) {
         // EV is now handled in the map above, so this check is likely redundant
@@ -332,12 +287,10 @@ export function getWebsiteDomain() {
             uiInitStrings.push(uiRecipeInits.totp());
         }
     }
-
     const isMultitenancy = configType === "multitenancy";
     if (isMultitenancy && !uiInitStrings.some((init) => init.includes("Multitenancy"))) {
         uiInitStrings.push(uiRecipeInits.multitenancy());
     }
-
     // Generate template following the structure in final-shape-tables.mdc
     // Prepend helper functions
     return `${imports}

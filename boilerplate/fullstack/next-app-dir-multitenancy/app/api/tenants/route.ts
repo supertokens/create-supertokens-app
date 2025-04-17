@@ -1,4 +1,4 @@
-import { ensureSuperTokensInit } from "@/app/config/backend";
+import { ensureSuperTokensInit } from "@/app/config/backendConfigUtils"; // Correct import path
 import { NextResponse, NextRequest } from "next/server";
 import Multitenancy from "supertokens-node/recipe/multitenancy";
 

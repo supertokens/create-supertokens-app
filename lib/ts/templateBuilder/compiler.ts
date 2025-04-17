@@ -1,10 +1,10 @@
-import { ConfigType, FrontendFramework, Language } from "./types";
-import { UserFlags } from "../types";
-import { generateTypeScriptTemplate } from "../../../boilerplate/backend/shared/typescript/ts";
-import { generatePythonTemplate } from "../../../boilerplate/backend/shared/python/py";
-import { generateGoTemplate } from "../../../boilerplate/backend/shared/go/go";
-import { generateReactTemplate } from "../../../boilerplate/frontend/shared/react/template";
-import { generateWebJSTemplate } from "../../../boilerplate/frontend/shared/web-js/template";
+import { ConfigType, FrontendFramework, Language } from "./types.js"; // Added .js
+import { UserFlags } from "../types.js"; // Added .js
+import { generateTypeScriptTemplate } from "../../../boilerplate/backend/shared/typescript/ts.js"; // Added .js
+import { generatePythonTemplate } from "../../../boilerplate/backend/shared/python/py.js"; // Added .js
+import { generateGoTemplate } from "../../../boilerplate/backend/shared/go/go.js"; // Added .js
+import { generateReactTemplate } from "../../../boilerplate/frontend/shared/react/template.js"; // Added .js
+import { generateWebJSTemplate } from "../../../boilerplate/frontend/shared/web-js/template.js"; // Added .js
 
 interface BackendCompilerOptions {
     language: Language;

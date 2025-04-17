@@ -1,7 +1,7 @@
-import { UserFlags } from "../../../../lib/ts/types";
-import { type ConfigType, type OAuthProvider } from "../../../../lib/ts/templateBuilder/types";
-import { getAppInfo } from "../../../shared/config/appInfo";
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
+import { UserFlags } from "../../../../lib/ts/types.js"; // Added .js
+import { type ConfigType, type OAuthProvider } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
+import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
 
 interface ReactTemplate {
     configType: ConfigType;
@@ -111,7 +111,7 @@ export const reactRecipeInits = {
             if (firstFactors.includes("thirdparty")) {
                 availableFirstFactors.push("thirdparty");
             }
-            const hasPasswordless = firstFactors.some((f) => f.startsWith("link-") || f.startsWith("otp-"));
+            const hasPasswordless = firstFactors.some((f: string) => f.startsWith("link-") || f.startsWith("otp-")); // Added type
             if (hasPasswordless) {
                 availableFirstFactors.push("passwordless");
             }
@@ -206,11 +206,12 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
 
     const hasPasswordlessSecondFactors =
         userArguments?.secondfactors?.some(
-            (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
+            (factor: string) => factor.includes("email") || factor.includes("phone") || factor.includes("link") // Added type
         ) || false;
 
     const hasPasswordlessFirstFactors =
-        userArguments?.firstfactors?.some((factor) => factor.includes("link-") || factor.includes("otp-")) || false;
+        userArguments?.firstfactors?.some((factor: string) => factor.includes("link-") || factor.includes("otp-")) ||
+        false; // Added type
 
     if (
         configType === "passwordless" ||
@@ -236,18 +237,44 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
         }
     }
 
+    // For multitenancy, include ALL potential first/second factor recipes and UIs
     if (configType === "multitenancy") {
         recipes.push("multitenancy");
+
+        // Add all possible login/MFA recipes and UIs
+        const allPossibleUIRecipes = [
+            "emailPassword",
+            "thirdParty",
+            "passwordless",
+            "multiFactorAuth",
+            "emailVerification",
+            "totp",
+        ];
+
+        allPossibleUIRecipes.forEach((recipeName: string) => {
+            // Added type
+            if (!recipes.includes(recipeName)) {
+                recipes.push(recipeName);
+            }
+            const uiName = reactPreBuiltUIs[recipeName as keyof typeof reactPreBuiltUIs];
+            if (uiName && !prebuiltUIs.includes(uiName)) {
+                prebuiltUIs.push(uiName);
+            }
+        });
     }
 
-    recipes.push("session");
+    // Always add session
+    if (!recipes.includes("session")) {
+        recipes.push("session");
+    }
     const imports = recipes
-        .map((recipe) => reactRecipeImports[recipe as keyof typeof reactRecipeImports])
+        .map((recipe: string) => reactRecipeImports[recipe as keyof typeof reactRecipeImports]) // Added type
         .filter(Boolean)
         .join("\n");
 
     const recipeInits = recipes
-        .map((recipe) => {
+        .map((recipe: string) => {
+            // Added type
             switch (recipe) {
                 case "passwordless":
                     return reactRecipeInits.passwordless(userArguments);
@@ -263,7 +290,7 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
                 }
                 case "thirdParty": {
                     const providersToUse = userArguments?.providers
-                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers!.includes(p.id))
+                        ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id)) // Added type
                         : thirdPartyLoginProviders;
                     return reactRecipeInits.thirdParty(providersToUse);
                 }
@@ -367,7 +394,7 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
         configType === "thirdpartypasswordless" ||
         configType === "all_auth" ||
         userArguments?.secondfactors?.some(
-            (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
+            (factor: string) => factor.includes("email") || factor.includes("phone") || factor.includes("link") // Added type
         )
             ? `return (
         <PasswordlessComponentsOverrideProvider

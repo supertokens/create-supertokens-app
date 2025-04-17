@@ -1,7 +1,7 @@
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js"; // Added .js
-import { config } from "../../../shared/config/base.js"; // Added .js
-import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
+import { config } from "../../../shared/config/base";
+import { getAppInfo } from "../../../shared/config/appInfo";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
 export const tsRecipeImports = {
     emailPassword: 'import EmailPassword from "supertokens-node/recipe/emailpassword";',
     thirdParty:
@@ -175,8 +175,8 @@ export const generateTypeScriptTemplate = ({ configType, userArguments, isFullSt
         recipes.push("accountLinking");
     }
     const hasPasswordlessFactor =
-        userArguments?.firstfactors?.some((f) => f.startsWith("otp-") || f.startsWith("link-")) || // Added type
-        userArguments?.secondfactors?.some((f) => f.startsWith("otp-") || f.startsWith("link-")); // Added type
+        userArguments?.firstfactors?.some((f) => f.startsWith("otp-") || f.startsWith("link-")) ||
+        userArguments?.secondfactors?.some((f) => f.startsWith("otp-") || f.startsWith("link-"));
     if (hasPasswordlessFactor && !recipes.includes("passwordless")) {
         recipes.push("passwordless");
     }
@@ -208,22 +208,21 @@ export const generateTypeScriptTemplate = ({ configType, userArguments, isFullSt
     }
     const appInfo = getAppInfo(isFullStack);
     let imports = recipes
-        .map((recipe) => tsRecipeImports[recipe]) // Added type
+        .map((recipe) => tsRecipeImports[recipe])
         .filter(Boolean)
         .join("\n");
     if (recipes.includes("accountLinking")) {
         imports += `\nimport type { AccountInfoWithRecipeId } from "supertokens-node/recipe/accountlinking/types";`;
         imports += `\nimport type { User } from "supertokens-node/types";`;
     }
-    const initRecipes = recipes.filter((r) => r !== "session"); // Added type
+    const initRecipes = recipes.filter((r) => r !== "session");
     const sessionInitFunc = tsRecipeInits.session;
     const recipeInits = initRecipes
         .map((recipe) => {
-            // Added type
             switch (recipe) {
                 case "thirdParty":
                     const providersToUse = userArguments?.providers
-                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers.includes(p.id)) // Added type
+                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers.includes(p.id))
                         : thirdPartyLoginProviders;
                     return tsRecipeInits.thirdParty(providersToUse);
                 case "multiFactorAuth":

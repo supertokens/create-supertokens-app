@@ -1,9 +1,9 @@
-import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types";
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
-import { config } from "../../../shared/config/base";
-import { getAppInfo } from "../../../shared/config/appInfo";
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
-import { UserFlags } from "../../../../lib/ts/types";
+import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js"; // Added .js
+import { config } from "../../../shared/config/base.js"; // Added .js
+import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
+import { UserFlags } from "../../../../lib/ts/types.js"; // Added .js
 
 interface PythonTemplate {
     configType: ConfigType;
@@ -177,7 +177,7 @@ export const generatePythonTemplate = ({ configType, userArguments, framework }:
         if (factors.includes("thirdparty")) recipesSet.add("thirdParty");
         if (factors.some((f) => f.startsWith("otp-") || f.startsWith("link-"))) recipesSet.add("passwordless");
     } else {
-        configToRecipes[configType]?.forEach((recipe) => recipesSet.add(recipe));
+        configToRecipes[configType]?.forEach((recipe: string) => recipesSet.add(recipe)); // Added type
     }
 
     const recipes = [...recipesSet];
@@ -271,7 +271,8 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
             {
                 "oneOf": [
                     ${userArguments.secondfactors
-                        .map((factor) => {
+                        .map((factor: string) => {
+                            // Added type
                             const factorMapping: Record<string, string> = {
                                 totp: "FactorIds.TOTP",
                                 "otp-email": "FactorIds.OTP_EMAIL",
@@ -296,7 +297,8 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
         user_context: dict,
     ) -> list:
         return [${userArguments.secondfactors
-            .map((factor) => {
+            .map((factor: string) => {
+                // Added type
                 const factorMapping: Record<string, string> = {
                     totp: "FactorIds.TOTP",
                     "otp-email": "FactorIds.OTP_EMAIL",
@@ -318,11 +320,12 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
     }
 
     const recipeList = recipes
-        .map((recipe) => {
+        .map((recipe: string) => {
+            // Added type
             switch (recipe) {
                 case "thirdParty":
                     const providersToUse = userArguments?.providers
-                        ? thirdPartyLoginProviders.filter((p) => userArguments.providers!.includes(p.id))
+                        ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id)) // Added type
                         : thirdPartyLoginProviders;
                     return pyRecipeInits.thirdParty(providersToUse);
                 case "multiFactorAuth":

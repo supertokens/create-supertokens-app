@@ -33,7 +33,7 @@
         "node-fetch": "^3.3.2",
         "yargs": "^17.5.1"
     },
-    "bin": "lib/build/index.js",
+    "bin": "lib/build/lib/ts/index.js",
     "devDependencies": {
         "@playwright/test": "^1.51.1",
         "@types/figlet": "^1.5.5",
