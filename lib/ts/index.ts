@@ -142,11 +142,9 @@ async function run() {
                 // If it's a string, split it
                 return val.split(",").map((f: string) => f.trim());
             }).argv) as UserFlagsRaw;
-        console.log("Final userArgumentsRaw:", userArgumentsRaw);
         validateUserArguments(userArgumentsRaw);
         const userArguments: UserFlags = {
             ...userArgumentsRaw,
-            // appname is spread from userArgumentsRaw
             manager: userArgumentsRaw.manager ?? inferredPackageManager() ?? "npm",
         };
 
@@ -160,7 +158,6 @@ async function run() {
             eventName: "cli_started",
         });
 
-        // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
         answers = await inquirer.prompt(await getQuestions(userArguments));
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
@@ -295,6 +292,7 @@ async function run() {
                 "If you think this is an issue with the tool, please report this as an issue at https://github.com/supertokens/create-supertokens-app/issues"
             );
         }
+        process.exit(1);
     }
 }
 

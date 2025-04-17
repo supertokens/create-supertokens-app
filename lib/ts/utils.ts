@@ -59,7 +59,6 @@ export async function getDownloadLocationFromAnswers(
         };
     }
 
-    // Locations are only undefined for recipe options so in this case you never expect them to be undefined
     if (selectedFrontend !== undefined && selectedBackend !== undefined) {
         return {
             frontend: normaliseLocationPath(selectedFrontend.location.main),
@@ -92,16 +91,13 @@ export async function downloadExternalApp(locations: DownloadLocations, folderNa
 }
 
 export async function downloadApp(locations: DownloadLocations, folderName: string): Promise<void> {
-    // create the directory if it doesn't already exist
     const __dirname = path.resolve();
     const projectDirectory = __dirname + `/${folderName}`;
 
-    // If the folder already exists, we show an error
     if (fs.existsSync(projectDirectory)) {
         throw new Error(`A folder with name "${folderName}" already exists`);
     }
 
-    // Create the directory to download the boilerplate
     fs.mkdirSync(projectDirectory);
 
     const isFullStack = locations.frontend === locations.backend;
@@ -190,14 +186,8 @@ async function performAdditionalSetupForFrontendIfNeeded(
     folderName: string,
     userArguments: UserFlags
 ) {
-    /**
-     * For all frontends we check if supertokens-web-js has been installed correctly and manually
-     * install it if it is missing. This is because old versions of npm sometimes does not install
-     * peer dependencies when running `npm install`
-     */
     const sourceFolder = selectedFrontend.isFullStack !== true ? `${folderName}/frontend` : `${folderName}`;
 
-    // If this is false then the project does not use the react SDK
     const doesUseAuthReact = fs.existsSync(`${sourceFolder}/node_modules/supertokens-auth-react`);
 
     const doesWebJsExist = (): boolean => {
@@ -209,13 +199,11 @@ async function performAdditionalSetupForFrontendIfNeeded(
         return doesExistInAuthReact || doesExistInNodeModules;
     };
 
-    // We only check for web-js being present if the project uses the auth react SDK
     if (doesUseAuthReact && !doesWebJsExist()) {
         const installPrefix = addPackageCommand(userArguments.manager);
 
         let result = await new Promise<ExecOutput>((res) => {
             let stderr: string[] = [];
-            // Skip if --skip-install is passed
             if (userArguments.skipInstall === true) {
                 res({ code: 0, error: undefined });
                 return;
@@ -231,19 +219,10 @@ async function performAdditionalSetupForFrontendIfNeeded(
             });
 
             additionalSetup.stderr?.on("data", (data) => {
-                // Record any messages printed as errors
                 stderr.push(data.toString());
             });
 
             additionalSetup.stdout?.on("data", (data) => {
-                /**
-                 * Record any messages printed as errors, we do this for stdout
-                 * as well because some scripts use the output stream for errors
-                 * too (npm for example) while others use stderr only
-                 *
-                 * This means that we will output everything if the script exits with
-                 * non zero
-                 */
                 stderr.push(data.toString());
             });
         });
@@ -254,7 +233,6 @@ async function performAdditionalSetupForFrontendIfNeeded(
         }
     }
 
-    // we check if any file in the code on the frontend has ${jsdeliveryprebuiltuiurl}, and if it does, we replace it with the actual url
     const frontendFiles = fs.readdirSync(`${sourceFolder}`);
     let actualBundleSource = "";
     async function processFile(filePath: string): Promise<void> {
@@ -292,15 +270,12 @@ async function performAdditionalSetupForFrontendIfNeeded(
 }
 
 export function checkMfaCompatibility(answers: Answers, userArguments: UserFlags): void {
-    // Check if we're using MFA
     const hasMFA =
         answers.recipe === "multifactorauth" || (userArguments.secondfactors && userArguments.secondfactors.length > 0);
 
-    // Check if backend is Go (handle undefined for fullstack)
     const isGoBackend =
         answers.backend !== undefined && (answers.backend.includes("go") || answers.backend === "go-http");
 
-    // Warn if using MFA with Go
     if (hasMFA && isGoBackend) {
         console.warn(
             "\x1b[33m%s\x1b[0m",
@@ -331,7 +306,6 @@ async function setupFrontendBackendApp(
     const frontendDirectory = __dirname + `/${folderName}/${frontendFolderName}`;
     const backendDirectory = __dirname + `/${folderName}/${backendFolderName}`;
 
-    // Rename the folders to frontend and backend
     fs.renameSync(frontendDirectory, __dirname + `/${folderName}/frontend`);
     fs.renameSync(backendDirectory, __dirname + `/${folderName}/backend`);
 
@@ -358,7 +332,6 @@ async function setupFrontendBackendApp(
 
     spinner.text = "Configuring files";
 
-    // Convert factors to recipes if they are provided
     let configType = answers.recipe as ConfigType;
     if (userArguments.firstfactors || userArguments.secondfactors) {
         const factorConfig = {
@@ -369,23 +342,19 @@ async function setupFrontendBackendApp(
         configType = recipes[0] as ConfigType;
     }
 
-    // Handle frontend config
     for (const config of selectedFrontend.location.config) {
-        // Use the compiler for all frameworks
         const generatedConfig = compileFrontend({
             framework: selectedFrontend.value as FrontendFramework,
             configType,
             userArguments,
         });
 
-        // Write the generated configuration
         const configPath = `${folderName}/frontend/${normaliseLocationPath(config.finalConfig)}`;
         if (process.env.DEBUG === "true") {
             console.log("Writing config to:", configPath);
         }
         fs.writeFileSync(configPath, generatedConfig);
 
-        // Remove the original configs folder if it exists
         if (fs.existsSync(`${folderName}/frontend/${normaliseLocationPath(config.configFiles)}`)) {
             fs.rmSync(`${folderName}/frontend/${normaliseLocationPath(config.configFiles)}`, {
                 recursive: true,
@@ -398,7 +367,6 @@ async function setupFrontendBackendApp(
         throw new Error("Should not come here");
     }
 
-    // Handle backend config using the compiler
     const backendLang = selectedBackend.value.includes("python")
         ? "py"
         : selectedBackend.value.includes("go")
@@ -406,18 +374,15 @@ async function setupFrontendBackendApp(
         : "ts";
 
     for (const config of selectedBackend.location.config) {
-        // Generate the configuration using the compiler
         const generatedConfig = compileBackend({
             language: backendLang,
             configType,
             userArguments,
         });
 
-        // Write the generated configuration
         const configPath = `${folderName}/backend/${normaliseLocationPath(config.finalConfig)}`;
         fs.writeFileSync(configPath, generatedConfig);
 
-        // Remove the original configs folder if it exists
         if (fs.existsSync(`${folderName}/backend/${normaliseLocationPath(config.configFiles)}`)) {
             fs.rmSync(`${folderName}/backend/${normaliseLocationPath(config.configFiles)}`, {
                 recursive: true,
@@ -440,7 +405,6 @@ async function setupFrontendBackendApp(
 
         const setupString = selectedFrontend.script.setup.join(" && ");
 
-        // Skip if --skip-install is passed
         if (userArguments.skipInstall === true) {
             res({ code: 0, error: undefined });
             return;
@@ -456,19 +420,10 @@ async function setupFrontendBackendApp(
         });
 
         setup.stderr?.on("data", (data) => {
-            // Record any messages printed as errors
             stderr.push(data.toString());
         });
 
         setup.stdout?.on("data", (data) => {
-            /**
-             * Record any messages printed as errors, we do this for stdout
-             * as well because some scripts use the output stream for errors
-             * too (npm for example) while others use stderr only
-             *
-             * This means that we will output everything if the script exits with
-             * non zero
-             */
             stderr.push(data.toString());
         });
     });
@@ -497,7 +452,6 @@ async function setupFrontendBackendApp(
 
         const setupString = selectedBackend.script.setup.join(" && ");
 
-        // Skip if --skip-install is passed
         if (userArguments.skipInstall === true) {
             res({ code: 0, error: undefined });
             return;
@@ -513,24 +467,14 @@ async function setupFrontendBackendApp(
         });
 
         setup.stderr?.on("data", (data) => {
-            // Record any messages printed as errors
             stderr.push(data.toString());
         });
 
         setup.stdout?.on("data", (data) => {
-            /**
-             * Record any messages printed as errors, we do this for stdout
-             * as well because some scripts use the output stream for errors
-             * too (npm for example) while others use stderr only
-             *
-             * This means that we will output everything if the script exits with
-             * non zero
-             */
             stderr.push(data.toString());
         });
     });
 
-    // Call the frontend and backend setup scripts
     const backendSetupResult = await backendSetup;
 
     if (backendSetupResult.code !== 0) {
@@ -539,7 +483,6 @@ async function setupFrontendBackendApp(
         throw new Error(error);
     }
 
-    // Create a root level package.json file
     fs.writeFileSync(
         `${folderName}/package.json`,
         getPackageJsonString({

@@ -86,8 +86,14 @@ export const tsRecipeInits = {
             flowType = "USER_INPUT_CODE";
         }
 
+        // Default flowType if none determined from factors
+        if (flowType === undefined) {
+            flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
+        }
+
         return `Passwordless.init({
-    contactMethod: "${contactMethod}",${flowType ? `\n    flowType: "${flowType}"` : ""}
+    contactMethod: "${contactMethod}",
+    flowType: "${flowType}"
 })`;
     },
     session: () => `Session.init()`,

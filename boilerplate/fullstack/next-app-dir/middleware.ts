@@ -4,8 +4,6 @@ import { SessionContainer } from "supertokens-node/recipe/session";
 import { withSession } from "supertokens-node/nextjs";
 import { ensureSuperTokensInit } from "./app/config/backendConfigUtils";
 
-ensureSuperTokensInit();
-
 export async function middleware(request: NextRequest & { session?: SessionContainer }) {
     if (request.headers.has("x-user-id")) {
         console.warn(
