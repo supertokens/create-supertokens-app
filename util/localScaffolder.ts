@@ -1,14 +1,15 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { Answers, DownloadLocations, UserFlags } from "../lib/ts/types.js"; // Added .js
-import { setupProject } from "../lib/ts/utils.js"; // Added .js
+import { Answers, DownloadLocations, UserFlags } from "../lib/ts/types.js";
+import { setupProject } from "../lib/ts/utils.js";
 import { Ora } from "ora";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// Go up 3 levels from util/ (or lib/build/util/) to project root, then down to boilerplate
-const BOILERPLATE_DIR = path.join(__dirname, "..", "..", "..", "boilerplate");
+const isRunningFromBuild = __filename.includes(path.join("lib", "build"));
+const projectRoot = isRunningFromBuild ? path.resolve(__dirname, "..", "..", "..") : path.resolve(__dirname, "..");
+const BOILERPLATE_DIR = path.join(projectRoot, "boilerplate");
 
 function copyDir(src: string, dest: string, filter?: (path: string) => boolean) {
     if (!fs.existsSync(dest)) {

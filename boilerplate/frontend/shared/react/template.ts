@@ -1,7 +1,7 @@
-import { UserFlags } from "../../../../lib/ts/types.js"; // Added .js
-import { type ConfigType, type OAuthProvider } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
-import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
+import { UserFlags } from "../../../../lib/ts/types.js";
+import { type ConfigType, type OAuthProvider } from "../../../../lib/ts/templateBuilder/types.js";
+import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 
 interface ReactTemplate {
     configType: ConfigType;
@@ -111,7 +111,7 @@ export const reactRecipeInits = {
             if (firstFactors.includes("thirdparty")) {
                 availableFirstFactors.push("thirdparty");
             }
-            const hasPasswordless = firstFactors.some((f: string) => f.startsWith("link-") || f.startsWith("otp-")); // Added type
+            const hasPasswordless = firstFactors.some((f: string) => f.startsWith("link-") || f.startsWith("otp-"));
             if (hasPasswordless) {
                 availableFirstFactors.push("passwordless");
             }
@@ -206,12 +206,12 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
 
     const hasPasswordlessSecondFactors =
         userArguments?.secondfactors?.some(
-            (factor: string) => factor.includes("email") || factor.includes("phone") || factor.includes("link") // Added type
+            (factor: string) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
         ) || false;
 
     const hasPasswordlessFirstFactors =
         userArguments?.firstfactors?.some((factor: string) => factor.includes("link-") || factor.includes("otp-")) ||
-        false; // Added type
+        false;
 
     if (
         configType === "passwordless" ||
@@ -252,7 +252,6 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
         ];
 
         allPossibleUIRecipes.forEach((recipeName: string) => {
-            // Added type
             if (!recipes.includes(recipeName)) {
                 recipes.push(recipeName);
             }
@@ -268,13 +267,12 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
         recipes.push("session");
     }
     const imports = recipes
-        .map((recipe: string) => reactRecipeImports[recipe as keyof typeof reactRecipeImports]) // Added type
+        .map((recipe: string) => reactRecipeImports[recipe as keyof typeof reactRecipeImports])
         .filter(Boolean)
         .join("\n");
 
     const recipeInits = recipes
         .map((recipe: string) => {
-            // Added type
             switch (recipe) {
                 case "passwordless":
                     return reactRecipeInits.passwordless(userArguments);
@@ -290,7 +288,7 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
                 }
                 case "thirdParty": {
                     const providersToUse = userArguments?.providers
-                        ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id)) // Added type
+                        ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id))
                         : thirdPartyLoginProviders;
                     return reactRecipeInits.thirdParty(providersToUse);
                 }
@@ -394,7 +392,7 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
         configType === "thirdpartypasswordless" ||
         configType === "all_auth" ||
         userArguments?.secondfactors?.some(
-            (factor: string) => factor.includes("email") || factor.includes("phone") || factor.includes("link") // Added type
+            (factor: string) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
         )
             ? `return (
         <PasswordlessComponentsOverrideProvider

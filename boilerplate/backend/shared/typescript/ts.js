@@ -277,8 +277,8 @@ export function getWebsiteDomain() {
         appName: "${appInfo.appName}",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}", // Use correct base path
-        websiteBasePath: "${appInfo.websiteBasePath}", // Use correct base path
+        apiBasePath: "${appInfo.apiBasePath}", 
+        websiteBasePath: "${appInfo.websiteBasePath}", 
     },
     recipeList: [
         ${recipeInits.join(",\n        ")}

@@ -1,9 +1,9 @@
-import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js"; // Added .js
-import { config } from "../../../shared/config/base.js"; // Added .js
-import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
-import { UserFlags } from "../../../../lib/ts/types.js"; // Added .js
+import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types.js";
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js";
+import { config } from "../../../shared/config/base.js";
+import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
+import { UserFlags } from "../../../../lib/ts/types.js";
 
 interface TypeScriptTemplateOptions {
     configType: ConfigType;
@@ -86,7 +86,6 @@ export const tsRecipeInits = {
             flowType = "USER_INPUT_CODE";
         }
 
-        // Default flowType if none determined from factors
         if (flowType === undefined) {
             flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
         }
@@ -202,14 +201,13 @@ export const generateTypeScriptTemplate = (
     }
 
     const hasPasswordlessFactor =
-        userArguments?.firstfactors?.some((f: string) => f.startsWith("otp-") || f.startsWith("link-")) || // Added type
-        userArguments?.secondfactors?.some((f: string) => f.startsWith("otp-") || f.startsWith("link-")); // Added type
+        userArguments?.firstfactors?.some((f: string) => f.startsWith("otp-") || f.startsWith("link-")) ||
+        userArguments?.secondfactors?.some((f: string) => f.startsWith("otp-") || f.startsWith("link-"));
 
     if (hasPasswordlessFactor && !recipes.includes("passwordless")) {
         recipes.push("passwordless");
     }
 
-    // For multitenancy, ensure backend is initialized with potential first-factor recipes
     if (configType === "multitenancy") {
         if (!recipes.includes("emailPassword")) {
             recipes.push("emailPassword");
@@ -220,7 +218,7 @@ export const generateTypeScriptTemplate = (
         if (!recipes.includes("passwordless")) {
             recipes.push("passwordless");
         }
-        // Also ensure MFA recipes are included if needed, as multitenancy might use them
+
         if (hasMFA && !recipes.includes("multiFactorAuth")) {
             recipes.push("multiFactorAuth");
         }
@@ -230,7 +228,7 @@ export const generateTypeScriptTemplate = (
         if (hasMFA && !recipes.includes("emailVerification")) {
             recipes.push("emailVerification");
         }
-        // AccountLinking might also be relevant depending on tenant config
+
         if (hasMFA && !recipes.includes("accountLinking")) {
             recipes.push("accountLinking");
         }
@@ -239,7 +237,7 @@ export const generateTypeScriptTemplate = (
     const appInfo = getAppInfo(isFullStack);
 
     let imports = recipes
-        .map((recipe: string) => tsRecipeImports[recipe as keyof typeof tsRecipeImports]) // Added type
+        .map((recipe: string) => tsRecipeImports[recipe as keyof typeof tsRecipeImports])
         .filter(Boolean)
         .join("\n");
 
@@ -248,16 +246,15 @@ export const generateTypeScriptTemplate = (
         imports += `\nimport type { User } from "supertokens-node/types";`;
     }
 
-    const initRecipes = recipes.filter((r: string) => r !== "session"); // Added type
+    const initRecipes = recipes.filter((r: string) => r !== "session");
     const sessionInitFunc = tsRecipeInits.session;
 
     const recipeInits = initRecipes
         .map((recipe: string) => {
-            // Added type
             switch (recipe) {
                 case "thirdParty":
                     const providersToUse = userArguments?.providers
-                        ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id)) // Added type
+                        ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id))
                         : thirdPartyLoginProviders;
                     return tsRecipeInits.thirdParty(providersToUse);
                 case "multiFactorAuth":
@@ -315,8 +312,8 @@ export function getWebsiteDomain() {
         appName: "${appInfo.appName}",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}", // Use correct base path
-        websiteBasePath: "${appInfo.websiteBasePath}", // Use correct base path
+        apiBasePath: "${appInfo.apiBasePath}", 
+        websiteBasePath: "${appInfo.websiteBasePath}", 
     },
     recipeList: [
         ${recipeInits.join(",\n        ")}

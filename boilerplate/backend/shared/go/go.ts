@@ -1,9 +1,9 @@
-import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js"; // Added .js
-import { config } from "../../../shared/config/base.js"; // Added .js
-import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
-import { UserFlags } from "../../../../lib/ts/types.js"; // Added .js
+import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types.js";
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js";
+import { config } from "../../../shared/config/base.js";
+import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
+import { UserFlags } from "../../../../lib/ts/types.js";
 
 export const goRecipeImports = {
     emailPassword: `"github.com/supertokens/supertokens-golang/recipe/emailpassword"`,
@@ -154,7 +154,7 @@ export const generateGoTemplate = ({
     let template = "";
     const recipes = configToRecipes[configType].filter(
         (recipe: string) => recipe !== "multiFactorAuth" && recipe !== "totp"
-    ); // Added type
+    );
 
     const needsEmailVerification = false;
 
@@ -165,7 +165,7 @@ export const generateGoTemplate = ({
     const appInfo = getAppInfo();
 
     const imports = recipes
-        .map((recipe: string) => goRecipeImports[recipe as keyof typeof goRecipeImports]) // Added type
+        .map((recipe: string) => goRecipeImports[recipe as keyof typeof goRecipeImports])
         .filter(Boolean)
         .join("\n    ");
 
@@ -208,10 +208,9 @@ var SuperTokensConfig = supertokens.TypeInput{
     RecipeList: []supertokens.Recipe{
         ${recipes
             .map((recipe: string) => {
-                // Added type
                 if (recipe === "thirdParty") {
                     const providersToUse = userArguments?.providers
-                        ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id)) // Added type
+                        ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id))
                         : thirdPartyLoginProviders;
                     return goRecipeInits[recipe](providersToUse);
                 }

@@ -1,9 +1,9 @@
-import { type ConfigType } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js"; // Added .js
-import { getAppInfo } from "../../../shared/config/appInfo.js"; // Added .js
-import { UserFlags } from "../../../../lib/ts/types.js"; // Added .js
-import { type OAuthProvider } from "../../../../lib/ts/templateBuilder/types.js"; // Added .js
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js"; // Added .js
+import { type ConfigType } from "../../../../lib/ts/templateBuilder/types.js";
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js";
+import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { UserFlags } from "../../../../lib/ts/types.js";
+import { type OAuthProvider } from "../../../../lib/ts/templateBuilder/types.js";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 
 interface WebJSTemplate {
     configType: ConfigType;
@@ -187,15 +187,15 @@ export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }
         const factors = [...(userArguments.firstfactors || []), ...(userArguments.secondfactors || [])];
         if (factors.includes("emailpassword")) recipesSet.add("emailPassword");
         if (factors.includes("thirdparty")) recipesSet.add("thirdParty");
-        if (factors.some((f: string) => f.startsWith("otp-") || f.startsWith("link-"))) recipesSet.add("passwordless"); // Added type
+        if (factors.some((f: string) => f.startsWith("otp-") || f.startsWith("link-"))) recipesSet.add("passwordless");
         if (userArguments.secondfactors && userArguments.secondfactors.length > 0) recipesSet.add("multiFactorAuth");
         if (userArguments.secondfactors?.includes("totp")) recipesSet.add("totp");
-        if (userArguments.secondfactors?.some((f: string) => f.includes("email"))) recipesSet.add("emailVerification"); // Added type
+        if (userArguments.secondfactors?.some((f: string) => f.includes("email"))) recipesSet.add("emailVerification");
         // Add multitenancy if configType is multitenancy (factors don't determine this)
         if (configType === "multitenancy") recipesSet.add("multitenancy");
     } else {
         // Fallback to configType if no factors provided
-        configToRecipes[configType]?.forEach((recipe: string) => recipesSet.add(recipe)); // Added type, Add null check for safety
+        configToRecipes[configType]?.forEach((recipe: string) => recipesSet.add(recipe));
     }
 
     // Filter for recipes that actually have frontend components
@@ -222,7 +222,7 @@ export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }
     // Add email verification if needed for email-based second factors
     const needsEmailVerification =
         hasMFA &&
-        userArguments?.secondfactors?.some((factor: string) => factor.includes("email")) && // Added type
+        userArguments?.secondfactors?.some((factor: string) => factor.includes("email")) &&
         !recipes.includes("emailVerification");
 
     if (needsEmailVerification) {
@@ -289,7 +289,6 @@ export function getWebsiteDomain() {
     // Initialize recipes for the UI
     const uiInitStrings = recipes
         .map((recipe: string) => {
-            // Added type
             if (recipe === "multiFactorAuth") {
                 return uiRecipeInits.multiFactorAuth(userArguments?.firstfactors, userArguments?.secondfactors);
             }
@@ -304,7 +303,7 @@ export function getWebsiteDomain() {
             // Handle ThirdParty separately to pass filtered providers
             if (recipe === "thirdParty") {
                 const providersToUse = userArguments?.providers
-                    ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id)) // Added type
+                    ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id))
                     : thirdPartyLoginProviders; // Use all defaults if --providers flag is not used
                 return uiRecipeInits.thirdParty(providersToUse);
             }

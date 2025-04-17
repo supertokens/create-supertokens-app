@@ -1,10 +1,10 @@
-import { ConfigType, FrontendFramework, Language } from "./types.js"; // Added .js
-import { UserFlags } from "../types.js"; // Added .js
-import { generateTypeScriptTemplate } from "../../../boilerplate/backend/shared/typescript/ts.js"; // Added .js
-import { generatePythonTemplate } from "../../../boilerplate/backend/shared/python/py.js"; // Added .js
-import { generateGoTemplate } from "../../../boilerplate/backend/shared/go/go.js"; // Added .js
-import { generateReactTemplate } from "../../../boilerplate/frontend/shared/react/template.js"; // Added .js
-import { generateWebJSTemplate } from "../../../boilerplate/frontend/shared/web-js/template.js"; // Added .js
+import { ConfigType, FrontendFramework, Language } from "./types.js";
+import { UserFlags } from "../types.js";
+import { generateTypeScriptTemplate } from "../../../boilerplate/backend/shared/typescript/ts.js";
+import { generatePythonTemplate } from "../../../boilerplate/backend/shared/python/py.js";
+import { generateGoTemplate } from "../../../boilerplate/backend/shared/go/go.js";
+import { generateReactTemplate } from "../../../boilerplate/frontend/shared/react/template.js";
+import { generateWebJSTemplate } from "../../../boilerplate/frontend/shared/web-js/template.js";
 
 interface BackendCompilerOptions {
     language: Language;

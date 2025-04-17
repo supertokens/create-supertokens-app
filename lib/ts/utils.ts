@@ -2,7 +2,7 @@ import { getBackendOptionForProcessing, getFrontendOptionsForProcessing } from "
 import tar from "tar";
 import { promisify } from "util";
 import stream from "node:stream";
-import { Answers, DownloadLocations, ExecOutput, QuestionOption, UserFlags, getRecipesFromFactors } from "./types.js"; // Added .js
+import { Answers, DownloadLocations, ExecOutput, QuestionOption, UserFlags, getRecipesFromFactors } from "./types.js";
 import fs from "fs";
 import path from "path";
 import { exec } from "child_process";
@@ -14,10 +14,10 @@ import chalk from "chalk";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 import { addPackageCommand } from "./packageManager.js";
-import { compileBackend } from "./templateBuilder/compiler.js"; // Added .js
-import { ConfigType, FrontendFramework } from "./templateBuilder/types.js"; // Added .js
-import { compileFrontend } from "./templateBuilder/compiler.js"; // Added .js
-import { compileFullstack } from "./templateBuilder/compiler.js"; // Added .js
+import { compileBackend } from "./templateBuilder/compiler.js";
+import { ConfigType, FrontendFramework } from "./templateBuilder/types.js";
+import { compileFrontend } from "./templateBuilder/compiler.js";
+import { compileFullstack } from "./templateBuilder/compiler.js";
 
 const pipeline = promisify(stream.pipeline);
 const defaultSetupErrorString = "Project Setup Failed!";
@@ -295,11 +295,11 @@ async function setupFrontendBackendApp(
 ) {
     const frontendFolderName = locations.frontend
         .split("/")
-        .filter((i: string) => i !== "frontend") // Added type
+        .filter((i: string) => i !== "frontend")
         .join("");
     const backendFolderName = locations.backend
         .split("/")
-        .filter((i: string) => i !== "backend") // Added type
+        .filter((i: string) => i !== "backend")
         .join("");
 
     const __dirname = path.resolve();
