@@ -22,9 +22,39 @@ import { package_version } from "./version.js";
 import { modifyAnswersForPythonFrameworks, modifyAnswersForNodeJSFrameworks } from "./questionUtils.js";
 import { inferredPackageManager } from "./packageManager.js";
 import { checkMfaCompatibility } from "./utils.js";
+import compareVersions from "tiny-version-compare";
+
+async function checkVersion() {
+    const remoteVersionReq = await fetch(
+        "https://raw.githubusercontent.com/supertokens/create-supertokens-app/main/package.json"
+    );
+    const remoteVersion = (await remoteVersionReq.json()).version;
+    const localVersion = package_version;
+
+    const comparison = compareVersions(localVersion, remoteVersion);
+
+    switch (comparison) {
+        case -1: {
+            Logger.warn(
+                `A new version of the SuperTokens CLI is available: ${remoteVersion}. Your local version is ${localVersion}.`
+            );
+            break;
+        }
+        case 1: {
+            Logger.warn("You are using an unpublished version of the SuperTokens CLI.");
+            break;
+        }
+        case 0:
+        default: {
+            return;
+        }
+    }
+}
 
 async function printInformation(): Promise<void> {
     const font: figlet.Fonts = "Doom";
+
+    await checkVersion();
 
     console.log("\n");
     await new Promise<void>((resolve) => {
