@@ -1,7 +1,6 @@
 import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types.js";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js";
-import { config } from "../../../shared/config/base.js";
-import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { getAppConfig } from "../../../shared/config/appInfo.js";
 import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 import { UserFlags } from "../../../../lib/ts/types.js";
 
@@ -25,48 +24,6 @@ export const pyRecipeImports = {
     totp: "from supertokens_python.recipe import totp",
     multitenancy: "from supertokens_python.recipe import multitenancy",
 } as const;
-
-const app_info_object = getAppInfo();
-
-export const pyBaseTemplate = `
-from supertokens_python import init, InputAppInfo, SupertokensConfig
-import os
-
-def get_api_domain() -> str:
-    api_port = str(${app_info_object.defaultApiPort})
-    api_url = f"http://localhost:{api_port}"
-    return api_url
-
-def get_website_domain() -> str:
-    website_port = str(${app_info_object.defaultWebsitePort})
-    website_url = f"http://localhost:{website_port}"
-    return website_url
-
-supertokens_config = SupertokensConfig(
-    connection_uri="${config.connectionURI}"
-)
-
-app_info = InputAppInfo(
-    app_name="${getAppInfo().appName}",
-    api_domain=get_api_domain(),
-    website_domain=get_website_domain(),
-    api_base_path="/auth",
-    website_base_path="/auth"
-)
-
-recipe_list = [
-    %RECIPE_LIST%
-]
-
-init(
-    supertokens_config=supertokens_config,
-    app_info=app_info,
-    framework="%FRAMEWORK%",
-    recipe_list=recipe_list,
-    mode="%MODE%",
-    telemetry=False
-)
-`;
 
 export const pyRecipeInits = {
     emailPassword: () => `emailpassword.init()`,
@@ -360,6 +317,51 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
         sdkFramework = "fastapi";
         sdkMode = "asgi";
     }
+
+    const appConfig = getAppConfig(false, userArguments);
+
+    const pyBaseTemplate = `
+from supertokens_python import init, InputAppInfo, SupertokensConfig
+import os
+
+api_port = str(${appConfig.appInfo.defaultApiPort})
+api_host = "${appConfig.appInfo.defaultApiHost}"
+website_port = str(${appConfig.appInfo.defaultWebsitePort})
+website_host = "${appConfig.appInfo.defaultWebsiteHost}"
+
+def get_api_domain() -> str:
+    api_url = "${appConfig.appInfo.apiDomain}"
+    return api_url
+
+def get_website_domain() -> str:
+    website_url = "${appConfig.appInfo.websiteDomain}"
+    return website_url
+
+supertokens_config = SupertokensConfig(
+    connection_uri="${appConfig.supertokens.connectionURI}"
+)
+
+app_info = InputAppInfo(
+    app_name="${appConfig.appInfo.appName}",
+    api_domain=get_api_domain(),
+    website_domain=get_website_domain(),
+    api_base_path="${appConfig.appInfo.apiBasePath}",
+    website_base_path="${appConfig.appInfo.websiteBasePath}"
+)
+
+recipe_list = [
+    %RECIPE_LIST%
+]
+
+init(
+    supertokens_config=supertokens_config,
+    app_info=app_info,
+    framework="%FRAMEWORK%",
+    recipe_list=recipe_list,
+    mode="%MODE%",
+    telemetry=False
+)
+`;
 
     let finalTemplate = pyBaseTemplate.replace("%RECIPE_LIST%", recipeList);
     finalTemplate = finalTemplate.replace("%FRAMEWORK%", sdkFramework);

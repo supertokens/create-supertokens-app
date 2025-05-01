@@ -3,7 +3,9 @@
 import os
 import sys
 from django.core.management.commands.runserver import Command as runserver
-runserver.default_port = "3001"
+import config
+
+runserver.default_port = config.api_port
 
 
 def main():

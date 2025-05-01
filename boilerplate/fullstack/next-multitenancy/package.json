@@ -1,9 +1,9 @@
 {
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "next dev --port $(node getPort.js)",
         "build": "next build",
-        "start": "next start"
+        "start": "next start --port $(node getPort.js)"
     },
     "dependencies": {
         "next": "latest",

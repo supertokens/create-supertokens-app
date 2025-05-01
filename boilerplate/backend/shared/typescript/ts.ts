@@ -1,7 +1,6 @@
 import { type OAuthProvider, type ConfigType } from "../../../../lib/ts/templateBuilder/types.js";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js";
-import { config } from "../../../shared/config/base.js";
-import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { getAppConfig } from "../../../shared/config/appInfo.js";
 import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 import { UserFlags } from "../../../../lib/ts/types.js";
 
@@ -234,7 +233,7 @@ export const generateTypeScriptTemplate = (
         }
     }
 
-    const appInfo = getAppInfo(isFullStack);
+    const appConfig = getAppConfig(isFullStack, userArguments);
 
     let imports = recipes
         .map((recipe: string) => tsRecipeImports[recipe as keyof typeof tsRecipeImports])
@@ -291,29 +290,32 @@ export const generateTypeScriptTemplate = (
         "\n" +
         `import type { TypeInput } from "supertokens-node/types";
 
+export const apiHost = "${appConfig.appInfo.defaultApiHost}";
+export const apiPort = ${appConfig.appInfo.defaultApiPort};
+export const websiteHost = "${appConfig.appInfo.defaultWebsiteHost}";
+export const websitePort = ${appConfig.appInfo.defaultWebsitePort};
+
 export function getApiDomain() {
-    const apiPort = ${appInfo.defaultApiPort};
-    const apiUrl = \`http://localhost:\${apiPort}\`;
+    const apiUrl = "${appConfig.appInfo.apiDomain}";
     return apiUrl;
 }
 
 export function getWebsiteDomain() {
-    const websitePort = ${appInfo.defaultWebsitePort};
-    const websiteUrl = \`http://localhost:\${websitePort}\`;
+    const websiteUrl = "${appConfig.appInfo.websiteDomain}";
     return websiteUrl;
 }` +
         "\n";
 
     template += `\nexport const SuperTokensConfig: TypeInput = {
     supertokens: {
-        connectionURI: "${config.connectionURI}",
+        connectionURI: "${appConfig.supertokens.connectionURI}",
     },
     appInfo: {
-        appName: "${appInfo.appName}",
+        appName: "${appConfig.appInfo.appName}",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}", 
-        websiteBasePath: "${appInfo.websiteBasePath}", 
+        apiBasePath: "${appConfig.appInfo.apiBasePath}", 
+        websiteBasePath: "${appConfig.appInfo.websiteBasePath}", 
     },
     recipeList: [
         ${recipeInits.join(",\n        ")}

@@ -1,6 +1,6 @@
 import { UserFlags } from "../../../../lib/ts/types.js";
 import { type ConfigType, type OAuthProvider } from "../../../../lib/ts/templateBuilder/types.js";
-import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { getAppConfig } from "../../../shared/config/appInfo.js";
 import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 
 interface ReactTemplate {
@@ -185,7 +185,7 @@ export const reactPreBuiltUIs = {
 };
 
 export const generateReactTemplate = ({ configType, userArguments, isFullStack }: ReactTemplate): string => {
-    const appInfo = getAppInfo(isFullStack);
+    const appConfig = getAppConfig(isFullStack, userArguments);
     const hasMFA = userArguments?.secondfactors && userArguments.secondfactors.length > 0;
     const hasTOTP = userArguments?.secondfactors?.includes("totp");
 
@@ -309,15 +309,18 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
 
     const template = `${imports}
 
+export const apiHost = "${appConfig.appInfo.apiDomain}";
+export const apiPort = ${appConfig.appInfo.defaultApiPort};
+export const websiteHost = "${appConfig.appInfo.websiteDomain}";
+export const websitePort = ${appConfig.appInfo.defaultWebsitePort};
+
 export function getApiDomain() {
-    const apiPort = ${appInfo.defaultApiPort};
-    const apiUrl = \`http://localhost:\${apiPort}\`;
+    const apiUrl = "${appConfig.appInfo.apiDomain}";
     return apiUrl;
 }
 
 export function getWebsiteDomain() {
-    const websitePort = ${appInfo.defaultWebsitePort};
-    const websiteUrl = \`http://localhost:\${websitePort}\`;
+    const websiteUrl = "${appConfig.appInfo.websiteDomain}";
     return websiteUrl;
 }
 
@@ -356,11 +359,11 @@ ${
 
 export const SuperTokensConfig = {
     appInfo: {
-        appName: "${appInfo.appName}",
+        appName: "${appConfig.appInfo.appName}",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}", 
-        websiteBasePath: "${appInfo.websiteBasePath}", 
+        apiBasePath: "${appConfig.appInfo.apiBasePath}", 
+        websiteBasePath: "${appConfig.appInfo.websiteBasePath}", 
     },
     ${configType === "multitenancy" ? "usesDynamicLoginMethods: true,\n    " : ""}${
         configType === "passwordless" ||

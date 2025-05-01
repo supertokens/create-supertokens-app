@@ -149,6 +149,38 @@ async function run() {
             })
             .array("firstfactors")
             .array("secondfactors")
+            .option("coreuri", {
+                type: "string",
+                description: "Specify the core URI",
+            })
+            .option("clienthost", {
+                type: "string",
+                description: "Specify the client host",
+            })
+            .option("clientport", {
+                type: "number",
+                description: "Specify the client port",
+            })
+            .option("apihost", {
+                type: "string",
+                description: "Specify the API host",
+            })
+            .option("apiport", {
+                type: "number",
+                description: "Specify the API port",
+            })
+            .option("appname", {
+                type: "string",
+                description: "Specify the app name",
+            })
+            .option("apibasepath", {
+                type: "string",
+                description: "Specify the API base path",
+            })
+            .option("websitebasepath", {
+                type: "string",
+                description: "Specify the website base path",
+            })
             .coerce("firstfactors", (val) => {
                 console.log("Raw firstfactors:", val);
                 if (Array.isArray(val)) {

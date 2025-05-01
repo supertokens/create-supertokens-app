@@ -1,5 +1,7 @@
 import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
+import react from "@astrojs/react";
+import { websitePort } from "./src/config/frontend";
 
 // https://astro.build/config
 export default defineConfig({
@@ -7,7 +9,8 @@ export default defineConfig({
     adapter: node({
         mode: "standalone",
     }),
+    integrations: [react()],
     server: {
-        port: 3000,
+        port: websitePort,
     },
 });

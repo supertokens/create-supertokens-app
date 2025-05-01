@@ -1,6 +1,6 @@
 import { type ConfigType } from "../../../../lib/ts/templateBuilder/types.js";
 import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js";
-import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { getAppConfig } from "../../../shared/config/appInfo.js";
 import { UserFlags } from "../../../../lib/ts/types.js";
 import { type OAuthProvider } from "../../../../lib/ts/templateBuilder/types.js";
 import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
@@ -229,7 +229,7 @@ export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }
         recipes.push("emailVerification");
     }
 
-    const appInfo = getAppInfo(isFullStack);
+    const appConfig = getAppConfig(isFullStack, userArguments);
 
     // Keep imports simple - just the basic ones needed
     let imports = `import SuperTokens from "supertokens-web-js";
@@ -246,10 +246,10 @@ import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
     // For the web-js initialization function
     let initSuperTokensWebJSCode = `SuperTokens.init({
         appInfo: {
-            appName: "${appInfo.appName}",
+            appName: "${appConfig.appInfo.appName}",
             apiDomain: getApiDomain(),
             // websiteDomain is not needed for core SDK init
-            apiBasePath: "${appInfo.apiBasePath}",
+            apiBasePath: "${appConfig.appInfo.apiBasePath}",
             // websiteBasePath is not needed for core SDK init
         },
         recipeList: [Session.init()]
@@ -259,10 +259,10 @@ import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
     if (hasMFA) {
         initSuperTokensWebJSCode = `SuperTokens.init({
         appInfo: {
-            appName: "${appInfo.appName}",
+            appName: "${appConfig.appInfo.appName}",
             apiDomain: getApiDomain(),
             // websiteDomain is not needed for core SDK init
-            apiBasePath: "${appInfo.apiBasePath}",
+            apiBasePath: "${appConfig.appInfo.apiBasePath}",
             // websiteBasePath is not needed for core SDK init
         },
         // Core SDK init only needs Session, EmailVerification, and MultiFactorAuth for MFA
@@ -274,14 +274,12 @@ import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
     // Define helper functions to be included in the generated config
     const getApiDomainFunc = `
 export function getApiDomain() {
-    const apiPort = ${appInfo.defaultApiPort};
-    const apiUrl = \`http://localhost:\${apiPort}\`;
+    const apiUrl = "${appConfig.appInfo.apiDomain}";
     return apiUrl;
 }`;
     const getWebsiteDomainFunc = `
 export function getWebsiteDomain() {
-    const websitePort = ${appInfo.defaultWebsitePort};
-    const websiteUrl = \`http://localhost:\${websitePort}\`;
+    const websiteUrl = "${appConfig.appInfo.websiteDomain}";
     return websiteUrl;
 }`;
 
@@ -340,6 +338,11 @@ export function getWebsiteDomain() {
     // Generate template following the structure in final-shape-tables.mdc
     // Prepend helper functions
     return `${imports}
+export const apiHost = "${appConfig.appInfo.apiDomain}";
+export const apiPort = ${appConfig.appInfo.defaultApiPort};
+export const websiteHost = "${appConfig.appInfo.websiteDomain}";
+export const websitePort = ${appConfig.appInfo.defaultWebsitePort};
+
 ${getApiDomainFunc}
 ${getWebsiteDomainFunc}
 
@@ -349,9 +352,9 @@ export function initSuperTokensUI() {
             // Call generated helper functions and include base paths
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
-            appName: "${appInfo.appName}",
-            websiteBasePath: "${appInfo.websiteBasePath}", // Add websiteBasePath
-            apiBasePath: "${appInfo.apiBasePath}", // Add apiBasePath
+            appName: "${appConfig.appInfo.appName}",
+            websiteBasePath: "${appConfig.appInfo.websiteBasePath}", // Add websiteBasePath
+            apiBasePath: "${appConfig.appInfo.apiBasePath}", // Add apiBasePath
         },
         recipeList: [
             ${uiInitStrings.join(",\n            ")}

@@ -239,6 +239,11 @@ export type UserFlagsRaw = {
     pwcontactmethod?: "email" | "phone" | "email_or_phone";
     providers?: string[]; // Added for selecting specific third-party providers
     skipInstall?: boolean; // Added to skip package installation step
+    coreuri?: string;
+    clienthost?: string;
+    clientport?: number;
+    apihost?: string;
+    apiport?: number;
 };
 
 // Multi tenancy

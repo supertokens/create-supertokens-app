@@ -24,7 +24,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             displayName: "React",
             location: {
                 main: "frontend/react",
-                config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
+                config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
                 setup: [`${manager} install`],
@@ -36,7 +36,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             displayName: "React",
             location: {
                 main: "frontend/react-multitenancy",
-                config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
+                config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
                 setup: [`${manager} install`],
@@ -54,7 +54,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
                     frontend: [
                         {
                             configFiles: "/config/frontend",
-                            finalConfig: "/config/frontendConfig.tsx",
+                            finalConfig: "/config/frontendConfig.ts",
                         },
                     ],
                     backend: [
@@ -81,7 +81,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
                     frontend: [
                         {
                             configFiles: "/config/frontend",
-                            finalConfig: "/config/frontendConfig.tsx",
+                            finalConfig: "/config/frontendConfig.ts",
                         },
                     ],
                     backend: [
@@ -108,7 +108,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
                     frontend: [
                         {
                             configFiles: "/app/config/frontend",
-                            finalConfig: "/app/config/frontend.tsx",
+                            finalConfig: "/app/config/frontend.ts",
                         },
                     ],
                     backend: [
@@ -134,13 +134,13 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
                     frontend: [
                         {
                             configFiles: "/app/config/frontend",
-                            finalConfig: "/app/config/frontend.tsx",
+                            finalConfig: "/app/config/frontend.ts",
                         },
                     ],
                     backend: [
                         {
                             configFiles: "/app/config/backend",
-                            finalConfig: "/app/config/backend.tsx",
+                            finalConfig: "/app/config/backend.ts",
                         },
                     ],
                 },
@@ -335,7 +335,7 @@ export async function getNextJSOptions({ manager }: UserFlags): Promise<Question
                     frontend: [
                         {
                             configFiles: "/app/config/frontend",
-                            finalConfig: "/app/config/frontend.tsx",
+                            finalConfig: "/app/config/frontend.ts",
                         },
                     ],
                     backend: [
@@ -363,7 +363,7 @@ export async function getNextJSOptions({ manager }: UserFlags): Promise<Question
                     frontend: [
                         {
                             configFiles: "/config/frontend",
-                            finalConfig: "/config/frontendConfig.tsx",
+                            finalConfig: "/config/frontendConfig.ts",
                         },
                     ],
                     backend: [

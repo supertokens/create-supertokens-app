@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import supertokens from 'supertokens-node';
 import { SupertokensExceptionFilter } from './auth/auth.filter';
-import { SuperTokensConfig } from './config'; // Changed import style
+import { SuperTokensConfig, apiPort } from './config'; // Changed import style
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +12,6 @@ async function bootstrap() {
     credentials: true,
   });
   app.useGlobalFilters(new SupertokensExceptionFilter());
-  await app.listen(3001);
+  await app.listen(apiPort);
 }
 bootstrap();

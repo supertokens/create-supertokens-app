@@ -25,5 +25,5 @@ export const recipeDetails = {
 export const PreBuiltUIList = [];
 
 export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
-    return <></>;
+    return props.children;
 };

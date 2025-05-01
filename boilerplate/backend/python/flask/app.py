@@ -63,4 +63,4 @@ def catch_all(u_path: str):  # pylint: disable=unused-argument
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int("3001"), debug=True)
+    app.run(host=config.api_host, port=config.api_port, debug=True)
