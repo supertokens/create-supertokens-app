@@ -82,7 +82,10 @@ export const pyRecipeInits = {
                                 client_secret="${provider.clientSecret}"${
                             provider.additionalConfig
                                 ? `,
-                                additional_config=${JSON.stringify(provider.additionalConfig, null, 16)}`
+                                additional_config=${JSON.stringify(provider.additionalConfig, null, "####").replace(
+                                    new RegExp("####", "g"),
+                                    "".padStart(36)
+                                )}`
                                 : ""
                         }
                             )
@@ -167,10 +170,6 @@ export const pyRecipeInits = {
 } as const;
 
 export const generatePythonTemplate = ({ configType, userArguments, framework }: PythonTemplate): string => {
-    console.log(configType);
-    console.log(userArguments);
-    console.log(framework);
-
     const recipesSet = new Set<string>(["session", "dashboard", "userRoles"]);
 
     if (userArguments?.firstfactors || userArguments?.secondfactors) {
@@ -372,7 +371,7 @@ export const generatePythonTemplate = ({ configType, userArguments, framework }:
     // Add common imports
     imports.unshift("from supertokens_python import init, InputAppInfo, SupertokensConfig");
 
-    if (recipes.includes("accountlinking")) {
+    if (recipes.includes("accountLinking")) {
         miscFunctions.push(dedent`
             async def async_should_do_linking(
                 new_account_info: AccountInfoWithRecipeIdAndUserId,
@@ -384,8 +383,6 @@ export const generatePythonTemplate = ({ configType, userArguments, framework }:
                 return ShouldAutomaticallyLink(should_require_verification=False)
         `);
     }
-
-    console.log(miscFunctions);
 
     return imports.join("\n") + "\n\n" + miscFunctions.join("\n\n") + "\n\n" + finalTemplate;
 };
