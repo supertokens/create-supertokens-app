@@ -324,9 +324,9 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
 from supertokens_python import init, InputAppInfo, SupertokensConfig
 import os
 
-api_port = str(${appConfig.appInfo.defaultApiPort})
+api_port = ${appConfig.appInfo.defaultApiPort}
 api_host = "${appConfig.appInfo.defaultApiHost}"
-website_port = str(${appConfig.appInfo.defaultWebsitePort})
+website_port = ${appConfig.appInfo.defaultWebsitePort}
 website_host = "${appConfig.appInfo.defaultWebsiteHost}"
 
 def get_api_domain() -> str:
