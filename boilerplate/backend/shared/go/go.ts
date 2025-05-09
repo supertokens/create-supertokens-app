@@ -138,7 +138,8 @@ export const goRecipeInits = {
         return true, true
     },
 })`,
-    emailVerification: () => `emailverification.Init(&evmodels.TypeInput{
+    // Removed the pointer (&) as the Init function expects the value directly
+    emailVerification: () => `emailverification.Init(evmodels.TypeInput{
     Mode: evmodels.ModeRequired,
 })`,
     multitenancy: () => `multitenancy.Init(nil)`,
@@ -152,8 +153,13 @@ export const generateGoTemplate = ({
     userArguments?: UserFlags;
 }): string => {
     let template = "";
+    // Filter out recipes not supported or not initialized via RecipeList in Go
     const recipes = configToRecipes[configType].filter(
-        (recipe: string) => recipe !== "multiFactorAuth" && recipe !== "totp"
+        (recipe: string) =>
+            recipe !== "multiFactorAuth" &&
+            recipe !== "totp" &&
+            recipe !== "accountLinking" && // Add accountLinking to filter
+            recipe !== "multitenancy" // Add multitenancy to filter (it's used directly, not via init list)
     );
 
     const needsEmailVerification = false;
@@ -173,7 +179,7 @@ export const generateGoTemplate = ({
 
 import (
     "fmt"
-    "os"
+    // "os" // Keep os commented out as it's not used here
     "github.com/supertokens/supertokens-golang/supertokens"
     ${imports}
 )
@@ -274,7 +280,7 @@ func corsMiddleware(next http.Handler) http.Handler {
         response.Header().Set("Access-Control-Allow-Credentials", "true")
         if r.Method == "OPTIONS" {
             response.Header().Set("Access-Control-Allow-Headers", strings.Join(append([]string{"Content-Type"}, supertokens.GetAllCORSHeaders()...), ","))
-            response.Header().Set("Access-Control-Allow-Methods", "*")
+            response.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH") // Explicitly list methods
             response.Write([]byte(""))
         } else {
             next.ServeHTTP(response, r)

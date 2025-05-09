@@ -271,6 +271,12 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
         .filter(Boolean)
         .join("\n");
 
+    const additionalImports: string[] = [];
+    if (configType === "multitenancy") {
+        additionalImports.push('import { useState, useEffect } from "react";');
+        additionalImports.push('import { GetRedirectionURLContext } from "supertokens-auth-react/lib/build/types";');
+    }
+
     const recipeInits = recipes
         .map((recipe: string) => {
             switch (recipe) {
@@ -308,6 +314,7 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
         .filter(Boolean);
 
     const template = `${imports}
+${additionalImports.join("\n")}
 
 export function getApiDomain() {
     const apiPort = ${appInfo.defaultApiPort};
@@ -340,7 +347,7 @@ ${
     --palette-buttonText: #ffffff;
     --palette-primary: #4949e4;
     --palette-success: #41a700;
-    
+
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     width: 420px;
     margin: 0 auto;
@@ -359,8 +366,8 @@ export const SuperTokensConfig = {
         appName: "${appInfo.appName}",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}", 
-        websiteBasePath: "${appInfo.websiteBasePath}", 
+        apiBasePath: "${appInfo.apiBasePath}",
+        websiteBasePath: "${appInfo.websiteBasePath}",
     },
     ${configType === "multitenancy" ? "usesDynamicLoginMethods: true,\n    " : ""}${
         configType === "passwordless" ||
@@ -373,10 +380,18 @@ export const SuperTokensConfig = {
     recipeList: [
         ${recipeInits.join(",\n        ")}
     ],
-    getRedirectionURL: async (context: {action: string; newSessionCreated: boolean}) => {
-        if (context.action === "SUCCESS" && context.newSessionCreated) {
-            return "/dashboard";
+    getRedirectionURL: async (context: GetRedirectionURLContext) => {
+        // Default redirection logic, can be customized further if needed per recipe
+        if (context.action === "SUCCESS") {
+            // newSessionCreated is not always present on GetRedirectionURLContext,
+            // but it's a common check.
+            // For more specific checks, you might need to cast context based on recipeId
+            // or check context.newSessionCreated explicitly if (context as any).newSessionCreated
+            if ((context as any).newSessionCreated) {
+                return "/dashboard";
+            }
         }
+        return undefined;
     },
 };
 
@@ -386,19 +401,234 @@ export const recipeDetails = {
 
 export const PreBuiltUIList = [${prebuiltUIs.join(", ")}];
 
+${
+    configType === "multitenancy"
+        ? `
+interface Tenant {
+    tenantId: string;
+    emailPasswordEnabled?: boolean;
+    thirdPartyEnabled?: boolean;
+    passwordlessEnabled?: boolean;
+}
+
+const tenantLoader = async (): Promise<Tenant[]> => {
+    try {
+        const response = await fetch(\`\${getApiDomain()}/tenants\`);
+        if (!response.ok) {
+            throw new Error(\`Failed to fetch tenants: \${response.statusText}\`);
+        }
+        const responseData = await response.json();
+        // Ensure the response structure matches what the backend sends
+        if (responseData && responseData.status === "OK" && Array.isArray(responseData.tenants)) {
+            return responseData.tenants as Tenant[];
+        } else if (Array.isArray(responseData)) { // Fallback if backend sends array directly
+             return responseData as Tenant[];
+        }
+        console.error("Unexpected response format from /tenants:", responseData);
+        throw new Error("Failed to parse tenants data from server.");
+    } catch (error) {
+        console.error("Error fetching tenants:", error);
+        return []; // Return empty array on error
+    }
+};
+
+// TenantSelector component will be defined after TenantSwitcherFooter
+// to ensure TenantSwitcherFooter can reference it if needed (though not in this exact new design)
+
+const TenantSwitcherFooter = () => {
+    const [currentTenantId, setCurrentTenantId] = useState<string | null>(null);
+    const [showTenantSwitcher, setShowTenantSwitcher] = useState(false);
+
+    useEffect(() => {
+        async function initTenants() {
+            const storedTenantId = localStorage.getItem("tenantId");
+            if (storedTenantId) {
+                setCurrentTenantId(storedTenantId);
+            } else {
+                // If no tenantId in localStorage, try to load and set the first one
+                const tenants = await tenantLoader();
+                if (tenants.length > 0) {
+                    const firstTenantId = tenants[0].tenantId;
+                    setCurrentTenantId(firstTenantId);
+                    localStorage.setItem("tenantId", firstTenantId);
+                    // Dispatch a custom event to notify other parts of the app if necessary
+                    window.dispatchEvent(new CustomEvent("tenantChanged"));
+                } else {
+                    setCurrentTenantId(null); // No tenants available
+                }
+            }
+        }
+        initTenants();
+
+        // Listen for direct localStorage changes from other tabs/windows
+        const handleStorageChange = (event: StorageEvent) => {
+            if (event.key === "tenantId") {
+                setCurrentTenantId(event.newValue);
+            }
+        };
+        window.addEventListener("storage", handleStorageChange);
+
+        // Listen for custom event in case tenant is changed programmatically within the same tab
+        const handleTenantChangedEvent = () => {
+            setCurrentTenantId(localStorage.getItem("tenantId"));
+        };
+        window.addEventListener("tenantChanged", handleTenantChangedEvent);
+        
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+            window.removeEventListener("tenantChanged", handleTenantChangedEvent);
+        };
+    }, []);
+
+    const handleSwitchTenantClick = () => {
+        setShowTenantSwitcher(true); // Show the modal
+    };
+
+    const onTenantSelected = (tenantId: string) => {
+        localStorage.setItem("tenantId", tenantId);
+        setCurrentTenantId(tenantId);
+        setShowTenantSwitcher(false); // Hide modal
+        // Dispatch custom event
+        window.dispatchEvent(new CustomEvent("tenantChanged"));
+        // Reload or navigate to ensure SuperTokens SDK picks up the new tenantId for API calls.
+        // Navigating to /auth is a common pattern to re-initialize auth flow with new tenant.
+        window.location.href = "/auth";
+    };
+
+    const closeTenantSelector = () => {
+        setShowTenantSwitcher(false);
+    }
+
+    return (
+        <>
+            <div style={{
+                padding: "10px",
+                textAlign: "center",
+                borderTop: "1px solid #eee",
+                marginTop: "20px",
+                backgroundColor: "#f9f9f9",
+                fontSize: "14px",
+            }}>
+                {currentTenantId ? (
+                    <span>Current Tenant: <strong>{currentTenantId}</strong> | </span>
+                ) : (
+                    <span>No tenant selected | </span>
+                )}
+                <button
+                    onClick={handleSwitchTenantClick}
+                    style={{
+                        background: "none",
+                        border: "none",
+                        color: "var(--palette-textLink, #4949e4)",
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                        fontSize: "inherit"
+                    }}>
+                    {currentTenantId ? "Switch Tenant" : "Select Tenant"}
+                </button>
+            </div>
+            {showTenantSwitcher && (
+                <div
+                    onClick={closeTenantSelector} // Click on overlay closes it
+                    style={{
+                        position: "fixed", // Changed to fixed for full screen overlay
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(0, 0, 0, 0.5)", // Darker overlay
+                        zIndex: 1000, // Ensure it's on top
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}
+                >
+                    {/* Stop propagation to prevent overlay click when clicking inside selector */}
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <TenantSelector onTenantSelected={onTenantSelected} />
+                    </div>
+                </div>
+            )}
+        </>
+    );
+};
+
+function TenantSelector({ onTenantSelected }: { onTenantSelected: (tenantId: string) => void }) {
+    const [tenants, setTenants] = useState<Tenant[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        async function fetchTenants() {
+            setLoading(true);
+            try {
+                const loadedTenants = await tenantLoader();
+                setTenants(loadedTenants);
+            } catch (err: unknown) {
+                console.error("Error fetching tenants in selector:", err);
+                setError(err instanceof Error ? err.message : "Failed to load tenants");
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchTenants();
+    }, []);
+
+    if (loading) {
+        return <div className="tenant-selector-container tenant-loading">Loading tenants...</div>;
+    }
+
+    if (error) {
+        return <div className="tenant-selector-container tenant-error"><p>{error}</p></div>;
+    }
+
+    if (tenants.length === 0) {
+        return <div className="tenant-selector-container tenant-empty"><p>No tenants available.</p></div>;
+    }
+
+    return (
+        <div className="tenant-selector-container">
+            <h2>Select a Tenant</h2>
+            <div className="tenant-list">
+                {tenants.map((tenant) => (
+                    <button
+                        key={tenant.tenantId}
+                        onClick={() => onTenantSelected(tenant.tenantId)}
+                        className="tenant-button">
+                        {tenant.tenantId}
+                        <div className="tenant-features">
+                            {tenant.emailPasswordEnabled && <span className="tenant-feature">Email/Password</span>}
+                            {tenant.thirdPartyEnabled && <span className="tenant-feature">Social Login</span>}
+                            {tenant.passwordlessEnabled && <span className="tenant-feature">Passwordless</span>}
+                        </div>
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
+`
+        : ""
+}
+
 export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
+    let childrenToRender = props.children;
+
     ${
-        configType === "passwordless" ||
-        configType === "thirdpartypasswordless" ||
-        configType === "all_auth" ||
-        userArguments?.secondfactors?.some(
-            (factor: string) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
-        )
-            ? `return (
+        // Logic for P<ctrl61>asswordlessComponentsOverrideProvider
+        recipes.includes("passwordless") &&
+        (configType === "passwordless" ||
+            configType === "thirdpartypasswordless" ||
+            configType === "all_auth" ||
+            configType === "multitenancy" || // Multitenancy might also use passwordless
+            userArguments?.secondfactors?.some(
+                (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
+            ))
+            ? `childrenToRender = (
         <PasswordlessComponentsOverrideProvider
             components={{
-                PasswordlessUserInputCodeFormFooter_Override: ({ DefaultComponent, ...props }) => {
-                    const loginAttemptInfo = props.loginAttemptInfo;
+                PasswordlessUserInputCodeFormFooter_Override: ({ DefaultComponent, ...cProps }) => {
+                    const loginAttemptInfo = cProps.loginAttemptInfo;
                     let showQuotaMessage = false;
 
                     if (loginAttemptInfo.contactMethod === "PHONE") {
@@ -411,7 +641,7 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
                                 width: "100%",
                             }}
                         >
-                            <DefaultComponent {...props} />
+                            <DefaultComponent {...cProps} />
                             {showQuotaMessage && (
                                 <div
                                     style={{
@@ -444,9 +674,18 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
             {props.children}
         </PasswordlessComponentsOverrideProvider>
     );`
-            : `return props.children;`
+            : `` // No specific override if not passwordless context demanding it
+    }
+    ${
+        configType === "multitenancy"
+            ? `return (
+        <>
+            {childrenToRender}
+            <TenantSwitcherFooter />
+        </>
+    );`
+            : `return childrenToRender;`
     }
 };`;
-
     return template;
 };

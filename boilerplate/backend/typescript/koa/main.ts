@@ -43,7 +43,7 @@ router.get("/sessioninfo", verifySession(), (ctx: SessionContext) => {
 // Depending on your UX, you can remove this API.
 router.get("/tenants", async (ctx: SessionContext) => {
     const tenants = await Multitenancy.listAllTenants();
-    ctx.body = JSON.stringify({ tenants }, null, 4);
+    ctx.body = tenants;
 });
 
 app.use(router.routes());

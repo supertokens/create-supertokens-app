@@ -90,10 +90,6 @@ export const uiRecipeInits = {
             contactMethod = "EMAIL";
         }
 
-        // Check if we need both OTP and magic link flow
-        // Determine flow type based on factors
-        // Note: The documentation states that if both otp_email and otp_phone are present,
-        // the flowType becomes "USER_INPUT_CODE_AND_MAGIC_LINK"
         if ((hasOtpEmail || hasOtpPhone) && (hasLinkEmail || hasLinkPhone)) {
             flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
         } else if (hasLinkEmail || hasLinkPhone) {
@@ -191,35 +187,35 @@ export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }
         if (userArguments.secondfactors && userArguments.secondfactors.length > 0) recipesSet.add("multiFactorAuth");
         if (userArguments.secondfactors?.includes("totp")) recipesSet.add("totp");
         if (userArguments.secondfactors?.some((f: string) => f.includes("email"))) recipesSet.add("emailVerification");
-        // Add multitenancy if configType is multitenancy (factors don't determine this)
         if (configType === "multitenancy") recipesSet.add("multitenancy");
     } else {
-        // Fallback to configType if no factors provided
-        configToRecipes[configType]?.forEach((recipe: string) => recipesSet.add(recipe));
+        configToRecipes[configType]?.forEach((recipe: string) => {
+            if (recipe !== "multiFactorAuth" && recipe !== "totp") {
+                recipesSet.add(recipe);
+            }
+        });
+        if (configType === "multitenancy") {
+            recipesSet.add("multitenancy");
+        }
     }
 
-    // Filter for recipes that actually have frontend components
     const recipes = [...recipesSet].filter((recipe) =>
         frontendRecipes.includes(recipe as typeof frontendRecipes[number])
     );
 
-    // Check if MFA is needed (based on second factors OR if multifactorauth recipe is present in the final list)
     const hasMFA =
         (userArguments?.secondfactors && userArguments.secondfactors.length > 0) || recipes.includes("multiFactorAuth");
 
-    // If MFA is needed but not included, add it
     if (hasMFA && !recipes.includes("multiFactorAuth")) {
         recipes.push("multiFactorAuth");
     }
 
-    // Add TOTP if it's used as a second factor
     const needsTOTP = hasMFA && userArguments?.secondfactors?.includes("totp") && !recipes.includes("totp");
 
     if (needsTOTP) {
         recipes.push("totp");
     }
 
-    // Add email verification if needed for email-based second factors
     const needsEmailVerification =
         hasMFA &&
         userArguments?.secondfactors?.some((factor: string) => factor.includes("email")) &&
@@ -231,47 +227,57 @@ export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }
 
     const appInfo = getAppInfo(isFullStack);
 
-    // Keep imports simple - just the basic ones needed
     let imports = `import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";`;
 
-    // If MFA is needed, add the necessary imports
     if (hasMFA) {
         imports = `import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";
 import EmailVerification from "supertokens-web-js/recipe/emailverification";
 import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
     }
-
-    // For the web-js initialization function
-    let initSuperTokensWebJSCode = `SuperTokens.init({
-        appInfo: {
-            appName: "${appInfo.appName}",
-            apiDomain: getApiDomain(),
-            // websiteDomain is not needed for core SDK init
-            apiBasePath: "${appInfo.apiBasePath}",
-            // websiteBasePath is not needed for core SDK init
-        },
-        recipeList: [Session.init()]
-    });`;
-
-    // If MFA is needed, update the webJS initialization to include core MFA recipes
-    if (hasMFA) {
-        initSuperTokensWebJSCode = `SuperTokens.init({
-        appInfo: {
-            appName: "${appInfo.appName}",
-            apiDomain: getApiDomain(),
-            // websiteDomain is not needed for core SDK init
-            apiBasePath: "${appInfo.apiBasePath}",
-            // websiteBasePath is not needed for core SDK init
-        },
-        // Core SDK init only needs Session, EmailVerification, and MultiFactorAuth for MFA
-        recipeList: [Session.init(), EmailVerification.init(), MultiFactorAuth.init()]
-    });`;
+    if (configType === "multitenancy" && !imports.includes("Multitenancy from")) {
+        if (imports.includes("MultiFactorAuth from")) {
+            imports += `\nimport Multitenancy from "supertokens-web-js/recipe/multitenancy";`;
+        } else if (imports.includes("Session from")) {
+            imports += `\nimport Multitenancy from "supertokens-web-js/recipe/multitenancy";`;
+        } else {
+            imports += `\nimport Session from "supertokens-web-js/recipe/session";\nimport Multitenancy from "supertokens-web-js/recipe/multitenancy";`;
+        }
     }
-    // Otherwise, the default initSuperTokensWebJSCode (with only Session.init()) is used
 
-    // Define helper functions to be included in the generated config
+    const coreRecipeInits = ["Session.init()"];
+    if (configType === "multitenancy") {
+        coreRecipeInits.push(`Multitenancy.init({
+                override: {
+                    functions: (oI) => {
+                        return {
+                            ...oI,
+                            getTenantId: async () => {
+                                const tenantIdInStorage = localStorage.getItem("tenantId");
+                                return tenantIdInStorage === null ? undefined : tenantIdInStorage;
+                            },
+                        };
+                    },
+                },
+            })`);
+    }
+    if (hasMFA) {
+        coreRecipeInits.push("EmailVerification.init()");
+        coreRecipeInits.push("MultiFactorAuth.init()");
+    }
+
+    const initSuperTokensWebJSCode = `SuperTokens.init({
+        appInfo: {
+            appName: "${appInfo.appName}",
+            apiDomain: getApiDomain(),
+            apiBasePath: "${appInfo.apiBasePath}",
+        },
+        recipeList: [
+            ${coreRecipeInits.join(",\n            ")}
+        ]
+    });`;
+
     const getApiDomainFunc = `
 export function getApiDomain() {
     const apiPort = ${appInfo.defaultApiPort};
@@ -285,8 +291,6 @@ export function getWebsiteDomain() {
     return websiteUrl;
 }`;
 
-    // For the UI initialization function
-    // Initialize recipes for the UI
     const uiInitStrings = recipes
         .map((recipe: string) => {
             if (recipe === "multiFactorAuth") {
@@ -295,64 +299,56 @@ export function getWebsiteDomain() {
             if (recipe === "passwordless") {
                 return uiRecipeInits.passwordless(userArguments);
             }
-            // Handle EmailVerification separately to pass hasMFA
             if (recipe === "emailVerification") {
                 return uiRecipeInits.emailVerification(hasMFA ?? false);
             }
-            // For other recipes without specific args in UI init
-            // Handle ThirdParty separately to pass filtered providers
             if (recipe === "thirdParty") {
                 const providersToUse = userArguments?.providers
                     ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id))
-                    : thirdPartyLoginProviders; // Use all defaults if --providers flag is not used
+                    : thirdPartyLoginProviders;
                 return uiRecipeInits.thirdParty(providersToUse);
             }
 
             const initFunc = uiRecipeInits[recipe as keyof typeof uiRecipeInits];
             if (typeof initFunc === "function") {
-                // Need to check if function expects args, currently only passwordless/mfa/ev do
                 if (recipe !== "passwordless" && recipe !== "multiFactorAuth" && recipe !== "thirdParty") {
                     return (initFunc as any)();
                 }
             }
-            // Return null or handle error if initFunc is not callable or needs args we didn't provide
-            console.warn(`Skipping UI init for recipe (or init func not found/callable): ${recipe}`);
+            console.warn("Skipping UI init for recipe (or init func not found/callable): " + recipe);
             return null;
         })
         .filter(Boolean);
 
-    // Add additional required UI inits (ensure EV isn't added twice)
     if (hasMFA) {
-        // EV is now handled in the map above, so this check is likely redundant
-        // if (!uiInitStrings.some((init) => init.includes("EmailVerification"))) {
-        //     uiInitStrings.push(uiRecipeInits.emailVerification(hasMFA ?? false));
-        // }
         if (needsTOTP && !uiInitStrings.some((init) => init.includes("TOTP"))) {
             uiInitStrings.push(uiRecipeInits.totp());
         }
     }
 
-    const isMultitenancy = configType === "multitenancy";
-    if (isMultitenancy && !uiInitStrings.some((init) => init.includes("Multitenancy"))) {
+    const isMultitenancyInternal = configType === "multitenancy";
+    if (isMultitenancyInternal && !uiInitStrings.some((init) => init.includes("Multitenancy"))) {
         uiInitStrings.push(uiRecipeInits.multitenancy());
     }
 
-    // Generate template following the structure in final-shape-tables.mdc
-    // Prepend helper functions
-    return `${imports}
+    return `
+
+${imports}
+
+const isMultitenancy = ${isMultitenancyInternal};
 ${getApiDomainFunc}
 ${getWebsiteDomainFunc}
 
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         appInfo: {
-            // Call generated helper functions and include base paths
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
             appName: "${appInfo.appName}",
-            websiteBasePath: "${appInfo.websiteBasePath}", // Add websiteBasePath
-            apiBasePath: "${appInfo.apiBasePath}", // Add apiBasePath
+            websiteBasePath: "${appInfo.websiteBasePath}",
+            apiBasePath: "${appInfo.apiBasePath}",
         },
+        ${configType === "multitenancy" ? `usesDynamicLoginMethods: true,` : ""}
         recipeList: [
             ${uiInitStrings.join(",\n            ")}
         ],
@@ -361,5 +357,195 @@ export function initSuperTokensUI() {
 
 export function initSuperTokensWebJS() {
     ${initSuperTokensWebJSCode}
-}`;
+
+    if (isMultitenancy) {
+        initTenantSelectorInterface();
+    }
+}
+
+${
+    isMultitenancyInternal
+        ? `
+export async function initTenantSelectorInterface() {
+    const ST_TENANT_ID_KEY = "tenantId";
+    let currentTenantId = localStorage.getItem(ST_TENANT_ID_KEY);
+    let tenants = [];
+
+    function waitForElm(selector) {
+        return new Promise(resolve => {
+            if (document.querySelector(selector)) {
+                return resolve(document.querySelector(selector));
+            }
+
+            const observer = new MutationObserver(mutations => {
+                if (document.querySelector(selector)) {
+                    observer.disconnect();
+                    resolve(document.querySelector(selector));
+                }
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    }
+
+    async function tenantLoader() {
+        try {
+            const response = await fetch(\`\${getApiDomain()}/tenants\`);
+            if (!response.ok) {
+                console.error(\`Failed to fetch tenants: \${response.statusText}\`);
+                return [];
+            }
+            const responseData = await response.json();
+            if (responseData && responseData.status === "OK" && Array.isArray(responseData.tenants)) {
+                return responseData.tenants;
+            } else if (Array.isArray(responseData)) {
+                return responseData;
+            }
+            console.error("Unexpected response format from /tenants:", responseData);
+            return [];
+        } catch (error) {
+            console.error("Error fetching tenants:", error);
+            return [];
+        }
+    }
+
+    function initTenantSelectorDOM(existingFooterElement) {
+        if (document.getElementById("st-tenant-selector-footer")) {
+            return; 
+        }
+
+        const footerDiv = document.createElement("div");
+        footerDiv.id = "st-tenant-selector-footer";
+        footerDiv.innerHTML = \`
+            <span id="st-current-tenant-display">Current Tenant: Loading...</span>
+            <button id="st-switch-tenant-btn">Switch Tenant</button>
+        \`;
+        
+        if (existingFooterElement && existingFooterElement.parentElement) {
+            existingFooterElement.parentElement.insertBefore(footerDiv, existingFooterElement);
+        } else {
+            document.body.appendChild(footerDiv);
+        }
+
+        const modalBackdrop = document.createElement("div");
+        modalBackdrop.id = "st-tenant-modal-backdrop";
+        modalBackdrop.innerHTML = \`
+            <div id="st-tenant-modal">
+                <button id="st-tenant-modal-close" title="Close">&times;</button>
+                <h3>Select Tenant</h3>
+                <ul id="st-tenant-list"></ul>
+            </div>
+        \`;
+        document.body.appendChild(modalBackdrop);
+
+        document.getElementById("st-switch-tenant-btn")?.addEventListener("click", openTenantModal);
+        document.getElementById("st-tenant-modal-close")?.addEventListener("click", closeTenantModal);
+        modalBackdrop.addEventListener("click", function(event) {
+            if (event.target === modalBackdrop) {
+                closeTenantModal();
+            }
+        });
+    }
+
+    function updateTenantDisplay() {
+        const displayEl = document.getElementById("st-current-tenant-display");
+        if (displayEl) {
+            displayEl.textContent = \`Current Tenant: \${currentTenantId || 'None'}\`;
+        }
+    }
+
+    function populateTenantList() {
+        const listEl = document.getElementById("st-tenant-list");
+        if (!listEl) return;
+        listEl.innerHTML = "";
+
+        if (tenants.length === 0) {
+            listEl.innerHTML = "<li>No tenants available or failed to load.</li>";
+            return;
+        }
+
+        tenants.forEach(tenant => {
+            const listItem = document.createElement("li");
+            listItem.textContent = tenant.tenantId;
+            listItem.dataset.tenantId = tenant.tenantId;
+            listItem.addEventListener("click", () => selectTenant(tenant.tenantId));
+            listEl.appendChild(listItem);
+        });
+    }
+
+    function openTenantModal() {
+        populateTenantList();
+        const modalBackdrop = document.getElementById("st-tenant-modal-backdrop");
+        if (modalBackdrop) modalBackdrop.style.display = "flex";
+    }
+
+    function closeTenantModal() {
+        const modalBackdrop = document.getElementById("st-tenant-modal-backdrop");
+        if (modalBackdrop) modalBackdrop.style.display = "none";
+    }
+
+    async function selectTenant(tenantId) {
+        localStorage.setItem(ST_TENANT_ID_KEY, tenantId);
+        currentTenantId = tenantId;
+        updateTenantDisplay();
+        closeTenantModal();
+        window.dispatchEvent(new CustomEvent("tenantChanged", { detail: { tenantId } }));
+        window.location.href = "/auth"; 
+    }
+
+    async function setup() {
+        tenants = await tenantLoader();
+        if (!currentTenantId && tenants.length > 0) {
+            currentTenantId = tenants[0].tenantId;
+            localStorage.setItem(ST_TENANT_ID_KEY, currentTenantId);
+        }
+        
+        const commonFooterSelectors = [
+            'footer'
+        ];
+        let footerInjected = false;
+        for (const selector of commonFooterSelectors) {
+            try {
+                const elm = await waitForElm(selector);
+                if (elm) {
+                    initTenantSelectorDOM(elm);
+                    footerInjected = true;
+                    break;
+                }
+            } catch (e) {
+                // Element not found by this selector, or observer timed out (if implemented)
+                // console.warn(\`Footer selector "\${selector}" not found or timed out.\`);
+            }
+        }
+        if (!footerInjected) {
+            initTenantSelectorDOM(null); // Fallback to appending to body
+        }
+        
+        updateTenantDisplay(); // Update display after DOM is potentially ready and tenantId is set
+
+        window.addEventListener("storage", (event) => {
+            if (event.key === ST_TENANT_ID_KEY) {
+                currentTenantId = event.newValue;
+                updateTenantDisplay();
+            }
+        });
+        window.addEventListener("tenantChanged", () => {
+            currentTenantId = localStorage.getItem(ST_TENANT_ID_KEY);
+            updateTenantDisplay();
+        });
+    }
+    
+    // Ensure DOM is ready before trying to run setup which might interact with DOM
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setup);
+    } else {
+        setup();
+    }
+}
+`
+        : ""
+};`;
 };

@@ -97,7 +97,7 @@ export const pyRecipeInits = {
         )
     )`,
     passwordless: (userArguments?: UserFlags) => {
-        let contactConfig = "ContactEmailConfig()";
+        let contactConfigInstantiation = "ContactEmailOnlyConfig()";
         let flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
 
         const hasLinkEmail =
@@ -110,11 +110,12 @@ export const pyRecipeInits = {
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
 
         if ((hasLinkEmail || hasOtpEmail) && (hasLinkPhone || hasOtpPhone)) {
-            contactConfig = "ContactEmailOrPhoneConfig()";
+            contactConfigInstantiation = "ContactEmailOrPhoneConfig()";
         } else if (hasLinkPhone || hasOtpPhone) {
-            contactConfig = "ContactPhoneConfig()";
+            contactConfigInstantiation = "ContactPhoneOnlyConfig()";
         } else {
-            contactConfig = "ContactEmailConfig()";
+            // Default or only email factors
+            contactConfigInstantiation = "ContactEmailOnlyConfig()";
         }
 
         const hasLinkFactors = hasLinkEmail || hasLinkPhone;
@@ -130,7 +131,7 @@ export const pyRecipeInits = {
 
         return `passwordless.init(
         flow_type="${flowType}",
-        contact_config=${contactConfig}
+        contact_config=${contactConfigInstantiation}
     )`;
     },
     session: () => `session.init()`,
@@ -161,11 +162,7 @@ export const pyRecipeInits = {
         mode="REQUIRED"
     )`,
     totp: () => `totp.init()`,
-    multitenancy: () => `multitenancy.init(
-        override=multitenancy.OverrideConfig(
-            functions=lambda original_implementation: original_implementation
-        )
-    )`,
+    multitenancy: () => null, // Return null to prevent adding multitenancy.init() to the recipe list string
 } as const;
 
 export const generatePythonTemplate = ({ configType, userArguments, framework }: PythonTemplate): string => {
@@ -207,6 +204,9 @@ export const generatePythonTemplate = ({ configType, userArguments, framework }:
         .filter(Boolean)
         .join("\n");
 
+    // Removed the conditional import for MultitenancyInputOverrideConfig as it's not used and was incorrect.
+    // The main `from supertokens_python.recipe import multitenancy` will still be added if "multitenancy" is in recipesSet.
+
     if (recipes.includes("passwordless")) {
         const hasLinkEmail =
             userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
@@ -220,9 +220,10 @@ export const generatePythonTemplate = ({ configType, userArguments, framework }:
         if ((hasLinkEmail || hasOtpEmail) && (hasLinkPhone || hasOtpPhone)) {
             imports += "\nfrom supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig";
         } else if (hasLinkPhone || hasOtpPhone) {
-            imports += "\nfrom supertokens_python.recipe.passwordless import ContactPhoneConfig";
+            imports += "\nfrom supertokens_python.recipe.passwordless import ContactPhoneOnlyConfig";
         } else {
-            imports += "\nfrom supertokens_python.recipe.passwordless import ContactEmailConfig";
+            // Default or only email factors
+            imports += "\nfrom supertokens_python.recipe.passwordless import ContactEmailOnlyConfig";
         }
     }
 
