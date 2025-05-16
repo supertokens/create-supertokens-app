@@ -4,6 +4,8 @@ import { SessionContainer } from "supertokens-node/recipe/session";
 import { withSession } from "supertokens-node/nextjs";
 import { ensureSuperTokensInit } from "./app/config/backendConfigUtils";
 
+ensureSuperTokensInit();
+
 export async function middleware(request: NextRequest & { session?: SessionContainer }) {
     if (request.headers.has("x-user-id")) {
         console.warn(
@@ -12,7 +14,7 @@ export async function middleware(request: NextRequest & { session?: SessionConta
         request.headers.delete("x-user-id");
     }
 
-    if (request.nextUrl.pathname.startsWith("/api/auth")) {
+    if (request.nextUrl.pathname.startsWith("/api/auth") || request.nextUrl.pathname.startsWith("/api/tenants")) {
         // this hits our pages/api/auth/* endpoints
         return NextResponse.next();
     }

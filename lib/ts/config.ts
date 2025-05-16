@@ -186,7 +186,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
                     frontend: [
                         {
                             configFiles: "/src/config/frontend",
-                            finalConfig: "/src/config/frontend.ts",
+                            finalConfig: "/src/config/frontend.tsx",
                         },
                     ],
                     backend: [

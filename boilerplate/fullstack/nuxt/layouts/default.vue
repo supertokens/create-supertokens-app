@@ -21,12 +21,14 @@
         </nav>
     </header>
     <div class="fill" id="home-container">
-        <slot />
-        <footer>
-            Built with ❤️ by the folks at
-            <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer"> supertokens.com </a>
-            .
-        </footer>
-        <img className="separator-line" src="../assets/images/separator-line.svg" alt="separator" />
+        <client-only>
+            <slot />
+            <footer>
+                Built with ❤️ by the folks at
+                <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer"> supertokens.com </a>
+                .
+            </footer>
+            <img className="separator-line" src="../assets/images/separator-line.svg" alt="separator" />
+        </client-only>
     </div>
 </template>

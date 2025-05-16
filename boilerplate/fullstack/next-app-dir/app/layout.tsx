@@ -5,6 +5,7 @@ import { SuperTokensProvider } from "./components/supertokensProvider";
 import { SeparatorLine } from "../assets/images";
 import Link from "next/link";
 import Image from "next/image";
+import { ComponentWrapper } from "./config/frontend";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+    "use client";
     return (
         <html lang="en">
             <body className={`${inter.className} app-wrapper`}>
@@ -47,15 +49,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             </nav>
                         </header>
                         <div className="fill" id="home-container">
-                            {children}
-                            <footer>
-                                Built with ❤️ by the folks at{" "}
-                                <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
-                                    supertokens.com
-                                </a>
-                                .
-                            </footer>
-                            <Image className="separator-line" src={SeparatorLine} alt="separator" />
+                            <ComponentWrapper>
+                                <>
+                                    {children}
+                                    <footer>
+                                        Built with ❤️ by the folks at{" "}
+                                        <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
+                                            supertokens.com
+                                        </a>
+                                        .
+                                    </footer>
+                                    <Image className="separator-line" src={SeparatorLine} alt="separator" />
+                                </>
+                            </ComponentWrapper>
                         </div>
                     </div>
                 </SuperTokensProvider>

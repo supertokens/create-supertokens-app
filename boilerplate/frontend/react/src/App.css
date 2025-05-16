@@ -38,6 +38,7 @@ body {
     flex-direction: column;
     justify-content: center;
     flex: 1;
+    padding-top: 10px;
 }
 
 /* Header */
@@ -87,6 +88,7 @@ header a:hover {
     align-items: center;
     gap: 20px;
     padding-bottom: 80px;
+    padding-top: 20px;
 }
 
 .logos span {
@@ -104,7 +106,6 @@ header a:hover {
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.16);
     width: min(635px, calc(100% - 24px));
     border-radius: 16px;
-    margin-bottom: 159px;
     background-color: white;
 }
 
@@ -163,7 +164,6 @@ header a:hover {
     text-decoration: none;
 }
 
-/* Footer */
 footer {
     padding: 10px;
 }
@@ -171,98 +171,84 @@ footer {
 footer a {
     color: var(--primary-color);
     font-weight: 600;
-    /* text-decoration: none; */
 }
 
 footer a:hover {
     color: var(--primary-hover);
 }
 
-.tenant-selector-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f7f7f7; /* Light grey background */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
-        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.tenant-selector-container h2 {
-    color: #222222; /* --palette-textTitle */
-    margin-bottom: 24px;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.tenant-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+#st-tenant-selector-footer {
     width: 100%;
-    max-width: 420px; /* Matches SuperTokens container width */
-}
-
-.tenant-button {
-    background-color: #ffffff; /* --palette-background */
-    color: #222222; /* --palette-textPrimary */
-    border: 1px solid #dddddd; /* --palette-inputBorder */
-    padding: 12px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: left;
-    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-    font-size: 16px;
-    display: flex;
-    flex-direction: column;
-}
-
-.tenant-button:hover {
-    background-color: #f0f0f0;
-    border-color: #cccccc;
-}
-
-.tenant-features {
-    margin-top: 8px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.tenant-feature {
-    background-color: #e0e0e0;
-    color: #555555;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-}
-
-.tenant-loading,
-.tenant-error,
-.tenant-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     text-align: center;
-    padding: 20px;
-    background-color: #ffffff;
-    border: 1px solid #dddddd;
-    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+        "Droid Sans", "Helvetica Neue", sans-serif;
+    box-sizing: border-box;
+    flex-grow: 1;
+    padding-top: 20px;
+}
+#st-tenant-selector-footer span {
+    margin-right: 10px;
+    font-size: 16px;
+    font-weight: semibold;
+}
+#st-tenant-selector-footer button {
+    background-color: transparent;
+    border: 1px solid #ff9900;
+    color: #ff9900;
+    padding: 4px 9px;
+    border-radius: 4px;
+    font-weight: normal;
+    cursor: pointer;
+}
+#st-tenant-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 420px;
-    color: #222222; /* --palette-textPrimary */
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
 }
-
-.tenant-error p:first-child {
-    color: #ff1717; /* --palette-error */
-    font-weight: bold;
-    margin-bottom: 8px;
+#st-tenant-modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: left;
 }
-
-.tenant-empty p {
-    margin-bottom: 8px;
+#st-tenant-modal h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+#st-tenant-modal ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+#st-tenant-modal li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+#st-tenant-modal li:hover {
+    background-color: #f9f9f9;
+}
+#st-tenant-modal li:last-child {
+    border-bottom: none;
+}
+#st-tenant-modal-close {
+    float: right;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 1.5em;
+    line-height: 1;
+    padding: 0 5px;
 }

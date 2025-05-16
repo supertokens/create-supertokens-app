@@ -6,6 +6,7 @@ import Session from "supertokens-auth-react/recipe/session";
 import Link from "next/link";
 import Image from "next/image";
 import { SeparatorLine } from "../assets/images";
+import { ComponentWrapper } from "../config/frontendConfig";
 
 if (typeof window !== "undefined") {
     SuperTokensReact.init(SuperTokensConfig);
@@ -56,15 +57,19 @@ function MyApp({ Component, pageProps }): JSX.Element {
                     </nav>
                 </header>
                 <div className="fill" id="home-container">
-                    <Component {...pageProps} />
-                    <footer>
-                        Built with ❤️ by the folks at{" "}
-                        <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
-                            supertokens.com
-                        </a>
-                        .
-                    </footer>
-                    <Image className="separator-line" src={SeparatorLine} alt="separator" />
+                    <ComponentWrapper>
+                        <>
+                            <Component {...pageProps} />
+                            <footer>
+                                Built with ❤️ by the folks at{" "}
+                                <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
+                                    supertokens.com
+                                </a>
+                                .
+                            </footer>
+                            <Image className="separator-line" src={SeparatorLine} alt="separator" />
+                        </>
+                    </ComponentWrapper>
                 </div>
             </SuperTokensWrapper>
         </div>

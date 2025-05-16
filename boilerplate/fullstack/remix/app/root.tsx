@@ -4,6 +4,7 @@ import { frontendConfig } from "./config/frontendConfigUtils";
 import { SessionAuth } from "supertokens-auth-react/recipe/session/index.js";
 import type { LinksFunction } from "@remix-run/node";
 import appStylesHref from "./app.css?url";
+import { ComponentWrapper } from "./config/frontend";
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: appStylesHref }];
 
 if (typeof window !== "undefined") {
@@ -51,24 +52,32 @@ export default function App() {
                             </nav>
                         </header>
                         <div className="fill" id="home-container">
-                            {isUnprotectedRoute ? (
-                                <Outlet />
-                            ) : (
-                                <SessionAuth>
-                                    <Outlet />
-                                </SessionAuth>
-                            )}
+                            <ComponentWrapper>
+                                <>
+                                    {isUnprotectedRoute ? (
+                                        <Outlet />
+                                    ) : (
+                                        <SessionAuth>
+                                            <Outlet />
+                                        </SessionAuth>
+                                    )}
 
-                            <ScrollRestoration />
-                            <Scripts />
-                            <footer>
-                                Built with ❤️ by the folks at{" "}
-                                <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
-                                    supertokens.com
-                                </a>
-                                .
-                            </footer>
-                            <img className="separator-line" src="../assets/images/separator-line.svg" alt="separator" />
+                                    <ScrollRestoration />
+                                    <Scripts />
+                                    <footer>
+                                        Built with ❤️ by the folks at{" "}
+                                        <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
+                                            supertokens.com
+                                        </a>
+                                        .
+                                    </footer>
+                                    <img
+                                        className="separator-line"
+                                        src="/assets/images/separator-line.svg"
+                                        alt="separator"
+                                    />
+                                </>
+                            </ComponentWrapper>
                         </div>
                     </div>
                 </SuperTokensWrapper>
