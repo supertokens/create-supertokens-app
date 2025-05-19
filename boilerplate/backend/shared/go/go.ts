@@ -115,6 +115,10 @@ export const goRecipeInits = {
         const hasLinkFactors = hasLinkEmail || hasLinkPhone;
         const hasOtpFactors = hasOtpEmail || hasOtpPhone;
 
+        // Determine which contact methods are being used
+        const hasEmailFactors = hasLinkEmail || hasOtpEmail;
+        const hasPhoneFactors = hasLinkPhone || hasOtpPhone;
+
         if (hasLinkFactors && hasOtpFactors) {
             flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
         } else if (hasLinkFactors) {
@@ -123,11 +127,30 @@ export const goRecipeInits = {
             flowType = "USER_INPUT_CODE";
         }
 
+        // Determine the appropriate contact method configuration
+        let contactMethodConfig = "";
+        if (hasEmailFactors && hasPhoneFactors) {
+            contactMethodConfig = `ContactMethodEmailOrPhone: plessmodels.ContactMethodEmailOrPhoneConfig{
+        Enabled: true,
+    },`;
+        } else if (hasEmailFactors) {
+            contactMethodConfig = `ContactMethodEmail: plessmodels.ContactMethodEmailConfig{
+        Enabled: true,
+    },`;
+        } else if (hasPhoneFactors) {
+            contactMethodConfig = `ContactMethodPhone: plessmodels.ContactMethodPhoneConfig{
+        Enabled: true,
+    },`;
+        } else {
+            // Default to email if no specific factors are selected
+            contactMethodConfig = `ContactMethodEmail: plessmodels.ContactMethodEmailConfig{
+        Enabled: true,
+    },`;
+        }
+
         return `passwordless.Init(plessmodels.TypeInput{
     FlowType: "${flowType}",
-    ContactMethodEmailOrPhone: plessmodels.ContactMethodEmailOrPhoneConfig{
-        Enabled: true,
-    },
+    ${contactMethodConfig}
 })`;
     },
     session: () => `session.Init(nil)`,
@@ -138,7 +161,6 @@ export const goRecipeInits = {
         return true, true
     },
 })`,
-    // Removed the pointer (&) as the Init function expects the value directly
     emailVerification: () => `emailverification.Init(evmodels.TypeInput{
     Mode: evmodels.ModeRequired,
 })`,
@@ -152,21 +174,27 @@ export const generateGoTemplate = ({
     configType: ConfigType;
     userArguments?: UserFlags;
 }): string => {
+    // Check if MFA or TOTP is requested, as they're not supported in Go
+    if (
+        configType === "multifactorauth" ||
+        userArguments?.secondfactors?.length ||
+        configToRecipes[configType].includes("multiFactorAuth") ||
+        configToRecipes[configType].includes("totp")
+    ) {
+        throw new Error(
+            "Multi-factor authentication is not currently supported with the Go SDK. Please use a different backend or recipe."
+        );
+    }
+
     let template = "";
-    // Filter out recipes not supported or not initialized via RecipeList in Go
+    // Filter out recipes not initialized via RecipeList in Go
     const recipes = configToRecipes[configType].filter(
         (recipe: string) =>
-            recipe !== "multiFactorAuth" &&
-            recipe !== "totp" &&
-            recipe !== "accountLinking" && // Add accountLinking to filter
-            recipe !== "multitenancy" // Add multitenancy to filter (it's used directly, not via init list)
+            recipe !== "accountLinking" && // accountLinking is used directly, not via init list
+            recipe !== "multitenancy" // multitenancy is used directly, not via init list
     );
 
-    const needsEmailVerification = false;
-
-    if (needsEmailVerification && !recipes.includes("emailVerification")) {
-        recipes.push("emailVerification");
-    }
+    // emailVerification is already included in recipes when needed via configToRecipes
 
     const appInfo = getAppInfo();
 

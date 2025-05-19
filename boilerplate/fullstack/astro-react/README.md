@@ -1,10 +1,10 @@
 # SuperTokens + Astro (React)
 
-A demo implementation of [SuperTokens](https://supertokens.com/) with [Astro](https://astro.build/) (using the React Adapter). Built with Astro's [React integration](https://docs.astro.build/en/guides/integrations-guide/react/).
+A demo implementation of [SuperTokens](https://supertokens.com/) with [Astro](https://astro.build/), using Astro's [React integration](https://docs.astro.build/en/guides/integrations-guide/react/) to render React components for the user interface.
 
 ## General Info
 
-This project aims to demonstrate how to integrate SuperTokens into an Astro application using React components for interactive auth UI. Its primary purpose is to serve as an educational tool, but it can also be used as a starting point for your own project.
+This project aims to demonstrate how to integrate SuperTokens into an Astro application, leveraging React components for interactive UI, including SuperTokens' pre-built auth UI. Its primary purpose is to serve as an educational tool, but it can also be used as a starting point for your own project.
 
 ## Repo Structure
 
@@ -13,103 +13,91 @@ This project aims to demonstrate how to integrate SuperTokens into an Astro appl
 ```
 📦src
 ┣ 📂components
-┃ ┣ 📜Auth.tsx  --> React component for auth UI
+┃ ┣ 📜Auth.tsx  --> React component rendering SuperTokens pre-built auth UI
 ┃ ┣ 📜Dashboard.tsx  --> React component for dashboard functionality
-┃ ┗ 📜Home.tsx  --> React component for home page content
-┃ ┗ 📜Root.tsx  --> Root React component for auth state
+┃ ┣ 📜Home.tsx  --> React component for home page content
+┃ ┗ 📜Root.tsx  --> Root React component, potentially for SuperTokens context/initialization
 ┣ 📂config
-┃ ┣ 📜appInfo.ts  --> App info / config, reused across both frontend and backend
-┃ ┗ 📜frontend.ts  --> Frontend config
-┃ ┗ 📜backend.ts  --> Backend config
+┃ ┣ 📜frontend.ts  --> Frontend config for SuperTokens (used by React components)
+┃ ┗ 📜backend.ts  --> Backend config for SuperTokens (used by API routes)
+┃ ┗ 📜appInfo.ts  --> Shared app info (appName, domains, etc.)
 ┣ 📂layouts
-┃ ┗ 📜Base.astro  --> Common layout with header and footer
+┃ ┗ 📜Base.astro  --> Common Astro layout
 ┣ 📂pages
 ┃ ┣ 📂auth
-┃ ┣ ┣ 📂[...path]
-┃ ┃ ┃ ┗ 📜[...route].astro  --> Auth routes
-┃ ┃ ┗ 📜[...route].astro  --> Auth routes
+┃ ┃ ┣ 📂[...path]
+┃ ┃ ┃ ┗ 📜[...route].astro  --> Astro page for auth, renders Auth.tsx
+┃ ┃ ┗ 📜[...route].astro  --> Astro page for auth, renders Auth.tsx
 ┃ ┣ 📂api
-┃ ┃ ┣ 📜 auth.ts  --> Auth request handler
-┃ ┃ ┣ 📜 ping.ts  --> Public API endpoint
-┃ ┃ ┣ 📜 sessioninfo.ts  --> Protected API endpoint
+┃ ┃ ┣ 📜auth.ts  --> Main auth API request handler
+┃ ┃ ┣ 📜ping.ts  --> Public API endpoint example
+┃ ┃ ┣ 📜sessioninfo.ts  --> Protected API endpoint example
 ┃ ┃ ┗ 📂auth
 ┃ ┃   ┣ 📂[...path]
-┃ ┃   ┃ ┗ 📜[...route].ts  --> Auth request handler
-┃ ┃   ┗ 📜[...route].ts  --> Auth request handler
-┃ ┣ 📜auth.astro  --> Main auth page
-┃ ┣ 📜dashboard.astro  --> Protected dashboard page
-┃ ┗ 📜index.astro  --> Public landing page
+┃ ┃   ┃ ┗ 📜[...route].ts  --> Auth API routes
+┃ ┃   ┗ 📜[...route].ts  --> Auth API routes
+┃ ┣ 📜auth.astro  --> Main auth Astro page, renders components/Auth.tsx
+┃ ┣ 📜dashboard.astro  --> Protected dashboard Astro page, renders components/Dashboard.tsx
+┃ ┗ 📜index.astro  --> Public landing Astro page, renders components/Home.tsx
 ┣ 📂styles
 ┃ ┗ 📜app.css  --> Global styles
 ┗ 📜env.d.ts  --> TypeScript declarations
 ```
 
-> Note: the nested routes are required due to how Astro handles routing, and how SuperTokens expects wildcard routes.
+> Note: The nested routes are often used to correctly handle SuperTokens' wildcard routing requirements within Astro's file-based routing system.
 
-### Config
+## Config
 
-#### Astro
+### Astro
 
-The project is a standard Astro application with the Astro React integration for interactive components.
+The project is a standard Astro application with the `@astrojs/react` integration enabled. You can customize the Astro configuration in `astro.config.mjs`. Refer to the [Astro configuration docs](https://docs.astro.build/en/reference/configuration-reference/) and the [React integration guide](https://docs.astro.build/en/guides/integrations-guide/react/).
 
-You can customize the Astro configuration in `astro.config.mjs`. Refer to the [Astro configuration docs](https://docs.astro.build/en/reference/configuration-reference/) for more options.
+### SuperTokens
 
-#### SuperTokens
+SuperTokens configuration is split:
 
-SuperTokens configuration is managed through recipe-specific files in the `config/` directory. Each recipe comes in two parts (due to Astro being treated as a full-stack framework):
+-   **`src/config/frontend.ts` (or `.tsx`)**: Contains frontend SuperTokens configuration, initialized within the React components (e.g., in `Root.tsx` or `Auth.tsx`). This includes `appInfo` and recipe configurations for the UI.
+-   **`src/config/backend.ts`**: Contains backend SuperTokens configuration for API routes, including `connectionURI`, `apiKey`, and backend recipe details.
+-   **`src/config/appInfo.ts`**: Shared application details.
 
--   `frontend.ts` - Frontend config
--   `backend.ts` - Backend config
-
-The `appInfo.ts` file is used to configure the app info / config, and is reused across both frontend and backend.
+These files will differ based on the [auth recipe](https://supertokens.com/docs/guides) you choose.
 
 ## Application Flow
 
-The application uses Astro's file-based routing and consists of four main parts:
+The application uses Astro's file-based routing for pages, which then render React components for dynamic UI, and API endpoints:
 
-1. **Entry Point (`index.astro`)**
+1.  **Landing Page (`src/pages/index.astro`)**
 
-    - Public landing page
-    - Navigation to auth and dashboard
-    - Project information display
+    -   Renders the `src/components/Home.tsx` React component.
+    -   Publicly accessible, provides navigation.
 
-2. **Auth Routes (`/auth/*`)**
+2.  **Authentication Pages & API (`src/pages/auth/...` & `src/pages/api/auth/...`)**
 
-    - Handles all authentication flows using React components
-    - Uses SuperTokens' pre-built UI
-    - Manages login, signup, and password reset
-    - Social login integration (when configured)
+    -   Astro pages like `src/pages/auth.astro` render the `src/components/Auth.tsx` React component, which handles the SuperTokens pre-built UI.
+    -   Backend API endpoints under `/api/auth` handle authentication logic via the SuperTokens backend SDK.
 
-3. **Protected Dashboard (`/dashboard`)**
+3.  **Protected Dashboard (`src/pages/dashboard.astro`)**
 
-    - Only accessible to authenticated users
-    - Displays user information
-    - Provides authenticated functionality
-    - API integration example
+    -   Renders the `src/components/Dashboard.tsx` React component.
+    -   Access control is managed server-side in the Astro page, checking the SuperTokens session before rendering the React component.
 
-4. **API Routes (`/api/*`)**
-    - Protected session info endpoint
-    - Public ping endpoint
-    - Server-side session validation
+4.  **Other API Routes (`src/pages/api/*`)**
+    -   Handle backend logic, with session verification for protected routes.
 
-When a user visits the application, they start at the home page (`/`). They can choose to authenticate through the `/auth` routes, and once authenticated, they gain access to the protected dashboard. The session state is managed throughout the application using SuperTokens' session management.
+When a user visits, Astro pages serve as shells that mount React components for the interactive parts. Session management is handled by SuperTokens across frontend (React) and backend (Astro API routes).
 
 ## Customizations
 
-If you want to customize the default auth UI, you have two options:
+If you want to customize the default auth UI (rendered via React components), you have two options:
 
 1. Refer to the [docs](https://supertokens.com/docs/thirdpartyemailpassword/advanced-customizations/react-component-override/usage) on how to customize the pre-built UI.
 2. Roll your own UI by choosing "Custom UI" in the right sidebar in the [docs](https://supertokens.com/docs/thirdpartyemailpassword/quickstart/frontend-setup).
 
 ## Additional Resources
 
--   Custom UI Example: https://github.com/supertokens/supertokens-web-js/tree/master/examples/react/with-thirdpartyemailpassword
+-   Custom UI Example (React): https://github.com/supertokens/supertokens-web-js/tree/master/examples/react/with-thirdpartyemailpassword
 -   Custom UI Blog post: https://supertokens.medium.com/adding-social-login-to-your-website-with-supertokens-custom-ui-only-5fa4d7ab6402
 -   Awesome SuperTokens: https://github.com/kohasummons/awesome-supertokens
-
-## Contributing
-
-Please refer to the [CONTRIBUTING.md](https://github.com/supertokens/create-supertokens-app/blob/master/CONTRIBUTING.md) file in the root of the [`create-supertokens-app`](https://github.com/supertokens/create-supertokens-app) repo.
 
 ## Contributing
 

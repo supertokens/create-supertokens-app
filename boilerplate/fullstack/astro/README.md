@@ -17,24 +17,24 @@ This project aims to demonstrate how to integrate SuperTokens into an Astro appl
 ┃ ┗ 📜dashboard.astro  --> Astro component for dashboard functionality
 ┣ 📂config
 ┃ ┣ 📜appInfo.ts  --> App info / config, reused across both frontend and backend
-┃ ┗ 📜frontend.ts  --> Frontend config
-┃ ┗ 📜backend.ts  --> Backend config
+┃ ┣ 📜frontend.ts  --> Frontend config for SuperTokens
+┃ ┗ 📜backend.ts  --> Backend config for SuperTokens
 ┣ 📂layouts
 ┃ ┗ 📜Base.astro  --> Common layout with header and footer
 ┣ 📂pages
 ┃ ┣ 📂auth
-┃ ┣ ┣ 📂[...path]
-┃ ┃ ┃ ┗ 📜[...route].astro  --> Auth routes
-┃ ┃ ┗ 📜[...route].astro  --> Auth routes
+┃ ┃ ┣ 📂[...path]
+┃ ┃ ┃ ┗ 📜[...route].astro  --> Auth page routes (catches all under /auth)
+┃ ┃ ┗ 📜[...route].astro  --> Auth page routes (catches all under /auth)
 ┃ ┣ 📂api
-┃ ┃ ┣ 📜 auth.ts  --> Auth request handler
-┃ ┃ ┣ 📜 ping.ts  --> Public API endpoint
-┃ ┃ ┣ 📜 sessioninfo.ts  --> Protected API endpoint
+┃ ┃ ┣ 📜auth.ts  --> Main auth API request handler (delegates to SuperTokens)
+┃ ┃ ┣ 📜ping.ts  --> Public API endpoint example
+┃ ┃ ┣ 📜sessioninfo.ts  --> Protected API endpoint example (requires session)
 ┃ ┃ ┗ 📂auth
 ┃ ┃   ┣ 📂[...path]
-┃ ┃   ┃ ┗ 📜[...route].ts  --> Auth request handler
-┃ ┃   ┗ 📜[...route].ts  --> Auth request handler
-┃ ┣ 📜auth.astro  --> Main auth page
+┃ ┃   ┃ ┗ 📜[...route].ts  --> Auth API routes (catches all under /api/auth)
+┃ ┃   ┗ 📜[...route].ts  --> Auth API routes (catches all under /api/auth)
+┃ ┣ 📜auth.astro  --> Main auth page (often a shell for client-side rendering of ST UI)
 ┃ ┣ 📜dashboard.astro  --> Protected dashboard page
 ┃ ┗ 📜index.astro  --> Public landing page
 ┣ 📂styles
@@ -42,61 +42,54 @@ This project aims to demonstrate how to integrate SuperTokens into an Astro appl
 ┗ 📜env.d.ts  --> TypeScript declarations
 ```
 
-> Note: the nested routes are required due to how Astro handles routing, and how SuperTokens expects wildcard routes.
+> Note: The nested routes like `[...path]/[...route].astro` are often used to correctly handle SuperTokens' wildcard routing requirements within Astro's file-based routing system.
 
-### Config
+## Config
 
-#### Astro
+### Astro
 
-The project is a standard Astro application.
+The project is a standard Astro application. You can customize the Astro configuration in `astro.config.mjs`. Refer to the [Astro configuration docs](https://docs.astro.build/en/reference/configuration-reference/) for more options. The default development server runs on port `4321` unless configured otherwise.
 
-You can customize the Astro configuration in `astro.config.mjs`. Refer to the [Astro configuration docs](https://docs.astro.build/en/reference/configuration-reference/) for more options.
+### SuperTokens
 
-#### SuperTokens
+SuperTokens configuration is split due to Astro's full-stack nature:
 
-SuperTokens configuration is managed through recipe-specific files in the `config/` directory. Each recipe comes in two parts (due to Astro being treated as a full-stack framework):
+-   **`src/config/frontend.ts`**: Contains the frontend-specific configuration for SuperTokens, such as `appInfo` (appName, websiteDomain, etc.) and the list of recipes to initialize on the client.
+-   **`src/config/backend.ts`**: Contains the backend-specific configuration for SuperTokens, including `connectionURI` for the SuperTokens core, `apiKey` (if applicable), and backend recipe configurations.
+-   **`src/config/appInfo.ts`**: Often holds shared application information like `appName`, `apiDomain`, `websiteDomain`, `apiBasePath`, and `websiteBasePath` to ensure consistency between frontend and backend configurations.
 
--   `frontend.ts` - Frontend config
--   `backend.ts` - Backend config
-
-The `appInfo.ts` file is used to configure the app info / config, and is reused across both frontend and backend.
+These files will differ based on the [auth recipe](https://supertokens.com/docs/guides) you choose. If you use this as a starting point, customize these files according to your needs. Refer to our [docs](https://supertokens.com/docs) for details.
 
 ## Application Flow
 
-The application uses Astro's file-based routing and consists of four main parts:
+The application uses Astro's file-based routing for pages and API endpoints:
 
-1. **Entry Point (`index.astro`)**
+1.  **Landing Page (`src/pages/index.astro`)**
 
-    - Public landing page
-    - Navigation to auth and dashboard
-    - Project information display
+    -   Publicly accessible.
+    -   Provides navigation to authentication (`/auth`) and the dashboard (`/dashboard`).
 
-2. **Auth Routes (`/auth/*`)**
+2.  **Authentication Pages & API (`src/pages/auth/...` & `src/pages/api/auth/...`)**
 
-    - Handles all authentication flows using React components
-    - Uses SuperTokens' pre-built UI
-    - Manages login, signup, and password reset
-    - Social login integration (when configured)
+    -   Frontend pages under `/auth` (e.g., `src/pages/auth.astro` or `src/pages/auth/[...route].astro`) render the SuperTokens pre-built UI or your custom authentication UI.
+    -   Backend API endpoints under `/api/auth` (e.g., `src/pages/api/auth.ts` or `src/pages/api/auth/[...route].ts`) handle the actual authentication logic by delegating to the SuperTokens backend SDK.
 
-3. **Protected Dashboard (`/dashboard`)**
+3.  **Protected Dashboard (`src/pages/dashboard.astro`)**
 
-    - Only accessible to authenticated users
-    - Displays user information
-    - Provides authenticated functionality
-    - API integration example
+    -   Accessible only to authenticated users. Access control is typically managed by checking the SuperTokens session on the server-side within the Astro component or via middleware.
+    -   Displays user-specific information and authenticated functionality.
 
-4. **API Routes (`/api/*`)**
-    - Protected session info endpoint
-    - Public ping endpoint
-    - Server-side session validation
+4.  **Other API Routes (`src/pages/api/*`)**
+    -   Example: `src/pages/api/sessioninfo.ts` demonstrates a protected API endpoint that requires a valid SuperTokens session.
+    -   Example: `src/pages/api/ping.ts` demonstrates a public API endpoint.
 
-When a user visits the application, they start at the home page (`/`). They can choose to authenticate through the `/auth` routes, and once authenticated, they gain access to the protected dashboard. The session state is managed throughout the application using SuperTokens' session management.
+When a user visits the application, they start at the landing page. They can navigate to `/auth` to sign in or sign up. Once authenticated, they can access protected pages like `/dashboard` and protected API routes. Session management is handled by SuperTokens across both frontend and backend.
 
 ## Customizations
 
 If you want to customize the default auth UI, you have two options:
 
-1. Refer to the [docs](https://supertokens.com/docs/thirdpartyemailpassword/advanced-customizations/react-component-override/usage) on how to customize the pre-built UI.
+1. Refer to the [docs](https://supertokens.com/docs/thirdpartyemailpassword/advanced-customizations/react-component-override/usage) on how to customize the pre-built UI. (Note: While this link is for React, many concepts may apply, especially if Astro components render React components for UI. Check for Astro-specific documentation if available.)
 2. Roll your own UI by choosing "Custom UI" in the right sidebar in the [docs](https://supertokens.com/docs/thirdpartyemailpassword/quickstart/frontend-setup).
 
 ## Additional Resources
@@ -104,10 +97,6 @@ If you want to customize the default auth UI, you have two options:
 -   Custom UI Astro Example: https://github.com/supertokens/supertokens-web-js/tree/master/examples/astro/with-thirdpartyemailpassword
 -   Custom UI Blog post: https://supertokens.medium.com/adding-social-login-to-your-website-with-supertokens-custom-ui-only-5fa4d7ab6402
 -   Awesome SuperTokens: https://github.com/kohasummons/awesome-supertokens
-
-## Contributing
-
-Please refer to the [CONTRIBUTING.md](https://github.com/supertokens/create-supertokens-app/blob/master/CONTRIBUTING.md) file in the root of the [`create-supertokens-app`](https://github.com/supertokens/create-supertokens-app) repo.
 
 ## Contributing
 

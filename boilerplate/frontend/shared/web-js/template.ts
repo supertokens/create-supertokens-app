@@ -73,14 +73,10 @@ export const uiRecipeInits = {
         let contactMethod = "EMAIL";
         let flowType;
 
-        const hasLinkEmail =
-            userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
-        const hasLinkPhone =
-            userArguments?.firstfactors?.includes("link-phone") || userArguments?.secondfactors?.includes("link-phone");
-        const hasOtpEmail =
-            userArguments?.firstfactors?.includes("otp-email") || userArguments?.secondfactors?.includes("otp-email");
-        const hasOtpPhone =
-            userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
+        const hasLinkEmail = userArguments?.firstfactors?.includes("link-email");
+        const hasLinkPhone = userArguments?.firstfactors?.includes("link-phone");
+        const hasOtpEmail = userArguments?.firstfactors?.includes("otp-email");
+        const hasOtpPhone = userArguments?.firstfactors?.includes("otp-phone");
 
         if ((hasLinkEmail || hasOtpEmail) && (hasLinkPhone || hasOtpPhone)) {
             contactMethod = "EMAIL_OR_PHONE";
@@ -136,10 +132,7 @@ export const uiRecipeInits = {
                             ${factorIds.join(",\n                            ")}
                         ],
                     },
-                ],
-                getRequiredSecondaryFactorsForUser: async () => {
-                    return [${factorIds.join(", ")}];
-                },
+                ]
             }),
         }
     })`;

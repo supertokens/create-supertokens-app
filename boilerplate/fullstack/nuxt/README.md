@@ -12,94 +12,91 @@ This project aims to demonstrate how to integrate SuperTokens into a Nuxt applic
 
 ```
 📦
-┣ 📜README.md
-┣ 📜app.vue
+┣ 📜app.vue  --> Root Vue component for the Nuxt app
 ┣ 📂assets
-┣ 📂components
-┃ ┣ 📜Footer.vue
-┃ ┗ 📜SessionInfo.vue
 ┣ 📂config
-┃ ┣ 📜appInfo.ts  --> SuperTokens configuration
-┃ ┗ 📜frontend.ts
+┃ ┗ 📜frontend.ts  --> SuperTokens frontend configuration
 ┣ 📂layouts
-┃ ┗ 📜default.vue
-┣ 📜nuxt.config.ts
-┣ 📜package-lock.json
-┣ 📜package.json
+┃ ┗ 📜default.vue  --> Default layout for pages
 ┣ 📂pages
 ┃ ┣ 📂auth
-┃ ┃ ┗ 📜[...slug].vue  --> "Auth" view, accessible regardless of the logged-in state of the app
+┃ ┃ ┗ 📜[...slug].vue  --> Page for SuperTokens pre-built auth UI
 ┃ ┣ 📂dashboard
-┃ ┃ ┗ 📜index.vue  --> "Dashboard" view, accessible only via the logged-in state of the app
-┃ ┗ 📜index.vue  --> "Home" view, accessible regardless of the logged-in state of the app
+┃ ┃ ┗ 📜index.vue  --> Protected dashboard page
+┃ ┗ 📜index.vue  --> Public landing page
 ┣ 📂plugins
-┃ ┗ 📜supertokens.client.ts
+┃ ┗ 📜supertokens.client.ts  --> Nuxt client plugin to initialize SuperTokens
 ┣ 📂public
 ┣ 📂server
 ┃ ┣ 📂api
 ┃ ┃ ┣ 📂auth
-┃ ┃ ┃ ┗ 📜[...param].ts  --> API routes for authentication
-┃ ┃ ┗ 📜auth.ts
-┃ ┣ 📜backend.ts  --> SuperTokens backend configuration
+┃ ┃ ┃ ┗ 📜[...param].ts  --> SuperTokens backend auth API handlers
+┃ ┃ ┗ 📜auth.ts  --> (Potentially another auth related API)
 ┃ ┣ 📂routes
-┃ ┃ ┗ 📜sessioninfo.ts  --> API routes
-┃ ┣ 📜tsconfig.json
-┃ ┗ 📂utils
-┃   ┗ 📜convertToRequest.ts
+┃ ┃ ┗ 📜sessioninfo.ts  --> Example protected API route
+┃ ┗ 📜backend.ts  --> SuperTokens backend configuration
+┣ 📜nuxt.config.ts  --> Nuxt main configuration file
+┣ 📜package.json
 ┗ 📜tsconfig.json
 ```
 
-### Source
+## Config
 
-### Config
+### Nuxt
 
-#### SuperTokens
+This project uses Nuxt 3. Key configuration files and directories include:
 
-The full configuration needed for SuperTokens (the frontend part) to work is in the `src/config` directory. This files in this directory will differ based on the [auth recipe](https://supertokens.com/docs/guides) you choose.
+-   `nuxt.config.ts`: Main Nuxt configuration (modules, plugins, runtime config, etc.).
+-   `pages/`: Directory for file-system based routing of Vue pages.
+-   `server/`: Directory for backend API routes and server middleware.
+-   `plugins/`: For Nuxt plugins like `supertokens.client.ts`.
+-   The default development server runs on port `3000`.
 
-If you choose to use this as a starting point for your own project, you can further customize the options and config in the `src/config/appInfo.ts` file. Refer to our [docs](https://supertokens.com/docs) (and make sure to choose the correct recipe) for more details.
+### SuperTokens
+
+SuperTokens configuration is split for frontend and backend:
+
+-   **`config/frontend.ts`**: Contains frontend-specific SuperTokens configuration, typically initialized via the Nuxt plugin (`plugins/supertokens.client.ts`). This includes `appInfo` and recipe configurations for the UI.
+-   **`server/backend.ts`**: Contains backend-specific SuperTokens configuration, used by API routes in `server/api/auth/`. This includes `connectionURI`, `apiKey`, and backend recipe details.
+
+These files will differ based on the [auth recipe](https://supertokens.com/docs/guides) you choose.
 
 ## Application Flow
 
-1. **Entry Point (`app.vue`)**
+The application leverages Nuxt's conventions for pages, API routes, and plugins:
 
-    - Root component of the app
-        - `/`: Public landing page - accessible regardless of auth state
-        - `/auth`: Renders SuperTokens' pre-built auth UI - accessible regardless of auth state
-        - `/dashboard`: Protected route requiring authentication
+1.  **Nuxt Client Plugin (`plugins/supertokens.client.ts`)**
 
-2. **Home View (`/` route, `/pages/index.vue` component)**
+    -   Initializes the SuperTokens frontend SDK when the app loads on the client-side, using configuration from `config/frontend.ts`.
 
-    - Public landing page accessible to all users
-    - Provides navigation to authentication and dashboard
-    - Displays basic application information and links
+2.  **Root Component & Layouts (`app.vue`, `layouts/default.vue`)**
 
-3. **Auth View (`/auth` route, `/pages/auth/[...slug].vue` component)**
+    -   `app.vue` is the main entry point for the Vue application.
+    -   Layouts (e.g., `layouts/default.vue`) wrap pages and can provide common UI structure. SuperTokens context or UI wrappers might be included here or in `app.vue`.
 
-    - Renders SuperTokens' pre-built auth UI
+3.  **Frontend Pages (`pages/`)**
 
-4. **Dashboard View (`/dashboard` route, `/pages/dashboard/index.vue` component)**
-    - Protected route only accessible to authenticated users
-    - Protected by middleware
-    - Displays user information and session details
-    - Provides functionality to:
-        - View user ID
-        - Call test API endpoints
-        - Access documentation
-        - Sign out
+    -   **Landing Page (`pages/index.vue`)**: Publicly accessible.
+    -   **Authentication Page (`pages/auth/[...slug].vue`)**: Renders the SuperTokens pre-built UI.
+    -   **Dashboard Page (`pages/dashboard/index.vue`)**: Protected page. Access control is often managed using Nuxt middleware that verifies the SuperTokens session.
 
-When a user visits the application, they start at the home page (`/`). They can choose to authenticate through the `/auth` route, and once authenticated, they gain access to the protected dashboard. The session state is managed throughout the application using SuperTokens' session management.
+4.  **Server API Routes (`server/api/` and `server/routes/`)**
+    -   **SuperTokens Auth Handlers (`server/api/auth/[...param].ts`)**: Handles backend authentication logic by delegating to the SuperTokens backend SDK.
+    -   **Example Protected API (`server/routes/sessioninfo.ts`)**: Demonstrates an API route requiring a valid SuperTokens session.
+
+When a user visits, Nuxt serves the appropriate page. The SuperTokens plugin initializes the frontend SDK. Navigation to `/auth` shows the SuperTokens UI. Authenticated users can access `/dashboard` (protected by middleware) and protected API routes. Session management is handled by SuperTokens.
 
 ## Customizations
 
-If you want to customize the default auth UI, you can:
+If you want to customize the default auth UI, you have two options:
 
--   Roll your own UI by choosing "Custom UI" in the [docs](https://supertokens.com/docs/thirdpartyemailpassword/quickstart/frontend-setup)
+1. Refer to the [docs](https://supertokens.com/docs/thirdpartyemailpassword/advanced-customizations/vue-component-override/usage) on how to customize the pre-built UI (select Vue in the framework option, as Nuxt uses Vue).
+2. Roll your own UI by choosing "Custom UI" in the right sidebar in the [docs](https://supertokens.com/docs/thirdpartyemailpassword/quickstart/frontend-setup) (select Vue in the framework option).
 
 ## Additional resources
 
--   Custom UI Example: https://github.com/kohasummons/supertokens-vue
--   Custom UI Blog post: https://supertokens.com/blog/how-to-use-supertokens-custom-ui-with-vuejs
+-   Custom UI Example (Vue): https://github.com/kohasummons/supertokens-vue
+-   Custom UI Blog post (Vue): https://supertokens.com/blog/how-to-use-supertokens-custom-ui-with-vuejs
 -   Awesome SuperTokens: https://github.com/kohasummons/awesome-supertokens
 
 ## Contributing

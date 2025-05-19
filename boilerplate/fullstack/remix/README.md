@@ -8,95 +8,98 @@ This project aims to demonstrate how to integrate SuperTokens into a Remix appli
 
 Features:
 
--   Initializes SuperTokens with frontend and backend configurations
--   Creates a frontend route to handle authentication-related tasks
--   Integrates the SuperTokens' pre-built login UI for secure user authentication
--   Protects frontend routes to ensure only authenticated users can access the dashboard
--   Exposes the SuperTokens authentication APIs used by frontend widgets
+-   Initializes SuperTokens with frontend and backend configurations.
+-   Creates frontend routes to handle authentication-related tasks.
+-   Integrates SuperTokens' pre-built login UI.
+-   Protects frontend routes and server-side loaders/actions to ensure only authenticated users can access certain parts.
+-   Exposes the SuperTokens authentication APIs used by frontend widgets.
 
 ## Repo Structure
 
 ### Source
 
-```txt
-📦
-┣ 📂app
-┃ ┣ 📂config
-┃ ┃ ┣ 📜appInfo.tsx --> Includes information about your application reused throughout the app.
-┃ ┃ ┣ 📜backend.tsx --> Backend-related configuration, including settings for SuperTokens.
-┃ ┃ ┗ 📜frontend.tsx --> Frontend configuration, including settings for SuperTokens.
-┃ ┣ 📂routes
-┃ ┃ ┣ 📜_index.tsx --> Public landing page - accessible regardless of auth state.
-┃ ┃ ┣ 📜dashboard._index.tsx --> Protected route only accessible to authenticated users.
-┃ ┃ ┣ 📜sessioninfo.$.tsx
-┃ ┃ ┣ 📜supertokens.$.tsx
-┃ ┃ ┗ 📜auth.$.tsx --> Deals with authentication routes or components using SuperTokens.
-┃ ┣ 📜app.css
-┃ ┣ 📜entry.server.tsx --> Entry point for server-side rendering (SSR) setup.
-┃ ┗ 📜root.tsx --> Root component of your application.
-┣ 📂assets
-┃ ┣ 📂fonts
-┣ 📂images
-┣ 📂test
-┃ ┗ 📜basic.test.cjs
-┣ 📜package.json
-┣ 📜remix.config.mjs
-┗ 📜server.mjs
+```
+📦app
+┣ 📂components
+┃ ┣ 📜sessionAuthForRemix.tsx <!-- Utility for session verification -->
+┃ ┗ 📜tryRefreshClientComponent.tsx <!-- Utility for token refresh -->
+┣ 📂config
+┃ ┣ 📜appInfo.tsx --> Shared application information
+┃ ┣ 📜backend.tsx --> SuperTokens backend configuration
+┃ ┗ 📜frontend.tsx --> SuperTokens frontend configuration
+┣ 📂routes
+┃ ┣ 📜_index.tsx --> Public landing page
+┃ ┣ 📜api.auth.$.tsx --> SuperTokens backend auth API handlers
+┃ ┣ 📜api.tenants.$.tsx <!-- Example API for tenants -->
+┃ ┣ 📜auth.$.tsx --> Page for SuperTokens pre-built auth UI
+┃ ┣ 📜dashboard._index.tsx --> Protected dashboard page
+┃ ┗ 📜sessioninfo.$.tsx --> Example protected API route
+┣ 📜app.css
+┣ 📜entry.server.tsx --> Server entry point (handles request, may init ST backend)
+┣ 📜root.tsx --> Root component (wraps app with SuperTokens frontend)
+📦public
+┣ 📜favicon.ico
+┣ 📜remix.svg
+┗ 📜ST.svg
+📦assets
+┣ 📂fonts
+┗ 📂images
+📜remix.config.js <!-- Or .mjs -->
+📜vite.config.ts
+📜package.json
+📜tsconfig.json
 ```
 
-### Config
+## Config
 
-#### Vite
+### Remix & Vite
 
-Remix uses Vite to compile your application. Everything available in the [Vite configuration docs](https://remix.run/docs/en/main/file-conventions/vite-config) is available to use here (refer to the `vite.config.ts` file). The only customization we've done is changing the port to `3000`.
+Remix uses Vite as its compiler.
 
-#### SuperTokens
+-   `vite.config.ts`: Vite configuration.
+-   `remix.config.js` (or `.mjs`): Remix-specific configurations.
+-   Key directories:
+    -   `app/root.tsx`: The root component of your application.
+    -   `app/entry.server.tsx`: Handles server-side rendering logic.
+    -   `app/routes/`: Contains files that define your application's routes (both UI pages and API endpoints via loaders/actions).
+-   The default development server runs on port `3000` (often, or as configured).
 
-The full configuration needed for SuperTokens (the frontend part) to work is in the `app/config` directory. This file will differ based on the [auth recipe](https://supertokens.com/docs/guides) you choose.
+### SuperTokens
 
-If you choose to use this as a starting point for your own project, you can further customize the options and config in the `app/config` directory. Refer to our [docs](https://supertokens.com/docs) (and make sure to choose the correct recipe) for more details.
+SuperTokens configuration is managed in the `app/config/` directory:
+
+-   **`app/config/frontend.tsx`**: Contains frontend-specific SuperTokens configuration, typically initialized in `app/root.tsx` or a client-side entry point.
+-   **`app/config/backend.tsx`**: Contains backend-specific SuperTokens configuration, used by server-side code (loaders, actions, API routes like `app/routes/api.auth.$.tsx`).
+-   **`app/config/appInfo.tsx`**: Shared application details.
+
+These files will differ based on the [auth recipe](https://supertokens.com/docs/guides) you choose.
 
 ## Application Flow
 
-Remix is built on top of [React Router](https://reactrouter.com/). While you can configure routes via the ["routes" plugin option](https://remix.run/docs/en/main/file-conventions/vite-config#routes), most routes are created with the file system convention. Add a file, get a route.
+Remix handles requests on the server first (via loaders and actions in route files) and then renders React components on the client.
 
-This Demo application consists of four main parts:
+1.  **Server Entry (`app/entry.server.tsx`)**
 
-1. **Entry Point (`entry.server.tsx`)**
+    -   Handles incoming requests on the server. SuperTokens backend SDK might be initialized here or on-demand in API route handlers.
 
-    - Initializes the Remix application on the server-side
-    - Handles SuperTokens initialization on the server-side
+2.  **Root Component (`app/root.tsx`)**
 
-2. **Root Component (`root.tsx`)**
+    -   The main shell for all pages.
+    -   Initializes the SuperTokens frontend SDK (e.g., by wrapping the app with `SuperTokensWrapper` from `supertokens-auth-react`).
+    -   Renders the matched route component.
 
-    - Initializes the Remix application
-    - Wraps the application with necessary providers:
-        - `SuperTokensWrapper`: Manages auth state and session
-    - renders the `App` component
-        - unprotected routes are rendered without the SessionAuth wrapper
-        - protected routes are rendered with the SessionAuth wrapper
+3.  **Frontend Pages & Server-Side Logic (`app/routes/`)**
 
-3. **Home page (`/` route, `/routes/_index.tsx` component)**
+    -   **Landing Page (`app/routes/_index.tsx`)**: Publicly accessible.
+    -   **Authentication Page (`app/routes/auth.$.tsx`)**: Renders the SuperTokens pre-built UI.
+    -   **Dashboard Page (`app/routes/dashboard._index.tsx`)**: Protected page. Its `loader` function on the server verifies the SuperTokens session before rendering.
+    -   Each route file can export a `loader` (for data fetching on server) and `action` (for form submissions on server), where SuperTokens session verification and backend logic occur.
 
-    - Public landing page accessible to all users
-    - Provides navigation to authentication and dashboard
-    - Displays basic application information and links
+4.  **API Routes (within `app/routes/` or dedicated API files)**
+    -   **SuperTokens Auth Handlers (e.g., `app/routes/api.auth.$.tsx`)**: These are Remix route files that act as API endpoints. They handle all backend authentication logic by delegating to the SuperTokens backend SDK.
+    -   **Example Protected API (`app/routes/sessioninfo.$.tsx`)**: A route file whose `loader` or `action` requires a valid SuperTokens session.
 
-4. **Auth (`/auth` route, `/routes/auth.&.tsx` component)**
-
-    - Renders the SuperTokens' pre-built auth UI
-
-5. **Dashboard page (`/dashboard` route, `/routes/dashboard._index.tsx` component)**
-    - Protected route only accessible to authenticated users
-    - Protected by `SessionAuth` component
-    - Displays user information and session details
-    - Provides functionality to:
-        - View user ID
-        - Call test API endpoints
-        - Access documentation
-        - Sign out
-
-When a user visits the application, they start at the home page (`/`). They can choose to authenticate through the `/auth` route, and once authenticated, they gain access to the protected dashboard. The session state is managed throughout the application using SuperTokens' session management.
+When a user visits, Remix processes the request server-side (running loaders/actions). `app/root.tsx` sets up the frontend SuperTokens context. Navigating to `/auth` shows the UI. Authenticated users can access protected routes and APIs, with session checks happening in loaders/actions.
 
 ## Customizations
 
@@ -107,7 +110,7 @@ If you want to customize the default auth UI, you have two options:
 
 ## Additional resources
 
--   Custom UI Example: https://github.com/supertokens/supertokens-web-js/tree/master/examples/react/with-thirdpartyemailpassword
+-   Custom UI Example (React): https://github.com/supertokens/supertokens-web-js/tree/master/examples/react/with-thirdpartyemailpassword
 -   Custom UI Blog post: https://supertokens.medium.com/adding-social-login-to-your-website-with-supertokens-custom-ui-only-5fa4d7ab6402
 -   Awesome SuperTokens: https://github.com/kohasummons/awesome-supertokens
 

@@ -11,51 +11,32 @@ This project aims to demonstrate how to integrate SuperTokens into a Vue applica
 ### Source
 
 ```
-📦backend
-┣ 📜config.ts
-┣ 📜index.ts
-┣ 📜package-lock.json
-┣ 📜package.json
-┗ 📜tsconfig.json
-
-📦frontend
-┣ 📜README.md
-┣ 📜index.html
-┣ 📜package-lock.json
-┣ 📜package.json
-┣ 📂public
-┃ ┣ 📜ST.svg
-┃ ┣ 📜vite.svg
-┃ ┗ 📜vue.svg
-┣ 📂src
-┃ ┣ 📂assets
-┃ ┃ ┗ 📂images
-┃ ┣ 📂components
-┃ ┃ ┣ 📜Footer.vue
-┃ ┃ ┗ 📜SessionInfo.vue
-┃ ┣ 📂layouts
-┃ ┃ ┗ 📜BaseLayout.vue
-┃ ┣ 📂router
-┃ ┃ ┗ 📜index.ts
-┃ ┣ 📂views
-┃ ┃ ┣ 📜AuthView.vue
-┃ ┃ ┣ 📜DashboardView.vue
-┃ ┃ ┗ 📜HomeView.vue
-┃ ┣ 📜App.vue --> Root component of the app
-┃ ┣ 📜config.ts
-┃ ┣ 📜main.ts --> Entry point of the app
-┃ ┣ 📜style.css
-┃ ┗ 📜vite-env.d.ts
-┗ 📜vite.config.ts
+📦src
+┣ 📂assets
+┃ ┣ 📂fonts
+┃ ┗ 📂images
+┣ 📂layouts
+┃ ┗ 📜BaseLayout.vue
+┣ 📂router
+┃ ┗ 📜index.ts --> Vue Router configuration
+┣ 📂views
+┃ ┣ 📜AuthView.vue
+┃ ┣ 📜DashboardView.vue
+┃ ┗ 📜HomeView.vue
+┣ 📜App.vue --> Root component of the app
+┣ 📜config.ts --> SuperTokens configuration
+┣ 📜main.ts --> Entry point of the app
+┣ 📜style.css
+┗ 📜vite-env.d.ts
 ```
 
-### Config
+## Config
 
-#### Vite
+### Vite
 
 Given that the project is a standard Vite project, everything available in the [Vite configuration docs](https://vite.dev/config/) is available to use here (refer to the `vite.config.ts` file). The only customization we've done is changing the port to `3000`.
 
-#### SuperTokens
+### SuperTokens
 
 The full configuration needed for SuperTokens (the frontend part) to work is in the `src/config.ts` file. This file will differ based on the [auth recipe](https://supertokens.com/docs/guides) you choose.
 
@@ -65,41 +46,44 @@ If you choose to use this as a starting point for your own project, you can furt
 
 The application uses [Vue Router](https://router.vuejs.org/) for routing and consists of four main parts:
 
-1. **Entry Point (`main.ts`)**
+1.  **Entry Point (`main.ts`)**
 
-    - Initializes the Vue application using `createApp`
+    -   Initializes the Vue application using `createApp`.
+    -   Initializes SuperTokens with the provided configuration (from `src/config.ts`).
+    -   Mounts the root `App` component.
+    -   Sets up the Vue router.
 
-2. **Root Component (`router/index.ts`)**
+2.  **Root Component (`App.vue`)**
 
-    - Sets up the routing structure using `vue-router`
-    - Defines three main routes:
-        - `/`: Public landing page - accessible regardless of auth state
-        - `/auth`: Renders SuperTokens' pre-built auth UI - accessible regardless of auth state
-        - `/dashboard`: Protected route requiring authentication
+    -   Serves as the main layout for the application.
+    -   Uses `<router-view>` to render the component for the current route.
+    -   May include SuperTokens wrapper components if required by the chosen recipe or for UI customization.
 
-3. **Home Component (`/` route, `/Views/HomeView.vue` component)**
+3.  **Routing (`router/index.ts`)**
 
-    - Public landing page accessible to all users
-    - Provides navigation to authentication and dashboard
-    - Displays basic application information and links
+    -   Sets up the routing structure using `vue-router`.
+    -   Defines three main routes:
+        -   `/`: Public landing page (`HomeView.vue`) - accessible regardless of auth state.
+        -   `/auth`: Renders SuperTokens' pre-built auth UI or custom auth components (`AuthView.vue`) - accessible regardless of auth state.
+        -   `/dashboard`: Protected route (`DashboardView.vue`) requiring authentication, typically protected by a route guard.
 
-4. **Dashboard Component (`/dashboard` route, `/Views/DashboardView.vue` component)**
-    - Protected route only accessible to authenticated users
-    - Protected by route guard in `router/index.ts`
-    - Displays user information and session details
-    - Provides functionality to:
-        - View user ID
-        - Call test API endpoints
-        - Access documentation
-        - Sign out
+4.  **View Components (`views/`)**
+    -   **Home Component (`HomeView.vue`)**:
+        -   Public landing page accessible to all users.
+        -   Provides navigation to authentication and dashboard.
+    -   **Dashboard Component (`DashboardView.vue`)**:
+        -   Protected route only accessible to authenticated users.
+        -   Protected by a route guard in `router/index.ts` that verifies the SuperTokens session.
+        -   Displays user information and provides authenticated functionality.
 
 When a user visits the application, they start at the home page (`/`). They can choose to authenticate through the `/auth` route, and once authenticated, they gain access to the protected dashboard. The session state is managed throughout the application using SuperTokens' session management.
 
 ## Customizations
 
-If you want to customize the default auth UI, you can:
+If you want to customize the default auth UI, you have two options:
 
--   Roll your own UI by choosing "Custom UI" in the [docs](https://supertokens.com/docs/thirdpartyemailpassword/quickstart/frontend-setup)
+1. Refer to the [docs](https://supertokens.com/docs/thirdpartyemailpassword/advanced-customizations/vue-component-override/usage) on how to customize the pre-built UI (select Vue in the framework option).
+2. Roll your own UI by choosing "Custom UI" in the right sidebar in the [docs](https://supertokens.com/docs/thirdpartyemailpassword/quickstart/frontend-setup) (select Vue in the framework option).
 
 ## Additional resources
 
