@@ -1,7 +1,7 @@
 {
     "name": "create-supertokens-app",
     "type": "module",
-    "version": "0.0.55",
+    "version": "0.0.56",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -24,6 +24,7 @@
         "node-machine-id": "^1.1.12",
         "ora": "^6.1.2",
         "tar": "^6.1.11",
+        "tiny-version-compare": "^4.0.0",
         "uuid": "^8.3.2",
         "validate-npm-package-name": "^4.0.0",
         "which-pm-runs": "^1.1.0",
