@@ -1,36 +1,48 @@
-import { AfterViewInit, Component } from "@angular/core";
+import { afterviewinit, component } from "@angular/core";
+import { httpclient } from "@angular/common/http";
 
-import * as Session from "supertokens-web-js/recipe/session";
+import Session from "supertokens-web-js/recipe/session";
 
-@Component({
+@component({
     selector: "app-home",
-    templateUrl: "./home.component.html",
-    styleUrls: ["./home.component.css"],
+    templateurl: "./home.component.html",
+    styleurls: ["./home.component.css"],
 })
-export class HomeComponent implements AfterViewInit {
+export class homecomponent implements afterviewinit {
     title = "angularapp";
 
-    public rootId = "rootId";
-    public userId = "";
+    public rootid = "rootid";
+    public userid = "";
     public session = false;
 
-    ngAfterViewInit() {
-        this.getUserInfo();
+    constructor(private http: httpclient) {}
+
+    ngafterviewinit() {
+        this.getuserinfo();
     }
 
-    async getUserInfo() {
-        this.session = await Session.doesSessionExist();
+    async getuserinfo() {
+        this.session = await session.doessessionexist();
         if (this.session) {
-            this.userId = await Session.getUserId();
+            this.userid = await session.getuserid();
         }
     }
-
-    async onLogout() {
-        await Session.signOut();
+    async callapi() {
+        this.http.get("http://localhost:3001/sessioninfo").subscribe(
+            (data: any) => {
+                alert(json.stringify(data, null, 2));
+            },
+            (error: any) => {
+                alert(`failed to fetch session info: ${error.message}`);
+            }
+        );
+    }
+    async onlogout() {
+        await session.signout();
         window.location.reload();
     }
 
-    redirectToLogin() {
+    redirecttologin() {
         window.location.href = "auth";
     }
 }
