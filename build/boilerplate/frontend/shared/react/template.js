@@ -202,10 +202,8 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
             prebuiltUIs.push(reactPreBuiltUIs.totp);
         }
     }
-    // For multitenancy, include ALL potential first/second factor recipes and UIs
     if (configType === "multitenancy") {
         recipes.push("multitenancy");
-        // Add all possible login/MFA recipes and UIs
         const allPossibleUIRecipes = [
             "emailPassword",
             "thirdParty",
@@ -224,7 +222,6 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
             }
         });
     }
-    // Always add session
     if (!recipes.includes("session")) {
         recipes.push("session");
     }
@@ -340,12 +337,7 @@ export const SuperTokensConfig = {
         ${recipeInits.join(",\n        ")}
     ],
     getRedirectionURL: async (context: GetRedirectionURLContext) => {
-        // Default redirection logic, can be customized further if needed per recipe
         if (context.action === "SUCCESS") {
-            // newSessionCreated is not always present on GetRedirectionURLContext,
-            // but it's a common check.
-            // For more specific checks, you might need to cast context based on recipeId
-            // or check context.newSessionCreated explicitly if (context as any).newSessionCreated
             if ((context as any).newSessionCreated) {
                 return "/dashboard";
             }
@@ -377,22 +369,18 @@ const tenantLoader = async (): Promise<Tenant[]> => {
             throw new Error(\`Failed to fetch tenants: \${response.statusText}\`);
         }
         const responseData = await response.json();
-        // Ensure the response structure matches what the backend sends
         if (responseData && responseData.status === "OK" && Array.isArray(responseData.tenants)) {
             return responseData.tenants as Tenant[];
-        } else if (Array.isArray(responseData)) { // Fallback if backend sends array directly
+        } else if (Array.isArray(responseData)) {
              return responseData as Tenant[];
         }
         console.error("Unexpected response format from /tenants:", responseData);
         throw new Error("Failed to parse tenants data from server.");
     } catch (error) {
         console.error("Error fetching tenants:", error);
-        return []; // Return empty array on error
+        return [];
     }
 };
-
-// TenantSelector component will be defined after TenantSwitcherFooter
-// to ensure TenantSwitcherFooter can reference it if needed (though not in this exact new design)
 
 const TenantSwitcherFooter = () => {
     const [currentTenantId, setCurrentTenantId] = useState<string | null>(null);
@@ -404,22 +392,19 @@ const TenantSwitcherFooter = () => {
             if (storedTenantId) {
                 setCurrentTenantId(storedTenantId);
             } else {
-                // If no tenantId in localStorage, try to load and set the first one
                 const tenants = await tenantLoader();
                 if (tenants.length > 0) {
                     const firstTenantId = tenants[0].tenantId;
                     setCurrentTenantId(firstTenantId);
                     localStorage.setItem("tenantId", firstTenantId);
-                    // Dispatch a custom event to notify other parts of the app if necessary
                     window.dispatchEvent(new CustomEvent("tenantChanged"));
                 } else {
-                    setCurrentTenantId(null); // No tenants available
+                    setCurrentTenantId(null);
                 }
             }
         }
         initTenants();
 
-        // Listen for direct localStorage changes from other tabs/windows
         const handleStorageChange = (event: StorageEvent) => {
             if (event.key === "tenantId") {
                 setCurrentTenantId(event.newValue);
@@ -427,12 +412,11 @@ const TenantSwitcherFooter = () => {
         };
         window.addEventListener("storage", handleStorageChange);
 
-        // Listen for custom event in case tenant is changed programmatically within the same tab
         const handleTenantChangedEvent = () => {
             setCurrentTenantId(localStorage.getItem("tenantId"));
         };
         window.addEventListener("tenantChanged", handleTenantChangedEvent);
-        
+
         return () => {
             window.removeEventListener("storage", handleStorageChange);
             window.removeEventListener("tenantChanged", handleTenantChangedEvent);
@@ -446,11 +430,8 @@ const TenantSwitcherFooter = () => {
     const onTenantSelected = (tenantId: string) => {
         localStorage.setItem("tenantId", tenantId);
         setCurrentTenantId(tenantId);
-        setShowTenantSwitcher(false); // Hide modal
-        // Dispatch custom event
+        setShowTenantSwitcher(false);
         window.dispatchEvent(new CustomEvent("tenantChanged"));
-        // Reload or navigate to ensure SuperTokens SDK picks up the new tenantId for API calls.
-        // Navigating to /auth is a common pattern to re-initialize auth flow with new tenant.
         window.location.href = "/auth";
     };
 
@@ -488,15 +469,15 @@ const TenantSwitcherFooter = () => {
             </div>
             {showTenantSwitcher && (
                 <div
-                    onClick={closeTenantSelector} // Click on overlay closes it
+                    onClick={closeTenantSelector}
                     style={{
-                        position: "fixed", // Changed to fixed for full screen overlay
+                        position: "fixed",
                         top: 0,
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        backgroundColor: "rgba(0, 0, 0, 0.5)", // Darker overlay
-                        zIndex: 1000, // Ensure it's on top
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        zIndex: 1000,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center"
@@ -574,12 +555,11 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
     let childrenToRender = props.children;
 
     ${
-        // Logic for P<ctrl61>asswordlessComponentsOverrideProvider
         recipes.includes("passwordless") &&
         (configType === "passwordless" ||
             configType === "thirdpartypasswordless" ||
             configType === "all_auth" ||
-            configType === "multitenancy" || // Multitenancy might also use passwordless
+            configType === "multitenancy" ||
             userArguments?.secondfactors?.some(
                 (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
             ))
@@ -633,7 +613,7 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
             {props.children}
         </PasswordlessComponentsOverrideProvider>
     );`
-            : `` // No specific override if not passwordless context demanding it
+            : ``
     }
     ${
         configType === "multitenancy"

@@ -23,6 +23,8 @@ export const reactRecipeImports = {
         'import EmailVerification from "supertokens-auth-react/recipe/emailverification";\nimport { EmailVerificationPreBuiltUI } from "supertokens-auth-react/recipe/emailverification/prebuiltui";',
     totp: 'import TOTP from "supertokens-auth-react/recipe/totp";\nimport { TOTPPreBuiltUI } from "supertokens-auth-react/recipe/totp/prebuiltui";',
     multitenancy: 'import Multitenancy from "supertokens-auth-react/recipe/multitenancy";',
+    webauthn:
+        'import WebAuthn from "supertokens-auth-react/recipe/webauthn";\nimport { WebauthnPreBuiltUI } from "supertokens-auth-react/recipe/webauthn/prebuiltui";',
 };
 
 export const reactRecipeInits = {
@@ -81,8 +83,6 @@ export const reactRecipeInits = {
             if (firstFactors.includes("thirdparty")) {
                 availableFirstFactors.push("thirdparty");
             }
-            // If specific otp-/link- factors are listed as firstFactors, add them directly.
-            // This assumes MultiFactorAuth.init() now accepts these specific strings instead of a generic "passwordless".
             firstFactors.forEach((factor) => {
                 if (factor.startsWith("otp-") || factor.startsWith("link-")) {
                     if (!availableFirstFactors.includes(factor)) {
@@ -107,19 +107,7 @@ export const reactRecipeInits = {
 
             if (factorIds.length > 0) {
                 return `MultiFactorAuth.init({
-        firstFactors: [${availableFirstFactors.map((f) => `"${f}"`).join(", ")}],
-        override: {
-            functions: (originalImplementation) => ({
-                ...originalImplementation,
-                getMFARequirementsForAuth: () => [
-                    {
-                        oneOf: [
-                            ${factorIds.join(",\n                            ")}
-                        ],
-                    },
-                ],
-            }),
-        }
+        firstFactors: [${availableFirstFactors.map((f) => `"${f}"`).join(", ")}]
     })`;
             }
         }
@@ -131,6 +119,7 @@ export const reactRecipeInits = {
     emailVerification: (hasMFA?: boolean) => `EmailVerification.init({
         mode: ${hasMFA ? '"OPTIONAL"' : '"REQUIRED"'}
     })`,
+    webauthn: () => `WebAuthn.init()`,
     totp: () => `TOTP.init()`,
     multitenancy: () => `Multitenancy.init({
             override: {
@@ -141,7 +130,7 @@ export const reactRecipeInits = {
                             if (typeof window !== 'undefined') {
                                 const tenantIdInStorage = localStorage.getItem("tenantId");
                                 return tenantIdInStorage === null ? undefined : tenantIdInStorage;
-                            }   
+                            }
                         },
                     };
                 },
@@ -156,6 +145,7 @@ export const reactPreBuiltUIs = {
     multiFactorAuth: "MultiFactorAuthPreBuiltUI",
     emailVerification: "EmailVerificationPreBuiltUI",
     totp: "TOTPPreBuiltUI",
+    webauthn: "WebauthnPreBuiltUI",
 };
 
 export const generateReactTemplate = ({ configType, userArguments, isFullStack }: ReactTemplate): string => {
@@ -170,6 +160,11 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
     if (configType === "emailpassword" || configType === "all_auth" || hasEmailPasswordFirstFactor) {
         recipes.push("emailPassword");
         prebuiltUIs.push(reactPreBuiltUIs.emailPassword);
+    }
+
+    if (configType === "webauthn") {
+        recipes.push("webauthn");
+        prebuiltUIs.push(reactPreBuiltUIs.webauthn);
     }
 
     const hasThirdPartyFirstFactor = userArguments?.firstfactors?.includes("thirdparty") || false;
@@ -220,6 +215,7 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
             "passwordless",
             "multiFactorAuth",
             "emailVerification",
+            "webauthn",
             "totp",
         ];
 
@@ -262,6 +258,10 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
                     const initFunc = reactRecipeInits[recipe];
                     return initFunc();
                 }
+                case "webauthn": {
+                    const initFunc = reactRecipeInits[recipe];
+                    return initFunc();
+                }
                 case "thirdParty": {
                     const providersToUse = userArguments?.providers
                         ? thirdPartyLoginProviders.filter((p: OAuthProvider) => userArguments.providers!.includes(p.id))
@@ -285,7 +285,7 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
 
     const template = `
 "use client";
-    
+
 ${imports}
 ${additionalImports.join("\n")}
 
@@ -426,7 +426,7 @@ const TenantSwitcherFooter = () => {
                 setLoading(false);
             }
         }
-        
+
         setup();
 
     }, []);
@@ -487,7 +487,6 @@ const TenantSwitcherFooter = () => {
     );
 };
 
-// TenantSelector component has been integrated into TenantSwitcherFooter for better alignment with web-js implementation
 `
         : ""
 }

@@ -20,7 +20,7 @@
             <ul class="header-container-right">
                 <li>
                     <a
-                        href="https://supertokens.com/docs//"
+                        href="https://supertokens.com/docs/"
                         target="_blank"
                         rel="noopener noreferrer"
                     >

@@ -202,10 +202,8 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
             prebuiltUIs.push(reactPreBuiltUIs.totp);
         }
     }
-    // For multitenancy, include ALL potential first/second factor recipes and UIs
     if (configType === "multitenancy") {
         recipes.push("multitenancy");
-        // Add all possible login/MFA recipes and UIs
         const allPossibleUIRecipes = [
             "emailPassword",
             "thirdParty",
@@ -224,7 +222,6 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
             }
         });
     }
-    // Always add session
     if (!recipes.includes("session")) {
         recipes.push("session");
     }
@@ -300,7 +297,7 @@ ${
     --palette-buttonText: #ffffff;
     --palette-primary: #4949e4;
     --palette-success: #41a700;
-    
+
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     width: 420px;
     margin: 0 auto;
@@ -319,8 +316,8 @@ export const SuperTokensConfig = {
         appName: "${appInfo.appName}",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}", 
-        websiteBasePath: "${appInfo.websiteBasePath}", 
+        apiBasePath: "${appInfo.apiBasePath}",
+        websiteBasePath: "${appInfo.websiteBasePath}",
     },
     ${configType === "multitenancy" ? "usesDynamicLoginMethods: true,\n    " : ""}${
         configType === "passwordless" ||

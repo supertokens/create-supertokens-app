@@ -16,6 +16,7 @@ export const configToRecipes: Record<ConfigType, IndividualRecipe[]> = {
         "userRoles",
     ],
     thirdparty: ["thirdParty", "session", "dashboard", "userRoles"],
+    webauthn: ["webauthn", "session"],
     multitenancy: [
         "emailPassword",
         "thirdParty",

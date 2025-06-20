@@ -20,18 +20,17 @@ func getStringPointer(s string) *string {
 }
 
 func getApiDomain() string {
-    apiPort := "3001" // Use appInfo default directly
+    apiPort := "3001"
     apiUrl := fmt.Sprintf("http://localhost:%s", apiPort)
     return apiUrl
 }
 
 func getWebsiteDomain() string {
-    websitePort := "3000" // Use appInfo default directly
+    websitePort := "3000"
     websiteUrl := fmt.Sprintf("http://localhost:%s", websitePort)
     return websiteUrl
 }
 
-// SuperTokensConfig is the configuration for SuperTokens core with all auth methods
 var SuperTokensConfig = supertokens.TypeInput{
     Supertokens: &supertokens.ConnectionInfo{
         ConnectionURI: "https://try.supertokens.com",
@@ -54,7 +53,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "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",
                         },
                     },
@@ -66,7 +64,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "467101b197249757c71f",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "e97051221f4b6426e8fe8d51486396703012f5bd",
                         },
                     },
@@ -78,7 +75,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "4398792-io.supertokens.example.service",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "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",
                             AdditionalConfig: map[string]interface{}{
                                 "keyId":     "7M48Y4RYDL",
@@ -95,7 +91,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC",
                         },
                     },
@@ -129,18 +124,17 @@ func getStringPointer(s string) *string {
 }
 
 func getApiDomain() string {
-    apiPort := "3001" // Use appInfo default directly
+    apiPort := "3001"
     apiUrl := fmt.Sprintf("http://localhost:%s", apiPort)
     return apiUrl
 }
 
 func getWebsiteDomain() string {
-    websitePort := "3000" // Use appInfo default directly
+    websitePort := "3000"
     websiteUrl := fmt.Sprintf("http://localhost:%s", websitePort)
     return websiteUrl
 }
 
-// SuperTokensConfig is the configuration for SuperTokens core with all auth methods
 var SuperTokensConfig = supertokens.TypeInput{
     Supertokens: &supertokens.ConnectionInfo{
         ConnectionURI: "https://try.supertokens.com",
@@ -181,18 +175,17 @@ func getStringPointer(s string) *string {
 }
 
 func getApiDomain() string {
-    apiPort := "3001" // Use appInfo default directly
+    apiPort := "3001"
     apiUrl := fmt.Sprintf("http://localhost:%s", apiPort)
     return apiUrl
 }
 
 func getWebsiteDomain() string {
-    websitePort := "3000" // Use appInfo default directly
+    websitePort := "3000"
     websiteUrl := fmt.Sprintf("http://localhost:%s", websitePort)
     return websiteUrl
 }
 
-// SuperTokensConfig is the configuration for SuperTokens core with all auth methods
 var SuperTokensConfig = supertokens.TypeInput{
     Supertokens: &supertokens.ConnectionInfo{
         ConnectionURI: "https://try.supertokens.com",
@@ -215,7 +208,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "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",
                         },
                     },
@@ -227,7 +219,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "467101b197249757c71f",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "e97051221f4b6426e8fe8d51486396703012f5bd",
                         },
                     },
@@ -239,7 +230,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "4398792-io.supertokens.example.service",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "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",
                             AdditionalConfig: map[string]interface{}{
                                 "keyId":     "7M48Y4RYDL",
@@ -256,7 +246,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC",
                         },
                     },
@@ -291,18 +280,17 @@ func getStringPointer(s string) *string {
 }
 
 func getApiDomain() string {
-    apiPort := "3001" // Use appInfo default directly
+    apiPort := "3001"
     apiUrl := fmt.Sprintf("http://localhost:%s", apiPort)
     return apiUrl
 }
 
 func getWebsiteDomain() string {
-    websitePort := "3000" // Use appInfo default directly
+    websitePort := "3000"
     websiteUrl := fmt.Sprintf("http://localhost:%s", websitePort)
     return websiteUrl
 }
 
-// SuperTokensConfig is the configuration for SuperTokens core with all auth methods
 var SuperTokensConfig = supertokens.TypeInput{
     Supertokens: &supertokens.ConnectionInfo{
         ConnectionURI: "https://try.supertokens.com",
@@ -324,7 +312,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "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",
                         },
                     },
@@ -336,7 +323,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "467101b197249757c71f",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "e97051221f4b6426e8fe8d51486396703012f5bd",
                         },
                     },
@@ -348,7 +334,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "4398792-io.supertokens.example.service",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "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",
                             AdditionalConfig: map[string]interface{}{
                                 "keyId":     "7M48Y4RYDL",
@@ -365,7 +350,6 @@ var SuperTokensConfig = supertokens.TypeInput{
                     Clients: []tpmodels.ProviderClientConfig{
                         {
                             ClientID:     "4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ",
-                            // IMPORTANT: Override this with your client secret in production. Use environment variables.
                             ClientSecret: "BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC",
                         },
                     },

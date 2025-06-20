@@ -8,45 +8,25 @@ from supertokens_python.recipe import emailpassword
 from supertokens_python.recipe import passwordless
 from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig
 
-async def async_should_do_linking(
-    new_account_info: AccountInfoWithRecipeIdAndUserId,
-    user: Optional[User],
-    session: Optional[SessionContainer],
-    tenant_id: str,
-    user_context: Dict[str, Any],
-) -> Union[ShouldNotAutomaticallyLink, ShouldAutomaticallyLink]:
-    # Default: Always link without requiring verification (use with caution)
-    # TODO: Implement custom logic here. For example, require verification
-    # if linking email-based accounts:
-    # if new_account_info.recipe_id == "emailpassword" or new_account_info.recipe_id == "passwordless":
-    #     return ShouldAutomaticallyLink(should_require_verification=True)
-
-    return ShouldAutomaticallyLink(should_require_verification=False) # Default: link without verification
 
 
 from supertokens_python import init, InputAppInfo, SupertokensConfig
 import os
 
-# appInfo object is defined outside this template string
-
 def get_api_domain() -> str:
-    # Use appInfo defaults directly in the generated Python code
-    api_port = str(3001) # Value injected from template script
+    api_port = str(3001)
     api_url = f"http://localhost:{api_port}"
     return api_url
 
 def get_website_domain() -> str:
-    # Use appInfo defaults directly in the generated Python code
-    website_port = str(3000) # Value injected from template script
+    website_port = str(3000)
     website_url = f"http://localhost:{website_port}"
     return website_url
 
-# SuperTokens core configuration
 supertokens_config = SupertokensConfig(
     connection_uri="https://try.supertokens.com"
 )
 
-# App configuration
 app_info = InputAppInfo(
     app_name="SuperTokens Demo App",
     api_domain=get_api_domain(),
@@ -55,7 +35,6 @@ app_info = InputAppInfo(
     website_base_path="/auth"
 )
 
-# Recipe list configuration
 recipe_list = [
     session.init(),
     dashboard.init(),
@@ -67,13 +46,12 @@ recipe_list = [
     )
 ]
 
-# Initialize SuperTokens with all recipes
 init(
     supertokens_config=supertokens_config,
     app_info=app_info,
-    framework="fastapi", # Placeholder for dynamic framework
+    framework="fastapi",
     recipe_list=recipe_list,
-    mode="asgi", # Placeholder for dynamic mode
+    mode="asgi",
     telemetry=False
 )
 "
@@ -85,45 +63,25 @@ from supertokens_python.recipe import dashboard
 from supertokens_python.recipe import userroles
 from supertokens_python.recipe import emailpassword
 
-async def async_should_do_linking(
-    new_account_info: AccountInfoWithRecipeIdAndUserId,
-    user: Optional[User],
-    session: Optional[SessionContainer],
-    tenant_id: str,
-    user_context: Dict[str, Any],
-) -> Union[ShouldNotAutomaticallyLink, ShouldAutomaticallyLink]:
-    # Default: Always link without requiring verification (use with caution)
-    # TODO: Implement custom logic here. For example, require verification
-    # if linking email-based accounts:
-    # if new_account_info.recipe_id == "emailpassword" or new_account_info.recipe_id == "passwordless":
-    #     return ShouldAutomaticallyLink(should_require_verification=True)
-
-    return ShouldAutomaticallyLink(should_require_verification=False) # Default: link without verification
 
 
 from supertokens_python import init, InputAppInfo, SupertokensConfig
 import os
 
-# appInfo object is defined outside this template string
-
 def get_api_domain() -> str:
-    # Use appInfo defaults directly in the generated Python code
-    api_port = str(3001) # Value injected from template script
+    api_port = str(3001)
     api_url = f"http://localhost:{api_port}"
     return api_url
 
 def get_website_domain() -> str:
-    # Use appInfo defaults directly in the generated Python code
-    website_port = str(3000) # Value injected from template script
+    website_port = str(3000)
     website_url = f"http://localhost:{website_port}"
     return website_url
 
-# SuperTokens core configuration
 supertokens_config = SupertokensConfig(
     connection_uri="https://try.supertokens.com"
 )
 
-# App configuration
 app_info = InputAppInfo(
     app_name="SuperTokens Demo App",
     api_domain=get_api_domain(),
@@ -132,7 +90,6 @@ app_info = InputAppInfo(
     website_base_path="/auth"
 )
 
-# Recipe list configuration
 recipe_list = [
     session.init(),
     dashboard.init(),
@@ -140,13 +97,12 @@ recipe_list = [
     emailpassword.init()
 ]
 
-# Initialize SuperTokens with all recipes
 init(
     supertokens_config=supertokens_config,
     app_info=app_info,
-    framework="fastapi", # Placeholder for dynamic framework
+    framework="fastapi",
     recipe_list=recipe_list,
-    mode="asgi", # Placeholder for dynamic mode
+    mode="asgi",
     telemetry=False
 )
 "
@@ -171,11 +127,6 @@ from supertokens_python.recipe.multifactorauth.types import MFARequirementList, 
 from typing import Optional, Dict, Any, Union, Callable, Awaitable, List
 
 def override_multifactor_functions(original_implementation: MFARecipeInterface):
-    """
-    This function overrides the default behavior of the MultiFactorAuth recipe.
-    It defines custom logic for determining MFA requirements during login/signup
-    and which secondary factors a user must have set up.
-    """
     async def get_mfa_requirements_for_auth(
         tenant_id: str,
         access_token_payload: dict,
@@ -186,15 +137,8 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
         required_secondary_factors_for_tenant,
         user_context: dict,
     ) -> MFARequirementList:
-        """
-        Determines the MFA requirements for a user during sign in / up.
-        - Returning an empty list means MFA is not required.
-        - Returning a list with FactorIds means one of those factors must be completed.
-        - Returning a list of dicts allows for complex requirements (e.g., multiple factors).
-        """
         return [
             {
-                # Require the user to complete one of the specified second factors
                 "oneOf": [
                     FactorIds.TOTP
                 ],
@@ -206,18 +150,12 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
         user_id: str,
         user_context: dict,
     ) -> list:
-        """
-        Determines which secondary factors a user must have setup before they can complete the MFA flow.
-        - Returning an empty list means no specific factors need to be set up.
-        - Returning a list of FactorIds means the user must have at least one of these factors set up.
-        """
-        # Return the required secondary factors for the user
         return [FactorIds.TOTP]
 
-    # Patch the original implementation to use our overridden functions
     original_implementation.get_mfa_requirements_for_auth = get_mfa_requirements_for_auth
     original_implementation.get_required_secondary_factors_for_user = get_required_secondary_factors_for_user
     return original_implementation
+
 
 async def async_should_do_linking(
     new_account_info: AccountInfoWithRecipeIdAndUserId,
@@ -226,38 +164,27 @@ async def async_should_do_linking(
     tenant_id: str,
     user_context: Dict[str, Any],
 ) -> Union[ShouldNotAutomaticallyLink, ShouldAutomaticallyLink]:
-    # Default: Always link without requiring verification (use with caution)
-    # TODO: Implement custom logic here. For example, require verification
-    # if linking email-based accounts:
-    # if new_account_info.recipe_id == "emailpassword" or new_account_info.recipe_id == "passwordless":
-    #     return ShouldAutomaticallyLink(should_require_verification=True)
+    return ShouldAutomaticallyLink(should_require_verification=False)
 
-    return ShouldAutomaticallyLink(should_require_verification=False) # Default: link without verification
 
 
 from supertokens_python import init, InputAppInfo, SupertokensConfig
 import os
 
-# appInfo object is defined outside this template string
-
 def get_api_domain() -> str:
-    # Use appInfo defaults directly in the generated Python code
-    api_port = str(3001) # Value injected from template script
+    api_port = str(3001)
     api_url = f"http://localhost:{api_port}"
     return api_url
 
 def get_website_domain() -> str:
-    # Use appInfo defaults directly in the generated Python code
-    website_port = str(3000) # Value injected from template script
+    website_port = str(3000)
     website_url = f"http://localhost:{website_port}"
     return website_url
 
-# SuperTokens core configuration
 supertokens_config = SupertokensConfig(
     connection_uri="https://try.supertokens.com"
 )
 
-# App configuration
 app_info = InputAppInfo(
     app_name="SuperTokens Demo App",
     api_domain=get_api_domain(),
@@ -266,7 +193,6 @@ app_info = InputAppInfo(
     website_base_path="/auth"
 )
 
-# Recipe list configuration
 recipe_list = [
     session.init(),
     dashboard.init(),
@@ -281,7 +207,6 @@ recipe_list = [
                         clients=[
                             ProviderClientConfig(
                                 client_id="1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
-                                # IMPORTANT: Override this with your client secret in production. Use environment variables.
                                 client_secret="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"
                             )
                         ]
@@ -293,7 +218,6 @@ recipe_list = [
                         clients=[
                             ProviderClientConfig(
                                 client_id="467101b197249757c71f",
-                                # IMPORTANT: Override this with your client secret in production. Use environment variables.
                                 client_secret="e97051221f4b6426e8fe8d51486396703012f5bd"
                             )
                         ]
@@ -305,7 +229,6 @@ recipe_list = [
                         clients=[
                             ProviderClientConfig(
                                 client_id="4398792-io.supertokens.example.service",
-                                # IMPORTANT: Override this with your client secret in production. Use environment variables.
                                 client_secret="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",
                                 additional_config={
           "keyId": "7M48Y4RYDL",
@@ -322,7 +245,6 @@ recipe_list = [
                         clients=[
                             ProviderClientConfig(
                                 client_id="4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ",
-                                # IMPORTANT: Override this with your client secret in production. Use environment variables.
                                 client_secret="BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC"
                             )
                         ]
@@ -343,18 +265,16 @@ recipe_list = [
         mode="REQUIRED"
     ),
     accountlinking.init(
-        # Pass the reference to the async function defined elsewhere (e.g., in DRF boilerplate)
         should_do_automatic_account_linking=async_should_do_linking
     )
 ]
 
-# Initialize SuperTokens with all recipes
 init(
     supertokens_config=supertokens_config,
     app_info=app_info,
-    framework="django", # Placeholder for dynamic framework
+    framework="django",
     recipe_list=recipe_list,
-    mode="asgi", # Placeholder for dynamic mode
+    mode="asgi",
     telemetry=False
 )
 "
@@ -367,45 +287,25 @@ from supertokens_python.recipe import userroles
 from supertokens_python.recipe import thirdparty
 from supertokens_python.recipe.thirdparty.provider import ProviderInput, ProviderConfig, ProviderClientConfig
 
-async def async_should_do_linking(
-    new_account_info: AccountInfoWithRecipeIdAndUserId,
-    user: Optional[User],
-    session: Optional[SessionContainer],
-    tenant_id: str,
-    user_context: Dict[str, Any],
-) -> Union[ShouldNotAutomaticallyLink, ShouldAutomaticallyLink]:
-    # Default: Always link without requiring verification (use with caution)
-    # TODO: Implement custom logic here. For example, require verification
-    # if linking email-based accounts:
-    # if new_account_info.recipe_id == "emailpassword" or new_account_info.recipe_id == "passwordless":
-    #     return ShouldAutomaticallyLink(should_require_verification=True)
-
-    return ShouldAutomaticallyLink(should_require_verification=False) # Default: link without verification
 
 
 from supertokens_python import init, InputAppInfo, SupertokensConfig
 import os
 
-# appInfo object is defined outside this template string
-
 def get_api_domain() -> str:
-    # Use appInfo defaults directly in the generated Python code
-    api_port = str(3001) # Value injected from template script
+    api_port = str(3001)
     api_url = f"http://localhost:{api_port}"
     return api_url
 
 def get_website_domain() -> str:
-    # Use appInfo defaults directly in the generated Python code
-    website_port = str(3000) # Value injected from template script
+    website_port = str(3000)
     website_url = f"http://localhost:{website_port}"
     return website_url
 
-# SuperTokens core configuration
 supertokens_config = SupertokensConfig(
     connection_uri="https://try.supertokens.com"
 )
 
-# App configuration
 app_info = InputAppInfo(
     app_name="SuperTokens Demo App",
     api_domain=get_api_domain(),
@@ -414,7 +314,6 @@ app_info = InputAppInfo(
     website_base_path="/auth"
 )
 
-# Recipe list configuration
 recipe_list = [
     session.init(),
     dashboard.init(),
@@ -428,7 +327,6 @@ recipe_list = [
                         clients=[
                             ProviderClientConfig(
                                 client_id="1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com",
-                                # IMPORTANT: Override this with your client secret in production. Use environment variables.
                                 client_secret="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"
                             )
                         ]
@@ -440,7 +338,6 @@ recipe_list = [
                         clients=[
                             ProviderClientConfig(
                                 client_id="467101b197249757c71f",
-                                # IMPORTANT: Override this with your client secret in production. Use environment variables.
                                 client_secret="e97051221f4b6426e8fe8d51486396703012f5bd"
                             )
                         ]
@@ -452,7 +349,6 @@ recipe_list = [
                         clients=[
                             ProviderClientConfig(
                                 client_id="4398792-io.supertokens.example.service",
-                                # IMPORTANT: Override this with your client secret in production. Use environment variables.
                                 client_secret="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",
                                 additional_config={
           "keyId": "7M48Y4RYDL",
@@ -469,7 +365,6 @@ recipe_list = [
                         clients=[
                             ProviderClientConfig(
                                 client_id="4398792-WXpqVXRiazdRMGNJdEZIa3RVQXc6MTpjaQ",
-                                # IMPORTANT: Override this with your client secret in production. Use environment variables.
                                 client_secret="BivMbtwmcygbRLNQ0zk45yxvW246tnYnTFFq-LH39NwZMxFpdC"
                             )
                         ]
@@ -480,13 +375,12 @@ recipe_list = [
     )
 ]
 
-# Initialize SuperTokens with all recipes
 init(
     supertokens_config=supertokens_config,
     app_info=app_info,
-    framework="flask", # Placeholder for dynamic framework
+    framework="flask",
     recipe_list=recipe_list,
-    mode="wsgi", # Placeholder for dynamic mode
+    mode="wsgi",
     telemetry=False
 )
 "

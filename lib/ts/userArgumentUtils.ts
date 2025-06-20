@@ -116,7 +116,15 @@ export function validateUserArguments(userArguments: UserFlagsRaw | UserFlags) {
 
     if (userArguments.firstfactors !== undefined) {
         console.log("Validating firstfactors:", userArguments.firstfactors);
-        const validFirstFactors = ["emailpassword", "thirdparty", "otp-phone", "otp-email", "link-phone", "link-email"];
+        const validFirstFactors = [
+            "emailpassword",
+            "thirdparty",
+            "otp-phone",
+            "otp-email",
+            "link-phone",
+            "link-email",
+            "webauthn",
+        ];
         const invalidFactors = userArguments.firstfactors.filter((factor) => !validFirstFactors.includes(factor));
         console.log("Invalid factors:", invalidFactors);
         if (invalidFactors.length > 0) {

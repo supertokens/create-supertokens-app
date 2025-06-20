@@ -6,7 +6,8 @@ export type Recipe =
     | "thirdpartypasswordless"
     | "thirdparty"
     | "multitenancy"
-    | "multifactorauth";
+    | "multifactorauth"
+    | "webauthn";
 
 export const allRecipes: Recipe[] = [
     "all_auth",
@@ -17,6 +18,7 @@ export const allRecipes: Recipe[] = [
     "thirdparty",
     "multitenancy",
     "multifactorauth",
+    "webauthn",
 ];
 
 export function isValidRecipeName(recipe: string): recipe is Recipe {
@@ -234,7 +236,15 @@ export type UserFlagsRaw = {
     manager?: SupportedPackageManagers;
     autostart?: string | boolean;
     multitenancy?: boolean;
-    firstfactors?: ("emailpassword" | "thirdparty" | "otp-phone" | "otp-email" | "link-phone" | "link-email")[];
+    firstfactors?: (
+        | "emailpassword"
+        | "thirdparty"
+        | "otp-phone"
+        | "otp-email"
+        | "link-phone"
+        | "link-email"
+        | "webauthn"
+    )[];
     secondfactors?: ("otp-phone" | "otp-email" | "link-phone" | "link-email" | "totp")[];
     pwcontactmethod?: "email" | "phone" | "email_or_phone";
     providers?: string[]; // Added for selecting specific third-party providers
@@ -287,7 +297,14 @@ export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {
     cliversion: string;
 };
 
-export type FirstFactor = "emailpassword" | "thirdparty" | "otp-phone" | "otp-email" | "link-phone" | "link-email";
+export type FirstFactor =
+    | "emailpassword"
+    | "thirdparty"
+    | "otp-phone"
+    | "otp-email"
+    | "link-phone"
+    | "link-email"
+    | "webauthn";
 export type SecondFactor = "otp-phone" | "otp-email" | "link-phone" | "link-email" | "totp";
 
 export interface FactorConfig {
@@ -305,6 +322,7 @@ export interface RecipeToFactorMapping {
     passwordless: FirstFactor[];
     thirdpartypasswordless: FirstFactor[];
     thirdparty: FirstFactor[];
+    webauthn: FirstFactor[];
     multitenancy: {
         firstFactors: FirstFactor[];
         secondFactors?: SecondFactor[];
@@ -322,6 +340,7 @@ export const RECIPE_TO_FACTOR_MAPPING: RecipeToFactorMapping = {
     passwordless: ["link-email", "link-phone"],
     thirdpartypasswordless: ["thirdparty", "link-email", "link-phone"],
     thirdparty: ["thirdparty"],
+    webauthn: ["webauthn"],
     multitenancy: [
         {
             firstFactors: ["emailpassword", "thirdparty", "link-email", "link-phone"],
@@ -377,6 +396,8 @@ export const getRecipesFromFactors = (config: FactorConfig): Recipe[] => {
         recipes.push("emailpassword");
     } else if (config.firstFactors?.includes("thirdparty")) {
         recipes.push("thirdparty");
+    } else if (config.firstFactors?.includes("webauthn")) {
+        recipes.push("webauthn");
     }
 
     if (config.firstFactors?.some((f) => ["link-email", "link-phone"].includes(f))) {

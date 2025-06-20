@@ -330,16 +330,20 @@ async function setupFrontendBackendApp(
     spinner.text = "Configuring files";
 
     let configType = answers.recipe as ConfigType;
+    console.log(configType, answers.recipe);
+
     if (userArguments.firstfactors || userArguments.secondfactors) {
         const factorConfig = {
             firstFactors: userArguments.firstfactors || [],
             secondFactors: userArguments.secondfactors || undefined,
         };
         const recipes = getRecipesFromFactors(factorConfig);
+        console.log(recipes);
         configType = recipes[0] as ConfigType;
     }
 
     for (const config of selectedFrontend.location.config) {
+        console.log(configType);
         const generatedConfig = compileFrontend({
             framework: selectedFrontend.value as FrontendFramework,
             configType,

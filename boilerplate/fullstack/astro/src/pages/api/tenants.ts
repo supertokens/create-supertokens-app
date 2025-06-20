@@ -2,7 +2,7 @@ import { ensureSuperTokensInit } from "../../config/backendConfigUtils";
 import Multitenancy from "supertokens-node/recipe/multitenancy";
 import type { APIRoute } from "astro";
 
-export const ALL: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ request }) => {
     ensureSuperTokensInit();
 
     try {

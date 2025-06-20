@@ -22,6 +22,7 @@ export const tsRecipeImports = {
     multiFactorAuth: 'import MultiFactorAuth from "supertokens-node/recipe/multifactorauth";',
     accountLinking: 'import AccountLinking from "supertokens-node/recipe/accountlinking";',
     emailVerification: 'import EmailVerification from "supertokens-node/recipe/emailverification";',
+    webauthn: 'import WebAuthN from "supertokens-node/recipe/webauthn";',
     totp: 'import TOTP from "supertokens-node/recipe/totp";',
     multitenancy: 'import Multitenancy from "supertokens-node/recipe/multitenancy";',
 } as const;
@@ -97,6 +98,7 @@ export const tsRecipeInits = {
     },
     session: () => `Session.init()`,
     dashboard: () => `Dashboard.init()`,
+    webauthn: () => `WebAuthN.init()`,
     userRoles: () => `UserRoles.init()`,
     multiFactorAuth: (firstFactors?: string[], secondFactors?: string[]) => {
         const firstFactorsStr = (firstFactors || ["thirdparty", "emailpassword"])
@@ -212,6 +214,9 @@ export const generateTypeScriptTemplate = (
         if (!recipes.includes("emailPassword")) {
             recipes.push("emailPassword");
         }
+        if (!recipes.includes("webauthn")) {
+            recipes.push("webauthn");
+        }
         if (!recipes.includes("thirdParty")) {
             recipes.push("thirdParty");
         }
@@ -241,6 +246,8 @@ export const generateTypeScriptTemplate = (
         .filter(Boolean)
         .join("\n");
 
+    console.log("ts imports:", imports);
+
     if (recipes.includes("accountLinking")) {
         imports += `\nimport type { AccountInfoWithRecipeId } from "supertokens-node/recipe/accountlinking/types";`;
         imports += `\nimport type { User } from "supertokens-node/types";`;
@@ -262,7 +269,6 @@ export const generateTypeScriptTemplate = (
                 case "accountLinking":
                     return tsRecipeInits.accountLinking(hasMFA ?? false);
                 case "passwordless":
-                case "passwordless":
                     return tsRecipeInits.passwordless(userArguments);
                 case "emailVerification":
                     return tsRecipeInits.emailVerification();
@@ -270,6 +276,7 @@ export const generateTypeScriptTemplate = (
                 case "dashboard":
                 case "userRoles":
                 case "totp":
+                case "webauthn":
                 case "multitenancy":
                     const initFunc = tsRecipeInits[recipe];
                     if (typeof initFunc === "function") {

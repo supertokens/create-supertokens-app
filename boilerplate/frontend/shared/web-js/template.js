@@ -73,10 +73,6 @@ export const uiRecipeInits = {
         } else {
             contactMethod = "EMAIL";
         }
-        // Check if we need both OTP and magic link flow
-        // Determine flow type based on factors
-        // Note: The documentation states that if both otp_email and otp_phone are present,
-        // the flowType becomes "USER_INPUT_CODE_AND_MAGIC_LINK"
         if ((hasOtpEmail || hasOtpPhone) && (hasLinkEmail || hasLinkPhone)) {
             flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
         } else if (hasLinkEmail || hasLinkPhone) {
@@ -165,27 +161,20 @@ export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }
         if (userArguments.secondfactors && userArguments.secondfactors.length > 0) recipesSet.add("multiFactorAuth");
         if (userArguments.secondfactors?.includes("totp")) recipesSet.add("totp");
         if (userArguments.secondfactors?.some((f) => f.includes("email"))) recipesSet.add("emailVerification");
-        // Add multitenancy if configType is multitenancy (factors don't determine this)
         if (configType === "multitenancy") recipesSet.add("multitenancy");
     } else {
-        // Fallback to configType if no factors provided
-        configToRecipes[configType]?.forEach((recipe) => recipesSet.add(recipe)); // Add null check for safety
+        configToRecipes[configType]?.forEach((recipe) => recipesSet.add(recipe));
     }
-    // Filter for recipes that actually have frontend components
     const recipes = [...recipesSet].filter((recipe) => frontendRecipes.includes(recipe));
-    // Check if MFA is needed (based on second factors OR if multifactorauth recipe is present in the final list)
     const hasMFA =
         (userArguments?.secondfactors && userArguments.secondfactors.length > 0) || recipes.includes("multiFactorAuth");
-    // If MFA is needed but not included, add it
     if (hasMFA && !recipes.includes("multiFactorAuth")) {
         recipes.push("multiFactorAuth");
     }
-    // Add TOTP if it's used as a second factor
     const needsTOTP = hasMFA && userArguments?.secondfactors?.includes("totp") && !recipes.includes("totp");
     if (needsTOTP) {
         recipes.push("totp");
     }
-    // Add email verification if needed for email-based second factors
     const needsEmailVerification =
         hasMFA &&
         userArguments?.secondfactors?.some((factor) => factor.includes("email")) &&
@@ -194,17 +183,14 @@ export const generateWebJSTemplate = ({ configType, isFullStack, userArguments }
         recipes.push("emailVerification");
     }
     const appInfo = getAppInfo(isFullStack);
-    // Keep imports simple - just the basic ones needed
     let imports = `import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";`;
-    // If MFA is needed, add the necessary imports
     if (hasMFA) {
         imports = `import SuperTokens from "supertokens-web-js";
 import Session from "supertokens-web-js/recipe/session";
 import EmailVerification from "supertokens-web-js/recipe/emailverification";
 import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
     }
-    // For the web-js initialization function
     let initSuperTokensWebJSCode = `SuperTokens.init({
         appInfo: {
             appName: "${appInfo.appName}",
@@ -215,7 +201,6 @@ import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
         },
         recipeList: [Session.init()]
     });`;
-    // If MFA is needed, update the webJS initialization to include core MFA recipes
     if (hasMFA) {
         initSuperTokensWebJSCode = `SuperTokens.init({
         appInfo: {
@@ -225,12 +210,9 @@ import MultiFactorAuth from "supertokens-web-js/recipe/multifactorauth";`;
             apiBasePath: "${appInfo.apiBasePath}",
             // websiteBasePath is not needed for core SDK init
         },
-        // Core SDK init only needs Session, EmailVerification, and MultiFactorAuth for MFA
         recipeList: [Session.init(), EmailVerification.init(), MultiFactorAuth.init()]
     });`;
     }
-    // Otherwise, the default initSuperTokensWebJSCode (with only Session.init()) is used
-    // Define helper functions to be included in the generated config
     const getApiDomainFunc = `
 export function getApiDomain() {
     const apiPort = ${appInfo.defaultApiPort};
@@ -243,8 +225,6 @@ export function getWebsiteDomain() {
     const websiteUrl = \`http://localhost:\${websitePort}\`;
     return websiteUrl;
 }`;
-    // For the UI initialization function
-    // Initialize recipes for the UI
     const uiInitStrings = recipes
         .map((recipe) => {
             if (recipe === "multiFactorAuth") {
@@ -253,36 +233,26 @@ export function getWebsiteDomain() {
             if (recipe === "passwordless") {
                 return uiRecipeInits.passwordless(userArguments);
             }
-            // Handle EmailVerification separately to pass hasMFA
             if (recipe === "emailVerification") {
                 return uiRecipeInits.emailVerification(hasMFA ?? false);
             }
-            // For other recipes without specific args in UI init
-            // Handle ThirdParty separately to pass filtered providers
             if (recipe === "thirdParty") {
                 const providersToUse = userArguments?.providers
                     ? thirdPartyLoginProviders.filter((p) => userArguments.providers.includes(p.id))
-                    : thirdPartyLoginProviders; // Use all defaults if --providers flag is not used
+                    : thirdPartyLoginProviders;
                 return uiRecipeInits.thirdParty(providersToUse);
             }
             const initFunc = uiRecipeInits[recipe];
             if (typeof initFunc === "function") {
-                // Need to check if function expects args, currently only passwordless/mfa/ev do
                 if (recipe !== "passwordless" && recipe !== "multiFactorAuth" && recipe !== "thirdParty") {
                     return initFunc();
                 }
             }
-            // Return null or handle error if initFunc is not callable or needs args we didn't provide
             console.warn(`Skipping UI init for recipe (or init func not found/callable): ${recipe}`);
             return null;
         })
         .filter(Boolean);
-    // Add additional required UI inits (ensure EV isn't added twice)
     if (hasMFA) {
-        // EV is now handled in the map above, so this check is likely redundant
-        // if (!uiInitStrings.some((init) => init.includes("EmailVerification"))) {
-        //     uiInitStrings.push(uiRecipeInits.emailVerification(hasMFA ?? false));
-        // }
         if (needsTOTP && !uiInitStrings.some((init) => init.includes("TOTP"))) {
             uiInitStrings.push(uiRecipeInits.totp());
         }
@@ -291,8 +261,6 @@ export function getWebsiteDomain() {
     if (isMultitenancy && !uiInitStrings.some((init) => init.includes("Multitenancy"))) {
         uiInitStrings.push(uiRecipeInits.multitenancy());
     }
-    // Generate template following the structure in final-shape-tables.mdc
-    // Prepend helper functions
     return `${imports}
 ${getApiDomainFunc}
 ${getWebsiteDomainFunc}
@@ -300,12 +268,11 @@ ${getWebsiteDomainFunc}
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         appInfo: {
-            // Call generated helper functions and include base paths
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
             appName: "${appInfo.appName}",
-            websiteBasePath: "${appInfo.websiteBasePath}", // Add websiteBasePath
-            apiBasePath: "${appInfo.apiBasePath}", // Add apiBasePath
+            websiteBasePath: "${appInfo.websiteBasePath}",
+            apiBasePath: "${appInfo.apiBasePath}",
         },
         recipeList: [
             ${uiInitStrings.join(",\n            ")}

@@ -19,10 +19,11 @@ export function getWebsiteDomain() {
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         appInfo: {
-            // Call generated helper functions
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
-            appName: "SuperTokens Demo App", // Keep using direct value for appName
+            appName: "SuperTokens Demo App",
+            websiteBasePath: "/auth",
+            apiBasePath: "/auth",
         },
         recipeList: [
             (window as any).supertokensUISession.init(),
@@ -38,8 +39,11 @@ export function initSuperTokensUI() {
 export function initSuperTokensWebJS() {
     SuperTokens.init({
         appInfo: {
-            appName: "SuperTokens Demo App", // Use dynamic appName
-            apiDomain: getApiDomain(), // Call helper function
+            appName: "SuperTokens Demo App",
+            apiDomain: getApiDomain(),
+            // websiteDomain is not needed for core SDK init
+            apiBasePath: "/auth",
+            // websiteBasePath is not needed for core SDK init
         },
         recipeList: [Session.init()]
     });
@@ -67,10 +71,11 @@ export function getWebsiteDomain() {
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         appInfo: {
-            // Call generated helper functions
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
-            appName: "SuperTokens Demo App", // Keep using direct value for appName
+            appName: "SuperTokens Demo App",
+            websiteBasePath: "/auth",
+            apiBasePath: "/auth",
         },
         recipeList: [
             (window as any).supertokensUISession.init(),
@@ -78,10 +83,10 @@ export function initSuperTokensUI() {
             (window as any).supertokensUIThirdParty.init({
                 signInAndUpFeature: {
                     providers: [
-                        (window as any).supertokensUIThirdParty.Github.init(),
                         (window as any).supertokensUIThirdParty.Google.init(),
+                        (window as any).supertokensUIThirdParty.Github.init(),
                         (window as any).supertokensUIThirdParty.Apple.init(),
-                        (window as any).supertokensUIThirdParty.Twitter.init(),
+                        (window as any).supertokensUIThirdParty.Twitter.init()
                     ],
                 },
             }),
@@ -92,7 +97,7 @@ export function initSuperTokensUI() {
             (window as any).supertokensUIMultiFactorAuth.init({
         firstFactors: ["emailpassword", "thirdparty"],
         override: {
-            functions: (originalImplementation) => ({
+            functions: (originalImplementation: any) => ({
                 ...originalImplementation,
                 getMFARequirementsForAuth: () => [
                     {
@@ -101,8 +106,6 @@ export function initSuperTokensUI() {
                         ],
                     },
                 ],
-                // Override the getRequiredSecondaryFactorsForUser function to ensure
-                // the user is required to set up the second factors
                 getRequiredSecondaryFactorsForUser: async () => {
                     return [(window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL];
                 },
@@ -110,7 +113,7 @@ export function initSuperTokensUI() {
         }
     }),
             (window as any).supertokensUIEmailVerification.init({
-        mode: "REQUIRED",
+        mode: "OPTIONAL"
     })
         ],
     });
@@ -119,10 +122,12 @@ export function initSuperTokensUI() {
 export function initSuperTokensWebJS() {
     SuperTokens.init({
         appInfo: {
-            appName: "SuperTokens Demo App", // Use dynamic appName
-            apiDomain: getApiDomain(), // Call helper function
+            appName: "SuperTokens Demo App",
+            apiDomain: getApiDomain(),
+            // websiteDomain is not needed for core SDK init
+            apiBasePath: "/auth",
+            // websiteBasePath is not needed for core SDK init
         },
-        // Core SDK init only needs Session, EmailVerification, and MultiFactorAuth for MFA
         recipeList: [Session.init(), EmailVerification.init(), MultiFactorAuth.init()]
     });
 }"
@@ -147,10 +152,11 @@ export function getWebsiteDomain() {
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         appInfo: {
-            // Call generated helper functions
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
-            appName: "SuperTokens Demo App", // Keep using direct value for appName
+            appName: "SuperTokens Demo App",
+            websiteBasePath: "/auth",
+            apiBasePath: "/auth",
         },
         recipeList: [
             (window as any).supertokensUISession.init(),
@@ -162,8 +168,11 @@ export function initSuperTokensUI() {
 export function initSuperTokensWebJS() {
     SuperTokens.init({
         appInfo: {
-            appName: "SuperTokens Demo App", // Use dynamic appName
-            apiDomain: getApiDomain(), // Call helper function
+            appName: "SuperTokens Demo App",
+            apiDomain: getApiDomain(),
+            // websiteDomain is not needed for core SDK init
+            apiBasePath: "/auth",
+            // websiteBasePath is not needed for core SDK init
         },
         recipeList: [Session.init()]
     });
@@ -189,20 +198,21 @@ export function getWebsiteDomain() {
 export function initSuperTokensUI() {
     (window as any).supertokensUIInit("supertokensui", {
         appInfo: {
-            // Call generated helper functions
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
-            appName: "SuperTokens Demo App", // Keep using direct value for appName
+            appName: "SuperTokens Demo App",
+            websiteBasePath: "/auth",
+            apiBasePath: "/auth",
         },
         recipeList: [
             (window as any).supertokensUISession.init(),
             (window as any).supertokensUIThirdParty.init({
                 signInAndUpFeature: {
                     providers: [
-                        (window as any).supertokensUIThirdParty.Github.init(),
                         (window as any).supertokensUIThirdParty.Google.init(),
+                        (window as any).supertokensUIThirdParty.Github.init(),
                         (window as any).supertokensUIThirdParty.Apple.init(),
-                        (window as any).supertokensUIThirdParty.Twitter.init(),
+                        (window as any).supertokensUIThirdParty.Twitter.init()
                     ],
                 },
             })
@@ -213,8 +223,11 @@ export function initSuperTokensUI() {
 export function initSuperTokensWebJS() {
     SuperTokens.init({
         appInfo: {
-            appName: "SuperTokens Demo App", // Use dynamic appName
-            apiDomain: getApiDomain(), // Call helper function
+            appName: "SuperTokens Demo App",
+            apiDomain: getApiDomain(),
+            // websiteDomain is not needed for core SDK init
+            apiBasePath: "/auth",
+            // websiteBasePath is not needed for core SDK init
         },
         recipeList: [Session.init()]
     });

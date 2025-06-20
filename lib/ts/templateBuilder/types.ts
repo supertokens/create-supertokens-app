@@ -7,7 +7,8 @@ export type ConfigType =
     | "passwordless"
     | "thirdparty"
     | "thirdpartyemailpassword"
-    | "thirdpartypasswordless";
+    | "thirdpartypasswordless"
+    | "webauthn";
 
 export type IndividualRecipe =
     | "emailPassword"
@@ -20,7 +21,8 @@ export type IndividualRecipe =
     | "accountLinking"
     | "emailVerification"
     | "totp"
-    | "multitenancy";
+    | "multitenancy"
+    | "webauthn";
 
 export type FrontendFramework = "react" | "vue" | "angular" | "solid";
 

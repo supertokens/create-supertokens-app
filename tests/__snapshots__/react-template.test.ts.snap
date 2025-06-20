@@ -14,14 +14,12 @@ import { EmailVerificationPreBuiltUI } from "supertokens-auth-react/recipe/email
 import Session from "supertokens-auth-react/recipe/session";
 
 export function getApiDomain() {
-    // Use only appInfo defaults
     const apiPort = 3001;
     const apiUrl = \`http://localhost:\${apiPort}\`;
     return apiUrl;
 }
 
 export function getWebsiteDomain() {
-    // Use only appInfo defaults
     const websitePort = 3000;
     const websiteUrl = \`http://localhost:\${websitePort}\`;
     return websiteUrl;
@@ -34,18 +32,19 @@ export const SuperTokensConfig = {
         appName: "SuperTokens Demo App",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
+        apiBasePath: "/auth",
+        websiteBasePath: "/auth",
     },
-    // recipeList contains all the modules that you want to
-    // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides
+    
     recipeList: [
         EmailPassword.init(),
         ThirdParty.init({
             signInAndUpFeature: {
                 providers: [
-                    Github.init(),
                     Google.init(),
+                    Github.init(),
                     Apple.init(),
-                    Twitter.init(),
+                    Twitter.init()
                 ],
             },
         }),
@@ -64,8 +63,6 @@ export const SuperTokensConfig = {
                         ],
                     },
                 ],
-                // Override the getRequiredSecondaryFactorsForUser function to ensure
-                // the user is required to set up the second factors
                 getRequiredSecondaryFactorsForUser: async () => {
                     return [MultiFactorAuth.FactorIds.LINK_EMAIL];
                 },
@@ -73,7 +70,7 @@ export const SuperTokensConfig = {
         }
     }),
         EmailVerification.init({
-        mode: "REQUIRED"
+        mode: "OPTIONAL"
     }),
         Session.init({
             override: {
@@ -85,8 +82,6 @@ export const SuperTokensConfig = {
                                 v => v.id === EmailVerification.EmailVerificationClaim.id
                             );
                             if (emailVerificationClaimValidator) {
-                                // We filter out the email verification validator and add it at the end
-                                // This ensures MFA validator gets priority
                                 const filteredValidators = input.claimValidatorsAddedByOtherRecipes.filter(
                                     v => v.id !== EmailVerification.EmailVerificationClaim.id
                                 );
@@ -107,7 +102,7 @@ export const SuperTokensConfig = {
 };
 
 export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/thirdparty/introduction",
+    docsLink: "https://supertokens.com/docs/quickstart/introduction",
 };
 
 export const PreBuiltUIList = [EmailPasswordPreBuiltUI, ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI, MultiFactorAuthPreBuiltUI, EmailVerificationPreBuiltUI];

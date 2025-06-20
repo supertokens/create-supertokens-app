@@ -368,7 +368,7 @@ export async function initTenantSelectorInterface() {
 
     function initTenantSelectorDOM(existingFooterElement) {
         if (document.getElementById("st-tenant-selector-footer")) {
-            return; 
+            return;
         }
 
         const footerDiv = document.createElement("div");
@@ -377,7 +377,7 @@ export async function initTenantSelectorInterface() {
             <span id="st-current-tenant-display">Current Tenant: Loading...</span>
             <button id="st-switch-tenant-btn">Switch Tenant</button>
         \`;
-        
+
         if (existingFooterElement && existingFooterElement.parentElement) {
             existingFooterElement.parentElement.insertBefore(footerDiv, existingFooterElement);
         } else {
@@ -447,7 +447,7 @@ export async function initTenantSelectorInterface() {
         updateTenantDisplay();
         closeTenantModal();
         window.dispatchEvent(new CustomEvent("tenantChanged", { detail: { tenantId } }));
-        window.location.href = "/auth"; 
+        window.location.href = "/auth";
     }
 
     async function setup() {
@@ -456,7 +456,7 @@ export async function initTenantSelectorInterface() {
             currentTenantId = tenants[0].tenantId;
             localStorage.setItem(ST_TENANT_ID_KEY, currentTenantId);
         }
-        
+
         const commonFooterSelectors = [
             'footer'
         ];
@@ -470,15 +470,14 @@ export async function initTenantSelectorInterface() {
                     break;
                 }
             } catch (e) {
-                // Element not found by this selector, or observer timed out (if implemented)
-                // console.warn(\`Footer selector "\${selector}" not found or timed out.\`);
+                console.warn(\`Footer selector "\${selector}" not found or timed out.\`);
             }
         }
         if (!footerInjected) {
-            initTenantSelectorDOM(null); // Fallback to appending to body
+            initTenantSelectorDOM(null);
         }
-        
-        updateTenantDisplay(); // Update display after DOM is potentially ready and tenantId is set
+
+        updateTenantDisplay();
 
         window.addEventListener("storage", (event) => {
             if (event.key === ST_TENANT_ID_KEY) {
@@ -491,8 +490,7 @@ export async function initTenantSelectorInterface() {
             updateTenantDisplay();
         });
     }
-    
-    // Ensure DOM is ready before trying to run setup which might interact with DOM
+
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", setup);
     } else {

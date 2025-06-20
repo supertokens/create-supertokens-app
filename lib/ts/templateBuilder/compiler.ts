@@ -30,16 +30,23 @@ export const compileBackend = ({ language, configType, userArguments, framework 
     switch (language) {
         case "ts":
             return generateTypeScriptTemplate({ configType, userArguments }, framework);
-        case "py":
-            return generatePythonTemplate({ configType, userArguments, framework });
-        case "go": {
-            let goConfigType = configType;
-            if (goConfigType === "multifactorauth") {
-                goConfigType = "thirdpartyemailpassword"; // Fallback
+        case "py": {
+            if (configType === "webauthn") {
+                throw new Error("The Python SDK does not support webauthn yet. Please use the TypeScript SDK.");
             }
-            const goUserArgs = { ...userArguments };
-            delete goUserArgs.secondfactors;
-            return generateGoTemplate({ configType: goConfigType, userArguments: goUserArgs });
+
+            return generatePythonTemplate({ configType, userArguments, framework });
+        }
+        case "go": {
+            if (configType === "multifactorauth") {
+                throw new Error("The Go SDK does not support multifactorauth yet. Please use the TypeScript SDK.");
+            }
+
+            if (configType === "webauthn") {
+                throw new Error("The Go SDK does not support multitenancy yet. Please use the TypeScript SDK.");
+            }
+
+            return generateGoTemplate({ configType: configType, userArguments: userArguments });
         }
         default:
             throw new Error(`Unsupported language: ${language}`);
@@ -47,6 +54,7 @@ export const compileBackend = ({ language, configType, userArguments, framework 
 };
 
 export const compileFrontend = ({ framework, configType, userArguments }: FrontendCompilerOptions): string => {
+    console.log(framework, configType, userArguments);
     if (framework === "react") {
         return generateReactTemplate({ configType, userArguments });
     }
