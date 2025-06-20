@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-## [0.0.56] - 2025-05-19
+## [0.0.57] - 2025-06-20
 
 ### Added
 
@@ -28,6 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     -   Explain the new runtime configuration compilation process.
     -   Revise local testing instructions, recommending `npm run dev`.
 -   Performed general recipe cleanup and improvements.
+
+## [0.0.56] - 2025-04-29
+
+-   Adds version checker in preparation for the next major release.
 
 ## [0.0.55] - 2024-12-12
 

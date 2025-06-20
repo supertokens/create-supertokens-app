@@ -121,7 +121,7 @@ async function run() {
     try {
         await printInformation();
 
-        /* 
+        /*
             userArguments will contain all the arguments the user passes
             For example: `npx create-supertokens-app --recipe=emailpassword` will result
             in userArguments.recipe === "emailpassword"
