@@ -43,7 +43,7 @@ export const compileBackend = ({ language, configType, userArguments, framework 
             }
 
             if (configType === "webauthn") {
-                throw new Error("The Go SDK does not support multitenancy yet. Please use the TypeScript SDK.");
+                throw new Error("The Go SDK does not support webauthn yet. Please use the TypeScript SDK.");
             }
 
             return generateGoTemplate({ configType: configType, userArguments: userArguments });
@@ -54,7 +54,6 @@ export const compileBackend = ({ language, configType, userArguments, framework 
 };
 
 export const compileFrontend = ({ framework, configType, userArguments }: FrontendCompilerOptions): string => {
-    console.log(framework, configType, userArguments);
     if (framework === "react") {
         return generateReactTemplate({ configType, userArguments });
     }

@@ -246,8 +246,6 @@ export const generateTypeScriptTemplate = (
         .filter(Boolean)
         .join("\n");
 
-    console.log("ts imports:", imports);
-
     if (recipes.includes("accountLinking")) {
         imports += `\nimport type { AccountInfoWithRecipeId } from "supertokens-node/recipe/accountlinking/types";`;
         imports += `\nimport type { User } from "supertokens-node/types";`;
@@ -319,8 +317,8 @@ export function getWebsiteDomain() {
         appName: "${appInfo.appName}",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}", 
-        websiteBasePath: "${appInfo.websiteBasePath}", 
+        apiBasePath: "${appInfo.apiBasePath}",
+        websiteBasePath: "${appInfo.websiteBasePath}",
     },
     recipeList: [
         ${recipeInits.join(",\n        ")}
