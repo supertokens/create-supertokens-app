@@ -6,6 +6,7 @@ import { rimraf } from "rimraf";
 import kill from "tree-kill";
 import fetch from "node-fetch";
 import { chromium, Browser, Page } from "playwright"; // Import Playwright
+import * as OTPAuth from "otpauth";
 
 // Helper function to wait for server readiness
 async function waitForServerReady(url: string, timeoutMs = 120000): Promise<void> {
@@ -46,21 +47,21 @@ const testCases = [
         desc: "React + Express + EmailPassword",
         frontend: "react",
         backend: "express",
-        firstfactors: "emailpassword",
+        firstfactors: ["emailpassword"],
         appname: "test-app-ep",
     },
     {
         desc: "Angular + FastAPI + ThirdParty",
         frontend: "angular",
         backend: "fastapi",
-        firstfactors: "thirdparty",
+        firstfactors: ["thirdparty"],
         appname: "test-app-tp",
     },
     {
         desc: "Vue + Nest + OTP Email",
         frontend: "vue",
         backend: "nest",
-        firstfactors: "otp-email",
+        firstfactors: ["otp-email"],
         appname: "test-app-pl-otp-email",
     },
     // Multiple First Factors
@@ -68,21 +69,21 @@ const testCases = [
         desc: "Solid + Flask + EP/TP",
         frontend: "solid",
         backend: "flask",
-        firstfactors: "emailpassword,thirdparty",
+        firstfactors: ["emailpassword", "thirdparty"],
         appname: "test-app-ep-tp",
     },
     {
         desc: "React + Koa + TP/LinkPhone",
         frontend: "react",
         backend: "koa",
-        firstfactors: "thirdparty,link-phone",
+        firstfactors: ["thirdparty", "link-phone"],
         appname: "test-app-tp-pl-link-phone",
     },
     {
         desc: "Angular + Express + EP/OTP-Phone/OTP-Email",
         frontend: "angular",
         backend: "express",
-        firstfactors: "emailpassword,otp-phone,otp-email",
+        firstfactors: ["emailpassword", "otp-phone", "otp-email"],
         appname: "test-app-ep-pl-otp-both",
     },
     // MFA
@@ -90,33 +91,40 @@ const testCases = [
         desc: "React + Express + EP / OTP-Email",
         frontend: "react",
         backend: "express",
-        firstfactors: "emailpassword",
-        secondfactors: "otp-email",
+        firstfactors: ["emailpassword"],
+        secondfactors: ["otp-email"],
         appname: "test-app-mfa-ep-otp-email",
     },
     {
         desc: "Vue + FastAPI + TP/EP / TOTP",
         frontend: "vue",
         backend: "fastapi",
-        firstfactors: "thirdparty,emailpassword",
-        secondfactors: "totp",
+        firstfactors: ["thirdparty", "emailpassword"],
+        secondfactors: ["totp"],
         appname: "test-app-mfa-tp-ep-totp",
     },
     {
         desc: "Solid + Nest + EP / OTP-Phone/OTP-Email",
         frontend: "solid",
         backend: "nest",
-        firstfactors: "emailpassword",
-        secondfactors: "otp-phone,otp-email",
+        firstfactors: ["emailpassword"],
+        secondfactors: ["otp-phone", "otp-email"],
         appname: "test-app-mfa-ep-otp-both",
     },
     {
         desc: "React + DRF + TP / TOTP",
         frontend: "react",
         backend: "drf",
-        firstfactors: "thirdparty",
-        secondfactors: "totp",
+        firstfactors: ["thirdparty"],
+        secondfactors: ["totp"],
         appname: "test-app-mfa-tp-totp-drf",
+    },
+    {
+        desc: "React + Go + EP",
+        frontend: "react",
+        backend: "go-http",
+        firstfactors: ["emailpassword"],
+        appname: "test-app-mfa-ep-otp-both-go",
     },
 ];
 
@@ -176,10 +184,10 @@ describe("create-supertokens-app E2E Generation Tests", () => {
 
             let command = `npm run dev:debug -- --frontend ${frontend} --backend ${backend}`;
             if (firstfactors) {
-                command += ` --firstfactors ${firstfactors}`;
+                command += ` --firstfactors ${firstfactors.join(",")}`;
             }
             if (secondfactors) {
-                command += ` --secondfactors ${secondfactors}`;
+                command += ` --secondfactors ${secondfactors.join(",")}`;
             }
             command += ` --appname ${appname}`;
 
@@ -189,7 +197,7 @@ describe("create-supertokens-app E2E Generation Tests", () => {
             try {
                 // Execute the generation command synchronously
                 // Increase timeout if generation takes longer (e.g., 5 minutes)
-                execSync(command, { stdio: "inherit", timeout: 300000 });
+                execSync(command, { stdio: "inherit", timeout: 300000, env: { ...process.env, TEST_MODE: "testing" } });
                 success = true;
                 console.log(`Successfully generated ${appname}`);
 
@@ -252,23 +260,24 @@ describe("create-supertokens-app E2E Generation Tests", () => {
                     // Optionally fail the test here if server start is critical
                     success = false; // Mark test as failed if server doesn't start
                 });
+                const email = `test-${appname}-${Date.now()}-${Math.random().toString(36).substring(2, 15)}@test.com`;
+                const password = `Asdf12..`;
 
                 // Wait for servers to be ready
                 // TODO: Determine ports dynamically if they change based on framework
                 const frontendPort = 3000;
-                // const backendPort = 3001; // Adjust if backend port differs
+                const backendPort = 3001; // Adjust if backend port differs
                 const frontendUrl = `http://localhost:${frontendPort}`;
-                // const backendUrl = `http://localhost:${backendPort}`; // Needed for some checks?
+                const backendUrl = `http://localhost:${backendPort}/auth/jwt/jwks.json`;
 
                 await waitForServerReady(frontendUrl);
-                // Optionally wait for backend too if needed for simple checks
-                // await waitForServerReady(backendUrl);
+                await waitForServerReady(backendUrl);
 
                 // --- Playwright Test ---
                 console.log(`Starting Playwright checks for ${appname}...`);
                 let browser: Browser | undefined;
                 try {
-                    browser = await chromium.launch();
+                    browser = await chromium.launch({ headless: true });
                     const context = await browser.newContext();
                     const page = await context.newPage();
 
@@ -294,6 +303,63 @@ describe("create-supertokens-app E2E Generation Tests", () => {
                     console.log(`Navigated to ${page.url()}`);
                     expect(page.url(), "URL should include /auth after clicking link/button").toContain("/auth");
 
+                    await page.waitForSelector("#supertokens-root", { timeout: 10000 });
+                    const stContainer = await page.waitForSelector('[data-supertokens~="container"]');
+                    expect(stContainer).toBeDefined();
+                    if (firstfactors.includes("emailpassword")) {
+                        // Switch to sign up mode
+                        const switchToSignUpButton = await page.waitForSelector(
+                            '[data-supertokens~=link]:has-text("Sign up")'
+                        );
+                        expect(switchToSignUpButton).toBeDefined();
+                        await switchToSignUpButton.click();
+
+                        await page.waitForTimeout(500);
+
+                        await emailPasswordSignInOrUp(page, email, password);
+                    } else if (firstfactors.includes("otp-email")) {
+                        await startPasswordlessSignInUpEmail(page, email);
+                        await completeOTP(page);
+                    } else {
+                        return;
+                    }
+
+                    const secondFactorId = secondfactors?.includes("otp-email")
+                        ? "otp-email"
+                        : secondfactors?.includes("otp-phone")
+                        ? "otp-phone"
+                        : secondfactors?.includes("totp")
+                        ? "totp"
+                        : undefined;
+
+                    console.log("secondFactorId", JSON.stringify(secondfactors));
+                    // If multiple second factors are configured, select one
+                    if (secondfactors && secondfactors.length > 1) {
+                        await page.waitForURL(/.*\/auth\/mfa/, { timeout: 10000 });
+                        // Select the first available second factor
+                        const factorButton = await page.waitForSelector(
+                            `[data-supertokens~="factorChooserOption"][data-supertokens~="${secondFactorId}"]`
+                        );
+                        expect(factorButton).toBeDefined();
+                        await factorButton.click();
+                    }
+
+                    if (secondFactorId?.startsWith("otp")) {
+                        await page.waitForURL(/.*\/auth\/mfa\/otp-.*/, { timeout: 10000 });
+                        await completeOTP(page);
+                    } else if (secondFactorId === "totp") {
+                        await page.waitForURL(/.*\/auth\/mfa\/totp/, { timeout: 10000 });
+                        const secret = await getTOTPSecret(page);
+                        if (!secret) {
+                            throw new Error("TOTP secret not found");
+                        }
+                        await completeTOTP(page, secret);
+                    } else {
+                        return;
+                    }
+                    await page.waitForURL(/.*\/dashboard.*/, { timeout: 10000 });
+                    expect(page.url(), "URL should include /dashboard after signing in").toContain("/dashboard");
+
                     console.log(`Playwright checks passed for ${appname}.`);
                 } catch (pwError) {
                     console.error(`Playwright error for ${appname}:`, pwError);
@@ -317,3 +383,52 @@ describe("create-supertokens-app E2E Generation Tests", () => {
         310000
     ); // Increase test timeout slightly more than execSync timeout
 });
+
+async function startPasswordlessSignInUpEmail(page: Page, email: string) {
+    const emailInput = await page.waitForSelector('input[name="email"]');
+    expect(emailInput).toBeDefined();
+    await emailInput.fill(email);
+    const continueButton = await page.waitForSelector("[data-supertokens='button']");
+    expect(continueButton).toBeDefined();
+    await continueButton.click();
+}
+
+async function emailPasswordSignInOrUp(page: Page, email: string, password: string) {
+    const emailInput = await page.waitForSelector('input[name="email"]');
+    expect(emailInput).toBeDefined();
+    await emailInput.fill(email);
+    const passwordInput = await page.waitForSelector('input[name="password"]');
+    expect(passwordInput).toBeDefined();
+    await passwordInput.fill(password);
+    const signUpButton = await page.waitForSelector('button:has-text("Sign up")');
+    expect(signUpButton).toBeDefined();
+    await signUpButton.click();
+}
+
+async function completeOTP(page: Page) {
+    const otpInput = await page.waitForSelector('input[name="userInputCode"]');
+    expect(otpInput).toBeDefined();
+    await otpInput.fill("123456");
+    const continueButton = await page.waitForSelector("[data-supertokens='button']");
+    expect(continueButton).toBeDefined();
+    await continueButton.click();
+}
+
+export async function getTOTPSecret(page: Page) {
+    const showSecret = await page.waitForSelector("[data-supertokens~=showTOTPSecretBtn]");
+    await showSecret.click();
+
+    const secretDiv = await page.waitForSelector("[data-supertokens~=totpSecret]");
+    const secret = await secretDiv.textContent();
+    return secret;
+}
+
+export async function completeTOTP(page: Page, secret: string) {
+    const totp = new OTPAuth.TOTP({ secret: secret, digits: 6 }).generate();
+    const totpInput = await page.waitForSelector('input[name="totp"]');
+    expect(totpInput).toBeDefined();
+    await totpInput.fill(totp);
+    const continueButton = await page.waitForSelector("[data-supertokens='button']");
+    expect(continueButton).toBeDefined();
+    await continueButton.click();
+}

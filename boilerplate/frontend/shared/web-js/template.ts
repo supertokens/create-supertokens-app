@@ -5,11 +5,11 @@ import { UserFlags } from "../../../../lib/ts/types.js";
 import { type OAuthProvider } from "../../../../lib/ts/templateBuilder/types.js";
 import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 
-interface WebJSTemplate {
+type WebJSTemplate = {
     configType: ConfigType;
     userArguments?: UserFlags;
     isFullStack?: boolean;
-}
+};
 
 export const frontendRecipes = [
     "emailPassword",
@@ -337,6 +337,12 @@ export function initSuperTokensUI() {
         recipeList: [
             ${uiInitStrings.join(",\n            ")}
         ],
+        getRedirectionURL: async (context: any) => {
+            if (context.action === "SUCCESS") {
+                return "/dashboard";
+            }
+            return undefined;
+        },
     });
 }
 

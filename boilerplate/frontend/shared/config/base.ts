@@ -4,13 +4,13 @@ import { RecipeInterface as PLRecipeInterface } from "supertokens-web-js/recipe/
 import { RecipeInterface as TPPLRecipeInterface } from "supertokens-web-js/recipe/thirdpartypasswordless";
 import { RecipeInterface as SessionRecipeInterface } from "supertokens-web-js/recipe/session";
 
-export interface BaseConfig {
+export type BaseConfig = {
     apiPort?: number | string;
     apiUrl?: string;
     websitePort?: number | string;
     websiteUrl?: string;
     appName?: string;
-}
+};
 
 export function getApiDomain(config?: BaseConfig) {
     const apiPort = process.env.VITE_APP_API_PORT || config?.apiPort || 3001;
@@ -58,13 +58,13 @@ export type RecipeList = Array<
     RecipeInterface | TPRecipeInterface | PLRecipeInterface | TPPLRecipeInterface | SessionRecipeInterface
 >;
 
-export interface SuperTokensUIConfig {
+export type SuperTokensUIConfig = {
     appInfo: typeof defaultAppInfo;
     recipeList: RecipeList;
     getRedirectionURL?: typeof defaultRedirectionCallback;
-}
+};
 
-export interface SuperTokensWebJSConfig {
+export type SuperTokensWebJSConfig = {
     appInfo: Omit<typeof defaultAppInfo, "websiteDomain" | "websiteBasePath">;
     recipeList: RecipeList;
-}
+};

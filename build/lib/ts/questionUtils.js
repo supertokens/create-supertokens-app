@@ -10,12 +10,12 @@ export function getPythonRunScripts() {
         ];
     }
     return [
-        "pip install virtualenv",
-        "virtualenv venv",
+        "python -m venv venv",
         "chmod +x venv/bin/activate",
         ". venv/bin/activate",
         "pip install -r requirements.txt",
-        "python app.py",
+
+        "python3 app.py",
     ];
 }
 export function getDjangoPythonRunScripts() {
@@ -25,16 +25,15 @@ export function getDjangoPythonRunScripts() {
             "python -m virtualenv venv",
             ".\\\\venv\\\\Scripts\\\\activate.bat",
             "pip install -r requirements.txt",
-            "python manage.py runserver",
+            "python3 manage.py runserver",
         ];
     }
     return [
-        "pip install virtualenv",
-        "virtualenv venv",
+        "python -m venv venv",
         "chmod +x venv/bin/activate",
         ". venv/bin/activate",
         "pip install -r requirements.txt",
-        "python manage.py runserver",
+        "python3 manage.py runserver",
     ];
 }
 // Converts the options array we declare to a format inquirer can use

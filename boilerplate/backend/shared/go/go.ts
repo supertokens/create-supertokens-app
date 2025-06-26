@@ -148,9 +148,17 @@ export const goRecipeInits = {
     },`;
         }
 
+        let testConf = "";
+        if (process.env.TEST_MODE === "testing") {
+            testConf = `,
+            GetCustomUserInputCode: func(userContext any) (string, error) {
+                return "123456", nil
+            },`;
+        }
+
         return `passwordless.Init(plessmodels.TypeInput{
     FlowType: "${flowType}",
-    ${contactMethodConfig}
+    ${contactMethodConfig}${testConf}
 })`;
     },
     session: () => `session.Init(nil)`,

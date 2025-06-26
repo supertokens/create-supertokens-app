@@ -6,11 +6,11 @@ import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthPr
 import { UserFlags } from "../../../../lib/ts/types.js";
 import dedent from "dedent";
 
-interface PythonTemplate {
+type PythonTemplate = {
     configType: ConfigType;
     userArguments?: UserFlags;
     framework?: string;
-}
+};
 
 export const pyRecipeImports = {
     emailPassword: "from supertokens_python.recipe import emailpassword",
@@ -130,9 +130,17 @@ export const pyRecipeInits = {
             flowType = "USER_INPUT_CODE";
         }
 
+        let testConf = "";
+        if (process.env.TEST_MODE === "testing") {
+            testConf = `,
+            get_custom_user_input_code=async (user_context: dict) -> str:
+                return "123456"
+            `;
+        }
+
         return `passwordless.init(
         flow_type="${flowType}",
-        contact_config=${contactConfigInstantiation}
+        contact_config=${contactConfigInstantiation}${testConf}
     )`;
     },
     session: () => `session.init()`,

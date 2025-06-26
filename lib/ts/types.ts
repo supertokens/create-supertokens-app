@@ -307,15 +307,15 @@ export type FirstFactor =
     | "webauthn";
 export type SecondFactor = "otp-phone" | "otp-email" | "link-phone" | "link-email" | "totp";
 
-export interface FactorConfig {
+export type FactorConfig = {
     firstFactors?: FirstFactor[];
     secondFactors?: SecondFactor[];
     contactMethodEmailOrPhone?: boolean;
     contactMethodPhone?: boolean;
     contactMethodEmail?: boolean;
-}
+};
 
-export interface RecipeToFactorMapping {
+export type RecipeToFactorMapping = {
     all_auth: FirstFactor[];
     emailpassword: FirstFactor[];
     thirdpartyemailpassword: FirstFactor[];
@@ -331,7 +331,7 @@ export interface RecipeToFactorMapping {
         firstFactors: FirstFactor[];
         secondFactors: SecondFactor[];
     };
-}
+};
 
 export const RECIPE_TO_FACTOR_MAPPING: RecipeToFactorMapping = {
     all_auth: ["emailpassword", "thirdparty", "link-email", "link-phone"],

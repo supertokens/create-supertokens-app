@@ -3,11 +3,11 @@ import { type ConfigType, type OAuthProvider } from "../../../../lib/ts/template
 import { getAppInfo } from "../../../shared/config/appInfo.js";
 import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 
-interface ReactTemplate {
+type ReactTemplate = {
     configType: ConfigType;
     userArguments?: UserFlags;
     isFullStack?: boolean;
-}
+};
 
 export const reactRecipeImports = {
     emailPassword:
@@ -274,11 +274,9 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
                     if (typeof initFunc === "function") {
                         return initFunc();
                     }
-                    console.warn(`No initializer function found for recipe: ${recipe}`);
-                    return null;
+                    throw new Error(`No initializer function found for recipe: ${recipe}`);
                 default:
-                    console.warn(`Unknown recipe encountered: ${recipe}`);
-                    return null;
+                    throw new Error(`Unknown recipe encountered: ${recipe}`);
             }
         })
         .filter(Boolean);
@@ -307,26 +305,6 @@ ${
     configType === "all_auth" ||
     configType === "multitenancy"
         ? `export const styleOverride = \`
-[data-supertokens~=container] {
-    --palette-background: #ffffff;
-    --palette-inputBackground: #ffffff;
-    --palette-inputBorder: #dddddd;
-    --palette-textTitle: #222222;
-    --palette-textLabel: #222222;
-    --palette-textPrimary: #222222;
-    --palette-error: #ff1717;
-    --palette-textInput: #222222;
-    --palette-textLink: #4949e4;
-    --palette-buttonText: #ffffff;
-    --palette-primary: #4949e4;
-    --palette-success: #41a700;
-
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    width: 420px;
-    margin: 0 auto;
-    text-align: center;
-}
-
 [data-supertokens~=tenants-link] {
     margin-top: 8px;
 }
@@ -355,9 +333,7 @@ export const SuperTokensConfig = {
     ],
     getRedirectionURL: async (context: any) => {
         if (context.action === "SUCCESS") {
-            if ((context as any).newSessionCreated) {
-                return "/dashboard";
-            }
+            return "/dashboard";
         }
         return undefined;
     },
@@ -372,7 +348,7 @@ export const PreBuiltUIList = [${prebuiltUIs.join(", ")}];
 ${
     configType === "multitenancy"
         ? `
-interface Tenant {
+type Tenant = {
     tenantId: string;
 }
 

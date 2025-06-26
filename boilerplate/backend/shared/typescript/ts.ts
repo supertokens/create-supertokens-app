@@ -5,11 +5,11 @@ import { getAppInfo } from "../../../shared/config/appInfo.js";
 import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 import { UserFlags } from "../../../../lib/ts/types.js";
 
-interface TypeScriptTemplateOptions {
+type TypeScriptTemplateOptions = {
     configType: ConfigType;
     userArguments?: UserFlags;
     isFullStack?: boolean;
-}
+};
 
 export const tsRecipeImports = {
     emailPassword: 'import EmailPassword from "supertokens-node/recipe/emailpassword";',
@@ -90,10 +90,17 @@ export const tsRecipeInits = {
         if (flowType === undefined) {
             flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
         }
+        let testConf = "";
+        if (process.env.TEST_MODE === "testing") {
+            testConf = `,
+            getCustomUserInputCode: async (userContext: any) => {
+                return "123456";
+            }`;
+        }
 
         return `Passwordless.init({
     contactMethod: "${contactMethod}",
-    flowType: "${flowType}"
+    flowType: "${flowType}"${testConf}
 })`;
     },
     session: () => `Session.init()`,
@@ -280,11 +287,9 @@ export const generateTypeScriptTemplate = (
                     if (typeof initFunc === "function") {
                         return (initFunc as any)();
                     }
-                    console.warn(`No initializer function found for recipe: ${recipe}`);
-                    return null;
+                    throw new Error(`No initializer function found for recipe: ${recipe}`);
                 default:
-                    console.warn(`Unknown recipe encountered: ${recipe}`);
-                    return null;
+                    throw new Error(`Unknown recipe encountered: ${recipe}`);
             }
         })
         .filter(Boolean);

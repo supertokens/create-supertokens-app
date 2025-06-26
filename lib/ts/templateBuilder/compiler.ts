@@ -6,25 +6,25 @@ import { generateGoTemplate } from "../../../boilerplate/backend/shared/go/go.js
 import { generateReactTemplate } from "../../../boilerplate/frontend/shared/react/template.js";
 import { generateWebJSTemplate } from "../../../boilerplate/frontend/shared/web-js/template.js";
 
-interface BackendCompilerOptions {
+type BackendCompilerOptions = {
     language: Language;
     configType: ConfigType;
     userArguments: UserFlags;
     framework?: string;
-}
+};
 
-interface FrontendCompilerOptions {
+type FrontendCompilerOptions = {
     framework: FrontendFramework;
     configType: ConfigType;
     userArguments: UserFlags;
-}
+};
 
-interface FullstackCompilerOptions {
+type FullstackCompilerOptions = {
     framework: string;
     configType: ConfigType;
     component: "frontend" | "backend";
     userArguments: UserFlags;
-}
+};
 
 export const compileBackend = ({ language, configType, userArguments, framework }: BackendCompilerOptions): string => {
     switch (language) {
