@@ -4,40 +4,36 @@ import { Answers, QuestionOption, RecipeQuestionOption, UserFlags } from "./type
 export function getPythonRunScripts(): string[] {
     if (os.platform() === "win32") {
         return [
-            "pip install virtualenv",
-            "python -m virtualenv venv",
+            "python3 -m venv venv",
             ".\\\\venv\\\\Scripts\\\\activate.bat",
             "pip install -r requirements.txt",
-            "python app.py",
+            "python3 app.py",
         ];
     }
     return [
-        "pip install virtualenv",
-        "virtualenv venv",
+        "python3 -m venv venv",
         "chmod +x venv/bin/activate",
         ". venv/bin/activate",
         "pip install -r requirements.txt",
-        "python app.py",
+        "python3 app.py",
     ];
 }
 
 export function getDjangoPythonRunScripts(): string[] {
     if (os.platform() === "win32") {
         return [
-            "pip install virtualenv",
-            "python -m virtualenv venv",
+            "python3 -m venv venv",
             ".\\\\venv\\\\Scripts\\\\activate.bat",
             "pip install -r requirements.txt",
-            "python manage.py runserver",
+            "python3 manage.py runserver",
         ];
     }
     return [
-        "pip install virtualenv",
-        "virtualenv venv",
+        "python3 -m venv venv",
         "chmod +x venv/bin/activate",
         ". venv/bin/activate",
         "pip install -r requirements.txt",
-        "python manage.py runserver",
+        "python3 manage.py runserver",
     ];
 }
 
@@ -88,6 +84,7 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
             frontEndInFlags === "capacitor" ||
             frontEndInFlags === "remix" ||
             frontEndInFlags === "astro" ||
+            frontEndInFlags === "astro-react" ||
             frontEndInFlags === "sveltekit" ||
             frontEndInFlags === "nuxtjs"
         );
@@ -98,6 +95,7 @@ export function shouldSkipBackendQuestion(answers: Answers, userFlags: UserFlags
         answers.frontend === "capacitor" ||
         answers.frontend === "remix" ||
         answers.frontend === "astro" ||
+        answers.frontend === "astro-react" ||
         answers.frontend === "sveltekit" ||
         answers.frontend === "nuxtjs"
     );

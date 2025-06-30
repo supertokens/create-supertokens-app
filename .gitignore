@@ -1,6 +1,7 @@
 node_modules
 .DS_Store
-my-app
+*my-app*
 analytics.json
 .vscode
 dashboard-demo
+memory-bank

@@ -1,102 +1,127 @@
-![SuperTokens banner](https://raw.githubusercontent.com/supertokens/supertokens-logo/master/images/Artboard%20%E2%80%93%2027%402x.png)
+# SuperTokens + Remix
 
-# SuperTokens with Remix
+A demo implementation of [SuperTokens](https://supertokens.com/) with [Remix](https://remix.run/).
 
-This demo app demonstrates how to integrate SuperTokens into a Remix application.
+## General Info
 
-Feautures:
+This project aims to demonstrate how to integrate SuperTokens into a Remix application. Its primary purpose is to serve as an educational tool, but it can also be used as a starting point for your own project.
 
--   Initializes SuperTokens with frontend and backend configurations
--   Creates a frontend route to handle authentication-related tasks
--   Integrates the SuperTokens' pre-built login UI for secure user authentication
--   Protects frontend routes to ensure only authenticated users can access the dashboard
--   Exposes the SuperTokens authentication APIs used by frontend widgets
+Features:
 
-## Project structure & Parameters
+-   Initializes SuperTokens with frontend and backend configurations.
+-   Creates frontend routes to handle authentication-related tasks.
+-   Integrates SuperTokens' pre-built login UI.
+-   Protects frontend routes and server-side loaders/actions to ensure only authenticated users can access certain parts.
+-   Exposes the SuperTokens authentication APIs used by frontend widgets.
 
-```txt
-📦[your-app-name]
-┣ 📂app
-┃ ┣ 📂config
-┃ ┃ ┣ 📜appInfo.tsx
-┃ ┃ ┣ 📜backend.tsx
-┃ ┃ ┗ 📜frontend.tsx
-┃ ┣ 📂routes
-┃ ┃ ┣ 📜_index.tsx
-┃ ┃ ┣ 📜api.auth.$.tsx
-┃ ┃ ┗ 📜auth.$.tsx
-┃ ┣ 📜app.css
-┃ ┣ 📜entry.server.tsx
-┃ ┗ 📜root.tsx
-┣ 📂assets
-┃ ┣ 📂fonts
-┃ ┣ 📂images
-┣ 📂test
-┃ ┗ 📜basic.test.cjs
-┣ 📜package.json
-┣ 📜remix.config.mjs
-┗ 📜server.mjs
+## Repo Structure
+
+### Source
+
+```
+📦app
+┣ 📂components
+┃ ┣ 📜sessionAuthForRemix.tsx <!-- Utility for session verification -->
+┃ ┗ 📜tryRefreshClientComponent.tsx <!-- Utility for token refresh -->
+┣ 📂config
+┃ ┣ 📜appInfo.tsx --> Shared application information
+┃ ┣ 📜backend.tsx --> SuperTokens backend configuration
+┃ ┗ 📜frontend.tsx --> SuperTokens frontend configuration
+┣ 📂routes
+┃ ┣ 📜_index.tsx --> Public landing page
+┃ ┣ 📜api.auth.$.tsx --> SuperTokens backend auth API handlers
+┃ ┣ 📜api.tenants.$.tsx <!-- Example API for tenants -->
+┃ ┣ 📜auth.$.tsx --> Page for SuperTokens pre-built auth UI
+┃ ┣ 📜dashboard._index.tsx --> Protected dashboard page
+┃ ┗ 📜sessioninfo.$.tsx --> Example protected API route
+┣ 📜app.css
+┣ 📜entry.server.tsx --> Server entry point (handles request, may init ST backend)
+┣ 📜root.tsx --> Root component (wraps app with SuperTokens frontend)
+📦public
+┣ 📜favicon.ico
+┣ 📜remix.svg
+┗ 📜ST.svg
+📦assets
+┣ 📂fonts
+┗ 📂images
+📜remix.config.js <!-- Or .mjs -->
+📜vite.config.ts
+📜package.json
+📜tsconfig.json
 ```
 
-Let's explore the important files:
+## Config
 
-| Directory/File       | Description                                                                                     |
-| -------------------- | ----------------------------------------------------------------------------------------------- |
-| **app**              | Contains configuration files and route files for your application.                              |
-|                      | **config**                                                                                      |
-|                      | Contains configuration files for your application.                                              |
-|                      | `appInfo.tsx` : Includes information about your application reused throughout the app.          |
-|                      | `backend.tsx` : Backend-related configuration, including settings for SuperTokens.              |
-|                      | `frontend.tsx` : Frontend configuration, including settings for SuperTokens.                    |
-|                      | **routes**                                                                                      |
-|                      | Contains route files for your application.                                                      |
-|                      | `_index.tsx` : Represents the default route or landing page.                                    |
-|                      | `api.auth.$.tsx` : Handles authentication-related API endpoints.                                |
-|                      | `auth.$.tsx` : Deals with authentication routes or components using SuperTokens.                |
-|                      | `entry.server.tsx` : Entry point for server-side rendering (SSR) setup.                         |
-|                      | `root.tsx` : Root component of your application.                                                |
-| **test**             | Contains test files for your application.                                                       |
-|                      | `basic.test.cjs` : A basic test file, presumably for testing functionality in your application. |
-| **remix.config.mjs** | Remix configuration file containing settings for your Remix application.                        |
-| **server.mjs**       | File responsible for server-side functionality.                                                 |
+### Remix & Vite
 
-## Run application locally
+Remix uses Vite as its compiler.
 
-Follow the steps outlined below to run the application locally:
+-   `vite.config.ts`: Vite configuration.
+-   `remix.config.js` (or `.mjs`): Remix-specific configurations.
+-   Key directories:
+    -   `app/root.tsx`: The root component of your application.
+    -   `app/entry.server.tsx`: Handles server-side rendering logic.
+    -   `app/routes/`: Contains files that define your application's routes (both UI pages and API endpoints via loaders/actions).
+-   The default development server runs on port `3000` (often, or as configured).
 
-1. Change directory to the **[your-app-name]** folder.
+### SuperTokens
 
-    ```shell
-    cd your-app-name
-    ```
+SuperTokens configuration is managed in the `app/config/` directory:
 
-2. Run the application with the command below:
+-   **`app/config/frontend.tsx`**: Contains frontend-specific SuperTokens configuration, typically initialized in `app/root.tsx` or a client-side entry point.
+-   **`app/config/backend.tsx`**: Contains backend-specific SuperTokens configuration, used by server-side code (loaders, actions, API routes like `app/routes/api.auth.$.tsx`).
+-   **`app/config/appInfo.tsx`**: Shared application details.
 
-    ```shell
-    npm run dev
-    ```
+These files will differ based on the [auth recipe](https://supertokens.com/docs/guides) you choose.
 
-## How to use
+## Application Flow
 
-### Using `create-supertokens-app`
+Remix handles requests on the server first (via loaders and actions in route files) and then renders React components on the client.
 
--   Run the following command
+1.  **Server Entry (`app/entry.server.tsx`)**
 
-```bash
-npx create-supertokens-app@latest --frontend=remix
-```
+    -   Handles incoming requests on the server. SuperTokens backend SDK might be initialized here or on-demand in API route handlers.
 
--   Follow the instructions on screen
+2.  **Root Component (`app/root.tsx`)**
 
-## Author
+    -   The main shell for all pages.
+    -   Initializes the SuperTokens frontend SDK (e.g., by wrapping the app with `SuperTokensWrapper` from `supertokens-auth-react`).
+    -   Renders the matched route component.
 
-Created with :heart: by the folks at supertokens.com.
+3.  **Frontend Pages & Server-Side Logic (`app/routes/`)**
 
-## License
+    -   **Landing Page (`app/routes/_index.tsx`)**: Publicly accessible.
+    -   **Authentication Page (`app/routes/auth.$.tsx`)**: Renders the SuperTokens pre-built UI.
+    -   **Dashboard Page (`app/routes/dashboard._index.tsx`)**: Protected page. Its `loader` function on the server verifies the SuperTokens session before rendering.
+    -   Each route file can export a `loader` (for data fetching on server) and `action` (for form submissions on server), where SuperTokens session verification and backend logic occur.
 
-This project is licensed under the Apache 2.0 license.
+4.  **API Routes (within `app/routes/` or dedicated API files)**
+    -   **SuperTokens Auth Handlers (e.g., `app/routes/api.auth.$.tsx`)**: These are Remix route files that act as API endpoints. They handle all backend authentication logic by delegating to the SuperTokens backend SDK.
+    -   **Example Protected API (`app/routes/sessioninfo.$.tsx`)**: A route file whose `loader` or `action` requires a valid SuperTokens session.
 
-## Notes
+When a user visits, Remix processes the request server-side (running loaders/actions). `app/root.tsx` sets up the frontend SuperTokens context. Navigating to `/auth` shows the UI. Authenticated users can access protected routes and APIs, with session checks happening in loaders/actions.
 
--   To know more about how this app works and to learn how to customise it based on your use cases refer to the [SuperTokens Documentation](https://supertokens.com/docs/guides)
--   We have provided development OAuth keys for the various built-in third party providers in the `/app/config/backend.ts` file. Feel free to use them for development purposes, but **please create your own keys for production use**.
+## Customizations
+
+If you want to customize the default auth UI, you have two options:
+
+1. Refer to the [docs](https://supertokens.com/docs/thirdpartyemailpassword/advanced-customizations/react-component-override/usage) on how to customize the pre-built UI.
+2. Roll your own UI by choosing "Custom UI" in the right sidebar in the [docs](https://supertokens.com/docs/thirdpartyemailpassword/quickstart/frontend-setup).
+
+## Additional resources
+
+-   Custom UI Example (React): https://github.com/supertokens/supertokens-web-js/tree/master/examples/react/with-thirdpartyemailpassword
+-   Custom UI Blog post: https://supertokens.medium.com/adding-social-login-to-your-website-with-supertokens-custom-ui-only-5fa4d7ab6402
+-   Awesome SuperTokens: https://github.com/kohasummons/awesome-supertokens
+
+## Contributing
+
+Please refer to the [CONTRIBUTING.md](https://github.com/supertokens/create-supertokens-app/blob/master/CONTRIBUTING.md) file in the root of the [`create-supertokens-app`](https://github.com/supertokens/create-supertokens-app) repo.
+
+## Contact us
+
+For any questions, or support requests, please email us at team@supertokens.io, or join our [Discord](https://supertokens.io/discord) server.
+
+## Authors
+
+Created with :heart: by the folks at SuperTokens.io.

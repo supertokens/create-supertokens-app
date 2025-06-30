@@ -1,67 +1,48 @@
-import { useSessionContext } from "supertokens-auth-react/recipe/session";
-import { signOut } from "supertokens-auth-react/recipe/session";
-import { recipeDetails } from "../config";
-import SessionInfo from "./SessionInfo";
-import { BlogsIcon, CelebrateIcon, GuideIcon, SignOutIcon } from "../assets/images";
+import { useSessionContext, signOut } from "supertokens-auth-react/recipe/session";
+import { getApiDomain } from "../config";
 import { useNavigate } from "react-router-dom";
-import Footer from "./Footer";
-
-export interface Link {
-    name: string;
-    onClick: () => void;
-    icon: string;
-}
 
 export default function Dashboard() {
-    const sessionContext = useSessionContext();
     const navigate = useNavigate();
+    const sessionContext = useSessionContext();
 
-    if (sessionContext.loading === true) {
-        return null;
+    async function callAPIClicked() {
+        try {
+            const response = await fetch(getApiDomain() + "/sessioninfo");
+            const data = await response.json();
+            window.alert("Session Information:\n" + JSON.stringify(data, null, 2));
+        } catch (err) {
+            window.alert("Error calling API: " + err.message);
+        }
     }
 
     async function logoutClicked() {
         await signOut();
-        navigate("/auth");
+        navigate("/");
     }
-
-    function openLink(url: string) {
-        window.open(url, "_blank");
-    }
-
-    const links: Link[] = [
-        {
-            name: "Blogs",
-            onClick: () => openLink("https://supertokens.com/blog"),
-            icon: BlogsIcon,
-        },
-        {
-            name: "Documentation",
-            onClick: () => openLink(recipeDetails.docsLink),
-            icon: GuideIcon,
-        },
-        {
-            name: "Sign Out",
-            onClick: logoutClicked,
-            icon: SignOutIcon,
-        },
-    ];
 
     return (
-        <div className="fill" id="home-container">
+        <>
             <div className="main-container">
                 <div className="top-band success-title bold-500">
-                    <img src={CelebrateIcon} alt="Login successful" className="success-icon" /> Login successful
+                    <img src="/assets/images/celebrate-icon.svg" alt="Login successful" className="success-icon" />
+                    Login successful
                 </div>
                 <div className="inner-content">
                     <div>Your userID is:</div>
                     <div className="truncate" id="user-id">
                         {sessionContext.userId}
                     </div>
-                    <SessionInfo />
+                    <div className="buttons">
+                        <button onClick={callAPIClicked} className="dashboard-button">
+                            Call API
+                        </button>
+                        <button onClick={logoutClicked} className="dashboard-button">
+                            Logout
+                        </button>
+                    </div>
                 </div>
             </div>
-            <Footer links={links} />
-        </div>
+        </>
     );
 }

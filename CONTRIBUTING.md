@@ -65,25 +65,71 @@ Questions prompted to the user are controlled by `getQuestions` in `lib/ts/confi
 
 Modify the array to add/remove/reorder questions. Some questions use the previous answers, make sure to be careful of this when modifying questions.
 
+### Working with Boilerplate Configurations
+
+The configuration files within each boilerplate (e.g., `config.ts`, `config.tsx`) are dynamically generated when a user runs `create-supertokens-app`. Here's how it works and how to contribute to them:
+
+1.  **Source of Truth for Config Logic:**
+
+    -   The actual logic that generates the content of these configuration files resides in JavaScript "template generator" functions. These are located in shared directories within the main `boilerplate/` folder:
+        -   Frontend configs: `boilerplate/frontend/shared/<framework>/template.js` (e.g., [`boilerplate/frontend/shared/react/template.js`](boilerplate/frontend/shared/react/template.js) for React, [`boilerplate/frontend/shared/web-js/template.js`](boilerplate/frontend/shared/web-js/template.js) for others like Angular, Vue).
+        -   Backend configs: `boilerplate/backend/shared/<language>/<language>.js` (e.g., [`boilerplate/backend/shared/typescript/ts.js`](boilerplate/backend/shared/typescript/ts.js) for Node.js, [`boilerplate/backend/shared/python/py.js`](boilerplate/backend/shared/python/py.js) for Python).
+        -   Fullstack configs also use these, with logic in [`lib/ts/templateBuilder/compiler.ts`](lib/ts/templateBuilder/compiler.ts) determining which generator to call for the frontend and backend parts.
+    -   These generator functions take the chosen recipe (e.g., "emailpassword") and user-provided CLI flags (`userArguments`) as input to customize the generated configuration string.
+
+2.  **How it Works During Scaffolding:**
+
+    -   When `create-supertokens-app` runs, it first copies or downloads the chosen boilerplate (e.g., `boilerplate/frontend/react/`).
+    -   This copied boilerplate includes a `config/` (or similar, e.g. `src/config/`) directory which might initially contain sub-folders with various template files or structures for different recipes. **These sub-folders are temporary.**
+    -   The CLI then calls the relevant template generator function (from point 1) via [`lib/ts/templateBuilder/compiler.ts`](lib/ts/templateBuilder/compiler.ts) and [`lib/ts/utils.ts`](lib/ts/utils.ts).
+    -   The string output by this generator function is written into the final configuration file (e.g., `src/config.ts`).
+    -   After this, the original directory that contained the multiple recipe template files (e.g., `src/config/emailpassword-config/`, `src/config/thirdparty-config/` if they existed) is **deleted**.
+
+3.  **Making Changes to Configurations:**
+
+    -   To change how a specific recipe is configured for a particular framework/language (e.g., to modify the `apiBasePath` for `emailpassword` recipe in a React app), you must edit the corresponding **template generator function** in the `boilerplate/.../shared/...` directory.
+    -   For example, to change the React `config.tsx` for the `emailpassword` recipe, you would modify `boilerplate/frontend/shared/react/template.js` to adjust how it generates the output when `configType` is `emailpassword`.
+    -   Do **not** attempt to modify files within recipe-specific subfolders inside a boilerplate's `config` directory (e.g., `boilerplate/frontend/react/src/config/emailpassword-config-files/somefile.ts`) expecting them to be directly copied, as these folders are removed after the final config file is generated. The generator functions are the definitive source.
+
+4.  **Testing Configuration Changes:**
+    -   When you modify these template generator functions, test your changes by running the CLI locally using `npm run dev`. This script sets `USE_LOCAL_TEMPLATES=true`, ensuring that your local `boilerplate/` changes (including your modified generator functions) are used by the CLI.
+    -   Select the relevant framework, language, and recipe to verify that your generated configuration file is correct.
+
 ## Contributing to the source code
 
 Before you push your code make sure you have followed the project setup section and added the pre commit hooks.
 
 ### Testing your changes
 
-After building your code you can use `npx .` to run the tool locally, make sure the changes you have made work for
+To test your local changes effectively, especially when modifying boilerplate code, configuration generators, or the core logic:
 
--   Any new stacks you may have added
--   Existing Frontend + Backend selection logic
--   Existing full stack selection logic
+1.  **Use the `dev` script:**
 
-If you are testing an example app you have created on your own branch, you can pass an additional flag to have the tool use your branch instead of master
+    ```bash
+    npm run dev
+    ```
 
-**Note:** The branch has to actually get on GitHub first before it can be tested.
+    This command runs the CLI using `tsx` (for direct TypeScript execution) and automatically sets the `USE_LOCAL_TEMPLATES=true` environment variable. This ensures that any changes you make to the files in the local `boilerplate/` directory (including shared template generator functions) are used by the CLI.
 
-```
-npx . --branch=your_branch
-```
+2.  **For verbose logging:**
+    If you need more detailed logs, especially for debugging template paths or compilation steps:
+
+    ```bash
+    npm run dev:debug
+    ```
+
+    This sets `DEBUG=true` in addition to `USE_LOCAL_TEMPLATES=true`.
+
+3.  **What to test:**
+
+    -   Ensure any new stacks you've added are selectable and scaffold correctly.
+    -   Verify that existing frontend + backend selections still work as expected.
+    -   Check that existing fullstack selections function correctly.
+    -   If you modified configuration generators, test those specific recipes and frameworks.
+
+4.  **Testing a specific branch from GitHub (less common for local dev):**
+    If you need to test a version of the boilerplate from a specific branch on GitHub (that isn't your local code), you can still use `npx . --branch=your_branch_name` after building your local CLI changes (`npm run build-pretty`). However, for most local development and testing of boilerplate/core logic changes, `npm run dev` is preferred.
+    **Note:** For `--branch` to work, the branch must exist on the GitHub remote.
 
 ### Update package version if needed
 

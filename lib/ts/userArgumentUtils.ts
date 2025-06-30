@@ -1,12 +1,13 @@
 import {
     allBackends,
     SupportedBackends,
-    allFrontends,
+    SupportedFrontends, // Add SupportedFrontends
+    allFrontends, // Re-add allFrontends
     allPackageManagers,
     allRecipes,
     Answers,
     isValidBackend,
-    isValidFrontend,
+    isValidFrontend, // Re-add isValidFrontend
     isValidPackageManager,
     isValidRecipeName,
     UserFlags,
@@ -14,7 +15,8 @@ import {
 } from "./types.js";
 import validateProjectName from "validate-npm-package-name";
 import path from "path";
-
+import { thirdPartyLoginProviders } from "../../boilerplate/backend/shared/config/oAuthProviders.js";
+// Remove getFrontendOptionsForProcessing import
 export function validateNpmName(name: string): {
     valid: boolean;
     problems?: string[];
@@ -37,7 +39,8 @@ export function validateFolderName(name: string): {
     return validateNpmName(path.basename(path.resolve(name)));
 }
 
-export function validateUserArguments(userArguments: UserFlagsRaw) {
+export function validateUserArguments(userArguments: UserFlagsRaw | UserFlags) {
+    // Make sync again
     if (userArguments.dashboardDemo !== undefined) {
         if (userArguments.dashboardDemo !== "true") {
             throw new Error("When using --dashboardDemo, please always set the value to true");
@@ -60,17 +63,48 @@ export function validateUserArguments(userArguments: UserFlagsRaw) {
     }
 
     if (userArguments.frontend !== undefined) {
-        if (!isValidFrontend(userArguments.frontend)) {
+        // Normalize aliases before validation
+        const frontendAliases: Record<string, SupportedFrontends> = {
+            vuejs: "vue",
+            nuxt: "nuxtjs",
+            solidjs: "solid",
+            nextjs: "next",
+            "next-pages-directory": "next",
+            "next-app-dir": "next-app-directory",
+            "next-pages-router": "next",
+            "next-app-router": "next-app-directory",
+        };
+        const normalizedFrontend = frontendAliases[userArguments.frontend] || userArguments.frontend;
+
+        if (!isValidFrontend(normalizedFrontend)) {
             const availableFrontends = allFrontends.map((e) => `    - ${e.id}`).join("\n");
             throw new Error("Invalid frontend provided, valid values:\n" + availableFrontends);
         }
     }
 
     if (userArguments.backend !== undefined) {
-        if (!isValidBackend(userArguments.backend)) {
-            const avaiableBackends = allBackends.map((e) => `    - ${e.id}`).join("\n");
-            throw new Error("Invalid backend provided, valid values:\n" + avaiableBackends);
+        // Normalize backend aliases/frameworks
+        const backendAliases: Record<string, SupportedBackends> = {
+            fastapi: "python-fastapi",
+            flask: "python-flask",
+            drf: "python-drf",
+            koa: "koa",
+            express: "express",
+            nest: "nest",
+        };
+
+        const normalizedBackend = backendAliases[userArguments.backend] || userArguments.backend;
+
+        if (!isValidBackend(normalizedBackend)) {
+            const availableBackends = allBackends
+                .flatMap((b) => [b.id, ...(b.frameworks?.map((f) => f.id) || [])])
+                .map((e) => `    - ${e}`)
+                .join("\n");
+            throw new Error(
+                `Invalid backend provided: "${userArguments.backend}". Valid values:\n${availableBackends}`
+            );
         }
+        userArguments.backend = normalizedBackend;
     }
 
     if (userArguments.manager !== undefined) {
@@ -78,6 +112,57 @@ export function validateUserArguments(userArguments: UserFlagsRaw) {
             const availableManagers: string = allPackageManagers.map((e) => `    - ${e}`).join("\n");
             throw new Error("Invalid package manager provided, valid values:\n" + availableManagers);
         }
+    }
+
+    if (userArguments.firstfactors !== undefined) {
+        console.log("Validating firstfactors:", userArguments.firstfactors);
+        const validFirstFactors = [
+            "emailpassword",
+            "thirdparty",
+            "otp-phone",
+            "otp-email",
+            "link-phone",
+            "link-email",
+            "webauthn",
+        ];
+        const invalidFactors = userArguments.firstfactors.filter((factor) => !validFirstFactors.includes(factor));
+        console.log("Invalid factors:", invalidFactors);
+        if (invalidFactors.length > 0) {
+            throw new Error(
+                `Invalid first factors provided: ${invalidFactors.join(
+                    ", "
+                )}. Valid values are: ${validFirstFactors.join(", ")}`
+            );
+        }
+    }
+
+    if (userArguments.secondfactors !== undefined) {
+        const validSecondFactors = ["otp-phone", "otp-email", "link-phone", "link-email", "totp"];
+        const invalidFactors = userArguments.secondfactors.filter((factor) => !validSecondFactors.includes(factor));
+        if (invalidFactors.length > 0) {
+            throw new Error(
+                `Invalid second factors provided: ${invalidFactors.join(
+                    ", "
+                )}. Valid values are: ${validSecondFactors.join(", ")}`
+            );
+        }
+    }
+
+    if (userArguments.providers !== undefined) {
+        validateProviders(userArguments.providers);
+    }
+}
+
+function validateProviders(providers: string[]) {
+    const validProviderIds = thirdPartyLoginProviders.map((p) => p.id);
+    const invalidProviders = providers.filter((provider) => !validProviderIds.includes(provider));
+
+    if (invalidProviders.length > 0) {
+        throw new Error(
+            `Invalid providers provided: ${invalidProviders.join(", ")}. Valid values are: ${validProviderIds.join(
+                ", "
+            )}`
+        );
     }
 }
 
@@ -90,15 +175,7 @@ export function modifyAnswersBasedOnSelection(answers: Answers): Answers {
         (_answers as any).frontend = (_answers as any).frontendNext;
     }
 
-    if (_answers.recipe === "multitenancy") {
-        if (_answers.frontend === "react") {
-            _answers.frontend = "react-multitenancy";
-        } else if (_answers.frontend === "next") {
-            _answers.frontend = "next-multitenancy";
-        } else if (_answers.frontend === "next-app-directory") {
-            _answers.frontend = "next-app-directory-multitenancy";
-        }
-    }
+    // Removed deprecated logic that mapped to specific -multitenancy boilerplates
 
     return _answers;
 }
@@ -112,16 +189,44 @@ export function modifyAnswersBasedOnFlags(answers: Answers, userArguments: UserF
 
     if (userArguments.recipe !== undefined) {
         _answers.recipe = userArguments.recipe;
+    } else if (userArguments.firstfactors !== undefined || userArguments.secondfactors !== undefined) {
+        // Convert factors to recipe
+        if (
+            userArguments.firstfactors?.includes("emailpassword") &&
+            userArguments.firstfactors?.includes("thirdparty")
+        ) {
+            _answers.recipe = "thirdpartyemailpassword";
+        } else if (userArguments.firstfactors?.includes("emailpassword")) {
+            _answers.recipe = "emailpassword";
+        } else if (userArguments.firstfactors?.includes("thirdparty")) {
+            _answers.recipe = "thirdparty";
+        } else if (
+            userArguments.firstfactors?.includes("link-email") &&
+            userArguments.firstfactors?.includes("link-phone")
+        ) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.firstfactors?.includes("link-email")) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.firstfactors?.includes("link-phone")) {
+            _answers.recipe = "passwordless";
+        } else if (
+            userArguments.firstfactors?.includes("otp-email") &&
+            userArguments.firstfactors?.includes("otp-phone")
+        ) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.firstfactors?.includes("otp-email")) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.firstfactors?.includes("otp-phone")) {
+            _answers.recipe = "passwordless";
+        } else if (userArguments.secondfactors !== undefined) {
+            _answers.recipe = "multifactorauth";
+        }
     }
 
+    // If frontend is provided via arguments, directly assign it to answers.
+    // Validation is handled earlier in validateUserArguments.
     if (userArguments.frontend !== undefined) {
-        const selectedFrontend = allFrontends.filter((i) => userArguments.frontend === i.id);
-
-        if (selectedFrontend.length === 0) {
-            throw new Error("Should never come here");
-        }
-
-        _answers.frontend = selectedFrontend[0].id;
+        _answers.frontend = userArguments.frontend;
     }
 
     if (userArguments.backend !== undefined) {

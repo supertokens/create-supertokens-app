@@ -1,0 +1,28 @@
+<section class="logos">
+    <img src="/ST.svg" alt="SuperTokens" />
+    <span>x</span>
+    <img src="/angular.svg" alt="Solid" />
+</section>
+<section class="main-container">
+    <div class="inner-content">
+        <h1>
+            <strong>SuperTokens</strong> x <strong>Angular</strong> <br />
+            example project
+        </h1>
+        <div>
+            <p *ngIf="session">
+                You're signed in already, <br />
+                check out the Dashboard! 👇
+            </p>
+            <p *ngIf="!session">Sign-in to continue</p>
+        </div>
+        <nav class="buttons">
+            <p *ngIf="session">
+                <a href="/dashboard" class="dashboard-button"> Dashboard </a>
+            </p>
+            <p *ngIf="!session">
+                <a href="/auth" class="dashboard-button"> Sign-up / Login </a>
+            </p>
+        </nav>
+    </div>
+</section>

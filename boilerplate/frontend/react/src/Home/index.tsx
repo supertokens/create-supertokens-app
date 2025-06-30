@@ -1,26 +1,47 @@
+import { Link } from "react-router-dom";
+import { useSessionContext } from "supertokens-auth-react/recipe/session";
+
 export default function Home() {
+    const session = useSessionContext();
+
+    if (session.loading) {
+        return null;
+    }
+
     return (
-        <div className="fill" id="home-container">
-            <div className="logos">
+        <>
+            <section className="logos">
                 <img src="/ST.svg" alt="SuperTokens" />
                 <span>x</span>
                 <img src="/React.svg" alt="React" />
-            </div>
-            <div className="main-container">
+            </section>
+            <section className="main-container">
                 <div className="inner-content">
-                    <p>
+                    <h1>
                         <strong>SuperTokens</strong> x <strong>React</strong> <br /> example project
-                    </p>
-                    <div className="buttons">
-                        <a href="/auth" className="sessionButton">
-                            Sign-up / Login
-                        </a>
-                        <a href="/dashboard" className="sessionButton">
-                            Dashboard
-                        </a>
+                    </h1>
+                    <div>
+                        {session.doesSessionExist ? (
+                            <p>
+                                You're signed in already, <br /> check out the Dashboard! 👇
+                            </p>
+                        ) : (
+                            <p>Sign-in to continue</p>
+                        )}
                     </div>
+                    <nav className="buttons">
+                        {session.doesSessionExist ? (
+                            <Link to="/dashboard" className="dashboard-button">
+                                Dashboard
+                            </Link>
+                        ) : (
+                            <Link to="/auth" className="dashboard-button">
+                                Sign-up / Login
+                            </Link>
+                        )}
+                    </nav>
                 </div>
-            </div>
-        </div>
+            </section>
+        </>
     );
 }

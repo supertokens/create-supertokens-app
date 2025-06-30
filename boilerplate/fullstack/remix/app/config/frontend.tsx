@@ -8,9 +8,7 @@ export const frontendConfig = (): SuperTokensConfig => {
         appInfo,
         recipeList: [],
     };
-};
-export const recipeDetails = {
-    docsLink: "https://supertokens.com/docs/thirdpartyemailpassword/introduction",
+    // Removed unused recipeDetails export
 };
 
 export const PreBuiltUIList = [];
