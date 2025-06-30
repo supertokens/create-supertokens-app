@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { initSuperTokensUI } from "../../config/frontend";
+import { initSuperTokensUI } from "~/config/frontend";
 
 onMounted(() => {
     const loadScript = (src: string) => {

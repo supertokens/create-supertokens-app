@@ -6,7 +6,8 @@ export type Recipe =
     | "thirdpartypasswordless"
     | "thirdparty"
     | "multitenancy"
-    | "multifactorauth";
+    | "multifactorauth"
+    | "webauthn";
 
 export const allRecipes: Recipe[] = [
     "all_auth",
@@ -17,6 +18,7 @@ export const allRecipes: Recipe[] = [
     "thirdparty",
     "multitenancy",
     "multifactorauth",
+    "webauthn",
 ];
 
 export function isValidRecipeName(recipe: string): recipe is Recipe {
@@ -35,6 +37,7 @@ export type SupportedFrontends =
     | "next-app-directory-multitenancy"
     | "remix"
     | "astro"
+    | "astro-react"
     | "sveltekit"
     | "nuxtjs"
     | "angular"
@@ -61,6 +64,9 @@ export const allFrontends: {
     },
     {
         id: "astro",
+    },
+    {
+        id: "astro-react",
     },
     {
         id: "remix",
@@ -229,7 +235,33 @@ export type UserFlagsRaw = {
     backend?: SupportedBackends;
     manager?: SupportedPackageManagers;
     autostart?: string | boolean;
+    multitenancy?: boolean;
+    firstfactors?: (
+        | "emailpassword"
+        | "thirdparty"
+        | "otp-phone"
+        | "otp-email"
+        | "link-phone"
+        | "link-email"
+        | "webauthn"
+    )[];
+    secondfactors?: ("otp-phone" | "otp-email" | "link-phone" | "link-email" | "totp")[];
+    pwcontactmethod?: "email" | "phone" | "email_or_phone";
+    providers?: string[]; // Added for selecting specific third-party providers
+    skipInstall?: boolean; // Added to skip package installation step
 };
+
+// Multi tenancy
+// ["emailpassword" | "thirdparty" | "otp-phone" | "otp-email" | "link-phone" | "link-email"]
+// ["otp-phone" | "otp-email" | "link-phone" | "link-email" | "totp"]
+
+// emailpassword recipe = emailpassword firstfactor
+// thirdparty recipe = thirdparty firstfactor
+// paswordless recipe = link-email and link-phone firstfactors
+// thirdparty + emailpassword recipe = thirdparty, emailpassword first factors
+// all_auth recipe = emailpassword, thirdparty, link-email, link-phone first factors
+// thirdparty + passwordless recipe = thirdparty, link-email and link-phone first factors
+// multifactorauth recipe =
 
 export type UserFlags = UserFlagsRaw & { manager: NonNullable<UserFlagsRaw["manager"]> };
 
@@ -263,4 +295,131 @@ export type AnalyticsEventWithCommonProperties = AnalyticsEvent & {
     userId: string;
     os: string;
     cliversion: string;
+};
+
+export type FirstFactor =
+    | "emailpassword"
+    | "thirdparty"
+    | "otp-phone"
+    | "otp-email"
+    | "link-phone"
+    | "link-email"
+    | "webauthn";
+export type SecondFactor = "otp-phone" | "otp-email" | "link-phone" | "link-email" | "totp";
+
+export type FactorConfig = {
+    firstFactors?: FirstFactor[];
+    secondFactors?: SecondFactor[];
+    contactMethodEmailOrPhone?: boolean;
+    contactMethodPhone?: boolean;
+    contactMethodEmail?: boolean;
+};
+
+export type RecipeToFactorMapping = {
+    all_auth: FirstFactor[];
+    emailpassword: FirstFactor[];
+    thirdpartyemailpassword: FirstFactor[];
+    passwordless: FirstFactor[];
+    thirdpartypasswordless: FirstFactor[];
+    thirdparty: FirstFactor[];
+    webauthn: FirstFactor[];
+    multitenancy: {
+        firstFactors: FirstFactor[];
+        secondFactors?: SecondFactor[];
+    }[];
+    multifactorauth: {
+        firstFactors: FirstFactor[];
+        secondFactors: SecondFactor[];
+    };
+};
+
+export const RECIPE_TO_FACTOR_MAPPING: RecipeToFactorMapping = {
+    all_auth: ["emailpassword", "thirdparty", "link-email", "link-phone"],
+    emailpassword: ["emailpassword"],
+    thirdpartyemailpassword: ["emailpassword", "thirdparty"],
+    passwordless: ["link-email", "link-phone"],
+    thirdpartypasswordless: ["thirdparty", "link-email", "link-phone"],
+    thirdparty: ["thirdparty"],
+    webauthn: ["webauthn"],
+    multitenancy: [
+        {
+            firstFactors: ["emailpassword", "thirdparty", "link-email", "link-phone"],
+            secondFactors: ["otp-phone", "otp-email", "link-phone", "link-email", "totp"],
+        },
+        {
+            firstFactors: ["emailpassword"],
+            secondFactors: ["otp-phone", "otp-email"],
+        },
+    ],
+    multifactorauth: {
+        firstFactors: ["emailpassword", "thirdparty", "link-email", "link-phone"],
+        secondFactors: ["otp-phone", "otp-email", "link-phone", "link-email", "totp"],
+    },
+};
+
+export const getFactorsFromRecipes = (recipes: Recipe[]): FactorConfig => {
+    const firstFactors: FirstFactor[] = [];
+    const secondFactors: SecondFactor[] = [];
+    let hasMFA = false;
+
+    recipes.forEach((recipe) => {
+        if (recipe === "multitenancy") {
+            const recipeConfig = RECIPE_TO_FACTOR_MAPPING[recipe];
+            recipeConfig.forEach((config) => {
+                firstFactors.push(...config.firstFactors);
+                if (config.secondFactors) {
+                    secondFactors.push(...config.secondFactors);
+                }
+            });
+        } else if (recipe === "multifactorauth") {
+            hasMFA = true;
+            firstFactors.push(...RECIPE_TO_FACTOR_MAPPING[recipe].firstFactors);
+            secondFactors.push(...RECIPE_TO_FACTOR_MAPPING[recipe].secondFactors);
+        } else {
+            firstFactors.push(...RECIPE_TO_FACTOR_MAPPING[recipe]);
+        }
+    });
+
+    return {
+        firstFactors: [...new Set(firstFactors)],
+        secondFactors: hasMFA ? [...new Set(secondFactors)] : undefined,
+    };
+};
+
+export const getRecipesFromFactors = (config: FactorConfig): Recipe[] => {
+    const recipes: Recipe[] = [];
+
+    // Map first factors to recipes
+    if (config.firstFactors?.includes("emailpassword") && config.firstFactors?.includes("thirdparty")) {
+        recipes.push("thirdpartyemailpassword");
+    } else if (config.firstFactors?.includes("emailpassword")) {
+        recipes.push("emailpassword");
+    } else if (config.firstFactors?.includes("thirdparty")) {
+        recipes.push("thirdparty");
+    } else if (config.firstFactors?.includes("webauthn")) {
+        recipes.push("webauthn");
+    }
+
+    if (config.firstFactors?.some((f) => ["link-email", "link-phone"].includes(f))) {
+        if (config.firstFactors?.includes("thirdparty")) {
+            recipes.push("thirdpartypasswordless");
+        } else {
+            recipes.push("passwordless");
+        }
+    }
+    // Also check for OTP factors if passwordless hasn't been added yet
+    else if (config.firstFactors?.some((f) => ["otp-email", "otp-phone"].includes(f))) {
+        // If ONLY otp factors, pushes "passwordless"
+        recipes.push("passwordless");
+    }
+
+    // If second factors are present, add MFA
+    if (config.secondFactors && config.secondFactors.length > 0) {
+        // Ensure multifactorauth recipe is added if not already present implicitly
+        if (!recipes.includes("multifactorauth")) {
+            recipes.push("multifactorauth");
+        }
+    }
+
+    return [...new Set(recipes)];
 };

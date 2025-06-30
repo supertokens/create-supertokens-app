@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.57] - 2025-06-30
+
+### Added
+
+-   Added Astro + React (`astro-react`) fullstack boilerplate.
+-   Introduced factor-based generation (e.g., `--firstFactors`, `--secondFactors` CLI flags) for more granular recipe selection, complementing pre-defined recipes and interactive mode.
+-   Added local development mode (`npm run dev` or `USE_LOCAL_TEMPLATES=true`) for testing local boilerplate and configuration generator changes using `util/localScaffolder.ts`.
+-   Added `dedent` dependency to improve Python template generation.
+
+### Changed
+
+-   **Internal Refactor:** Implemented a runtime configuration compiler ([`lib/ts/templateBuilder/compiler.ts`](lib/ts/templateBuilder/compiler.ts)) to dynamically generate recipe-specific configurations. This significantly reduces boilerplate size and redundancy by eliminating the need to store multiple near-identical config files for each recipe within each stack.
+-   Standardized and updated README files across all boilerplate projects for consistency and clarity.
+-   Improved Python boilerplate generation ([`boilerplate/backend/shared/python/py.ts`](boilerplate/backend/shared/python/py.ts)):
+    -   Corrected import order for generated `config.py`.
+    -   Enhanced indentation for `additional_config` in third-party provider setups.
+    -   Utilized `dedent` for cleaner multi-line Python code generation.
+-   Updated [`CONTRIBUTING.md`](CONTRIBUTING.md) to:
+    -   Explain the new runtime configuration compilation process.
+    -   Revise local testing instructions, recommending `npm run dev`.
+-   Performed general recipe cleanup and improvements.
+
 ## [0.0.56] - 2025-04-29
 
 -   Adds version checker in preparation for the next major release.

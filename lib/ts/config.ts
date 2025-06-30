@@ -35,7 +35,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "react-multitenancy",
             displayName: "React",
             location: {
-                main: "frontend/supertokens-react-multitenancy",
+                main: "frontend/react-multitenancy",
                 config: [{ finalConfig: "/src/config.tsx", configFiles: "/config" }],
             },
             script: {
@@ -178,6 +178,32 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
         },
         {
             isFullStack: true,
+            value: "astro-react",
+            displayName: "Astro (using React)",
+            location: {
+                main: "fullstack/astro-react",
+                config: {
+                    frontend: [
+                        {
+                            configFiles: "/src/config/frontend",
+                            finalConfig: "/src/config/frontend.tsx",
+                        },
+                    ],
+                    backend: [
+                        {
+                            configFiles: "/src/config/backend",
+                            finalConfig: "/src/config/backend.ts",
+                        },
+                    ],
+                },
+            },
+            script: {
+                run: [`${manager} run dev`],
+                setup: [`${manager} install`],
+            },
+        },
+        {
+            isFullStack: true,
             value: "sveltekit",
             displayName: "SvelteKit",
             location: {
@@ -232,7 +258,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "angular",
             displayName: "Angular",
             location: {
-                main: "frontend/angular-prebuilt",
+                main: "frontend/angular",
                 config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
@@ -244,7 +270,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "vue",
             displayName: "Vue.js",
             location: {
-                main: "frontend/vue-prebuilt",
+                main: "frontend/vue",
                 config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
@@ -257,7 +283,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
             value: "solid",
             displayName: "SolidJS",
             location: {
-                main: "frontend/solid-prebuilt",
+                main: "frontend/solid",
                 config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
@@ -361,7 +387,7 @@ const pythonOptions: QuestionOption[] = [
         value: "python-flask",
         displayName: "Flask",
         location: {
-            main: "backend/python-flask",
+            main: "backend/python/flask",
             config: [{ finalConfig: "/config.py", configFiles: "/config" }],
         },
         script: {
@@ -373,7 +399,7 @@ const pythonOptions: QuestionOption[] = [
         value: "python-fastapi",
         displayName: "FastAPI",
         location: {
-            main: "backend/python-fastapi",
+            main: "backend/python/fastapi",
             config: [{ finalConfig: "/config.py", configFiles: "/config" }],
         },
         script: {
@@ -385,7 +411,7 @@ const pythonOptions: QuestionOption[] = [
         value: "python-drf",
         displayName: "Django Rest Framework",
         location: {
-            main: "backend/python-drf",
+            main: "backend/python/drf",
             config: [
                 {
                     finalConfig: "./app/config.py",
@@ -406,7 +432,7 @@ export async function getNodeJSOptions({ manager }: UserFlags): Promise<Question
             value: "koa",
             displayName: "Koa.js",
             location: {
-                main: "backend/koa",
+                main: "backend/typescript/koa",
                 config: [{ finalConfig: "/config.ts", configFiles: "/config" }],
             },
             script: {
@@ -418,7 +444,7 @@ export async function getNodeJSOptions({ manager }: UserFlags): Promise<Question
             value: "nest",
             displayName: "Nest.js",
             location: {
-                main: "backend/nest",
+                main: "backend/typescript/nest",
                 config: [{ finalConfig: "/src/config.ts", configFiles: "/config" }],
             },
             script: {
@@ -430,7 +456,7 @@ export async function getNodeJSOptions({ manager }: UserFlags): Promise<Question
             value: "express",
             displayName: "Express.js",
             location: {
-                main: "backend/node-express",
+                main: "backend/typescript/express",
                 config: [
                     {
                         finalConfig: "/config.ts",
@@ -481,7 +507,7 @@ export async function getBackendOptions(): Promise<QuestionOption[]> {
             value: "go-http",
             displayName: "Golang",
             location: {
-                main: "backend/go-http",
+                main: "backend/go/http",
                 config: [{ finalConfig: "/config.go", configFiles: "/config" }],
             },
             script: {
@@ -538,7 +564,7 @@ export async function getQuestions(flags: UserFlags) {
             type: "input",
             message: "What is your app called?",
             default: "my-app",
-            when: flags.appname === undefined,
+            when: flags.appname === undefined, // Reverted to simple condition
             validate: function (input: any) {
                 const validations = validateFolderName(input);
 
@@ -569,10 +595,12 @@ export async function getQuestions(flags: UserFlags) {
             message: "Choose how you want to organise your Next.js routes:",
             choices: mapOptionsToChoices(await getNextJSOptions(flags)),
             when: (answers: Answers) => {
-                if (flags.frontend !== undefined && flags.frontend === "next") {
-                    return true;
+                // If frontend is specified via flags as next OR next-app-directory, DO NOT prompt.
+                if (flags.frontend === "next" || flags.frontend === "next-app-directory") {
+                    return false;
                 }
 
+                // Otherwise, prompt only if the user selected "Next.js" in the previous step.
                 return answers.frontend === "next";
             },
         },
@@ -629,6 +657,11 @@ export async function getQuestions(flags: UserFlags) {
             when: (answers: Answers) => {
                 // For capacitor we don't ask this question because it has its own way of swapping between recipes
                 if (answers.frontend === "capacitor") {
+                    return false;
+                }
+
+                // Skip recipe selection if firstfactors or secondfactors are provided
+                if (flags.firstfactors || flags.secondfactors) {
                     return false;
                 }
 

@@ -3,6 +3,7 @@ import inquirer from "inquirer";
 import { getQuestions } from "./config.js";
 import { Answers, DownloadLocations, UserFlags, UserFlagsRaw } from "./types.js";
 import { getDownloadLocationFromAnswers, downloadApp, setupProject, runProjectOrPrintStartCommand } from "./utils.js";
+import { downloadAppFromLocal, shouldUseLocalTemplates } from "../../util/localScaffolder.js";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import {
@@ -20,6 +21,7 @@ import figlet from "figlet";
 import { package_version } from "./version.js";
 import { modifyAnswersForPythonFrameworks, modifyAnswersForNodeJSFrameworks } from "./questionUtils.js";
 import { inferredPackageManager } from "./packageManager.js";
+import { checkMfaCompatibility } from "./utils.js";
 import compareVersions from "tiny-version-compare";
 
 async function checkVersion() {
@@ -86,6 +88,12 @@ let downLoadRetriesLeft = 2;
 
 async function downloadAppFromGithub(folderLocations: DownloadLocations, appname: string) {
     try {
+        // Use local scaffolder if USE_LOCAL_TEMPLATES is true
+        if (shouldUseLocalTemplates()) {
+            await downloadAppFromLocal(folderLocations, appname);
+            return;
+        }
+
         await downloadApp(folderLocations, appname);
     } catch (e) {
         /**
@@ -113,7 +121,7 @@ async function run() {
     try {
         await printInformation();
 
-        /* 
+        /*
             userArguments will contain all the arguments the user passes
             For example: `npx create-supertokens-app --recipe=emailpassword` will result
             in userArguments.recipe === "emailpassword"
@@ -129,8 +137,43 @@ async function run() {
             --manager: Which package manager to use
             --autostart: Whether the CLI should start the project after setting up
         */
-        const userArgumentsRaw = (await yargs(hideBin(process.argv)).argv) as UserFlagsRaw;
-        validateUserArguments(userArgumentsRaw);
+        const userArgumentsRaw = (await yargs(hideBin(process.argv))
+            .option("providers", {
+                type: "array",
+                string: true,
+                description: "Specify third-party providers (e.g., --providers google github)",
+            })
+            .option("skip-install", {
+                type: "boolean",
+                description: "Skip the package installation step",
+            })
+            .array("firstfactors")
+            .array("secondfactors")
+            .coerce("firstfactors", (val) => {
+                console.log("Raw firstfactors:", val);
+                if (Array.isArray(val)) {
+                    // If it's an array with a single string containing commas, split it
+                    if (val.length === 1 && typeof val[0] === "string" && val[0].includes(",")) {
+                        return val[0].split(",").map((f: string) => f.trim());
+                    }
+                    return val;
+                }
+                // If it's a string, split it
+                return val.split(",").map((f: string) => f.trim());
+            })
+            .coerce("secondfactors", (val) => {
+                console.log("Raw secondfactors:", val);
+                if (Array.isArray(val)) {
+                    // If it's an array with a single string containing commas, split it
+                    if (val.length === 1 && typeof val[0] === "string" && val[0].includes(",")) {
+                        return val[0].split(",").map((f: string) => f.trim());
+                    }
+                    return val;
+                }
+                // If it's a string, split it
+                return val.split(",").map((f: string) => f.trim());
+            }).argv) as UserFlagsRaw;
+        validateUserArguments(userArgumentsRaw); // Remove await here
         const userArguments: UserFlags = {
             ...userArgumentsRaw,
             manager: userArgumentsRaw.manager ?? inferredPackageManager() ?? "npm",
@@ -146,7 +189,6 @@ async function run() {
             eventName: "cli_started",
         });
 
-        // Inquirer prompts all the questions to the user, answers will be an object that contains all the responses
         answers = await inquirer.prompt(await getQuestions(userArguments));
 
         answers = modifyAnswersBasedOnFlags(answers, userArguments);
@@ -160,18 +202,21 @@ async function run() {
             backend: answers.backend,
         });
 
+        // Default factors for interactive MFA selection if flags weren't used
+        if (
+            answers.recipe === "multifactorauth" &&
+            userArguments.firstfactors === undefined &&
+            userArguments.secondfactors === undefined
+        ) {
+            userArguments.firstfactors = ["emailpassword", "thirdparty"];
+            userArguments.secondfactors = ["otp-email", "totp"];
+            answers.recipe = "multifactorauth";
+        }
+
         if (answers.recipe === "multitenancy" || answers.recipe === "multifactorauth") {
             let recipePlaceholder = answers.recipe === "multitenancy" ? "Multitenancy" : "Multi-factor Auth";
             let errorPlaceholder = "";
-            if (answers.recipe === "multitenancy") {
-                if (answers.frontend === "angular") {
-                    errorPlaceholder = "Angular";
-                } else if (answers.frontend === "vue") {
-                    errorPlaceholder = "Vue";
-                } else if (answers.frontend === "nuxtjs") {
-                    errorPlaceholder = "Nuxt.js";
-                }
-            } else if (answers.recipe === "multifactorauth") {
+            if (answers.recipe === "multifactorauth") {
                 if (answers.backend === "go-http") {
                     errorPlaceholder = "Go";
                 }
@@ -194,6 +239,8 @@ async function run() {
             spinner: "dots10",
             text: "Downloading files",
         }).start();
+
+        checkMfaCompatibility(answers, userArguments);
 
         const folderLocations = await getDownloadLocationFromAnswers(answers, userArguments);
 
@@ -278,6 +325,7 @@ async function run() {
                 "If you think this is an issue with the tool, please report this as an issue at https://github.com/supertokens/create-supertokens-app/issues"
             );
         }
+        process.exit(1);
     }
 }
 

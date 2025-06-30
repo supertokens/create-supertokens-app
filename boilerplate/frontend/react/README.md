@@ -23,13 +23,14 @@ This project aims to demonstrate how to integrate SuperTokens into a React appli
 ┃   ┣ 📜guide-icon.svg
 ┃   ┣ 📜separator-line.svg
 ┃   ┗ 📜signout-icon.svg
-┣ 📂Home --> "Dashboard" component, accessible only via the logged-in state of the app
-┃ ┣ 📜CallAPIView.tsx
-┃ ┣ 📜Home.css
-┃ ┣ 📜SuccessView.tsx
+┣ 📂Dashboard --> Protected route component, only accessible to authenticated users
+┃ ┗ 📜index.tsx
+┣ 📂Home --> Public landing page component, accessible regardless of auth state
 ┃ ┗ 📜index.tsx
 ┣ 📜App.css
 ┣ 📜App.tsx --> Root component of the app
+┣ 📜config.tsx --> SuperTokens configuration
+┣ 📜vite-env.d.ts
 ┗ 📜main.tsx --> Entry point of the app
 ```
 
@@ -70,17 +71,12 @@ The application uses [React Router](https://reactrouter.com/) for routing and co
 
     - Public landing page accessible to all users
     - Provides navigation to authentication and dashboard
-    - Displays basic application information and links
+    - Serves as the entry point for new users
 
 4. **Dashboard Component (`/dashboard` route, `/Dashboard/index.tsx` component)**
     - Protected route only accessible to authenticated users
     - Protected by `SessionAuth` component
-    - Displays user information and session details
-    - Provides functionality to:
-        - View user ID
-        - Call test API endpoints
-        - Access documentation
-        - Sign out
+    - Displays user information and provides authenticated functionality
 
 When a user visits the application, they start at the home page (`/`). They can choose to authenticate through the `/auth` route, and once authenticated, they gain access to the protected dashboard. The session state is managed throughout the application using SuperTokens' session management.
 

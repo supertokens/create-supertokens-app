@@ -17,7 +17,7 @@ export default function Auth() {
     }, []);
 
     if (loaded) {
-        return SuperTokens.getRoutingComponent(PreBuiltUIList);
+        return <>{SuperTokens.getRoutingComponent(PreBuiltUIList)}</>;
     }
 
     return null;
