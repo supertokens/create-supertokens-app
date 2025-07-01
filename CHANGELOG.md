@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.58] - 2025-07-01
+
+### Fixes
+
+-   Fixed some issue when downloading the template from github
+
 ## [0.0.57] - 2025-06-30
 
 ### Added
