@@ -293,11 +293,11 @@ async function setupFrontendBackendApp(
     const frontendFolderName = locations.frontend
         .split("/")
         .filter((i: string) => i !== "frontend")
-        .join("");
+        .join("/");
     const backendFolderName = locations.backend
         .split("/")
         .filter((i: string) => i !== "backend")
-        .join("");
+        .join("/");
 
     const __dirname = path.resolve();
     const frontendDirectory = __dirname + `/${folderName}/${frontendFolderName}`;
