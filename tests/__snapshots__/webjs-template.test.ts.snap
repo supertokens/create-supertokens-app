@@ -17,7 +17,7 @@ export function getWebsiteDomain() {
 }
 
 export function initSuperTokensUI() {
-    (window as any).supertokensUIInit("supertokensui", {
+    window.supertokensUIInit("supertokensui", {
         appInfo: {
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
@@ -26,9 +26,9 @@ export function initSuperTokensUI() {
             apiBasePath: "/auth",
         },
         recipeList: [
-            (window as any).supertokensUISession.init(),
-            (window as any).supertokensUIEmailPassword.init(),
-            (window as any).supertokensUIPasswordless.init({
+            window.supertokensUISession.init(),
+            window.supertokensUIEmailPassword.init(),
+            window.supertokensUIPasswordless.init({
                 contactMethod: "EMAIL_OR_PHONE",
                 flowType: "USER_INPUT_CODE"
             })
@@ -69,7 +69,7 @@ export function getWebsiteDomain() {
 }
 
 export function initSuperTokensUI() {
-    (window as any).supertokensUIInit("supertokensui", {
+    window.supertokensUIInit("supertokensui", {
         appInfo: {
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
@@ -78,23 +78,23 @@ export function initSuperTokensUI() {
             apiBasePath: "/auth",
         },
         recipeList: [
-            (window as any).supertokensUISession.init(),
-            (window as any).supertokensUIEmailPassword.init(),
-            (window as any).supertokensUIThirdParty.init({
+            window.supertokensUISession.init(),
+            window.supertokensUIEmailPassword.init(),
+            window.supertokensUIThirdParty.init({
                 signInAndUpFeature: {
                     providers: [
-                        (window as any).supertokensUIThirdParty.Google.init(),
-                        (window as any).supertokensUIThirdParty.Github.init(),
-                        (window as any).supertokensUIThirdParty.Apple.init(),
-                        (window as any).supertokensUIThirdParty.Twitter.init()
+                        window.supertokensUIThirdParty.Google.init(),
+                        window.supertokensUIThirdParty.Github.init(),
+                        window.supertokensUIThirdParty.Apple.init(),
+                        window.supertokensUIThirdParty.Twitter.init()
                     ],
                 },
             }),
-            (window as any).supertokensUIPasswordless.init({
+            window.supertokensUIPasswordless.init({
                 contactMethod: "EMAIL",
                 flowType: "USER_INPUT_CODE"
             }),
-            (window as any).supertokensUIMultiFactorAuth.init({
+            window.supertokensUIMultiFactorAuth.init({
         firstFactors: ["emailpassword", "thirdparty"],
         override: {
             functions: (originalImplementation: any) => ({
@@ -102,17 +102,17 @@ export function initSuperTokensUI() {
                 getMFARequirementsForAuth: () => [
                     {
                         oneOf: [
-                            (window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL
+                            window.supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL
                         ],
                     },
                 ],
                 getRequiredSecondaryFactorsForUser: async () => {
-                    return [(window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL];
+                    return [window.supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL];
                 },
             }),
         }
     }),
-            (window as any).supertokensUIEmailVerification.init({
+            window.supertokensUIEmailVerification.init({
         mode: "OPTIONAL"
     })
         ],
@@ -150,7 +150,7 @@ export function getWebsiteDomain() {
 }
 
 export function initSuperTokensUI() {
-    (window as any).supertokensUIInit("supertokensui", {
+    window.supertokensUIInit("supertokensui", {
         appInfo: {
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
@@ -159,8 +159,8 @@ export function initSuperTokensUI() {
             apiBasePath: "/auth",
         },
         recipeList: [
-            (window as any).supertokensUISession.init(),
-            (window as any).supertokensUIEmailPassword.init()
+            window.supertokensUISession.init(),
+            window.supertokensUIEmailPassword.init()
         ],
     });
 }
@@ -196,7 +196,7 @@ export function getWebsiteDomain() {
 }
 
 export function initSuperTokensUI() {
-    (window as any).supertokensUIInit("supertokensui", {
+    window.supertokensUIInit("supertokensui", {
         appInfo: {
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
@@ -205,14 +205,14 @@ export function initSuperTokensUI() {
             apiBasePath: "/auth",
         },
         recipeList: [
-            (window as any).supertokensUISession.init(),
-            (window as any).supertokensUIThirdParty.init({
+            window.supertokensUISession.init(),
+            window.supertokensUIThirdParty.init({
                 signInAndUpFeature: {
                     providers: [
-                        (window as any).supertokensUIThirdParty.Google.init(),
-                        (window as any).supertokensUIThirdParty.Github.init(),
-                        (window as any).supertokensUIThirdParty.Apple.init(),
-                        (window as any).supertokensUIThirdParty.Twitter.init()
+                        window.supertokensUIThirdParty.Google.init(),
+                        window.supertokensUIThirdParty.Github.init(),
+                        window.supertokensUIThirdParty.Apple.init(),
+                        window.supertokensUIThirdParty.Twitter.init()
                     ],
                 },
             })
