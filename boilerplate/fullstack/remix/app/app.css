@@ -96,7 +96,7 @@ header a:hover {
 /* Home page */
 #home-container {
     align-items: center;
-    min-height: calc(100vh - 58px);
+    min-height: calc(100vh - 120px);
     background: url("/assets/images/background.png") center/cover;
 }
 
