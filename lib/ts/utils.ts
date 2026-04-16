@@ -727,6 +727,15 @@ export async function getAnalyticsId(): Promise<string> {
     }
 }
 
+function printDemoCoreWarning() {
+    Logger.warn(
+        "This project is configured to use the public SuperTokens demo core at https://try.supertokens.com.\n" +
+            "Any data you submit (user signups, sessions, etc.) may be visible to other users of the demo.\n" +
+            "Update `connectionURI` in your backend config before using this app for anything real.\n" +
+            "See https://supertokens.com/docs/quickstart/core/with-docker for self-hosting, or https://supertokens.com/pricing for the managed service."
+    );
+}
+
 export async function runProjectOrPrintStartCommand(answers: Answers, userArguments: UserFlags) {
     const folderName = answers.appname;
 
@@ -740,6 +749,7 @@ export async function runProjectOrPrintStartCommand(answers: Answers, userArgume
 
     if (selectedFrontend.externalAppInfo?.isExternal === true) {
         Logger.log(selectedFrontend.externalAppInfo.message);
+        printDemoCoreWarning();
         return;
     }
 
@@ -754,9 +764,11 @@ export async function runProjectOrPrintStartCommand(answers: Answers, userArgume
             `To start the application run the following command:` +
                 chalk.greenBright(`\n\ncd ${folderName}\n` + appRunScript)
         );
+        printDemoCoreWarning();
         return;
     }
 
+    printDemoCoreWarning();
     Logger.success("Running the application...");
 
     const runProjectScript = new Promise((res, rej) => {

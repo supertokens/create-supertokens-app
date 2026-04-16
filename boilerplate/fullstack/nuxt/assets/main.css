@@ -41,6 +41,23 @@ body {
     padding-top: 10px;
 }
 
+/* Demo-only banner — remove these rules once you stop using try.supertokens.com. */
+.demo-warning-banner {
+    background-color: #fff4d6;
+    color: #7a5b00;
+    border-bottom: 1px solid #e5c87a;
+    padding: 10px 16px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.4;
+}
+.demo-warning-banner code {
+    background: rgba(0, 0, 0, 0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
 /* Header */
 header {
     border-bottom: 2px solid var(--border-color);

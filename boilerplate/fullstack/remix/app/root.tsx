@@ -24,6 +24,12 @@ export default function App() {
             <body>
                 <SuperTokensWrapper>
                     <div className="App app-container">
+                        {/* Demo-only banner — remove once connectionURI points at your own SuperTokens core. */}
+                        <div className="demo-warning-banner">
+                            <strong>Demo mode:</strong> This app is configured to use the public SuperTokens core at
+                            try.supertokens.com. Data submitted here may be visible to other users of the demo. Update{" "}
+                            <code>connectionURI</code> in your backend config before using this app for anything real.
+                        </div>
                         <header>
                             <nav className="header-container">
                                 <Link to="/">
