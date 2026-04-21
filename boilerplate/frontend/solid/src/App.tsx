@@ -25,6 +25,12 @@ const ProtectedRoute: Component<{ component: Component }> = (props) => {
 const App: Component = () => {
     return (
         <main class="App app-container">
+            {/* Demo-only banner — remove once connectionURI points at your own SuperTokens core. */}
+            <div class="demo-warning-banner">
+                <strong>Demo mode:</strong> This app is configured to use the public SuperTokens core at
+                try.supertokens.com. Data submitted here may be visible to other users of the demo. Update{" "}
+                <code>connectionURI</code> in your backend config before using this app for anything real.
+            </div>
             <header>
                 <nav class="header-container">
                     <a href="/">
