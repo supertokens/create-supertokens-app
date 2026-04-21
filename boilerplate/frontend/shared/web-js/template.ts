@@ -49,13 +49,13 @@ import Multitenancy from "supertokens-web-js/recipe/multitenancy";`,
 } as const;
 
 export const uiRecipeInits = {
-    emailPassword: () => `(window as any).supertokensUIEmailPassword.init()`,
+    emailPassword: () => `window.supertokensUIEmailPassword.init()`,
     thirdParty: (providers: OAuthProvider[]) => {
         const providerInitMap: Record<string, string> = {
-            google: "(window as any).supertokensUIThirdParty.Google.init()",
-            github: "(window as any).supertokensUIThirdParty.Github.init()",
-            apple: "(window as any).supertokensUIThirdParty.Apple.init()",
-            twitter: "(window as any).supertokensUIThirdParty.Twitter.init()",
+            google: "window.supertokensUIThirdParty.Google.init()",
+            github: "window.supertokensUIThirdParty.Github.init()",
+            apple: "window.supertokensUIThirdParty.Apple.init()",
+            twitter: "window.supertokensUIThirdParty.Twitter.init()",
         };
 
         const providerInits = providers
@@ -63,7 +63,7 @@ export const uiRecipeInits = {
             .filter(Boolean)
             .join(",\n                        ");
 
-        return `(window as any).supertokensUIThirdParty.init({
+        return `window.supertokensUIThirdParty.init({
                 signInAndUpFeature: {
                     providers: [
                         ${providerInits}
@@ -101,11 +101,11 @@ export const uiRecipeInits = {
             initObj.push(`flowType: "${flowType}"`);
         }
 
-        return `(window as any).supertokensUIPasswordless.init({
+        return `window.supertokensUIPasswordless.init({
                 ${initObj.join(",\n                ")}
             })`;
     },
-    session: () => `(window as any).supertokensUISession.init()`,
+    session: () => `window.supertokensUISession.init()`,
     multiFactorAuth: (firstFactors?: string[], secondFactors?: string[]) => {
         const firstFactorsStr = firstFactors
             ? firstFactors.map((f) => `"${f}"`).join(", ")
@@ -113,32 +113,32 @@ export const uiRecipeInits = {
 
         if (secondFactors && secondFactors.length > 0) {
             const factorMapping: Record<string, string> = {
-                totp: "(window as any).supertokensUIMultiFactorAuth.FactorIds.TOTP",
-                "otp-email": "(window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL",
-                "otp-phone": "(window as any).supertokensUIMultiFactorAuth.FactorIds.OTP_PHONE",
-                "link-email": "(window as any).supertokensUIMultiFactorAuth.FactorIds.LINK_EMAIL",
-                "link-phone": "(window as any).supertokensUIMultiFactorAuth.FactorIds.LINK_PHONE",
+                totp: "window.supertokensUIMultiFactorAuth.FactorIds.TOTP",
+                "otp-email": "window.supertokensUIMultiFactorAuth.FactorIds.OTP_EMAIL",
+                "otp-phone": "window.supertokensUIMultiFactorAuth.FactorIds.OTP_PHONE",
+                "link-email": "window.supertokensUIMultiFactorAuth.FactorIds.LINK_EMAIL",
+                "link-phone": "window.supertokensUIMultiFactorAuth.FactorIds.LINK_PHONE",
             };
 
             const factorIds = secondFactors.map((factor) => factorMapping[factor] || `"${factor}"`).filter(Boolean);
 
             if (factorIds.length > 0) {
-                return `(window as any).supertokensUIMultiFactorAuth.init({
+                return `window.supertokensUIMultiFactorAuth.init({
         firstFactors: [${firstFactorsStr}]
     })`;
             }
         }
 
-        return `(window as any).supertokensUIMultiFactorAuth.init({
+        return `window.supertokensUIMultiFactorAuth.init({
         firstFactors: [${firstFactorsStr}]
     })`;
     },
-    webauthn: () => `(window as any).supertokensUIWebAuthn.init(), (window as any).supertokensUISession.init(),`,
-    emailVerification: (hasMFA?: boolean) => `(window as any).supertokensUIEmailVerification.init({
+    webauthn: () => `window.supertokensUIWebAuthn.init(), window.supertokensUISession.init(),`,
+    emailVerification: (hasMFA?: boolean) => `window.supertokensUIEmailVerification.init({
         mode: ${hasMFA ? '"OPTIONAL"' : '"REQUIRED"'}
     })`,
-    totp: () => `(window as any).supertokensUITOTP.init()`,
-    multitenancy: () => `(window as any).supertokensUIMultitenancy.init({
+    totp: () => `window.supertokensUITOTP.init()`,
+    multitenancy: () => `window.supertokensUIMultitenancy.init({
         override: {
             functions: (oI: any) => {
                 return {
@@ -320,12 +320,64 @@ export function getWebsiteDomain() {
 
 ${imports}
 
+declare global {
+  interface Window {
+    supertokensUIInit: (
+      appId: string,
+      config: {
+        appInfo: {
+          websiteDomain: string;
+          apiDomain: string;
+          appName: string;
+          websiteBasePath: string;
+          apiBasePath: string;
+        };
+        recipeList: unknown[];
+        getRedirectionURL?: (context: { action: string }) => Promise<string | undefined>;
+      }
+    ) => void;
+
+    supertokensUIEmailPassword: { init: () => void };
+    supertokensUIThirdParty: {
+      Google: { init: () => void };
+      Github: { init: () => void };
+      Apple: { init: () => void };
+      Twitter: { init: () => void };
+      init: (config: { signInAndUpFeature: { providers: unknown[] } }) => void;
+    };
+    supertokensUIPasswordless: {
+      init: (config: { contactMethod: string; flowType?: string }) => void;
+    };
+    supertokensUISession: { init: () => void };
+    supertokensUIMultiFactorAuth: {
+      init: (config: { firstFactors: string[] }) => void;
+      FactorIds: {
+        TOTP: string;
+        OTP_EMAIL: string;
+        OTP_PHONE: string;
+        LINK_EMAIL: string;
+        LINK_PHONE: string;
+      };
+    };
+    supertokensUIWebAuthn: { init: () => void };
+    supertokensUIEmailVerification: { init: (config: { mode: "OPTIONAL" | "REQUIRED" }) => void };
+    supertokensUITOTP: { init: () => void };
+    supertokensUIMultitenancy: {
+      init: (config: {
+        override: {
+          functions: (original: Record<string, unknown>) => Record<string, unknown>;
+        };
+      }) => void;
+    };
+  }
+}
+
 const isMultitenancy = ${isMultitenancyInternal};
 ${getApiDomainFunc}
 ${getWebsiteDomainFunc}
 
 export function initSuperTokensUI() {
-    (window as any).supertokensUIInit("supertokensui", {
+    window.supertokensUIInit("supertokensui", {
         appInfo: {
             websiteDomain: getWebsiteDomain(),
             apiDomain: getApiDomain(),
