@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.59]
+
+-   log dynamic frontend and backend ports on setup completion
+
 ## [0.0.58] - 2025-07-01
 
 ### Fixes

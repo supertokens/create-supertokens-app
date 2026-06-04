@@ -1,7 +1,7 @@
 {
     "name": "create-supertokens-app",
     "type": "module",
-    "version": "0.0.58",
+    "version": "0.0.59",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -11,8 +11,8 @@
         "build-pretty": "npm run build && npx prettier --write . && npx clear-npx-cache",
         "set-up-hooks": "cp hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
         "pretty-check": "npx prettier --check .",
-        "dev": "USE_LOCAL_TEMPLATES=true tsx lib/ts/index.ts",
-        "dev:debug": "USE_LOCAL_TEMPLATES=true DEBUG=true tsx lib/ts/index.ts",
+        "dev": "cross-env USE_LOCAL_TEMPLATES=true tsx lib/ts/index.ts",
+        "dev:debug": "cross-env USE_LOCAL_TEMPLATES=true DEBUG=true tsx lib/ts/index.ts",
         "test": "vitest --config vitest.config.ts",
         "test:e2e": "vitest run --config vitest.config.ts tests/e2e.test.ts"
     },
@@ -48,6 +48,7 @@
         "@types/which-pm-runs": "^1.0.2",
         "@types/yargs": "^17.0.12",
         "clear-npx-cache": "^1.0.1",
+        "cross-env": "^10.1.0",
         "madge": "^5.0.1",
         "npm-run-all": "^4.1.5",
         "prettier": "^2.7.1",

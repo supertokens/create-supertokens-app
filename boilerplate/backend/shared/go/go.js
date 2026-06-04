@@ -1,7 +1,7 @@
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
-import { config } from "../../../shared/config/base";
-import { getAppInfo } from "../../../shared/config/appInfo";
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js";
+import { config } from "../../../shared/config/base.js";
+import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 export const goRecipeImports = {
     emailPassword: `"github.com/supertokens/supertokens-golang/recipe/emailpassword"`,
     thirdParty: `"github.com/supertokens/supertokens-golang/recipe/thirdparty"
@@ -107,6 +107,9 @@ export const goRecipeInits = {
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
         const hasLinkFactors = hasLinkEmail || hasLinkPhone;
         const hasOtpFactors = hasOtpEmail || hasOtpPhone;
+        // Determine which contact methods are being used
+        const hasEmailFactors = hasLinkEmail || hasOtpEmail;
+        const hasPhoneFactors = hasLinkPhone || hasOtpPhone;
         if (hasLinkFactors && hasOtpFactors) {
             flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
         } else if (hasLinkFactors) {
@@ -114,11 +117,36 @@ export const goRecipeInits = {
         } else if (hasOtpFactors) {
             flowType = "USER_INPUT_CODE";
         }
+        // Determine the appropriate contact method configuration
+        let contactMethodConfig = "";
+        if (hasEmailFactors && hasPhoneFactors) {
+            contactMethodConfig = `ContactMethodEmailOrPhone: plessmodels.ContactMethodEmailOrPhoneConfig{
+        Enabled: true,
+    },`;
+        } else if (hasEmailFactors) {
+            contactMethodConfig = `ContactMethodEmail: plessmodels.ContactMethodEmailConfig{
+        Enabled: true,
+    },`;
+        } else if (hasPhoneFactors) {
+            contactMethodConfig = `ContactMethodPhone: plessmodels.ContactMethodPhoneConfig{
+        Enabled: true,
+    },`;
+        } else {
+            // Default to email if no specific factors are selected
+            contactMethodConfig = `ContactMethodEmail: plessmodels.ContactMethodEmailConfig{
+        Enabled: true,
+    },`;
+        }
+        let testConf = "";
+        if (process.env.TEST_MODE === "testing") {
+            testConf = `,
+            GetCustomUserInputCode: func(userContext any) (string, error) {
+                return "123456", nil
+            },`;
+        }
         return `passwordless.Init(plessmodels.TypeInput{
     FlowType: "${flowType}",
-    ContactMethodEmailOrPhone: plessmodels.ContactMethodEmailOrPhoneConfig{
-        Enabled: true,
-    },
+    ${contactMethodConfig}${testConf}
 })`;
     },
     session: () => `session.Init(nil)`,
@@ -129,18 +157,31 @@ export const goRecipeInits = {
         return true, true
     },
 })`,
-    emailVerification: () => `emailverification.Init(&evmodels.TypeInput{
+    emailVerification: () => `emailverification.Init(evmodels.TypeInput{
     Mode: evmodels.ModeRequired,
 })`,
     multitenancy: () => `multitenancy.Init(nil)`,
 };
 export const generateGoTemplate = ({ configType, userArguments }) => {
-    let template = "";
-    const recipes = configToRecipes[configType].filter((recipe) => recipe !== "multiFactorAuth" && recipe !== "totp");
-    const needsEmailVerification = false;
-    if (needsEmailVerification && !recipes.includes("emailVerification")) {
-        recipes.push("emailVerification");
+    // Check if MFA or TOTP is requested, as they're not supported in Go
+    if (
+        configType === "multifactorauth" ||
+        userArguments?.secondfactors?.length ||
+        configToRecipes[configType].includes("multiFactorAuth") ||
+        configToRecipes[configType].includes("totp")
+    ) {
+        throw new Error(
+            "Multi-factor authentication is not currently supported with the Go SDK. Please use a different backend or recipe."
+        );
     }
+    let template = "";
+    // Filter out recipes not initialized via RecipeList in Go
+    const recipes = configToRecipes[configType].filter(
+        (recipe) =>
+            recipe !== "accountLinking" && // accountLinking is used directly, not via init list
+            recipe !== "multitenancy" // multitenancy is used directly, not via init list
+    );
+    // emailVerification is already included in recipes when needed via configToRecipes
     const appInfo = getAppInfo();
     const imports = recipes
         .map((recipe) => goRecipeImports[recipe])
@@ -150,7 +191,7 @@ export const generateGoTemplate = ({ configType, userArguments }) => {
 
 import (
     "fmt"
-    "os"
+    // "os" // Keep os commented out as it's not used here
     "github.com/supertokens/supertokens-golang/supertokens"
     ${imports}
 )
@@ -249,7 +290,7 @@ func corsMiddleware(next http.Handler) http.Handler {
         response.Header().Set("Access-Control-Allow-Credentials", "true")
         if r.Method == "OPTIONS" {
             response.Header().Set("Access-Control-Allow-Headers", strings.Join(append([]string{"Content-Type"}, supertokens.GetAllCORSHeaders()...), ","))
-            response.Header().Set("Access-Control-Allow-Methods", "*")
+            response.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH") // Explicitly list methods
             response.Write([]byte(""))
         } else {
             next.ServeHTTP(response, r)

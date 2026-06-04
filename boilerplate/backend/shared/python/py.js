@@ -1,7 +1,8 @@
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
-import { config } from "../../../shared/config/base";
-import { getAppInfo } from "../../../shared/config/appInfo";
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js";
+import { config } from "../../../shared/config/base.js";
+import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
+import dedent from "dedent";
 export const pyRecipeImports = {
     emailPassword: "from supertokens_python.recipe import emailpassword",
     thirdParty:
@@ -17,44 +18,41 @@ export const pyRecipeImports = {
     multitenancy: "from supertokens_python.recipe import multitenancy",
 };
 const app_info_object = getAppInfo();
-export const pyBaseTemplate = `
-from supertokens_python import init, InputAppInfo, SupertokensConfig
-import os
+export const pyBaseTemplate = dedent`
+    def get_api_domain() -> str:
+        api_port = str(${app_info_object.defaultApiPort})
+        api_url = f"http://localhost:{api_port}"
+        return api_url
 
-def get_api_domain() -> str:
-    api_port = str(${app_info_object.defaultApiPort})
-    api_url = f"http://localhost:{api_port}"
-    return api_url
+    def get_website_domain() -> str:
+        website_port = str(${app_info_object.defaultWebsitePort})
+        website_url = f"http://localhost:{website_port}"
+        return website_url
 
-def get_website_domain() -> str:
-    website_port = str(${app_info_object.defaultWebsitePort})
-    website_url = f"http://localhost:{website_port}"
-    return website_url
+    supertokens_config = SupertokensConfig(
+        connection_uri="${config.connectionURI}"
+    )
 
-supertokens_config = SupertokensConfig(
-    connection_uri="${config.connectionURI}"
-)
+    app_info = InputAppInfo(
+        app_name="${getAppInfo().appName}",
+        api_domain=get_api_domain(),
+        website_domain=get_website_domain(),
+        api_base_path="/auth",
+        website_base_path="/auth"
+    )
 
-app_info = InputAppInfo(
-    app_name="${getAppInfo().appName}",
-    api_domain=get_api_domain(),
-    website_domain=get_website_domain(),
-    api_base_path="/auth",
-    website_base_path="/auth"
-)
+    recipe_list = [
+        %RECIPE_LIST%
+    ]
 
-recipe_list = [
-    %RECIPE_LIST%
-]
-
-init(
-    supertokens_config=supertokens_config,
-    app_info=app_info,
-    framework="%FRAMEWORK%",
-    recipe_list=recipe_list,
-    mode="%MODE%",
-    telemetry=False
-)
+    init(
+        supertokens_config=supertokens_config,
+        app_info=app_info,
+        framework="%FRAMEWORK%",
+        recipe_list=recipe_list,
+        mode="%MODE%",
+        telemetry=False
+    )
 `;
 export const pyRecipeInits = {
     emailPassword: () => `emailpassword.init()`,
@@ -72,7 +70,10 @@ export const pyRecipeInits = {
                                 client_secret="${provider.clientSecret}"${
                             provider.additionalConfig
                                 ? `,
-                                additional_config=${JSON.stringify(provider.additionalConfig, null, 16)}`
+                                additional_config=${JSON.stringify(provider.additionalConfig, null, "####").replace(
+                                    new RegExp("####", "g"),
+                                    "".padStart(36)
+                                )}`
                                 : ""
                         }
                             )
@@ -85,7 +86,7 @@ export const pyRecipeInits = {
         )
     )`,
     passwordless: (userArguments) => {
-        let contactConfig = "ContactEmailConfig()";
+        let contactConfigInstantiation = "ContactEmailOnlyConfig()";
         let flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
         const hasLinkEmail =
             userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
@@ -96,11 +97,12 @@ export const pyRecipeInits = {
         const hasOtpPhone =
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
         if ((hasLinkEmail || hasOtpEmail) && (hasLinkPhone || hasOtpPhone)) {
-            contactConfig = "ContactEmailOrPhoneConfig()";
+            contactConfigInstantiation = "ContactEmailOrPhoneConfig()";
         } else if (hasLinkPhone || hasOtpPhone) {
-            contactConfig = "ContactPhoneConfig()";
+            contactConfigInstantiation = "ContactPhoneOnlyConfig()";
         } else {
-            contactConfig = "ContactEmailConfig()";
+            // Default or only email factors
+            contactConfigInstantiation = "ContactEmailOnlyConfig()";
         }
         const hasLinkFactors = hasLinkEmail || hasLinkPhone;
         const hasOtpFactors = hasOtpEmail || hasOtpPhone;
@@ -111,9 +113,16 @@ export const pyRecipeInits = {
         } else if (hasOtpFactors) {
             flowType = "USER_INPUT_CODE";
         }
+        let testConf = "";
+        if (process.env.TEST_MODE === "testing") {
+            testConf = `,
+            get_custom_user_input_code=async (user_context: dict) -> str:
+                return "123456"
+            `;
+        }
         return `passwordless.init(
         flow_type="${flowType}",
-        contact_config=${contactConfig}
+        contact_config=${contactConfigInstantiation}${testConf}
     )`;
     },
     session: () => `session.init()`,
@@ -143,11 +152,7 @@ export const pyRecipeInits = {
         mode="REQUIRED"
     )`,
     totp: () => `totp.init()`,
-    multitenancy: () => `multitenancy.init(
-        override=multitenancy.OverrideConfig(
-            functions=lambda original_implementation: original_implementation
-        )
-    )`,
+    multitenancy: () => null, // Return null to prevent adding multitenancy.init() to the recipe list string
 };
 export const generatePythonTemplate = ({ configType, userArguments, framework }) => {
     const recipesSet = new Set(["session", "dashboard", "userRoles"]);
@@ -175,10 +180,10 @@ export const generatePythonTemplate = ({ configType, userArguments, framework })
     if (hasMFA && !recipes.includes("accountLinking")) {
         recipes.push("accountLinking");
     }
-    let imports = recipes
-        .map((recipe) => pyRecipeImports[recipe])
-        .filter(Boolean)
-        .join("\n");
+    const imports = recipes.map((recipe) => pyRecipeImports[recipe]).filter(Boolean);
+    const miscFunctions = [];
+    // Removed the conditional import for MultitenancyInputOverrideConfig as it's not used and was incorrect.
+    // The main `from supertokens_python.recipe import multitenancy` will still be added if "multitenancy" is in recipesSet.
     if (recipes.includes("passwordless")) {
         const hasLinkEmail =
             userArguments?.firstfactors?.includes("link-email") || userArguments?.secondfactors?.includes("link-email");
@@ -189,28 +194,31 @@ export const generatePythonTemplate = ({ configType, userArguments, framework })
         const hasOtpPhone =
             userArguments?.firstfactors?.includes("otp-phone") || userArguments?.secondfactors?.includes("otp-phone");
         if ((hasLinkEmail || hasOtpEmail) && (hasLinkPhone || hasOtpPhone)) {
-            imports += "\nfrom supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig";
+            imports.push("from supertokens_python.recipe.passwordless import ContactEmailOrPhoneConfig");
         } else if (hasLinkPhone || hasOtpPhone) {
-            imports += "\nfrom supertokens_python.recipe.passwordless import ContactPhoneConfig";
+            imports.push("from supertokens_python.recipe.passwordless import ContactPhoneOnlyConfig");
         } else {
-            imports += "\nfrom supertokens_python.recipe.passwordless import ContactEmailConfig";
+            // Default or only email factors
+            imports.push("from supertokens_python.recipe.passwordless import ContactEmailOnlyConfig");
         }
     }
     let typingImports = new Set();
     if (recipes.includes("accountLinking")) {
-        imports += `
-from supertokens_python.recipe.accountlinking.types import AccountInfoWithRecipeIdAndUserId, ShouldAutomaticallyLink, ShouldNotAutomaticallyLink
-from supertokens_python.recipe.session.interfaces import SessionContainer
-from supertokens_python.types import User`;
+        imports.push(
+            "from supertokens_python.recipe.accountlinking.types import AccountInfoWithRecipeIdAndUserId, ShouldAutomaticallyLink, ShouldNotAutomaticallyLink",
+            "from supertokens_python.recipe.session.interfaces import SessionContainer",
+            "from supertokens_python.types import User"
+        );
         typingImports.add("Optional");
         typingImports.add("Dict");
         typingImports.add("Any");
         typingImports.add("Union");
     }
     if (hasMFA && userArguments?.secondfactors && userArguments.secondfactors.length > 0) {
-        imports += `
-from supertokens_python.recipe.multifactorauth.interfaces import RecipeInterface as MFARecipeInterface
-from supertokens_python.recipe.multifactorauth.types import MFARequirementList, FactorIds`;
+        imports.push(
+            "from supertokens_python.recipe.multifactorauth.interfaces import RecipeInterface as MFARecipeInterface",
+            "from supertokens_python.recipe.multifactorauth.types import MFARequirementList, FactorIds"
+        );
         typingImports.add("Callable");
         typingImports.add("Awaitable");
         typingImports.add("List");
@@ -218,70 +226,70 @@ from supertokens_python.recipe.multifactorauth.types import MFARequirementList, 
         typingImports.add("Any");
     }
     if (typingImports.size > 0) {
-        imports += `\nfrom typing import ${[...typingImports].join(", ")}`;
+        imports.push(`from typing import ${[...typingImports].join(", ")}`);
     }
     if (hasMFA && userArguments?.secondfactors && userArguments.secondfactors.length > 0) {
-        imports += `
+        miscFunctions.push(dedent`
+        def override_multifactor_functions(original_implementation: MFARecipeInterface):
+            async def get_mfa_requirements_for_auth(
+                tenant_id: str,
+                access_token_payload: dict,
+                completed_factors: dict,
+                user,
+                factors_set_up_for_user,
+                required_secondary_factors_for_user,
+                required_secondary_factors_for_tenant,
+                user_context: dict,
+            ) -> MFARequirementList:
+                return [
+                    {
+                        "oneOf": [
+                            ${userArguments.secondfactors
+                                .map((factor) => {
+                                    const factorMapping = {
+                                        totp: "FactorIds.TOTP",
+                                        "otp-email": "FactorIds.OTP_EMAIL",
+                                        "otp-phone": "FactorIds.OTP_PHONE",
+                                        "link-email": "FactorIds.LINK_EMAIL",
+                                        "link-phone": "FactorIds.LINK_PHONE",
+                                        otp_email: "FactorIds.OTP_EMAIL",
+                                        otp_phone: "FactorIds.OTP_PHONE",
+                                        link_email: "FactorIds.LINK_EMAIL",
+                                        link_phone: "FactorIds.LINK_PHONE",
+                                    };
+                                    return factorMapping[factor] || `"${factor}"`;
+                                })
+                                .join(", ")}
+                        ],
+                    }
+                ]
 
-def override_multifactor_functions(original_implementation: MFARecipeInterface):
-    async def get_mfa_requirements_for_auth(
-        tenant_id: str,
-        access_token_payload: dict,
-        completed_factors: dict,
-        user,
-        factors_set_up_for_user,
-        required_secondary_factors_for_user,
-        required_secondary_factors_for_tenant,
-        user_context: dict,
-    ) -> MFARequirementList:
-        return [
-            {
-                "oneOf": [
-                    ${userArguments.secondfactors
-                        .map((factor) => {
-                            const factorMapping = {
-                                totp: "FactorIds.TOTP",
-                                "otp-email": "FactorIds.OTP_EMAIL",
-                                "otp-phone": "FactorIds.OTP_PHONE",
-                                "link-email": "FactorIds.LINK_EMAIL",
-                                "link-phone": "FactorIds.LINK_PHONE",
-                                otp_email: "FactorIds.OTP_EMAIL",
-                                otp_phone: "FactorIds.OTP_PHONE",
-                                link_email: "FactorIds.LINK_EMAIL",
-                                link_phone: "FactorIds.LINK_PHONE",
-                            };
-                            return factorMapping[factor] || `"${factor}"`;
-                        })
-                        .join(", ")}
-                ],
-            }
-        ]
+            async def get_required_secondary_factors_for_user(
+                tenant_id: str,
+                user_id: str,
+                user_context: dict,
+            ) -> list:
+                return [${userArguments.secondfactors
+                    .map((factor) => {
+                        const factorMapping = {
+                            totp: "FactorIds.TOTP",
+                            "otp-email": "FactorIds.OTP_EMAIL",
+                            "otp-phone": "FactorIds.OTP_PHONE",
+                            "link-email": "FactorIds.LINK_EMAIL",
+                            "link-phone": "FactorIds.LINK_PHONE",
+                            otp_email: "FactorIds.OTP_EMAIL",
+                            otp_phone: "FactorIds.OTP_PHONE",
+                            link_email: "FactorIds.LINK_EMAIL",
+                            link_phone: "FactorIds.LINK_PHONE",
+                        };
+                        return factorMapping[factor] || `"${factor}"`;
+                    })
+                    .join(", ")}]
 
-    async def get_required_secondary_factors_for_user(
-        tenant_id: str,
-        user_id: str,
-        user_context: dict,
-    ) -> list:
-        return [${userArguments.secondfactors
-            .map((factor) => {
-                const factorMapping = {
-                    totp: "FactorIds.TOTP",
-                    "otp-email": "FactorIds.OTP_EMAIL",
-                    "otp-phone": "FactorIds.OTP_PHONE",
-                    "link-email": "FactorIds.LINK_EMAIL",
-                    "link-phone": "FactorIds.LINK_PHONE",
-                    otp_email: "FactorIds.OTP_EMAIL",
-                    otp_phone: "FactorIds.OTP_PHONE",
-                    link_email: "FactorIds.LINK_EMAIL",
-                    link_phone: "FactorIds.LINK_PHONE",
-                };
-                return factorMapping[factor] || `"${factor}"`;
-            })
-            .join(", ")}]
-
-    original_implementation.get_mfa_requirements_for_auth = get_mfa_requirements_for_auth
-    original_implementation.get_required_secondary_factors_for_user = get_required_secondary_factors_for_user
-    return original_implementation`;
+            original_implementation.get_mfa_requirements_for_auth = get_mfa_requirements_for_auth
+            original_implementation.get_required_secondary_factors_for_user = get_required_secondary_factors_for_user
+            return original_implementation
+    `);
     }
     const recipeList = recipes
         .map((recipe) => {
@@ -327,18 +335,19 @@ def override_multifactor_functions(original_implementation: MFARecipeInterface):
     let finalTemplate = pyBaseTemplate.replace("%RECIPE_LIST%", recipeList);
     finalTemplate = finalTemplate.replace("%FRAMEWORK%", sdkFramework);
     finalTemplate = finalTemplate.replace("%MODE%", sdkMode);
-    const async_linking_func_def = recipes.includes("accountLinking")
-        ? `
-
-async def async_should_do_linking(
-    new_account_info: AccountInfoWithRecipeIdAndUserId,
-    user: Optional[User],
-    session: Optional[SessionContainer],
-    tenant_id: str,
-    user_context: Dict[str, Any],
-) -> Union[ShouldNotAutomaticallyLink, ShouldAutomaticallyLink]:
-    return ShouldAutomaticallyLink(should_require_verification=False)
-`
-        : ""; // End conditional definition
-    return imports + "\n" + async_linking_func_def + "\n\n" + finalTemplate;
+    // Add common imports
+    imports.unshift("from supertokens_python import init, InputAppInfo, SupertokensConfig");
+    if (recipes.includes("accountLinking")) {
+        miscFunctions.push(dedent`
+            async def async_should_do_linking(
+                new_account_info: AccountInfoWithRecipeIdAndUserId,
+                user: Optional[User],
+                session: Optional[SessionContainer],
+                tenant_id: str,
+                user_context: Dict[str, Any],
+            ) -> Union[ShouldNotAutomaticallyLink, ShouldAutomaticallyLink]:
+                return ShouldAutomaticallyLink(should_require_verification=False)
+        `);
+    }
+    return imports.join("\n") + "\n\n" + miscFunctions.join("\n\n") + "\n\n" + finalTemplate;
 };

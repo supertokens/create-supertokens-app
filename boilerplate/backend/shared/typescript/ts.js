@@ -1,7 +1,7 @@
-import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants";
-import { config } from "../../../shared/config/base";
-import { getAppInfo } from "../../../shared/config/appInfo";
-import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders";
+import { configToRecipes } from "../../../../lib/ts/templateBuilder/constants.js";
+import { config } from "../../../shared/config/base.js";
+import { getAppInfo } from "../../../shared/config/appInfo.js";
+import { thirdPartyLoginProviders } from "../../../backend/shared/config/oAuthProviders.js";
 export const tsRecipeImports = {
     emailPassword: 'import EmailPassword from "supertokens-node/recipe/emailpassword";',
     thirdParty:
@@ -13,6 +13,7 @@ export const tsRecipeImports = {
     multiFactorAuth: 'import MultiFactorAuth from "supertokens-node/recipe/multifactorauth";',
     accountLinking: 'import AccountLinking from "supertokens-node/recipe/accountlinking";',
     emailVerification: 'import EmailVerification from "supertokens-node/recipe/emailverification";',
+    webauthn: 'import WebAuthN from "supertokens-node/recipe/webauthn";',
     totp: 'import TOTP from "supertokens-node/recipe/totp";',
     multitenancy: 'import Multitenancy from "supertokens-node/recipe/multitenancy";',
 };
@@ -71,17 +72,24 @@ export const tsRecipeInits = {
         } else if (hasOtpFactor) {
             flowType = "USER_INPUT_CODE";
         }
-        // Default flowType if none determined from factors
         if (flowType === undefined) {
             flowType = "USER_INPUT_CODE_AND_MAGIC_LINK";
         }
+        let testConf = "";
+        if (process.env.TEST_MODE === "testing") {
+            testConf = `,
+            getCustomUserInputCode: async (userContext: any) => {
+                return "123456";
+            }`;
+        }
         return `Passwordless.init({
     contactMethod: "${contactMethod}",
-    flowType: "${flowType}"
+    flowType: "${flowType}"${testConf}
 })`;
     },
     session: () => `Session.init()`,
     dashboard: () => `Dashboard.init()`,
+    webauthn: () => `WebAuthN.init()`,
     userRoles: () => `UserRoles.init()`,
     multiFactorAuth: (firstFactors, secondFactors) => {
         const firstFactorsStr = (firstFactors || ["thirdparty", "emailpassword"])
@@ -180,10 +188,12 @@ export const generateTypeScriptTemplate = ({ configType, userArguments, isFullSt
     if (hasPasswordlessFactor && !recipes.includes("passwordless")) {
         recipes.push("passwordless");
     }
-    // For multitenancy, ensure backend is initialized with potential first-factor recipes
     if (configType === "multitenancy") {
         if (!recipes.includes("emailPassword")) {
             recipes.push("emailPassword");
+        }
+        if (!recipes.includes("webauthn")) {
+            recipes.push("webauthn");
         }
         if (!recipes.includes("thirdParty")) {
             recipes.push("thirdParty");
@@ -191,7 +201,6 @@ export const generateTypeScriptTemplate = ({ configType, userArguments, isFullSt
         if (!recipes.includes("passwordless")) {
             recipes.push("passwordless");
         }
-        // Also ensure MFA recipes are included if needed, as multitenancy might use them
         if (hasMFA && !recipes.includes("multiFactorAuth")) {
             recipes.push("multiFactorAuth");
         }
@@ -201,7 +210,6 @@ export const generateTypeScriptTemplate = ({ configType, userArguments, isFullSt
         if (hasMFA && !recipes.includes("emailVerification")) {
             recipes.push("emailVerification");
         }
-        // AccountLinking might also be relevant depending on tenant config
         if (hasMFA && !recipes.includes("accountLinking")) {
             recipes.push("accountLinking");
         }
@@ -230,7 +238,6 @@ export const generateTypeScriptTemplate = ({ configType, userArguments, isFullSt
                 case "accountLinking":
                     return tsRecipeInits.accountLinking(hasMFA ?? false);
                 case "passwordless":
-                case "passwordless":
                     return tsRecipeInits.passwordless(userArguments);
                 case "emailVerification":
                     return tsRecipeInits.emailVerification();
@@ -238,16 +245,15 @@ export const generateTypeScriptTemplate = ({ configType, userArguments, isFullSt
                 case "dashboard":
                 case "userRoles":
                 case "totp":
+                case "webauthn":
                 case "multitenancy":
                     const initFunc = tsRecipeInits[recipe];
                     if (typeof initFunc === "function") {
                         return initFunc();
                     }
-                    console.warn(`No initializer function found for recipe: ${recipe}`);
-                    return null;
+                    throw new Error(`No initializer function found for recipe: ${recipe}`);
                 default:
-                    console.warn(`Unknown recipe encountered: ${recipe}`);
-                    return null;
+                    throw new Error(`Unknown recipe encountered: ${recipe}`);
             }
         })
         .filter(Boolean);
@@ -277,8 +283,8 @@ export function getWebsiteDomain() {
         appName: "${appInfo.appName}",
         apiDomain: getApiDomain(),
         websiteDomain: getWebsiteDomain(),
-        apiBasePath: "${appInfo.apiBasePath}", 
-        websiteBasePath: "${appInfo.websiteBasePath}", 
+        apiBasePath: "${appInfo.apiBasePath}",
+        websiteBasePath: "${appInfo.websiteBasePath}",
     },
     recipeList: [
         ${recipeInits.join(",\n        ")}

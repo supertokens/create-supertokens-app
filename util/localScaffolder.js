@@ -1,10 +1,12 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { setupProject } from "../lib/ts/utils";
+import { setupProject } from "../lib/ts/utils.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const BOILERPLATE_DIR = path.join(__dirname, "..", "boilerplate");
+const isRunningFromBuild = __filename.includes(path.join("lib", "build"));
+const projectRoot = isRunningFromBuild ? path.resolve(__dirname, "..", "..", "..") : path.resolve(__dirname, "..");
+const BOILERPLATE_DIR = path.join(projectRoot, "boilerplate");
 function copyDir(src, dest, filter) {
     if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest, { recursive: true });
