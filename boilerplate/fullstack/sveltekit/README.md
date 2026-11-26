@@ -43,7 +43,6 @@ This project aims to demonstrate how to integrate SuperTokens into a SvelteKit a
 📦static
 ┣ 📜favicon.png
 ┗ 📜robots.txt
-📜svelte.config.js
 📜vite.config.ts
 📜package.json
 📜tsconfig.json
@@ -57,8 +56,7 @@ This project aims to demonstrate how to integrate SuperTokens into a SvelteKit a
 
 This project is a standard SvelteKit application.
 
--   `svelte.config.js`: Main SvelteKit configuration.
--   `vite.config.ts`: Vite configuration (SvelteKit uses Vite).
+-   `vite.config.ts`: Vite and SvelteKit plugin configuration.
 -   `src/routes/`: Directory for file-system based routing (pages and server endpoints).
 -   `src/hooks.server.ts`: For server-side hooks, potentially for SuperTokens request handling.
 -   The default development server runs on port `5173` (or as configured).
