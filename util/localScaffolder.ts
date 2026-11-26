@@ -35,23 +35,7 @@ function copyDir(src: string, dest: string, filter?: (path: string) => boolean) 
 }
 
 function getTempDirName(location: string): string {
-    const parts = location.split("/");
-
-    if (location.includes("backend/")) {
-        const [_, framework, name] = parts;
-        if (framework === "typescript") {
-            return "typescript" + name;
-        }
-        if (framework === "python") {
-            return "python" + name;
-        }
-        if (framework === "go") {
-            return "go" + name;
-        }
-        return name;
-    }
-
-    return parts[parts.length - 1];
+    return location.replace(/^\/?(frontend|backend)\//, "");
 }
 
 function getLocalTemplatePath(location: string): string {

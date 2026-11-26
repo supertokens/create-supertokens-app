@@ -1,4 +1,4 @@
-flask
-flask_cors
-python-dotenv
-supertokens-python
+flask>=3.1
+flask_cors>=6.0
+python-dotenv>=1.0
+supertokens-python>=0.30

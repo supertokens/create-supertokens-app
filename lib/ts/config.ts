@@ -127,7 +127,7 @@ export async function getFrontendOptions({ manager }: UserFlags): Promise<Questi
         {
             isFullStack: true,
             value: "remix",
-            displayName: "Remix",
+            displayName: "React Router (Remix)",
             location: {
                 main: "fullstack/remix",
                 config: {

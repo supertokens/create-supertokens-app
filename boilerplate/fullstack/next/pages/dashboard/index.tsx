@@ -1,11 +1,11 @@
-import React from "react";
+import dynamic from "next/dynamic";
 import SessionReact from "supertokens-auth-react/recipe/session";
 import SuperTokensReact from "supertokens-auth-react";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 import { CelebrateIcon } from "../../assets/images";
 import Image from "next/image";
 
-export default function Dashboard() {
+function Dashboard() {
     const session = useSessionContext();
 
     async function logoutClicked() {
@@ -49,3 +49,5 @@ export default function Dashboard() {
         </SessionReact.SessionAuth>
     );
 }
+
+export default dynamic(() => Promise.resolve(Dashboard), { ssr: false });

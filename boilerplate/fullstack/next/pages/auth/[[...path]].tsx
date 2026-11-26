@@ -8,7 +8,7 @@ const SuperTokensComponentNoSSR = dynamic<{}>(new Promise((res) => res(() => get
     ssr: false,
 });
 
-export default function Auth(): JSX.Element {
+export default function Auth() {
     useEffect(() => {
         if (canHandleRoute(PreBuiltUIList) === false) {
             SuperTokens.redirectToAuth({

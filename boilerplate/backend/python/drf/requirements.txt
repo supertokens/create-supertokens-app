@@ -1,4 +1,4 @@
-Django
-django-cors-headers
-djangorestframework
-supertokens-python
+Django>=5.2
+django-cors-headers>=4.0
+djangorestframework>=3.16
+supertokens-python>=0.30

@@ -3,6 +3,7 @@ import { DOCUMENT } from "@angular/common";
 import { initSuperTokensUI } from "../../config";
 
 @Component({
+    standalone: false,
     selector: "app-auth",
     template: '<div id="supertokensui"></div>',
 })

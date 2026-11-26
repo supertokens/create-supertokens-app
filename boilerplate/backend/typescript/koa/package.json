@@ -1,23 +1,24 @@
 {
     "scripts": {
-        "start": "npx vite-node ./main.ts",
+        "start": "tsx ./main.ts",
         "lint": "eslint .",
         "build": "tsc"
     },
     "dependencies": {
         "@koa/cors": "^5.0.0",
-        "koa": "^2.15.3",
-        "koa-router": "^12.0.0",
-        "supertokens-node": "latest",
-        "typescript": "^4.7.2"
+        "koa": "^3.3.0",
+        "@koa/router": "^15.7.1",
+        "supertokens-node": "latest"
     },
     "devDependencies": {
         "@eslint/js": "^9.17.0",
-        "@types/koa__cors": "^4.0.0",
-        "@types/koa-router": "^7.4.4",
+        "@types/koa": "^3.0.3",
+        "@types/koa__cors": "^5.0.1",
+        "@types/node": "^22.20.7",
         "eslint": "^9.17.0",
         "globals": "^15.13.0",
-        "typescript-eslint": "^8.18.1",
-        "vite-node": "^2.1.8"
+        "typescript-eslint": "^8.74.0",
+        "typescript": "^5.9.3",
+        "tsx": "^4.23.15"
     }
 }

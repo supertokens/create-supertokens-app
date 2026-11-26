@@ -28,6 +28,11 @@ export default [
         },
     },
     {
+        files: ["src/config/frontend.ts"],
+        // The generated prebuilt UI config calls untyped globals from the CDN bundle.
+        rules: { "@typescript-eslint/no-explicit-any": "off" },
+    },
+    {
         ignores: ["build/", ".svelte-kit/", "dist/"],
     },
 ];

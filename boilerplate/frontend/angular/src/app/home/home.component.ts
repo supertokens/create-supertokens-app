@@ -3,6 +3,7 @@ import { AfterViewInit, Component } from "@angular/core";
 import * as Session from "supertokens-web-js/recipe/session";
 
 @Component({
+    standalone: false,
     selector: "app-home",
     templateUrl: "./home.component.html",
 })

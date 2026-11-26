@@ -2,9 +2,9 @@ import type { APIRoute } from "astro";
 import { getSessionForSSR } from "supertokens-node/custom";
 
 export const GET: APIRoute = async ({ request }) => {
-    const { accessTokenPayload, hasToken, error } = await getSessionForSSR(request);
+    const { accessTokenPayload, error } = await getSessionForSSR(request);
 
-    if (!hasToken || error) {
+    if (!accessTokenPayload || error) {
         return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,
             headers: {

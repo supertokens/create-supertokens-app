@@ -3,7 +3,7 @@ import cors from "@koa/cors";
 import supertokens from "supertokens-node";
 import { middleware } from "supertokens-node/framework/koa";
 import { getWebsiteDomain, SuperTokensConfig } from "./config";
-import KoaRouter from "koa-router";
+import KoaRouter from "@koa/router";
 import { verifySession } from "supertokens-node/recipe/session/framework/koa";
 import { SessionContext } from "supertokens-node/framework/koa";
 import Multitenancy from "supertokens-node/recipe/multitenancy";
@@ -48,4 +48,4 @@ router.get("/tenants", async (ctx: SessionContext) => {
 
 app.use(router.routes());
 
-if (!module.parent) app.listen(3001, () => console.log("API Server listening on port 3001"));
+app.listen(3001, () => console.log("API Server listening on port 3001"));

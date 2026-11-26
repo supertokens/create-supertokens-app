@@ -2,9 +2,9 @@
 	import Session from 'supertokens-web-js/recipe/session';
 	import { onMount } from 'svelte';
 	import { initSuperTokensWebJS } from '../config/frontend';
+	import { resolve } from '$app/paths';
 
 	let session = false;
-	let userId = '';
 
 	async function getUserInfo() {
 		session = await Session.doesSessionExist();
@@ -42,15 +42,14 @@
 			</div>
 			<nav class="buttons">
 				{#if session}
-				<a href="/dashboard" class="dashboard-button session-exists">
+				<a href={resolve("/dashboard")} class="dashboard-button session-exists">
 					Dashboard
 				</a>
 				{:else}
-				<a href="/auth" class="dashboard-button no-session">
+				<a href={resolve("/auth")} class="dashboard-button no-session">
 					Sign-up / Login
 				</a>
 				{/if}
 			</nav>
 		</div>
 </section>
-

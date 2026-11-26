@@ -1,17 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
+import type { ReactNode } from "react";
 import { SessionAuth } from "supertokens-auth-react/recipe/session";
 
 type Props = Parameters<typeof SessionAuth>[0] & {
-    children?: React.ReactNode | undefined;
+    children?: ReactNode | undefined;
 };
 
+const subscribe = () => () => {};
+
 export const SessionAuthForNextJS = (props: Props) => {
-    const [loaded, setLoaded] = useState(false);
-    useEffect(() => {
-        setLoaded(true);
-    }, []);
+    const loaded = useSyncExternalStore(
+        subscribe,
+        () => true,
+        () => false
+    );
     if (!loaded) {
         return props.children;
     }

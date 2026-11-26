@@ -12,13 +12,17 @@ export default function Dashboard() {
             const data = await response.json();
             window.alert("Session Information:\n" + JSON.stringify(data, null, 2));
         } catch (err) {
-            window.alert("Error calling API: " + err.message);
+            window.alert("Error calling API: " + (err instanceof Error ? err.message : String(err)));
         }
     }
 
     async function logoutClicked() {
         await signOut();
         navigate("/");
+    }
+
+    if (sessionContext.loading || !sessionContext.doesSessionExist) {
+        return null;
     }
 
     return (

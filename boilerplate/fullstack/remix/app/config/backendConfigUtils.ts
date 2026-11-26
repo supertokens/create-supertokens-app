@@ -2,12 +2,9 @@ import { type RecipeListFunction, type TypeInput } from "supertokens-node/types"
 import SuperTokens from "supertokens-node";
 import { SuperTokensConfig as STConfig } from "./backend";
 
-export let backendConfig = (): TypeInput => {
+export const backendConfig = (): TypeInput => {
     return {
-        supertokens: {
-            // this is the location of the SuperTokens core.
-            connectionURI: STConfig.supertokens.connectionURI,
-        },
+        supertokens: STConfig.supertokens,
         appInfo: STConfig.appInfo,
         // recipeList contains all the modules that you want to
         // use from SuperTokens. See the full list here: https://supertokens.com/docs/guides

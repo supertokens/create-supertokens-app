@@ -1,10 +1,9 @@
-import { Meta, Links, Scripts, Outlet, ScrollRestoration, useLocation, Link } from "@remix-run/react";
+import { Meta, Links, Scripts, Outlet, ScrollRestoration, Link, type LinksFunction } from "react-router";
 import SuperTokens, { SuperTokensWrapper } from "supertokens-auth-react";
 import { frontendConfig } from "./config/frontendConfigUtils";
-import { SessionAuth } from "supertokens-auth-react/recipe/session/index.js";
-import type { LinksFunction } from "@remix-run/node";
 import appStylesHref from "./app.css?url";
 import { ComponentWrapper } from "./config/frontend";
+import separatorLine from "../assets/images/separator-line.svg";
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: appStylesHref }];
 
 if (typeof window !== "undefined") {
@@ -12,9 +11,6 @@ if (typeof window !== "undefined") {
 }
 
 export default function App() {
-    const location = useLocation();
-    const isUnprotectedRoute = location.pathname.startsWith("/") || location.pathname.startsWith("/auth");
-
     return (
         <html lang="en">
             <head>
@@ -60,13 +56,7 @@ export default function App() {
                         <div className="fill" id="home-container">
                             <ComponentWrapper>
                                 <>
-                                    {isUnprotectedRoute ? (
-                                        <Outlet />
-                                    ) : (
-                                        <SessionAuth>
-                                            <Outlet />
-                                        </SessionAuth>
-                                    )}
+                                    <Outlet />
 
                                     <ScrollRestoration />
                                     <Scripts />
@@ -77,11 +67,7 @@ export default function App() {
                                         </a>
                                         .
                                     </footer>
-                                    <img
-                                        className="separator-line"
-                                        src="/assets/images/separator-line.svg"
-                                        alt="separator"
-                                    />
+                                    <img className="separator-line" src={separatorLine} alt="separator" />
                                 </>
                             </ComponentWrapper>
                         </div>

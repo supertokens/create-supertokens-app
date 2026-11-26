@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
             <section className="main-container">
                 <div className="inner-content">
                     <h1>
-                        <strong>SuperTokens</strong> x <strong>Remix</strong> <br /> example project
+                        <strong>SuperTokens</strong> x <strong>React Router</strong> <br /> example project
                     </h1>
                     <div>
                         {session.doesSessionExist ? (

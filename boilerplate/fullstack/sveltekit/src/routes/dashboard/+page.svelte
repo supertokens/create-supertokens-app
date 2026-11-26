@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import Session from 'supertokens-web-js/recipe/session';
+  import { resolve } from '$app/paths';
   import { onMount } from 'svelte';
   import { initSuperTokensWebJS, getApiDomain } from '../../config/frontend';
   import { signOut, doesSessionExist } from "supertokens-web-js/recipe/session";
@@ -12,7 +12,8 @@
     
     const sessionExists = await doesSessionExist();
     if (!sessionExists) {
-      goto('/');
+      await goto(resolve('/auth'));
+      return;
     }
 
     fetchUserId();
@@ -27,7 +28,7 @@
 
   async function logout() {
     await signOut();
-    goto('/');
+    await goto(resolve('/'));
   }
 
   const fetchSessionInfo = async () => {

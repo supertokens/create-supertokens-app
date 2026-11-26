@@ -37,6 +37,7 @@ export async function DashboardPage() {
          *
          * To learn about why the 'key' attribute is required refer to: https://github.com/supertokens/supertokens-node/issues/826#issuecomment-2092144048
          */
+        // eslint-disable-next-line react-hooks/purity -- The server must remount the refresh component on each request.
         return <TryRefreshComponent key={Date.now()} />;
     }
 

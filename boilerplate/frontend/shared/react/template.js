@@ -264,7 +264,8 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
             }
         })
         .filter(Boolean);
-    const template = `${imports}
+    const template = `import type { ReactNode } from "react";
+${imports}
 
 export function getApiDomain() {
     const apiPort = ${appInfo.defaultApiPort};
@@ -343,7 +344,7 @@ export const recipeDetails = {
 
 export const PreBuiltUIList = [${prebuiltUIs.join(", ")}];
 
-export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
+export const ComponentWrapper = (props: { children: ReactNode }) => {
     ${
         configType === "passwordless" ||
         configType === "thirdpartypasswordless" ||
