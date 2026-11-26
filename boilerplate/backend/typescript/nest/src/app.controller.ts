@@ -29,7 +29,7 @@ export class AppController {
   // This API is used by the frontend to create the tenants drop down when the app loads.
   // Depending on your UX, you can remove this API.
   @Get('/tenants')
-  async getTenants(): Promise<any> {
-    return await Multitenancy.listAllTenants();
+  getTenants() {
+    return Multitenancy.listAllTenants();
   }
 }

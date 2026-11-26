@@ -1,10 +1,10 @@
-# SuperTokens + Remix
+# SuperTokens + React Router
 
-A demo implementation of [SuperTokens](https://supertokens.com/) with [Remix](https://remix.run/).
+A demo implementation of [SuperTokens](https://supertokens.com/) with [React Router v7](https://reactrouter.com/) in Framework Mode. Select `remix` in the CLI to generate this template.
 
 ## General Info
 
-This project aims to demonstrate how to integrate SuperTokens into a Remix application. Its primary purpose is to serve as an educational tool, but it can also be used as a starting point for your own project.
+This project demonstrates how to integrate SuperTokens into a React Router application.
 
 Features:
 
@@ -35,7 +35,7 @@ Features:
 ┃ ┣ 📜dashboard._index.tsx --> Protected dashboard page
 ┃ ┗ 📜sessioninfo.$.tsx --> Example protected API route
 ┣ 📜app.css
-┣ 📜entry.server.tsx --> Server entry point (handles request, may init ST backend)
+┣ 📜routes.ts --> File-based route configuration
 ┣ 📜root.tsx --> Root component (wraps app with SuperTokens frontend)
 📦public
 ┣ 📜favicon.ico
@@ -44,7 +44,6 @@ Features:
 📦assets
 ┣ 📂fonts
 ┗ 📂images
-📜remix.config.js <!-- Or .mjs -->
 📜vite.config.ts
 📜package.json
 📜tsconfig.json
@@ -52,15 +51,14 @@ Features:
 
 ## Config
 
-### Remix & Vite
+### React Router & Vite
 
-Remix uses Vite as its compiler.
+React Router uses Vite as its compiler.
 
 -   `vite.config.ts`: Vite configuration.
--   `remix.config.js` (or `.mjs`): Remix-specific configurations.
 -   Key directories:
     -   `app/root.tsx`: The root component of your application.
-    -   `app/entry.server.tsx`: Handles server-side rendering logic.
+    -   `app/routes.ts`: Discovers route modules under `app/routes/`.
     -   `app/routes/`: Contains files that define your application's routes (both UI pages and API endpoints via loaders/actions).
 -   The default development server runs on port `3000` (often, or as configured).
 
@@ -76,7 +74,7 @@ These files will differ based on the [auth recipe](https://supertokens.com/docs/
 
 ## Application Flow
 
-Remix handles requests on the server first (via loaders and actions in route files) and then renders React components on the client.
+React Router handles requests on the server first (via loaders and actions in route files) and then hydrates React components on the client.
 
 1.  **Server Entry (`app/entry.server.tsx`)**
 

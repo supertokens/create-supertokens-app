@@ -18,4 +18,4 @@
 	});
 </script>
 
-<div id="supertokensui" />
+<div id="supertokensui"></div>

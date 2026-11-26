@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [0.0.59] - 2026-11-26
+
+### Fixes
+
+-   Restored SvelteKit installs by matching its TypeScript peer dependency.
+-   Updated scaffolded framework dependencies to supported versions and replaced unbounded third-party `latest` tags with version ranges.
+-   The `remix` option now scaffolds React Router 7 with Vite 8, replacing dependencies that could not be patched on Remix 2.
+
 ## [0.0.58] - 2025-07-01
 
 ### Fixes

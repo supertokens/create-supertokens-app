@@ -1,6 +1,9 @@
 {
     "name": "nuxt",
     "private": true,
+    "engines": {
+        "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+    },
     "type": "module",
     "scripts": {
         "build": "nuxt build",
@@ -10,14 +13,14 @@
         "postinstall": "nuxt prepare"
     },
     "dependencies": {
-        "nuxt": "^3.14.1592",
+        "nuxt": "^4.7.0",
         "supertokens-node": "latest",
         "supertokens-web-js": "latest",
-        "vue": "latest",
-        "vue-router": "latest"
+        "vue": "^3.5.46",
+        "vue-router": "^5.5.2"
     },
     "devDependencies": {
-        "typescript": "^5.7.2",
-        "vue-tsc": "^2.1.10"
+        "typescript": "^5.9.3",
+        "vue-tsc": "^3.3.14"
     }
 }

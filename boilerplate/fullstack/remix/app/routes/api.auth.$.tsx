@@ -1,5 +1,8 @@
-import { json, ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { handleAuthAPIRequest } from "supertokens-node/custom";
+import { ensureSuperTokensInit } from "../config/backendConfigUtils";
+
+ensureSuperTokensInit();
 
 const handleCall = handleAuthAPIRequest();
 
@@ -7,8 +10,8 @@ const handleCall = handleAuthAPIRequest();
 export async function action({ request }: ActionFunctionArgs) {
     try {
         return await handleCall(request);
-    } catch (error) {
-        return json({ error: "Internal server error" }, { status: 500 });
+    } catch {
+        return Response.json({ error: "Internal server error" }, { status: 500 });
     }
 }
 // Loader function for handling GET requests that also adds cache control headers
@@ -19,7 +22,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
             res.headers.set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
         }
         return res;
-    } catch (error) {
-        return json({ error: "Internal server error" }, { status: 500 });
+    } catch {
+        return Response.json({ error: "Internal server error" }, { status: 500 });
     }
 }

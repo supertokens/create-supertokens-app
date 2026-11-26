@@ -1,7 +1,10 @@
 import { json } from "@sveltejs/kit";
 import { withSession } from "supertokens-node/custom";
+import { ensureSuperTokensInit } from "../../../config/backendConfigUtils";
+import type { RequestHandler } from "./$types";
 
-export async function GET({ request }) {
+export const GET: RequestHandler = async ({ request }) => {
+    ensureSuperTokensInit();
     return withSession(request, async (err, session) => {
         if (err) {
             return json(err, { status: 500 });
@@ -14,4 +17,4 @@ export async function GET({ request }) {
             accessTokenPayload: session!.getAccessTokenPayload(),
         });
     });
-}
+};

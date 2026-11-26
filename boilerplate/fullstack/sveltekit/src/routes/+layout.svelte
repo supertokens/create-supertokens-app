@@ -1,8 +1,10 @@
 <script lang="ts">
   import "../styles/app.css";
-  import { ensureSuperTokensInit } from "../config/backendConfigUtils";
+  import { resolve } from "$app/paths";
+  import { onMount } from "svelte";
+  import { initSuperTokensWebJS } from "../config/frontend";
 
-  ensureSuperTokensInit();
+  onMount(initSuperTokensWebJS);
 </script>
 
 <svelte:head>
@@ -20,7 +22,7 @@
     </div>
     <header>
         <nav class="header-container">
-            <a href="/">
+            <a href={resolve("/")}>
                 <img src="/ST.svg" alt="SuperTokens" />
             </a>
             <ul class="header-container-right">
@@ -48,7 +50,7 @@
     <div class="fill" id="home-container">
         <slot />
         <footer>
-            Built with ❤️ by the folks at{" "}
+            Built with ❤️ by the folks at
             <a href="https://supertokens.io" target="_blank" rel="noopener noreferrer">
                 supertokens.com
             </a>
@@ -56,8 +58,4 @@
         </footer>
         <img class="separator-line" src="/assets/images/separator-line.svg" alt="separator" />
     </div>
-    <script>
-        import { initSuperTokensWebJS } from "../config/frontend";
-        initSuperTokensWebJS();
-    </script>
 </main>

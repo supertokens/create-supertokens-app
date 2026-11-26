@@ -25,7 +25,7 @@ export function HomePage() {
                     <div>
                         {session.doesSessionExist ? (
                             <p>
-                                You're signed in already, <br /> check out the Dashboard! 👇
+                                You&apos;re signed in already, <br /> check out the Dashboard! 👇
                             </p>
                         ) : (
                             <p>Sign-in to continue</p>

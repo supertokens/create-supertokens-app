@@ -1,29 +1,22 @@
 import { useEffect } from "react";
-import type { JWTPayload } from "jose";
 import SuperTokens from "supertokens-auth-react";
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate, type LoaderFunctionArgs } from "react-router";
 import SessionReact from "supertokens-auth-react/recipe/session/index.js";
 import { getSessionForSSR } from "supertokens-node/custom";
 import { TryRefreshComponent } from "../components/tryRefreshClientComponent";
 import { SessionAuthForRemix } from "../components/sessionAuthForRemix";
+import { ensureSuperTokensInit } from "../config/backendConfigUtils";
+import celebrateIcon from "../../assets/images/celebrate-icon.svg";
 
-export async function loader({ request }: LoaderFunctionArgs): Promise<{
-    accessTokenPayload: JWTPayload | undefined;
-    hasToken: boolean;
-    error: Error | undefined;
-}> {
+export async function loader({ request }: LoaderFunctionArgs) {
+    ensureSuperTokensInit();
     return getSessionForSSR(request);
 }
 
 export default function Dashboard() {
     const navigate = useNavigate();
 
-    const { accessTokenPayload, hasToken, error } = useLoaderData<{
-        accessTokenPayload: JWTPayload | undefined;
-        hasToken: boolean;
-        error: Error | undefined;
-    }>();
+    const { accessTokenPayload, hasToken, error } = useLoaderData<typeof loader>();
 
     useEffect(() => {
         if (!hasToken && accessTokenPayload === undefined) {
@@ -59,7 +52,7 @@ export default function Dashboard() {
     }
 
     const callAPIClicked = async () => {
-        const userInfoResponse = await fetch("http://localhost:3000/sessioninfo");
+        const userInfoResponse = await fetch("/sessioninfo");
         alert(JSON.stringify(await userInfoResponse.json()));
     };
 
@@ -71,7 +64,7 @@ export default function Dashboard() {
         <SessionAuthForRemix>
             <div className="main-container">
                 <div className="top-band success-title bold-500">
-                    <img src="../assets/images/celebrate-icon.svg" alt="Login successful" className="success-icon" />
+                    <img src={celebrateIcon} alt="Login successful" className="success-icon" />
                     Login successful
                 </div>
                 <div className="inner-content">

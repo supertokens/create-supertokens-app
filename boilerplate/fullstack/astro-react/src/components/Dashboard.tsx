@@ -24,7 +24,7 @@ export default function Dashboard() {
             const data = await fetchSessionInfo();
             window.alert("Session Information:\n" + JSON.stringify(data, null, 2));
         } catch (err) {
-            window.alert("Error calling API: " + err.message);
+            window.alert("Error calling API: " + (err instanceof Error ? err.message : String(err)));
         }
     }
 

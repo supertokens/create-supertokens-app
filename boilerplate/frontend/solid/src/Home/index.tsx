@@ -1,4 +1,4 @@
-import { Component, createSignal, onMount, Show } from "solid-js";
+import { Component, createSignal, onMount } from "solid-js";
 import Session from "supertokens-web-js/recipe/session";
 
 const Home: Component = () => {

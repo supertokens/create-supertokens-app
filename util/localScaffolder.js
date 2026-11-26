@@ -24,21 +24,7 @@ function copyDir(src, dest, filter) {
     }
 }
 function getTempDirName(location) {
-    const parts = location.split("/");
-    if (location.includes("backend/")) {
-        const [_, framework, name] = parts;
-        if (framework === "typescript") {
-            return "typescript" + name;
-        }
-        if (framework === "python") {
-            return "python" + name;
-        }
-        if (framework === "go") {
-            return "go" + name;
-        }
-        return name;
-    }
-    return parts[parts.length - 1];
+    return location.replace(/^\/?(frontend|backend)\//, "");
 }
 function getLocalTemplatePath(location) {
     const normalizedPath = location.replace(/^\//, "");

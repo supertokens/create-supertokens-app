@@ -284,6 +284,7 @@ export const generateReactTemplate = ({ configType, userArguments, isFullStack }
     const template = `
 "use client";
 
+import type { ReactNode } from "react";
 ${imports}
 ${additionalImports.join("\n")}
 
@@ -331,7 +332,7 @@ export const SuperTokensConfig = {
     recipeList: [
         ${recipeInits.join(",\n        ")}
     ],
-    getRedirectionURL: async (context: any) => {
+    getRedirectionURL: async (context: { action: string }) => {
         if (context.action === "SUCCESS") {
             return "/dashboard";
         }
@@ -467,10 +468,8 @@ const TenantSwitcherFooter = () => {
         : ""
 }
 
-export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
-    let childrenToRender = props.children;
-
-    ${
+export const ComponentWrapper = (props: { children: ReactNode }) => {
+    const childrenToRender = ${
         recipes.includes("passwordless") &&
         (configType === "passwordless" ||
             configType === "thirdpartypasswordless" ||
@@ -479,7 +478,7 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
             userArguments?.secondfactors?.some(
                 (factor) => factor.includes("email") || factor.includes("phone") || factor.includes("link")
             ))
-            ? `childrenToRender = (
+            ? `(
         <PasswordlessComponentsOverrideProvider
             components={{
                 PasswordlessUserInputCodeFormFooter_Override: ({ DefaultComponent, ...cProps }) => {
@@ -529,7 +528,7 @@ export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element 
             {props.children}
         </PasswordlessComponentsOverrideProvider>
     );`
-            : ``
+            : `props.children;`
     }
     ${
         configType === "multitenancy"

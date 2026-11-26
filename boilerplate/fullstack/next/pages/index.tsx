@@ -1,10 +1,11 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 
-export default function Home() {
+function Home() {
     const session = useSessionContext();
 
-    if (session.loading) {
+    if (session.loading !== false) {
         return null;
     }
 
@@ -23,7 +24,7 @@ export default function Home() {
                     <div>
                         {session.doesSessionExist ? (
                             <p>
-                                You're signed in already, <br /> check out the Dashboard! 👇
+                                You&apos;re signed in already, <br /> check out the Dashboard! 👇
                             </p>
                         ) : (
                             <p>Sign-in to continue</p>
@@ -45,3 +46,5 @@ export default function Home() {
         </>
     );
 }
+
+export default dynamic(() => Promise.resolve(Home), { ssr: false });

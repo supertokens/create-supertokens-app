@@ -26,6 +26,8 @@ You can then select the tech stack that is relevant to you.
 
 The tool creates a folder for the created application. You can follow the instructions the tool provides to then start the application.
 
+Use a current Node.js 24 LTS release to run any of the generated Node.js templates. Some frameworks require a newer Node.js version than the CLI itself.
+
 ## Additional usage options
 
 When running the tool you can provide additional arguments.

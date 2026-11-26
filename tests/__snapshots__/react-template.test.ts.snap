@@ -1,7 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`React Template Generation > should generate correct config for EmailPassword + ThirdParty with Link Email MFA 1`] = `
-"import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
+"import type { ReactNode } from "react";
+import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
 import { EmailPasswordPreBuiltUI } from "supertokens-auth-react/recipe/emailpassword/prebuiltui";
 import ThirdParty, { Google, Github, Apple, Twitter } from "supertokens-auth-react/recipe/thirdparty";
 import { ThirdPartyPreBuiltUI } from "supertokens-auth-react/recipe/thirdparty/prebuiltui";
@@ -107,7 +108,7 @@ export const recipeDetails = {
 
 export const PreBuiltUIList = [EmailPasswordPreBuiltUI, ThirdPartyPreBuiltUI, PasswordlessPreBuiltUI, MultiFactorAuthPreBuiltUI, EmailVerificationPreBuiltUI];
 
-export const ComponentWrapper = (props: { children: JSX.Element }): JSX.Element => {
+export const ComponentWrapper = (props: { children: ReactNode }) => {
     return (
         <PasswordlessComponentsOverrideProvider
             components={{
